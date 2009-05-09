@@ -1,6 +1,8 @@
 #ifndef SNYGG_SEGMENT_HPP
 #define SNYGG_SEGMENT_HPP
 
+#include "renderable.hpp"
+
 namespace ymse {
 	template <int dim, typename T>
 	struct vec;
@@ -10,10 +12,8 @@ namespace ymse {
 
 class skin;
 
-class segment {
+class segment : public renderable {
 public:
-	virtual ~segment();
-
 	virtual void head_forward(float) = 0;
 	virtual float tail_forward(float) = 0;
 
@@ -22,8 +22,6 @@ public:
 	virtual ymse::vec2f get_head_pos() const = 0;
 	virtual ymse::vec2f get_tail_pos() const = 0;
 	virtual ymse::vec2f get_head_direction() const = 0;
-
-	virtual void render(skin&) const = 0;
 };
 
 #endif

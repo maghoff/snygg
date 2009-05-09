@@ -4,7 +4,7 @@ add_executable(
 	line.cpp
 	main.cpp
 	plain_skin.cpp
-	segment.cpp
+	renderable.cpp
 	skin.cpp
 	snygg.cpp
 )
