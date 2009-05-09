@@ -1,5 +1,8 @@
 #include <cmath>
 #include <GL/gl.h>
+#include <boost/ptr_container/ptr_vector.hpp>
+#include "arc.hpp"
+#include "line.hpp"
 #include "plain_skin.hpp"
 #include "snygg.hpp"
 
@@ -28,14 +31,19 @@ snygg::~snygg() {
 void box(skin& s, float x1, float y1, float w, float h, float r) {
 	float x2 = x1 + w, y2 = y1 + h;
 
-	s.fat_line(x1 + r, y1    ,  1,  0, w - 2*r, 2.5);
-	s.fat_arc (x2 - r, y1 + r,  r, 2.5,  M_PI * -0.5, M_PI *  0.0);
-	s.fat_line(x2    , y1 + r,  0,  1, h - 2*r, 2.5);
-	s.fat_arc (x2 - r, y2 - r,  r, 2.5,  M_PI *  0.0, M_PI *  0.5);
-	s.fat_line(x2 - r, y2    , -1,  0, w - 2*r, 2.5);
-	s.fat_arc (x1 + r, y2 - r,  r, 2.5,  M_PI *  0.5, M_PI *  1.0);
-	s.fat_line(x1    , y2 - r,  0, -1, h - 2*r, 2.5);
-	s.fat_arc (x1 + r, y1 + r,  r, 2.5,  M_PI * -1.0, M_PI * -0.5);
+	boost::ptr_vector<segment> b(8);
+
+	b.push_back(new line(x1 + r, y1    ,  1,  0, w - 2*r));
+	b.push_back(new arc (x2 - r, y1 + r,  r,  M_PI * -0.5, M_PI *  0.0, 1));
+	b.push_back(new line(x2    , y1 + r,  0,  1, h - 2*r));
+	b.push_back(new arc (x2 - r, y2 - r,  r,  M_PI *  0.0, M_PI *  0.5, 1));
+	b.push_back(new line(x2 - r, y2    , -1,  0, w - 2*r));
+	b.push_back(new arc (x1 + r, y2 - r,  r,  M_PI *  0.5, M_PI *  1.0, 1));
+	b.push_back(new line(x1    , y2 - r,  0, -1, h - 2*r));
+	b.push_back(new arc (x1 + r, y1 + r,  r,  M_PI * -1.0, M_PI * -0.5, 1));
+
+	typedef boost::ptr_vector<segment>::const_iterator it;
+	for (it i = b.begin(); i != b.end(); ++i) i->render(s);
 }
 
 
