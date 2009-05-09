@@ -24,15 +24,27 @@ snygg::snygg() {
 snygg::~snygg() {
 }
 
+
+void box(skin& s, float x1, float y1, float w, float h, float r) {
+	float x2 = x1 + w, y2 = y1 + h;
+
+	s.fat_line(x1 + r, y1    ,  1,  0, w - 2*r, 2.5);
+	s.fat_arc (x2 - r, y1 + r,  r, 2.5,  M_PI * -0.5, M_PI *  0.0);
+	s.fat_line(x2    , y1 + r,  0,  1, h - 2*r, 2.5);
+	s.fat_arc (x2 - r, y2 - r,  r, 2.5,  M_PI *  0.0, M_PI *  0.5);
+	s.fat_line(x2 - r, y2    , -1,  0, w - 2*r, 2.5);
+	s.fat_arc (x1 + r, y2 - r,  r, 2.5,  M_PI *  0.5, M_PI *  1.0);
+	s.fat_line(x1    , y2 - r,  0, -1, h - 2*r, 2.5);
+	s.fat_arc (x1 + r, y1 + r,  r, 2.5,  M_PI * -1.0, M_PI * -0.5);
+}
+
+
 void snygg::render() {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	glColor4f(1.0, 1.0, 1.0, 1.0);
 
-	active_skin->fat_arc(0, 0, 50, 10, 0, M_PI);
-	active_skin->fat_line(-50, 0, 0, 1, -50, 10);
-	active_skin->fat_line(50, 0, 0, 1, -50, 10);
-	active_skin->fat_arc(0, -50, 50, 10, M_PI, 2.0*M_PI);
+	box(*active_skin, -200, -50, 400, 100, 10);
 }
 
 void snygg::tick() {
