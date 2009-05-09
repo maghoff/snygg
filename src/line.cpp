@@ -16,6 +16,18 @@ line::line(
 {
 }
 
+line::line(
+	ymse::vec2f pos,
+	ymse::vec2f dir,
+	float length_
+) :
+	x(pos[0]), y(pos[1]),
+	dx(dir[0]), dy(dir[1]),
+	length(length_),
+	thickness(2.5)
+{
+}
+
 line::~line() {
 }
 

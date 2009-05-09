@@ -6,10 +6,12 @@
 
 class board;
 class skin;
+class snake;
 
 class snygg : public ymse::game {
 	boost::scoped_ptr<skin> active_skin;
 	boost::scoped_ptr<board> active_board;
+	boost::scoped_ptr<snake> player;
 
 public:
 	snygg();

@@ -7,6 +7,7 @@ add_executable(
 	plain_skin.cpp
 	renderable.cpp
 	skin.cpp
+	snake.cpp
 	snygg.cpp
 )
 

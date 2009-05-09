@@ -2,6 +2,7 @@
 #include <GL/gl.h>
 #include "board.hpp"
 #include "plain_skin.hpp"
+#include "snake.hpp"
 #include "snygg.hpp"
 
 snygg::snygg() {
@@ -22,6 +23,8 @@ snygg::snygg() {
 	active_skin.reset(new plain_skin);
 
 	active_board.reset(new board);
+
+	player.reset(new snake);
 }
 
 snygg::~snygg() {
@@ -34,7 +37,10 @@ void snygg::render() {
 	glColor4f(1.0, 1.0, 1.0, 1.0);
 
 	active_board->render(*active_skin);
+
+	player->render(*active_skin);
 }
 
 void snygg::tick() {
+	
 }

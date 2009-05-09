@@ -10,4 +10,7 @@ public:
 	virtual void render(skin&) const = 0;
 };
 
+template <class T>
+void render_sequence(const T&, skin&);
+
 #endif

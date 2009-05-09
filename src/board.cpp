@@ -31,6 +31,5 @@ board::~board() {
 }
 
 void board::render(skin& s) const {
-	typedef boost::ptr_vector<segment>::const_iterator it;
-	for (it i = b.begin(); i != b.end(); ++i) i->render(s);
+	render_sequence(b, s);
 }

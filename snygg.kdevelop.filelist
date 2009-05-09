@@ -17,5 +17,7 @@ src/segment.cpp
 src/segment.hpp
 src/skin.cpp
 src/skin.hpp
+src/snake.cpp
+src/snake.hpp
 src/snygg.cpp
 src/snygg.hpp

@@ -15,6 +15,11 @@ public:
 		float dx, float dy,
 		float length
 	);
+	line(
+		ymse::vec2f pos,
+		ymse::vec2f dir,
+		float length
+	);
 	~line();
 
 	void head_forward(float);

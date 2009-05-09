@@ -2,7 +2,19 @@
 #include <algorithm>
 #include <cmath>
 #include <GL/gl.h>
+#include <ymse/vec.hpp>
 #include "plain_skin.hpp"
+
+plain_skin::plain_skin() {
+}
+
+void plain_skin::circle(ymse::vec2f p, float r) {
+	glBegin(GL_TRIANGLE_FAN);
+	for (float d = 0.f; d < M_PI * 2.f; d += 0.3) {
+		glVertex2f(p[0] + r * cos(d), p[1] + r * sin(d));
+	}
+	glEnd();
+}
 
 void plain_skin::fat_arc(float x, float y, float r, float t, float begin, float end) {
 	float r1 = r-t, r2 = r+t;
