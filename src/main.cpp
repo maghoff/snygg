@@ -10,7 +10,7 @@ try {
 	c.init(argc, argv);
 
 	ymse::gl_box_reshaper r;
-	r.set_box(-1.05, -1.05, 1.05, 1.05);
+	r.set_box(-220, -70, 220, 70);
 	c.set_reshaper_object(&r);
 
 	snygg g;
