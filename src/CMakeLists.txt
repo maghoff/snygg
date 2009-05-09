@@ -1,6 +1,7 @@
 add_executable(
 	snygg
 	arc.cpp
+	board.cpp
 	line.cpp
 	main.cpp
 	plain_skin.cpp

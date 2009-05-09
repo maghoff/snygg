@@ -4,10 +4,12 @@
 #include <boost/smart_ptr.hpp>
 #include <ymse/game.hpp>
 
+class board;
 class skin;
 
 class snygg : public ymse::game {
-	boost::shared_ptr<skin> active_skin;
+	boost::scoped_ptr<skin> active_skin;
+	boost::scoped_ptr<board> active_board;
 
 public:
 	snygg();
