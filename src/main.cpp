@@ -1,16 +1,31 @@
 #include <iostream>
+#include <typeinfo>
+#include <ymse/gl_box_reshaper.hpp>
 #include <ymse/glut_core.hpp>
+#include "snygg.hpp"
 
-int main(int argc, const char ** argv)
+int main(int argc, const char *argv[])
 try {
-	ymse::glut_core core;
+	ymse::glut_core c;
+	c.init(argc, argv);
 
-	core.init(argc, argv);
+	ymse::gl_box_reshaper r;
+	r.set_box(-1.05, -1.05, 1.05, 1.05);
+	c.set_reshaper_object(&r);
 
-	return 0;
+	snygg g;
+	c.set_game_object(&g);
+
+	return c.run();
 }
-catch(...) {
-	std::cerr << "Unknown error. Terminating" << std::endl;
+catch (const std::exception& e) {
+	std::cerr <<
+		"Fatal error: " << e.what() << "\n"
+		"Typeid: " << typeid(e).name() << std::endl;
 	return -1;
 }
+catch (...) {
+	std::cerr << "Unknown fatal error" << std::endl;
+	return -1;
+}; //< ; is a workaround for MSVC
 
