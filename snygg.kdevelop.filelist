@@ -1,0 +1,19 @@
+# KDevelop Custom Project File List
+CMakeLists.txt
+src
+src/CMakeLists.txt
+src/arc.cpp
+src/arc.hpp
+src/line.cpp
+src/line.hpp
+src/main.cpp
+src/plain_skin.cpp
+src/plain_skin.hpp
+src/renderable.cpp
+src/renderable.hpp
+src/segment.cpp
+src/segment.hpp
+src/skin.cpp
+src/skin.hpp
+src/snygg.cpp
+src/snygg.hpp
