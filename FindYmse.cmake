@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 2.6)
 
 find_path(YMSE_PATH ymse/core.hpp $ENV{YMSE_PATH})
-find_library(YMSE_LIBRARY NAMES ymse PATH $ENV{YMSE_PATH}/src)
+find_library(YMSE_LIBRARY ymse $ENV{YMSE_PATH}/src)
 
 if (YMSE_PATH AND YMSE_LIBRARY)
 	if (NOT Ymse_FIND_QUIETLY)
