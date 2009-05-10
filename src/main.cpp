@@ -16,6 +16,8 @@ try {
 	snygg g;
 	c.set_game_object(&g);
 
+	c.set_keyboard_handler(g.get_keyboard_handler());
+
 	return c.run();
 }
 catch (const std::exception& e) {

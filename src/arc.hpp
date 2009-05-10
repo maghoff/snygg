@@ -16,6 +16,12 @@ public:
 		float begin, float end,
 		float direction
 	);
+	arc(
+		ymse::vec2f pos,
+		float r,
+		float begin, float end,
+		float direction
+	);
 	~arc();
 
 	void head_forward(float);

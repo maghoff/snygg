@@ -43,6 +43,7 @@ float line::tail_forward(float l) {
 		p += d;
 		x = p[0];
 		y = p[1];
+		return -7.f;
 	} else {
 		return l - length;
 	}

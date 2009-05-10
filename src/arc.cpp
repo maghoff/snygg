@@ -20,6 +20,20 @@ arc::arc(
 {
 }
 
+arc::arc(
+	vec2f pos,
+	float r_,
+	float begin_, float end_,
+	float direction_
+) :
+	x(pos[0]), y(pos[1]),
+	r(r_),
+	begin(begin_), end(end_),
+	direction(direction_),
+	thickness(2.5)
+{
+}
+
 arc::~arc() {
 }
 
@@ -32,7 +46,7 @@ float arc::tail_forward(float length) {
 
 	if (length < current_length) {
 		begin += direction * length / r;
-		return 0;
+		return -7.f;
 	} else {
 		return length - current_length;
 	}

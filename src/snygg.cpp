@@ -1,5 +1,8 @@
 #include <cmath>
 #include <GL/gl.h>
+#include <ymse/bindable_keyboard_handler.hpp>
+#include <ymse/opposite_keys.hpp>
+#include <ymse/keycodes.hpp>
 #include "board.hpp"
 #include "plain_skin.hpp"
 #include "snake.hpp"
@@ -25,6 +28,10 @@ snygg::snygg() {
 	active_board.reset(new board);
 
 	player.reset(new snake);
+
+	kbd.reset(new ymse::bindable_keyboard_handler);
+
+	dir.reset(new ymse::opposite_keys(*kbd, ymse::KEY_RIGHT, ymse::KEY_LEFT));
 }
 
 snygg::~snygg() {
@@ -42,5 +49,11 @@ void snygg::render() {
 }
 
 void snygg::tick() {
-	
+	player->set_turn(dir->val());
+	player->forward(0.5);
 }
+
+ymse::keyboard_handler* snygg::get_keyboard_handler() {
+	return &*kbd;
+}
+
