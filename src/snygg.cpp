@@ -8,7 +8,20 @@
 #include "snake.hpp"
 #include "snygg.hpp"
 
-snygg::snygg() {
+
+struct snygg::impl {
+	boost::scoped_ptr<skin> active_skin;
+	boost::scoped_ptr<board> active_board;
+	boost::scoped_ptr<snake> player;
+
+	boost::scoped_ptr<ymse::bindable_keyboard_handler> kbd;
+	boost::scoped_ptr<ymse::opposite_keys> dir;
+};
+
+
+snygg::snygg() :
+	d(new impl)
+{
 	glClearColor(0.0, 0.0, 0.0, 0.0);
 	glClearDepth(1.0);
 
@@ -23,15 +36,15 @@ snygg::snygg() {
 	glEnable(GL_LINE_SMOOTH);
 	glEnable(GL_POLYGON_SMOOTH);
 
-	active_skin.reset(new plain_skin);
+	d->active_skin.reset(new plain_skin);
 
-	active_board.reset(new board);
+	d->active_board.reset(new board);
 
-	player.reset(new snake);
+	d->player.reset(new snake);
 
-	kbd.reset(new ymse::bindable_keyboard_handler);
+	d->kbd.reset(new ymse::bindable_keyboard_handler);
 
-	dir.reset(new ymse::opposite_keys(*kbd, ymse::KEY_RIGHT, ymse::KEY_LEFT));
+	d->dir.reset(new ymse::opposite_keys(*d->kbd, ymse::KEY_RIGHT, ymse::KEY_LEFT));
 }
 
 snygg::~snygg() {
@@ -43,17 +56,17 @@ void snygg::render() {
 
 	glColor4f(1.0, 1.0, 1.0, 1.0);
 
-	active_board->render(*active_skin);
+	d->active_board->render(*d->active_skin);
 
-	player->render(*active_skin);
+	d->player->render(*d->active_skin);
 }
 
 void snygg::tick() {
-	player->set_turn(dir->val());
-	player->forward(0.5);
+	d->player->set_turn(d->dir->val());
+	d->player->forward(0.5);
 }
 
 ymse::keyboard_handler* snygg::get_keyboard_handler() {
-	return &*kbd;
+	return &*d->kbd;
 }
 

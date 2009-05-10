@@ -1,16 +1,13 @@
 #ifndef SNYGG_SNAKE_HPP
 #define SNYGG_SNAKE_HPP
 
-#include <boost/ptr_container/ptr_list.hpp>
+#include <boost/scoped_ptr.hpp>
 #include <boost/noncopyable.hpp>
 #include "renderable.hpp"
 
-class segment;
-class skin;
-
 class snake : public boost::noncopyable, public renderable {
-	boost::ptr_list<segment> body;
-	int dir;
+	struct impl;
+	boost::scoped_ptr<impl> d;
 
 	ymse::vec2f get_head_pos() const;
 	ymse::vec2f get_tail_pos() const;

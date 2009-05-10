@@ -1,7 +1,14 @@
 #include <cmath>
+#include <boost/ptr_container/ptr_vector.hpp>
 #include "arc.hpp"
 #include "line.hpp"
 #include "board.hpp"
+
+
+struct board::impl {
+	boost::ptr_vector<segment> b;
+};
+
 
 namespace {
 
@@ -22,14 +29,15 @@ void box(boost::ptr_vector<segment>& b, float x1, float y1, float w, float h, fl
 
 
 board::board() :
-	b(8)
+	d(new impl)
 {
-	box(b, -200, -50, 400, 100, 10);
+	d->b.reserve(8);
+	box(d->b, -200, -50, 400, 100, 10);
 }
 
 board::~board() {
 }
 
 void board::render(skin& s) const {
-	render_sequence(b, s);
+	render_sequence(d->b, s);
 }

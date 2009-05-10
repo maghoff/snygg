@@ -1,13 +1,12 @@
 #ifndef SNYGG_BOARD_HPP
 #define SNYGG_BOARD_HPP
 
-#include <boost/ptr_container/ptr_vector.hpp>
+#include <boost/scoped_ptr.hpp>
 #include "renderable.hpp"
 
-class segment;
-
 class board : public renderable {
-	boost::ptr_vector<segment> b;
+	struct impl;
+	boost::scoped_ptr<impl> d;
 
 public:
 	board();
