@@ -15,5 +15,5 @@ target_link_libraries(
 	snygg
 	GL
 	glut
-	ymse
+	${YMSE_LIBRARY}
 )
