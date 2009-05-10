@@ -13,7 +13,8 @@ src/plain_skin.cpp
 src/plain_skin.hpp
 src/renderable.cpp
 src/renderable.hpp
-src/segment.cpp
+src/scored_point.cpp
+src/scored_point.hpp
 src/segment.hpp
 src/skin.cpp
 src/skin.hpp
