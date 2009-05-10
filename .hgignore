@@ -6,3 +6,5 @@ CMakeCache.txt
 Makefile
 src/snygg
 Doxyfile
+snygg.kdevelop.pcs
+snygg.kdevses
