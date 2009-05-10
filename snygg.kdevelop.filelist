@@ -4,6 +4,8 @@ src
 src/CMakeLists.txt
 src/arc.cpp
 src/arc.hpp
+src/blood_pool.cpp
+src/blood_pool.hpp
 src/board.cpp
 src/board.hpp
 src/line.cpp

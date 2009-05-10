@@ -1,6 +1,7 @@
 add_executable(
 	snygg
 	arc.cpp
+	blood_pool.cpp
 	board.cpp
 	line.cpp
 	main.cpp
