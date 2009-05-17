@@ -3,9 +3,9 @@
 
 #include <boost/scoped_ptr.hpp>
 #include <boost/noncopyable.hpp>
-#include "segment.hpp"
+#include "renderable.hpp"
 
-class snake : public boost::noncopyable, public segment {
+class snake : public boost::noncopyable, public renderable {
 	struct impl;
 	boost::scoped_ptr<impl> d;
 
@@ -18,15 +18,6 @@ public:
 	void forward(float length);
 
 	void render(skin&) const;
-
-	void head_forward(float);
-	float tail_forward(float);
-
-	bool intersect_with_circle(float x, float y, float r) const;
-
-	ymse::vec2f get_head_pos() const;
-	ymse::vec2f get_tail_pos() const;
-	ymse::vec2f get_head_direction() const;
 };
 
 #endif

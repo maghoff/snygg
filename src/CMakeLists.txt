@@ -8,6 +8,7 @@ add_executable(
 	plain_skin.cpp
 	renderable.cpp
 	scored_point.cpp
+	segment_sequence.cpp
 	skin.cpp
 	snake.cpp
 	snygg.cpp
