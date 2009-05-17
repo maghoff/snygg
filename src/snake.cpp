@@ -38,6 +38,10 @@ vec2f snake::get_tail_pos() const {
 	return d->body.front().get_tail_pos();
 }
 
+vec2f snake::get_head_direction() const {
+	return d->body.back().get_head_direction();
+}
+
 void snake::set_turn(int dir_) {
 	if (d->dir == dir_) return;
 	d->dir = dir_;
@@ -65,14 +69,22 @@ void snake::set_turn(int dir_) {
 	d->body.push_back(new arc(center, radius, begin_angle, begin_angle, d->dir));
 }
 
-void snake::forward(float length) {
+void snake::head_forward(float length) {
 	d->body.back().head_forward(length);
+}
 
-	while (true) {
+float snake::tail_forward(float length) {
+	while (!d->body.empty()) {
 		length = d->body.front().tail_forward(length);
 		if (length < 0.f) break;
 		d->body.pop_front();
 	}
+	return length;
+}
+
+void snake::forward(float length) {
+	head_forward(length);
+	tail_forward(length);
 }
 
 void snake::render(skin& s) const {
@@ -83,3 +95,13 @@ void snake::render(skin& s) const {
 	render_sequence(d->body, s);
 	s.circle(tail, 2.5f);
 }
+
+bool snake::intersect_with_circle(float x, float y, float r) const {
+	typedef boost::ptr_list<segment>::iterator iter;
+	iter end = d->body.end();
+	for (iter i = d->body.begin(); i !=  end; ++i) {
+		if (i->intersect_with_circle(x, y, r)) return true;
+	}
+	return false;
+}
+
