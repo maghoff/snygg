@@ -1,27 +1,19 @@
 #include <cmath>
+#include <vector>
 #include <GL/gl.h>
-#include <boost/ptr_container/ptr_set.hpp>
+#include <boost/ptr_container/ptr_vector.hpp>
 #include <ymse/bindable_keyboard_handler.hpp>
-#include <ymse/opposite_keys.hpp>
-#include <ymse/keycodes.hpp>
 #include "board.hpp"
 #include "plain_skin.hpp"
-#include "snake.hpp"
+#include "player.hpp"
 #include "snygg.hpp"
-
-
-template <class Key>
-class ptr_set_ptrid : public boost::ptr_set_adapter<Key, std::set<void*> > {
-};
 
 
 struct snygg::impl {
 	boost::scoped_ptr<skin> active_skin;
 	boost::scoped_ptr<board> active_board;
-	ptr_set_ptrid<snake> players;
-
+	boost::ptr_vector<player> players;
 	boost::scoped_ptr<ymse::bindable_keyboard_handler> kbd;
-	boost::scoped_ptr<ymse::opposite_keys> dir;
 };
 
 
@@ -46,11 +38,9 @@ snygg::snygg() :
 
 	d->active_board.reset(new board);
 
-	d->players.insert(new snake);
-
 	d->kbd.reset(new ymse::bindable_keyboard_handler);
 
-	d->dir.reset(new ymse::opposite_keys(*d->kbd, ymse::KEY_RIGHT, ymse::KEY_LEFT));
+	d->players.push_back(new player(*d->kbd));
 }
 
 snygg::~snygg() {
@@ -64,26 +54,35 @@ void snygg::render() {
 
 	d->active_board->render(*d->active_skin);
 
-	typedef ptr_set_ptrid<snake>::const_iterator iter;
+	typedef boost::ptr_vector<player>::const_iterator iter;
 	iter end = d->players.end();
 	for (iter i = d->players.begin(); i != end; ++i) {
-		if (i->crashes_with(*d->active_board)) glColor4f(1.0, 0.0, 0.0, 1.0);
-		else glColor4f(1.0, 1.0, 1.0, 1.0);
 		i->render(*d->active_skin);
 	}
 }
 
 void snygg::tick() {
-	d->players.begin()->set_turn(d->dir->val());
-
-	typedef ptr_set_ptrid<snake>::iterator iter;
+	typedef boost::ptr_vector<player>::iterator iter;
 	iter end = d->players.end();
 	for (iter i = d->players.begin(); i != end; ++i) {
-		i->forward(0.5);
+		i->move();
+	}
+
+	typedef std::vector<player*> dead_players_c;
+	dead_players_c dead_players;
+	for (iter i = d->players.begin(); i != end; ++i) {
+		if (i->crashes_with(*d->active_board)) {
+			dead_players.push_back(&*i);
+		}
+	}
+
+	typedef std::vector<player*>::iterator iter_d;
+	iter_d end_d = dead_players.end();
+	for (iter_d i = dead_players.begin(); i != end_d; ++i) {
+		(*i)->die();
 	}
 }
 
 ymse::keyboard_handler* snygg::get_keyboard_handler() {
 	return &*d->kbd;
 }
-

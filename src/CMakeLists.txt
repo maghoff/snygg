@@ -7,6 +7,7 @@ add_executable(
 	line.cpp
 	main.cpp
 	plain_skin.cpp
+	player.cpp
 	renderable.cpp
 	scored_point.cpp
 	segment_sequence.cpp
