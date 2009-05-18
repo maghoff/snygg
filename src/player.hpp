@@ -15,6 +15,7 @@ class player : public boost::noncopyable, public renderable {
 	class impl;
 	boost::scoped_ptr<impl> d;
 
+	void spawn(bool);
 public:
 	player(ymse::bindable_keyboard_handler&);
 	virtual ~player();

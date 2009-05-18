@@ -1,3 +1,4 @@
+#include <boost/bind.hpp>
 #include <ymse/bindable_keyboard_handler.hpp>
 #include <ymse/keycodes.hpp>
 #include <ymse/opposite_keys.hpp>
@@ -15,10 +16,15 @@ player::player(ymse::bindable_keyboard_handler& kbd) :
 {
 	d->speed = 0.5f;
 	d->dir.reset(new ymse::opposite_keys(kbd, ymse::KEY_RIGHT, ymse::KEY_LEFT));
-	d->s.reset(new snake);
+	kbd.bind(ymse::KEY_SPACE, boost::bind(&player::spawn, this, _1));
+	spawn(true);
 }
 
 player::~player() {
+}
+
+void player::spawn(bool do_spawn) {
+	if (do_spawn && !d->s) d->s.reset(new snake);
 }
 
 void player::render(skin& sk) const {
