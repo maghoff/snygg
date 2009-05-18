@@ -67,15 +67,18 @@ void snygg::render() {
 	typedef ptr_set_ptrid<snake>::const_iterator iter;
 	iter end = d->players.end();
 	for (iter i = d->players.begin(); i != end; ++i) {
+		if (i->crashes_with(*d->active_board)) glColor4f(1.0, 0.0, 0.0, 1.0);
+		else glColor4f(1.0, 1.0, 1.0, 1.0);
 		i->render(*d->active_skin);
 	}
 }
 
 void snygg::tick() {
+	d->players.begin()->set_turn(d->dir->val());
+
 	typedef ptr_set_ptrid<snake>::iterator iter;
 	iter end = d->players.end();
 	for (iter i = d->players.begin(); i != end; ++i) {
-		i->set_turn(d->dir->val());
 		i->forward(0.5);
 	}
 }

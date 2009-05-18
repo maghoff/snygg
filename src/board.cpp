@@ -41,3 +41,12 @@ board::~board() {
 void board::render(skin& s) const {
 	render_sequence(d->b, s);
 }
+
+bool board::intersect_with_circle(float x, float y, float r) const {
+	typedef boost::ptr_vector<segment>::const_iterator iter;
+	iter end = d->b.end();
+	for (iter i = d->b.begin(); i != end; ++i) {
+		if (i->intersect_with_circle(x, y, r)) return true;
+	}
+	return false;
+}

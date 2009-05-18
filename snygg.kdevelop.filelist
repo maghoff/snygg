@@ -8,6 +8,8 @@ src/blood_pool.cpp
 src/blood_pool.hpp
 src/board.cpp
 src/board.hpp
+src/intersectable_with_circle.cpp
+src/intersectable_with_circle.hpp
 src/line.cpp
 src/line.hpp
 src/main.cpp
@@ -18,6 +20,8 @@ src/renderable.hpp
 src/scored_point.cpp
 src/scored_point.hpp
 src/segment.hpp
+src/segment_sequence.cpp
+src/segment_sequence.hpp
 src/skin.cpp
 src/skin.hpp
 src/snake.cpp

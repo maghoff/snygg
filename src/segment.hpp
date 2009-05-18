@@ -1,6 +1,7 @@
 #ifndef SNYGG_SEGMENT_HPP
 #define SNYGG_SEGMENT_HPP
 
+#include "intersectable_with_circle.hpp"
 #include "renderable.hpp"
 
 namespace ymse {
@@ -12,7 +13,7 @@ namespace ymse {
 
 class skin;
 
-class segment : public renderable {
+class segment : public renderable, public intersectable_with_circle {
 public:
 	virtual void head_forward(float) = 0;
 	virtual float tail_forward(float) = 0;

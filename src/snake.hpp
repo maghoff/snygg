@@ -18,6 +18,8 @@ public:
 	void forward(float length);
 
 	void render(skin&) const;
+
+	bool crashes_with(intersectable_with_circle&) const;
 };
 
 #endif

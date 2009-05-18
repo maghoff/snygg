@@ -3,6 +3,7 @@ add_executable(
 	arc.cpp
 	blood_pool.cpp
 	board.cpp
+	intersectable_with_circle.cpp
 	line.cpp
 	main.cpp
 	plain_skin.cpp
