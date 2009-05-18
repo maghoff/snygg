@@ -1,5 +1,6 @@
 #include <cmath>
 #include <GL/gl.h>
+#include <boost/ptr_container/ptr_set.hpp>
 #include <ymse/bindable_keyboard_handler.hpp>
 #include <ymse/opposite_keys.hpp>
 #include <ymse/keycodes.hpp>
@@ -9,10 +10,15 @@
 #include "snygg.hpp"
 
 
+template <class Key>
+class ptr_set_ptrid : public boost::ptr_set_adapter<Key, std::set<void*> > {
+};
+
+
 struct snygg::impl {
 	boost::scoped_ptr<skin> active_skin;
 	boost::scoped_ptr<board> active_board;
-	boost::scoped_ptr<snake> player;
+	ptr_set_ptrid<snake> players;
 
 	boost::scoped_ptr<ymse::bindable_keyboard_handler> kbd;
 	boost::scoped_ptr<ymse::opposite_keys> dir;
@@ -40,7 +46,7 @@ snygg::snygg() :
 
 	d->active_board.reset(new board);
 
-	d->player.reset(new snake);
+	d->players.insert(new snake);
 
 	d->kbd.reset(new ymse::bindable_keyboard_handler);
 
@@ -58,12 +64,20 @@ void snygg::render() {
 
 	d->active_board->render(*d->active_skin);
 
-	d->player->render(*d->active_skin);
+	typedef ptr_set_ptrid<snake>::const_iterator iter;
+	iter end = d->players.end();
+	for (iter i = d->players.begin(); i != end; ++i) {
+		i->render(*d->active_skin);
+	}
 }
 
 void snygg::tick() {
-	d->player->set_turn(d->dir->val());
-	d->player->forward(0.5);
+	typedef ptr_set_ptrid<snake>::iterator iter;
+	iter end = d->players.end();
+	for (iter i = d->players.begin(); i != end; ++i) {
+		i->set_turn(d->dir->val());
+		i->forward(0.5);
+	}
 }
 
 ymse::keyboard_handler* snygg::get_keyboard_handler() {
