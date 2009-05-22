@@ -1,24 +1,25 @@
 #include <iostream>
 #include <typeinfo>
 #include <ymse/gl_box_reshaper.hpp>
-#include <ymse/glut_core.hpp>
+#include <ymse/core.hpp>
+#include <ymse/core_factory.hpp>
 #include "snygg.hpp"
 
 int main(int argc, const char *argv[])
 try {
-	ymse::glut_core c;
-	c.init(argc, argv);
+	std::auto_ptr<ymse::core> c(ymse::core_factory());
+	c->init(argc, argv);
 
 	ymse::gl_box_reshaper r;
 	r.set_box(-220, -70, 220, 70);
-	c.set_reshaper_object(&r);
+	c->set_reshaper_object(&r);
 
 	snygg g;
-	c.set_game_object(&g);
+	c->set_game_object(&g);
 
-	c.set_keyboard_handler(g.get_keyboard_handler());
+	c->set_keyboard_handler(g.get_keyboard_handler());
 
-	return c.run();
+	return c->run();
 }
 catch (const std::exception& e) {
 	std::cerr <<

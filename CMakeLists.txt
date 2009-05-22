@@ -3,6 +3,7 @@ project(SNYGG)
 
 set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}")
 find_package(Ymse REQUIRED)
+find_package(SDL REQUIRED)
 
-include_directories(${YMSE_PATH})
+include_directories(${YMSE_PATH} ${SDL_INCLUDE_DIR})
 add_subdirectory(src)
