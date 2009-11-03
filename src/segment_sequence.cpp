@@ -67,8 +67,6 @@ void segment_sequence::render(skin& s) const {
 	render_sequence(d->body, s);
 }
 
-void segment_sequence::push_back(segment *s) {
+void segment_sequence::push_back(std::auto_ptr<segment> s) {
 	d->body.push_back(s);
 }
-
-
