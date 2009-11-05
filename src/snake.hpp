@@ -13,6 +13,8 @@ public:
 	snake();
 	~snake();
 
+	void score(float amount);
+
 	// 1, 0, -1: left, forward, right
 	void set_turn(int dir);
 	void forward(float length);

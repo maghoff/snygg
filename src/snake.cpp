@@ -2,6 +2,7 @@
 #include <ymse/vec.hpp>
 #include "arc.hpp"
 #include "line.hpp"
+#include "scored_point.hpp"
 #include "segment_sequence.hpp"
 #include "skin.hpp"
 #include "snake.hpp"
@@ -26,6 +27,19 @@ snake::snake() :
 }
 
 snake::~snake() {
+}
+
+void snake::score(float amount) {
+	vec2f pos = d->body.get_head_pos();
+	vec2f v_dir = d->body.get_head_direction();
+
+	const float min_r = 2.5;
+	float r = sqrt(min_r * min_r + amount);
+
+	d->body.push_back(new scored_point(pos, r, min_r, v_dir));
+	int old_dir = d->dir;
+	d->dir = -100; //< invalid value
+	set_turn(old_dir);
 }
 
 void snake::set_turn(int dir_) {

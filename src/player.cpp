@@ -17,6 +17,7 @@ player::player(ymse::bindable_keyboard_handler& kbd) :
 	d->speed = 0.5f;
 	d->dir.reset(new ymse::opposite_keys(kbd, ymse::KEY_RIGHT, ymse::KEY_LEFT));
 	kbd.bind(ymse::KEY_SPACE, boost::bind(&player::spawn, this, _1));
+	kbd.bind(ymse::KEY_Z, boost::bind(&player::score, this, _1));
 	spawn(true);
 }
 
@@ -25,6 +26,10 @@ player::~player() {
 
 void player::spawn(bool do_spawn) {
 	if (do_spawn && !d->s) d->s.reset(new snake);
+}
+
+void player::score(bool do_score) {
+	if (do_score) d->s->score(25-2.5*2.5);
 }
 
 void player::render(skin& sk) const {
