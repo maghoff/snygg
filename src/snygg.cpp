@@ -1,9 +1,11 @@
 #include <cmath>
 #include <vector>
 #include <GL/gl.h>
+#include <boost/ptr_container/ptr_list.hpp>
 #include <boost/ptr_container/ptr_vector.hpp>
 #include <ymse/bindable_keyboard_handler.hpp>
 #include "board.hpp"
+#include "item.hpp"
 #include "plain_skin.hpp"
 #include "player.hpp"
 #include "snygg.hpp"
@@ -12,6 +14,7 @@
 struct snygg::impl {
 	boost::scoped_ptr<skin> active_skin;
 	boost::scoped_ptr<board> active_board;
+	boost::ptr_list<item> items;
 	boost::ptr_vector<player> players;
 	boost::scoped_ptr<ymse::bindable_keyboard_handler> kbd;
 };
@@ -62,27 +65,41 @@ void snygg::render() {
 }
 
 void snygg::tick() {
-	typedef boost::ptr_vector<player>::iterator iter;
-	iter end = d->players.end();
-	for (iter i = d->players.begin(); i != end; ++i) {
+	typedef boost::ptr_vector<player>::iterator piter;
+	typedef boost::ptr_list<item>::iterator iiter;
+	typedef std::vector<player*> dead_players_c;
+	typedef std::vector<player*>::iterator iter_d;
+
+	const piter pend = d->players.end();
+	const iiter iend = d->items.end();
+
+	for (piter i = d->players.begin(); i != pend; ++i) {
 		i->move();
 	}
 
-	typedef std::vector<player*> dead_players_c;
 	dead_players_c dead_players;
-	for (iter i = d->players.begin(); i != end; ++i) {
+	for (piter i = d->players.begin(); i != pend; ++i) {
+		for (iiter j = d->items.begin(); j != iend; ++j) {
+			if (!j->is_dead()) j->hit_by(*i);
+		}
 		if (i->crashes_with(*d->active_board)) {
 			dead_players.push_back(&*i);
 		}
 	}
 
-	typedef std::vector<player*>::iterator iter_d;
 	iter_d end_d = dead_players.end();
 	for (iter_d i = dead_players.begin(); i != end_d; ++i) {
 		(*i)->die();
+	}
+
+	for (iiter i = d->items.begin(), j; i != iend; i = j) {
+		j = i;
+		++j;
+		if (i->is_dead()) d->items.erase(i);
 	}
 }
 
 ymse::keyboard_handler* snygg::get_keyboard_handler() {
 	return &*d->kbd;
 }
+

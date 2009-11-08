@@ -4,6 +4,7 @@ add_executable(
 	blood_pool.cpp
 	board.cpp
 	intersectable_with_circle.cpp
+	item.cpp
 	line.cpp
 	main.cpp
 	plain_skin.cpp
