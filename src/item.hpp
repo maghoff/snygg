@@ -14,7 +14,7 @@ public:
 	~item();
 
 	virtual void hit_by(player&) = 0;
-	virtual bool is_dead() = 0;
+	virtual bool is_dead() const = 0;
 };
 
 #endif

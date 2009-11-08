@@ -5,6 +5,7 @@ add_executable(
 	board.cpp
 	intersectable_with_circle.cpp
 	item.cpp
+	item_with_life.cpp
 	line.cpp
 	main.cpp
 	plain_skin.cpp
