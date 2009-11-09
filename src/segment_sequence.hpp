@@ -1,9 +1,12 @@
 #ifndef SNYGG_SEGMENT_SEQUENCE_HPP
 #define SNYGG_SEGMENT_SEQUENCE_HPP
 
+#include <memory>
 #include <boost/scoped_ptr.hpp>
 #include <boost/noncopyable.hpp>
 #include "segment.hpp"
+
+typedef std::auto_ptr<segment> segment_ptr;
 
 class segment_sequence : public boost::noncopyable, public segment {
 	struct impl;
@@ -24,8 +27,8 @@ public:
 
 	void render(skin&) const;
 
-	void push_back(segment *);
+	// This segment_sequence assumes ownership
+	void push_back(std::auto_ptr<segment>);
 };
 
 #endif
-

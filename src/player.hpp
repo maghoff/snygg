@@ -12,7 +12,7 @@ namespace ymse {
 class intersectable_with_circle;
 
 class player : public boost::noncopyable, public renderable {
-	class impl;
+	struct impl;
 	boost::scoped_ptr<impl> d;
 
 	void spawn(bool);

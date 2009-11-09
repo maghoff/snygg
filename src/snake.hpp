@@ -5,6 +5,8 @@
 #include <boost/noncopyable.hpp>
 #include "renderable.hpp"
 
+class intersectable_with_circle;
+
 class snake : public boost::noncopyable, public renderable {
 	struct impl;
 	boost::scoped_ptr<impl> d;
@@ -22,6 +24,9 @@ public:
 	void render(skin&) const;
 
 	bool crashes_with(intersectable_with_circle&) const;
+
+	// Start "moving" into a blood pool
+	void crack_head();
 };
 
 #endif

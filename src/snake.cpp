@@ -1,6 +1,7 @@
 #include <cmath>
 #include <ymse/vec.hpp>
 #include "arc.hpp"
+#include "blood_pool.hpp"
 #include "line.hpp"
 #include "scored_point.hpp"
 #include "segment_sequence.hpp"
@@ -23,7 +24,7 @@ snake::snake() :
 	d->dir = 0;
 
 	vec2f pos(0, -40), dir(0, 1);
-	d->body.push_back(new line(pos, dir, 20.f));
+	d->body.push_back(segment_ptr(new line(pos, dir, 20.f)));
 }
 
 snake::~snake() {
@@ -36,7 +37,7 @@ void snake::score(float amount) {
 	const float min_r = 2.5;
 	float r = sqrt(min_r * min_r + amount);
 
-	d->body.push_back(new scored_point(pos, r, min_r, v_dir));
+	d->body.push_back(segment_ptr(new scored_point(pos, r, min_r, v_dir)));
 	int old_dir = d->dir;
 	d->dir = -100; //< invalid value
 	set_turn(old_dir);
@@ -50,7 +51,7 @@ void snake::set_turn(int dir_) {
 	vec2f v_dir = d->body.get_head_direction();
 
 	if (d->dir == 0) {
-		d->body.push_back(new line(pos, v_dir, 0));
+		d->body.push_back(segment_ptr(new line(pos, v_dir, 0)));
 		return;
 	}
 
@@ -65,7 +66,7 @@ void snake::set_turn(int dir_) {
 	begin_point -= center;
 	float begin_angle = atan2(begin_point[1], begin_point[0]);
 
-	d->body.push_back(new arc(center, radius, begin_angle, begin_angle, d->dir));
+	d->body.push_back(segment_ptr(new arc(center, radius, begin_angle, begin_angle, d->dir)));
 }
 
 void snake::forward(float length) {
@@ -85,4 +86,8 @@ void snake::render(skin& s) const {
 bool snake::crashes_with(intersectable_with_circle& object) const {
 	vec2f head(d->body.get_head_pos());
 	return object.intersect_with_circle(head[0], head[1], 2.5f);
+}
+
+void snake::crack_head() {
+	d->body.push_back(segment_ptr(new blood_pool(d->body.get_head_pos(), 2.5f)));
 }
