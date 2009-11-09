@@ -5,6 +5,7 @@
 #include <boost/ptr_container/ptr_vector.hpp>
 #include <ymse/bindable_keyboard_handler.hpp>
 #include "board.hpp"
+#include "food_item.hpp"
 #include "item.hpp"
 #include "plain_skin.hpp"
 #include "player.hpp"
@@ -44,6 +45,12 @@ snygg::snygg() :
 	d->kbd.reset(new ymse::bindable_keyboard_handler);
 
 	d->players.push_back(new player(*d->kbd));
+
+	for (int i=0; i<10; ++i) {
+		d->items.push_back(std::auto_ptr<item>(
+			new food_item(20*(i-5), 30, 5)
+		));
+	}
 }
 
 snygg::~snygg() {
@@ -57,9 +64,16 @@ void snygg::render() {
 
 	d->active_board->render(*d->active_skin);
 
-	typedef boost::ptr_vector<player>::const_iterator iter;
-	iter end = d->players.end();
-	for (iter i = d->players.begin(); i != end; ++i) {
+	typedef boost::ptr_vector<player>::iterator piter;
+	typedef boost::ptr_list<item>::iterator iiter;
+
+	iiter iend = d->items.end();
+	for (iiter i = d->items.begin(); i != iend; ++i) {
+		i->render(*d->active_skin);
+	}
+
+	piter pend = d->players.end();
+	for (piter i = d->players.begin(); i != pend; ++i) {
 		i->render(*d->active_skin);
 	}
 }
@@ -80,7 +94,7 @@ void snygg::tick() {
 	dead_players_c dead_players;
 	for (piter i = d->players.begin(); i != pend; ++i) {
 		for (iiter j = d->items.begin(); j != iend; ++j) {
-			if (!j->is_dead()) j->hit_by(*i);
+			if (!j->is_dead() && i->crashes_with(*j)) j->hit_by(*i);
 		}
 		if (i->crashes_with(*d->active_board)) {
 			dead_players.push_back(&*i);

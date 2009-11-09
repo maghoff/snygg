@@ -16,7 +16,7 @@ class player : public boost::noncopyable, public renderable {
 	boost::scoped_ptr<impl> d;
 
 	void spawn(bool);
-	void score(bool);
+
 public:
 	player(ymse::bindable_keyboard_handler&);
 	virtual ~player();
@@ -26,6 +26,7 @@ public:
 	void move();
 	bool crashes_with(intersectable_with_circle&) const;
 	void die();
+	void score();
 };
 
 #endif
