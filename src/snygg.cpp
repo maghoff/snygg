@@ -49,7 +49,7 @@ snygg::snygg() :
 	d->fg.reset(new food_generator(*this, *d->active_board));
 	for (int i=0; i<10; ++i) d->fg->generate();
 
-	d->players.push_back(new player(*d->kbd));
+	d->players.push_back(new player(*d->kbd, *this));
 }
 
 snygg::~snygg() {
@@ -106,7 +106,7 @@ void snygg::tick() {
 
 	iter_d end_d = dead_players.end();
 	for (iter_d i = dead_players.begin(); i != end_d; ++i) {
-		d->items.push_back((*i)->die());
+		(*i)->die();
 	}
 
 	for (iiter i = d->items.begin(), j; i != iend; i = j) {

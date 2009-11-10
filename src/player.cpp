@@ -2,18 +2,22 @@
 #include <ymse/bindable_keyboard_handler.hpp>
 #include <ymse/keycodes.hpp>
 #include <ymse/opposite_keys.hpp>
+#include "item_container.hpp"
 #include "dead_player.hpp"
 #include "player.hpp"
 #include "snake.hpp"
 
 struct player::impl {
+	item_container& ic;
 	std::auto_ptr<snake> s;
 	float speed;
 	boost::scoped_ptr<ymse::opposite_keys> dir;
+
+	impl(item_container& ic_) : ic(ic_) { }
 };
 
-player::player(ymse::bindable_keyboard_handler& kbd) :
-	d(new impl)
+player::player(ymse::bindable_keyboard_handler& kbd, item_container& ic) :
+	d(new impl(ic))
 {
 	d->speed = 0.5f;
 	d->dir.reset(new ymse::opposite_keys(kbd, ymse::KEY_RIGHT, ymse::KEY_LEFT));
@@ -43,9 +47,9 @@ bool player::crashes_with(intersectable_with_circle& i) const {
 	return d->s.get() && d->s->crashes_with(i);
 }
 
-std::auto_ptr<dead_player> player::die() {
+void player::die() {
 	d->s->crack_head();
-	return std::auto_ptr<dead_player>(new dead_player(d->s));
+	d->ic.add_item(std::auto_ptr<item>(new dead_player(d->s)));
 }
 
 void player::score() {

@@ -12,6 +12,7 @@ namespace ymse {
 
 class dead_player;
 class intersectable_with_circle;
+class item_container;
 
 class player : public boost::noncopyable, public renderable {
 	struct impl;
@@ -20,14 +21,14 @@ class player : public boost::noncopyable, public renderable {
 	void spawn(bool);
 
 public:
-	player(ymse::bindable_keyboard_handler&);
+	player(ymse::bindable_keyboard_handler&, item_container&);
 	virtual ~player();
 
 	void render(skin&) const;
 
 	void move();
 	bool crashes_with(intersectable_with_circle&) const;
-	std::auto_ptr<dead_player> die();
+	void die();
 	void score();
 };
 
