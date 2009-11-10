@@ -3,6 +3,7 @@ add_executable(
 	arc.cpp
 	blood_pool.cpp
 	board.cpp
+	dead_player.cpp
 	food_item.cpp
 	intersectable_with_circle.cpp
 	item.cpp
@@ -28,10 +29,10 @@ target_link_libraries(
 )
 
 set_target_properties(
-    snygg
-    PROPERTIES
-    COMPILE_FLAGS "-ggdb -ffast-math -pipe -fvisibility-inlines-hidden -Wall"
-    COMPILE_DEFINITIONS "DEBUG;EBUG"
+	snygg
+	PROPERTIES
+	COMPILE_FLAGS "-ggdb -ffast-math -pipe -fvisibility-inlines-hidden -Wall"
+	COMPILE_DEFINITIONS "DEBUG;EBUG"
 #	COMPILE_FLAGS "-O3 -ffast-math -pipe -fvisibility-inlines-hidden"
 #	COMPILE_DEFINITIONS "NDEBUG;GL_GLEXT_PROTOTYPES"
 )

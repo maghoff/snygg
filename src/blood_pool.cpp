@@ -18,9 +18,9 @@ void blood_pool::head_forward(float length) {
 	r = sqrt(r*r + length);
 }
 
-float blood_pool::tail_forward(float) {
-	assert(false);
-	throw std::logic_error("blood_pool::tail_forward(...) called");
+float blood_pool::tail_forward(float length) {
+	r = sqrt(r*r - length);
+	return -1;
 }
 
 bool blood_pool::intersect_with_circle(float x, float y, float r) const {
