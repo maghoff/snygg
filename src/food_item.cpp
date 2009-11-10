@@ -3,8 +3,10 @@
 #include "skin.hpp"
 #include "food_item.hpp"
 
+using ymse::vec2f;
+
 struct food_item::impl {
-	ymse::vec2f p;
+	vec2f p;
 	float r;
 };
 
@@ -29,12 +31,11 @@ void food_item::render(skin& s) const {
 }
 
 bool food_item::intersect_with_circle(float x, float y, float r) const {
-	float dx = x - d->p[0];
-	float dy = y - d->p[1];
-	float sq_d = dx*dx + dy*dy;
+	vec2f dist(x, y);
+	dist -= d->p;
 
 	float total_r = r + d->r;
 	float sq_r = total_r * total_r;
 
-	return sq_d < sq_r;
+	return dist.square_length() < sq_r;
 }
