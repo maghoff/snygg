@@ -47,7 +47,7 @@ snygg::snygg() :
 	d->kbd.reset(new ymse::bindable_keyboard_handler);
 
 	d->fg.reset(new food_generator(*this, *d->active_board));
-	for (int i=0; i<10; ++i) d->fg->generate();
+	d->fg->generate();
 
 	d->players.push_back(new player(*d->kbd, *this));
 }

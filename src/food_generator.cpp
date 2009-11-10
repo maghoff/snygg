@@ -29,11 +29,13 @@ food_generator::~food_generator() {
 }
 
 void food_generator::generate() {
+	const float e1 = 7.5f, e2 = e1 * 2.f;
 	d->ic.add_item(std::auto_ptr<item>(
 		new food_item(
-			d->rand() * 400. - 200.,
-			d->rand() * 100. - 50.,
-			5.f
+			d->rand() * (400. - e2) - (200. - e1),
+			d->rand() * (100. - e2) - (50. - e1),
+			5.f,
+			*this
 		))
 	);
 }

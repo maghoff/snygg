@@ -1,17 +1,21 @@
 #include <ymse/vec.hpp>
 #include "player.hpp"
 #include "skin.hpp"
+#include "food_generator.hpp"
 #include "food_item.hpp"
 
 using ymse::vec2f;
 
 struct food_item::impl {
+	food_generator& fg;
 	vec2f p;
 	float r;
+
+	impl(food_generator& fg_) : fg(fg_) { }
 };
 
-food_item::food_item(float x, float y, float r) :
-	d(new impl)
+food_item::food_item(float x, float y, float r, food_generator& fg) :
+	d(new impl(fg))
 {
 	d->p[0] = x;
 	d->p[1] = y;
@@ -27,6 +31,7 @@ void food_item::move() {
 
 void food_item::hit_by(player& p) {
 	p.score();
+	d->fg.generate();
 	die();
 }
 
