@@ -6,7 +6,7 @@
 #include <ymse/bindable_keyboard_handler.hpp>
 #include "board.hpp"
 #include "dead_player.hpp"
-#include "food_item.hpp"
+#include "food_generator.hpp"
 #include "item.hpp"
 #include "plain_skin.hpp"
 #include "player.hpp"
@@ -19,6 +19,7 @@ struct snygg::impl {
 	boost::ptr_list<item> items;
 	boost::ptr_vector<player> players;
 	boost::scoped_ptr<ymse::bindable_keyboard_handler> kbd;
+	boost::scoped_ptr<food_generator> fg;
 };
 
 
@@ -45,13 +46,10 @@ snygg::snygg() :
 
 	d->kbd.reset(new ymse::bindable_keyboard_handler);
 
-	d->players.push_back(new player(*d->kbd));
+	d->fg.reset(new food_generator(*this, *d->active_board));
+	for (int i=0; i<10; ++i) d->fg->generate();
 
-	for (int i=0; i<10; ++i) {
-		d->items.push_back(std::auto_ptr<item>(
-			new food_item(20*(i-5), 30, 5)
-		));
-	}
+	d->players.push_back(new player(*d->kbd));
 }
 
 snygg::~snygg() {
@@ -122,3 +120,6 @@ ymse::keyboard_handler* snygg::get_keyboard_handler() {
 	return &*d->kbd;
 }
 
+void snygg::add_item(std::auto_ptr<item> i) {
+	d->items.push_back(i);
+}

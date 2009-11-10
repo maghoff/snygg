@@ -4,9 +4,11 @@ add_executable(
 	blood_pool.cpp
 	board.cpp
 	dead_player.cpp
+	food_generator.cpp
 	food_item.cpp
 	intersectable_with_circle.cpp
 	item.cpp
+	item_container.cpp
 	item_with_life.cpp
 	line.cpp
 	main.cpp
