@@ -21,6 +21,10 @@ food_item::food_item(float x, float y, float r) :
 food_item::~food_item() {
 }
 
+void food_item::move() {
+	// Stay still!
+}
+
 void food_item::hit_by(player& p) {
 	p.score();
 	die();

@@ -3,11 +3,10 @@
 
 #include <boost/scoped_ptr.hpp>
 #include <boost/noncopyable.hpp>
+#include "intersectable_with_circle.hpp"
 #include "renderable.hpp"
 
-class intersectable_with_circle;
-
-class snake : public boost::noncopyable, public renderable {
+class snake : public boost::noncopyable, public renderable, public intersectable_with_circle {
 	struct impl;
 	boost::scoped_ptr<impl> d;
 
@@ -25,8 +24,13 @@ public:
 
 	bool crashes_with(intersectable_with_circle&) const;
 
+	bool intersect_with_circle(float x, float y, float r) const;
+
 	// Start "moving" into a blood pool
 	void crack_head();
+
+	// To check if the blood pool is the only remaining segment
+	bool is_single_segment() const;
 };
 
 #endif

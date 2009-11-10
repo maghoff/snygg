@@ -12,6 +12,7 @@ public:
 	food_item(float x, float y, float r);
 	~food_item();
 
+	void move();
 	void hit_by(player&);
 	void render(skin&) const;
 	bool intersect_with_circle(float x, float y, float r) const;

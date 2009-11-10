@@ -1,3 +1,4 @@
+#include "player.hpp"
 #include "snake.hpp"
 #include "dead_player.hpp"
 
@@ -18,8 +19,17 @@ dead_player::~dead_player() {
 
 void dead_player::move() {
 	d->s->forward(d->speed);
+	if (d->s->is_single_segment()) die();
 }
 
 void dead_player::render(skin& sk) const {
 	d->s->render(sk);
+}
+
+void dead_player::hit_by(player& p) {
+	p.die();
+}
+
+bool dead_player::intersect_with_circle(float x, float y, float r) const {
+	return d->s->intersect_with_circle(x, y, r);
 }

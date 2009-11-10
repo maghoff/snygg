@@ -13,6 +13,7 @@ class item :
 public:
 	~item();
 
+	virtual void move() = 0;
 	virtual void hit_by(player&) = 0;
 	virtual bool is_dead() const = 0;
 };

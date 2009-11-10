@@ -18,7 +18,6 @@ struct snygg::impl {
 	boost::scoped_ptr<board> active_board;
 	boost::ptr_list<item> items;
 	boost::ptr_vector<player> players;
-	boost::ptr_list<dead_player> dead_player_bodies;
 	boost::scoped_ptr<ymse::bindable_keyboard_handler> kbd;
 };
 
@@ -66,17 +65,11 @@ void snygg::render() {
 
 	d->active_board->render(*d->active_skin);
 
-	typedef boost::ptr_list<dead_player>::iterator dpiter;
 	typedef boost::ptr_vector<player>::iterator piter;
 	typedef boost::ptr_list<item>::iterator iiter;
 
 	iiter iend = d->items.end();
 	for (iiter i = d->items.begin(); i != iend; ++i) {
-		i->render(*d->active_skin);
-	}
-
-	dpiter dpend = d->dead_player_bodies.end();
-	for (dpiter i = d->dead_player_bodies.begin(); i != dpend; ++i) {
 		i->render(*d->active_skin);
 	}
 
@@ -87,20 +80,18 @@ void snygg::render() {
 }
 
 void snygg::tick() {
-	typedef boost::ptr_list<dead_player>::iterator dpiter;
 	typedef boost::ptr_vector<player>::iterator piter;
 	typedef boost::ptr_list<item>::iterator iiter;
 	typedef std::vector<player*> dead_players_c;
 	typedef std::vector<player*>::iterator iter_d;
 
 	const iiter iend = d->items.end();
+	const piter pend = d->players.end();
 
-	const dpiter dpend = d->dead_player_bodies.end();
-	for (dpiter i = d->dead_player_bodies.begin(); i != dpend; ++i) {
-		i->move();
+	for (iiter i = d->items.begin(); i != iend; ++i) {
+		if (!i->is_dead()) i->move();
 	}
 
-	const piter pend = d->players.end();
 	for (piter i = d->players.begin(); i != pend; ++i) {
 		i->move();
 	}
@@ -117,7 +108,7 @@ void snygg::tick() {
 
 	iter_d end_d = dead_players.end();
 	for (iter_d i = dead_players.begin(); i != end_d; ++i) {
-		d->dead_player_bodies.push_back((*i)->die());
+		d->items.push_back((*i)->die());
 	}
 
 	for (iiter i = d->items.begin(), j; i != iend; i = j) {
