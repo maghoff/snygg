@@ -1,9 +1,10 @@
 #ifndef SNYGG_PLAIN_SKIN_HPP
 #define SNYGG_PLAIN_SKIN_HPP
 
+#include <ymse/pixels_per_unit_listener.hpp>
 #include "skin.hpp"
 
-class plain_skin : public skin {
+class plain_skin : public skin, public ymse::pixels_per_unit_listener {
 	float detail_modifier;
 
 public:

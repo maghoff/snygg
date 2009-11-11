@@ -12,6 +12,8 @@ plain_skin::plain_skin() :
 void plain_skin::circle(ymse::vec2f p, float r) {
 	float step_size = detail_modifier / r;
 
+	step_size = std::min<float>(step_size, M_PI * 2. / 8.); // At least 8 vertices
+
 	glBegin(GL_TRIANGLE_FAN);
 	for (float d = 0.f; d < M_PI * 2.f; d += step_size) {
 		glVertex2f(p[0] + r * cos(d), p[1] + r * sin(d));
@@ -21,8 +23,11 @@ void plain_skin::circle(ymse::vec2f p, float r) {
 
 void plain_skin::fat_arc(float x, float y, float r, float t, float begin, float end) {
 	float r1 = r-t, r2 = r+t;
-	float step_size = detail_modifier / r2;
 	if (begin > end) std::swap(begin, end);
+
+	float step_size = detail_modifier / r2;
+	step_size = std::min<float>(step_size, (end-begin) / 3.); // At least 3 segments
+	step_size = std::min<float>(step_size, M_PI * 2. / 8.); // At least as detailed as 8 vertices to a circle
 
 	glBegin(GL_TRIANGLE_STRIP);
 
@@ -63,7 +68,7 @@ void plain_skin::fat_line(float x1, float y1, float dx, float dy, float len, flo
 	= detail_modifier / r
 */
 
-const float level_of_detail = 0.2f;
+const float level_of_detail = 0.4f;
 
 void plain_skin::set_pixels_per_unit(float pixels_per_unit) {
 	detail_modifier = 1. / (pixels_per_unit * level_of_detail);

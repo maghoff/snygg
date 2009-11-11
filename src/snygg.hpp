@@ -8,6 +8,7 @@
 
 namespace ymse {
 	class keyboard_handler;
+	class reshaper;
 }
 
 class snygg : public ymse::game, public item_container {
@@ -22,6 +23,7 @@ public:
 	void tick();
 
 	ymse::keyboard_handler* get_keyboard_handler();
+	ymse::reshaper* get_reshaper_object();
 
 	void add_item(std::auto_ptr<item>);
 	void add_renderable(std::auto_ptr<renderable>);

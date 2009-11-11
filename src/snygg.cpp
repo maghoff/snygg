@@ -4,6 +4,7 @@
 #include <boost/ptr_container/ptr_list.hpp>
 #include <boost/ptr_container/ptr_vector.hpp>
 #include <ymse/bindable_keyboard_handler.hpp>
+#include <ymse/gl_box_reshaper.hpp>
 #include "board.hpp"
 #include "dead_player.hpp"
 #include "food_generator.hpp"
@@ -14,7 +15,8 @@
 
 
 struct snygg::impl {
-	boost::scoped_ptr<skin> active_skin;
+	boost::scoped_ptr<ymse::gl_box_reshaper> reshaper;
+	boost::scoped_ptr<plain_skin> active_skin;
 	boost::scoped_ptr<board> active_board;
 	boost::ptr_list<item> items;
 	boost::ptr_list<renderable> renderables;
@@ -41,7 +43,11 @@ snygg::snygg() :
 	glEnable(GL_LINE_SMOOTH);
 	glEnable(GL_POLYGON_SMOOTH);
 
+	d->reshaper.reset(new ymse::gl_box_reshaper);
+	d->reshaper->set_box(-220, -70, 220, 70);
+
 	d->active_skin.reset(new plain_skin);
+	d->reshaper->set_pixels_per_unit_listener(d->active_skin.get());
 
 	d->active_board.reset(new board);
 
@@ -125,6 +131,10 @@ void snygg::tick() {
 
 ymse::keyboard_handler* snygg::get_keyboard_handler() {
 	return &*d->kbd;
+}
+
+ymse::reshaper* snygg::get_reshaper_object() {
+	return &*d->reshaper;
 }
 
 void snygg::add_item(std::auto_ptr<item> i) {
