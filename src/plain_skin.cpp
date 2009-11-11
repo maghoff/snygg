@@ -26,7 +26,6 @@ void plain_skin::fat_arc(float x, float y, float r, float t, float begin, float 
 	if (begin > end) std::swap(begin, end);
 
 	float step_size = detail_modifier / r2;
-	step_size = std::min<float>(step_size, (end-begin) / 3.); // At least 3 segments
 	step_size = std::min<float>(step_size, M_PI * 2. / 8.); // At least as detailed as 8 vertices to a circle
 
 	glBegin(GL_TRIANGLE_STRIP);
