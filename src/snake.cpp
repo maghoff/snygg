@@ -92,8 +92,11 @@ bool snake::intersect_with_circle(float x, float y, float r) const {
 	return d->body.intersect_with_circle(x, y, r);
 }
 
-void snake::crack_head() {
-	d->body.push_back(segment_ptr(new blood_pool(d->body.get_head_pos(), 2.5f)));
+blood_pool* snake::crack_head() {
+	std::auto_ptr<blood_pool> pool(new blood_pool(d->body.get_head_pos(), 2.5f));
+	blood_pool* r = pool.get();
+	d->body.push_back(segment_ptr(pool.release()));
+	return r;
 }
 
 bool snake::is_single_segment() const {

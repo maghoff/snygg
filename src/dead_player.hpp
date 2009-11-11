@@ -6,6 +6,7 @@
 #include <boost/scoped_ptr.hpp>
 #include "item_with_life.hpp"
 
+class item_container;
 class snake;
 
 class dead_player : public boost::noncopyable, public item_with_life {
@@ -13,7 +14,7 @@ class dead_player : public boost::noncopyable, public item_with_life {
 	boost::scoped_ptr<impl> d;
 
 public:
-	dead_player(std::auto_ptr<snake>);
+	dead_player(std::auto_ptr<snake>, item_container&);
 	~dead_player();
 
 	void move();

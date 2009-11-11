@@ -48,8 +48,7 @@ bool player::crashes_with(intersectable_with_circle& i) const {
 }
 
 void player::die() {
-	d->s->crack_head();
-	d->ic.add_item(std::auto_ptr<item>(new dead_player(d->s)));
+	d->ic.add_item(std::auto_ptr<item>(new dead_player(d->s, d->ic)));
 }
 
 void player::score() {

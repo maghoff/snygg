@@ -24,6 +24,7 @@ public:
 	ymse::keyboard_handler* get_keyboard_handler();
 
 	void add_item(std::auto_ptr<item>);
+	void add_renderable(std::auto_ptr<renderable>);
 };
 
 #endif

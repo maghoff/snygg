@@ -17,6 +17,7 @@ struct snygg::impl {
 	boost::scoped_ptr<skin> active_skin;
 	boost::scoped_ptr<board> active_board;
 	boost::ptr_list<item> items;
+	boost::ptr_list<renderable> renderables;
 	boost::ptr_vector<player> players;
 	boost::scoped_ptr<ymse::bindable_keyboard_handler> kbd;
 	boost::scoped_ptr<food_generator> fg;
@@ -65,6 +66,7 @@ void snygg::render() {
 
 	typedef boost::ptr_vector<player>::iterator piter;
 	typedef boost::ptr_list<item>::iterator iiter;
+	typedef boost::ptr_list<renderable>::iterator riter;
 
 	iiter iend = d->items.end();
 	for (iiter i = d->items.begin(); i != iend; ++i) {
@@ -73,6 +75,11 @@ void snygg::render() {
 
 	piter pend = d->players.end();
 	for (piter i = d->players.begin(); i != pend; ++i) {
+		i->render(*d->active_skin);
+	}
+
+	riter rend = d->renderables.end();
+	for (riter i = d->renderables.begin(); i != rend; ++i) {
 		i->render(*d->active_skin);
 	}
 }
@@ -123,3 +130,8 @@ ymse::keyboard_handler* snygg::get_keyboard_handler() {
 void snygg::add_item(std::auto_ptr<item> i) {
 	d->items.push_back(i);
 }
+
+void snygg::add_renderable(std::auto_ptr<renderable> r) {
+	d->renderables.push_back(r);
+}
+
