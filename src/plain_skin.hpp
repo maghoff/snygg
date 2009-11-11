@@ -7,6 +7,8 @@
 class plain_skin : public skin, public ymse::pixels_per_unit_listener {
 	float detail_modifier;
 
+	float get_step_size(float r);
+
 public:
 	plain_skin();
 
