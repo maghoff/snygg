@@ -79,8 +79,8 @@ void snake::render(skin& s) const {
 	vec2f tail(d->body.get_tail_pos());
 
 	s.circle(head, 2.5f);
-	d->body.render(s);
 	s.circle(tail, 2.5f);
+	d->body.render(s);
 }
 
 bool snake::crashes_with(intersectable_with_circle& object) const {
