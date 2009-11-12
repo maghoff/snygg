@@ -6,10 +6,11 @@
 
 int main(int argc, const char *argv[])
 try {
+	snygg g;
+
 	std::auto_ptr<ymse::core> c(ymse::core_factory());
 	c->init(argc, argv);
 
-	snygg g;
 	c->set_game_object(&g);
 
 	c->set_reshaper_object(g.get_reshaper_object());
