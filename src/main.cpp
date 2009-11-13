@@ -6,10 +6,10 @@
 
 int main(int argc, const char *argv[])
 try {
-	snygg g;
-
 	std::auto_ptr<ymse::core> c(ymse::core_factory());
 	c->init(argc, argv);
+
+	snygg g;
 
 	c->set_game_object(&g);
 
@@ -17,7 +17,11 @@ try {
 
 	c->set_keyboard_handler(g.get_keyboard_handler());
 
-	return c->run();
+	int ret = c->run();
+
+	c.reset();
+
+	return ret;
 }
 catch (const std::exception& e) {
 	std::cerr <<
