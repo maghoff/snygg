@@ -19,6 +19,7 @@ add_executable(
 	segment_sequence.cpp
 	skin.cpp
 	snake.cpp
+	snake_direction_listener.cpp
 	snygg.cpp
 )
 
