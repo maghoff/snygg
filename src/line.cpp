@@ -49,9 +49,11 @@ float line::tail_forward(float l) {
 	}
 }
 
-bool line::intersect_with_circle(const ymse::vec2f& B, float r2) const {
-	vec2f A(x, y);
-	vec2f AB(B); AB -= A;
+static bool fat_line_intersect_with_circle(
+	const vec2f& A, float dx, float dy, float length, float thickness,
+	const vec2f& c_center, float c_r
+) {
+	vec2f AB(c_center); AB -= A;
 
 	float u = AB[0] * dx + AB[1] * dy;
 	if (u < 0 || u >= length) return false;
@@ -59,10 +61,14 @@ bool line::intersect_with_circle(const ymse::vec2f& B, float r2) const {
 	vec2f normal(dy, -dx);
 	float v = AB[0]*normal[0] + AB[1]*normal[1];
 
-	float r = r2 + thickness;
+	float r = c_r + thickness;
 	if (v < -r || v > r) return false;
 
 	return true;
+}
+
+bool line::intersect_with_circle(const ymse::vec2f& B, float r2) const {
+	return fat_line_intersect_with_circle(vec2f(x, y), dx, dy, length, thickness, B, r2);
 }
 
 bool line::intersect_with_circle(const ymse::vec2f& B, float r2, float& skiplength) const {
@@ -76,19 +82,7 @@ bool line::intersect_with_circle(const ymse::vec2f& B, float r2, float& skipleng
 	float l2 = length - skiplength;
 	skiplength = 0;
 
-	vec2f A(x, y);
-	vec2f AB(B); AB -= A;
-
-	float u = AB[0] * dx + AB[1] * dy;
-	if (u < 0 || u >= l2) return false;
-
-	vec2f normal(dy, -dx);
-	float v = AB[0]*normal[0] + AB[1]*normal[1];
-
-	float r = r2 + thickness;
-	if (v < -r || v > r) return false;
-
-	return true;
+	return fat_line_intersect_with_circle(vec2f(x, y), dx, dy, l2, thickness, B, r2);
 }
 
 ymse::vec2f line::get_head_pos() const {

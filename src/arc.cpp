@@ -73,7 +73,7 @@ vec2f arc::get_head_direction() const {
 	);
 }
 
-bool fat_arc_intersect_with_circle(
+static bool fat_arc_intersect_with_circle(
 	const vec2f& a_center, float a_r, float thickness, float begin, float end,
 	const vec2f& c_center, float c_r
 ) {
