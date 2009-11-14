@@ -65,6 +65,32 @@ bool line::intersect_with_circle(const ymse::vec2f& B, float r2) const {
 	return true;
 }
 
+bool line::intersect_with_circle(const ymse::vec2f& B, float r2, float& skiplength) const {
+	if (skiplength <= 0.f) return intersect_with_circle(B, r2);
+
+	if (length <= skiplength) {
+		skiplength -= length;
+		return false;
+	}
+
+	float l2 = length - skiplength;
+	skiplength = 0;
+
+	vec2f A(x, y);
+	vec2f AB(B); AB -= A;
+
+	float u = AB[0] * dx + AB[1] * dy;
+	if (u < 0 || u >= l2) return false;
+
+	vec2f normal(dy, -dx);
+	float v = AB[0]*normal[0] + AB[1]*normal[1];
+
+	float r = r2 + thickness;
+	if (v < -r || v > r) return false;
+
+	return true;
+}
+
 ymse::vec2f line::get_head_pos() const {
 	vec2f v(dx, dy);
 	v *= length;

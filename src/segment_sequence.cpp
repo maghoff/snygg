@@ -1,3 +1,4 @@
+#include <set>
 #include <boost/ptr_container/ptr_list.hpp>
 #include <ymse/vec.hpp>
 #include "segment_sequence.hpp"
@@ -48,6 +49,19 @@ bool segment_sequence::intersect_with_circle(const ymse::vec2f& p, float r) cons
 	for (iter i = d->body.begin(); i !=  end; ++i) {
 		if (i->intersect_with_circle(p, r)) return true;
 	}
+	return false;
+}
+
+bool segment_sequence::intersect_with_self(const ymse::vec2f& p, float r) const {
+	typedef boost::ptr_list<segment>::reverse_iterator iter;
+	iter end = d->body.rend();
+
+	float skiplength = r*2.f;
+
+	for (iter i = d->body.rbegin(); i != end; ++i) {
+		if (i->intersect_with_circle(p, r, skiplength)) return true;
+	}
+
 	return false;
 }
 

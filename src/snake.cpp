@@ -108,9 +108,11 @@ void snake::render(skin& s) const {
 }
 
 bool snake::crashes_with(intersectable_with_circle& object) const {
-	if (&object == this) return false;
-
 	vec2f head(d->body.get_head_pos());
+
+	if (&object == this) {
+		return d->body.intersect_with_self(head, 2.5f);
+	}
 	return object.intersect_with_circle(head, 2.5f);
 }
 

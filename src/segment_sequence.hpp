@@ -20,6 +20,7 @@ public:
 	float tail_forward(float);
 
 	bool intersect_with_circle(const ymse::vec2f&, float r) const;
+	bool intersect_with_self(const ymse::vec2f& p, float r) const;
 
 	ymse::vec2f get_head_pos() const;
 	ymse::vec2f get_tail_pos() const;

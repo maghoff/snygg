@@ -11,6 +11,7 @@ public:
 	virtual ~intersectable_with_circle();
 
 	virtual bool intersect_with_circle(const ymse::vec2f&, float r) const = 0;
+	virtual bool intersect_with_circle(const ymse::vec2f&, float r, float& skiplength) const;
 };
 
 #endif

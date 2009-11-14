@@ -100,6 +100,42 @@ bool arc::intersect_with_circle(const ymse::vec2f& B, float r2) const {
 	return false;
 }
 
+bool arc::intersect_with_circle(const ymse::vec2f& B, float r2, float& skiplength) const {
+	if (skiplength <= 0.f) return intersect_with_circle(B, r2);
+
+	float length = fabs(end - begin) * r;
+	if (length <= skiplength) {
+		skiplength -= length;
+		return false;
+	}
+
+	vec2f A(x, y);
+	vec2f AB(B); AB -= A;
+
+	float dist = AB.length();
+
+	if (dist - r2 > r + thickness) return false;
+	if (dist + r2 < r - thickness) return false;
+
+	float ang = atan2(AB[1], AB[0]);
+
+	vec2f a(begin, end - direction * skiplength), pi2(2.0*M_PI, 2.0*M_PI);
+	skiplength = 0.f;
+	if (a[0] > a[1]) std::swap(a[0], a[1]);
+
+	while (a[0] < -M_PI) a += pi2;
+	while (a[0] > M_PI) a -= pi2;
+
+	if (a[0] <= ang && ang < a[1]) return true;
+
+	if (a[1] > M_PI) {
+		a -= pi2;
+		if (a[0] <= ang && ang < a[1]) return true;
+	}
+
+	return false;
+}
+
 void arc::render(skin& s) const {
 	s.fat_arc(x, y, r, thickness, begin, end);
 }
