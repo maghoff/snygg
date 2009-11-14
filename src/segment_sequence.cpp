@@ -70,12 +70,3 @@ void segment_sequence::render(skin& s) const {
 void segment_sequence::push_back(std::auto_ptr<segment> s) {
 	d->body.push_back(s);
 }
-
-bool segment_sequence::is_single_segment() const {
-	boost::ptr_list<segment>::const_iterator i = d->body.begin();
-	boost::ptr_list<segment>::const_iterator end = d->body.end();
-
-	if (i == end) return false;
-	++i;
-	return i == end;
-}

@@ -63,15 +63,15 @@ snygg::~snygg() {
 
 
 void snygg::render() {
+	typedef boost::ptr_vector<player>::iterator piter;
+	typedef boost::ptr_list<item>::iterator iiter;
+	typedef boost::ptr_list<renderable>::iterator riter;
+
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	glColor4f(1.0, 1.0, 1.0, 1.0);
 
 	d->active_board->render(*d->active_skin);
-
-	typedef boost::ptr_vector<player>::iterator piter;
-	typedef boost::ptr_list<item>::iterator iiter;
-	typedef boost::ptr_list<renderable>::iterator riter;
 
 	iiter iend = d->items.end();
 	for (iiter i = d->items.begin(); i != iend; ++i) {
@@ -134,4 +134,3 @@ void snygg::add_item(std::auto_ptr<item> i) {
 void snygg::add_renderable(std::auto_ptr<renderable> r) {
 	d->renderables.push_back(r);
 }
-

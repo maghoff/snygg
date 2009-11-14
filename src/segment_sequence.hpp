@@ -29,9 +29,6 @@ public:
 
 	// This segment_sequence assumes ownership
 	void push_back(std::auto_ptr<segment>);
-
-	// To check if the blood pool is the only remaining segment
-	bool is_single_segment() const;
 };
 
 #endif
