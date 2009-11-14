@@ -18,8 +18,6 @@ public:
 	ymse::vec2f get_tail_pos() const;
 	ymse::vec2f get_head_direction() const;
 
-	float get_radius() const;
-
 	void render(skin&) const;
 };
 

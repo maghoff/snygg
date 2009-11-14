@@ -38,11 +38,7 @@ vec2f blood_pool::get_tail_pos() const {
 
 vec2f blood_pool::get_head_direction() const {
 	assert(false);
-	throw std::logic_error("blood_pool::tail_forward(...) called");
-}
-
-float blood_pool::get_radius() const {
-	return r;
+	throw std::logic_error("blood_pool::get_head_direction(...) called");
 }
 
 void blood_pool::render(skin& s) const {
