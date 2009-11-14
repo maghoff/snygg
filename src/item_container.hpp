@@ -6,12 +6,15 @@
 class item;
 class renderable;
 
+typedef std::auto_ptr<item> item_ptr;
+typedef std::auto_ptr<renderable> renderable_ptr;
+
 class item_container {
 public:
 	virtual ~item_container();
 
-	virtual void add_item(std::auto_ptr<item>) = 0;
-	virtual void add_renderable(std::auto_ptr<renderable>) = 0;
+	virtual void add_item(item_ptr) = 0;
+	virtual void add_renderable(renderable_ptr) = 0;
 };
 
 #endif // ITEM_CONTAINER_HPP

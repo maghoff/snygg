@@ -91,6 +91,8 @@ void snake::render(skin& s) const {
 }
 
 bool snake::crashes_with(intersectable_with_circle& object) const {
+	if (&object == this) return false;
+
 	vec2f head(d->body.get_head_pos());
 	return object.intersect_with_circle(head[0], head[1], 2.5f);
 }
@@ -112,8 +114,4 @@ bool snake::is_single_segment() const {
 
 void snake::hit_by(player& p) {
 	p.die();
-}
-
-bool snake::is_dead() const {
-	return false;
 }

@@ -79,11 +79,6 @@ void snygg::render() {
 		i->render(*d->active_skin);
 	}
 
-	piter pend = d->players.end();
-	for (piter i = d->players.begin(); i != pend; ++i) {
-		i->render(*d->active_skin);
-	}
-
 	riter rend = d->renderables.end();
 	for (riter i = d->renderables.begin(); i != rend; ++i) {
 		i->render(*d->active_skin);
@@ -101,10 +96,6 @@ void snygg::tick() {
 
 	for (iiter i = d->items.begin(); i != iend; ++i) {
 		if (!i->is_dead()) i->move();
-	}
-
-	for (piter i = d->players.begin(); i != pend; ++i) {
-		i->move();
 	}
 
 	dead_players_c dead_players;

@@ -11,7 +11,7 @@
 
 struct player::impl {
 	item_container& ic;
-	std::auto_ptr<snake> s;
+	snake* s;
 	boost::scoped_ptr<snake_direction_listener> del;
 	boost::scoped_ptr<ymse::signaling_opposite_keys> dir;
 	float speed;
@@ -22,6 +22,7 @@ struct player::impl {
 player::player(ymse::bindable_keyboard_handler& kbd, item_container& ic) :
 	d(new impl(ic))
 {
+	d->s = 0;
 	d->speed = 0.5f;
 	d->del.reset(new snake_direction_listener);
 	d->dir.reset(new ymse::signaling_opposite_keys(kbd, ymse::KEY_RIGHT, ymse::KEY_LEFT, *d->del));
@@ -33,29 +34,22 @@ player::~player() {
 }
 
 void player::spawn(bool do_spawn) {
-	if (do_spawn && !d->s.get()) {
-		d->s.reset(new snake(d->speed));
+	if (do_spawn && !d->s) {
+		d->ic.add_item(item_ptr(d->s = new snake(d->speed)));
 		d->s->set_turn(d->dir->val());
-		d->del->set_target(d->s.get());
+		d->del->set_target(d->s);
 	}
 }
 
-void player::render(skin& sk) const {
-	if (d->s.get()) d->s->render(sk);
-}
-
-void player::move() {
-	if (d->s.get()) d->s->move();
-}
-
 bool player::crashes_with(intersectable_with_circle& i) const {
-	if (d->s.get()) return d->s->crashes_with(i);
+	if (d->s) return d->s->crashes_with(i);
 	else return false;
 }
 
 void player::die() {
 	d->del->set_target(0);
 	d->ic.add_item(std::auto_ptr<item>(new dead_player(d->s, d->ic)));
+	d->s = 0;
 }
 
 void player::score() {

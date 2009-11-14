@@ -14,13 +14,11 @@ class dead_player : public boost::noncopyable, public item_with_life {
 	boost::scoped_ptr<impl> d;
 
 public:
-	dead_player(std::auto_ptr<snake>, item_container&);
+	dead_player(snake*, item_container&);
 	~dead_player();
 
 	void move();
-
 	void render(skin&) const;
-
 	void hit_by(player&);
 
 	bool intersect_with_circle(float x, float y, float r) const;
