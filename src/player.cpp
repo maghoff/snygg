@@ -4,7 +4,6 @@
 #include <ymse/opposite_keys_listener.hpp>
 #include <ymse/signaling_opposite_keys.hpp>
 #include "item_container.hpp"
-#include "dead_player.hpp"
 #include "player.hpp"
 #include "snake.hpp"
 #include "snake_direction_listener.hpp"
@@ -35,7 +34,7 @@ player::~player() {
 
 void player::spawn(bool do_spawn) {
 	if (do_spawn && !d->s) {
-		d->ic.add_item(item_ptr(d->s = new snake(d->speed)));
+		d->ic.add_item(item_ptr(d->s = new snake(d->ic, d->speed)));
 		d->s->set_turn(d->dir->val());
 		d->del->set_target(d->s);
 	}
@@ -48,7 +47,7 @@ bool player::crashes_with(intersectable_with_circle& i) const {
 
 void player::die() {
 	d->del->set_target(0);
-	d->ic.add_item(std::auto_ptr<item>(new dead_player(d->s, d->ic)));
+	d->s->crack_head();
 	d->s = 0;
 }
 

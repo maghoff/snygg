@@ -6,7 +6,6 @@
 #include <ymse/bindable_keyboard_handler.hpp>
 #include <ymse/gl_box_reshaper.hpp>
 #include "board.hpp"
-#include "dead_player.hpp"
 #include "food_generator.hpp"
 #include "item.hpp"
 #include "plain_skin.hpp"

@@ -2,6 +2,7 @@
 #include <ymse/vec.hpp>
 #include "arc.hpp"
 #include "blood_pool.hpp"
+#include "item_container.hpp"
 #include "line.hpp"
 #include "player.hpp"
 #include "scored_point.hpp"
@@ -14,20 +15,30 @@ using ymse::vec2f;
 
 
 struct snake::impl {
+	item_container& ic;
+
 	segment_sequence body;
+
+	segment* head;
+	segment* tail;
+
 	float speed;
 	int dir;
+
+	impl(item_container& ic_) : ic(ic_) { }
 };
 
 
-snake::snake(float speed) :
-	d(new impl)
+snake::snake(item_container& ic, float speed) :
+	d(new impl(ic))
 {
 	d->speed = speed;
 	d->dir = 0;
 
 	vec2f pos(0, -40), dir(0, 1);
 	d->body.push_back(segment_ptr(new line(pos, dir, 20.f)));
+
+	d->tail = d->head = &d->body;
 }
 
 snake::~snake() {
@@ -73,8 +84,14 @@ void snake::set_turn(int dir_) {
 }
 
 void snake::forward(float length) {
-	d->body.head_forward(length);
-	d->body.tail_forward(length);
+	d->head->head_forward(length);
+
+	float l = d->tail->tail_forward(length);
+	if (l >= 0.f) {
+		// The tail has moved entirely into the blood pool.
+		d->head->tail_forward(l);
+		die();
+	}
 }
 
 void snake::move() {
@@ -101,15 +118,8 @@ bool snake::intersect_with_circle(float x, float y, float r) const {
 	return d->body.intersect_with_circle(x, y, r);
 }
 
-blood_pool* snake::crack_head() {
-	std::auto_ptr<blood_pool> pool(new blood_pool(d->body.get_head_pos(), 2.5f));
-	blood_pool* r = pool.get();
-	d->body.push_back(segment_ptr(pool.release()));
-	return r;
-}
-
-bool snake::is_single_segment() const {
-	return d->body.is_single_segment();
+void snake::crack_head() {
+	d->ic.add_renderable(renderable_ptr(d->head = new blood_pool(d->head->get_head_pos(), 2.5f)));
 }
 
 void snake::hit_by(player& p) {

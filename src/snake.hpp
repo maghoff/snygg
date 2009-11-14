@@ -6,6 +6,7 @@
 #include "item_with_life.hpp"
 
 class blood_pool;
+class item_container;
 
 class snake : public boost::noncopyable, public item_with_life {
 	struct impl;
@@ -14,7 +15,7 @@ class snake : public boost::noncopyable, public item_with_life {
 	void forward(float);
 
 public:
-	snake(float speed);
+	snake(item_container&, float speed);
 	~snake();
 
 	void score(float amount);
@@ -30,10 +31,7 @@ public:
 	bool intersect_with_circle(float x, float y, float r) const;
 
 	// Start "moving" into a blood pool
-	blood_pool* crack_head();
-
-	// To check if the blood pool is the only remaining segment
-	bool is_single_segment() const;
+	void crack_head();
 
 	void hit_by(player&);
 
