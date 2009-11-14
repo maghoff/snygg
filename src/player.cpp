@@ -34,7 +34,7 @@ player::~player() {
 
 void player::spawn(bool do_spawn) {
 	if (do_spawn && !d->s.get()) {
-		d->s.reset(new snake);
+		d->s.reset(new snake(d->speed));
 		d->s->set_turn(d->dir->val());
 		d->del->set_target(d->s.get());
 	}
@@ -45,7 +45,7 @@ void player::render(skin& sk) const {
 }
 
 void player::move() {
-	if (d->s.get()) d->s->forward(d->speed);
+	if (d->s.get()) d->s->move();
 }
 
 bool player::crashes_with(intersectable_with_circle& i) const {

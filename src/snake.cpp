@@ -3,6 +3,7 @@
 #include "arc.hpp"
 #include "blood_pool.hpp"
 #include "line.hpp"
+#include "player.hpp"
 #include "scored_point.hpp"
 #include "segment_sequence.hpp"
 #include "skin.hpp"
@@ -14,13 +15,15 @@ using ymse::vec2f;
 
 struct snake::impl {
 	segment_sequence body;
+	float speed;
 	int dir;
 };
 
 
-snake::snake() :
+snake::snake(float speed) :
 	d(new impl)
 {
+	d->speed = speed;
 	d->dir = 0;
 
 	vec2f pos(0, -40), dir(0, 1);
@@ -74,6 +77,10 @@ void snake::forward(float length) {
 	d->body.tail_forward(length);
 }
 
+void snake::move() {
+	forward(d->speed);
+}
+
 void snake::render(skin& s) const {
 	vec2f head(d->body.get_head_pos());
 	vec2f tail(d->body.get_tail_pos());
@@ -101,4 +108,12 @@ blood_pool* snake::crack_head() {
 
 bool snake::is_single_segment() const {
 	return d->body.is_single_segment();
+}
+
+void snake::hit_by(player& p) {
+	p.die();
+}
+
+bool snake::is_dead() const {
+	return false;
 }

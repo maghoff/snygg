@@ -3,24 +3,25 @@
 
 #include <boost/scoped_ptr.hpp>
 #include <boost/noncopyable.hpp>
-#include "intersectable_with_circle.hpp"
-#include "renderable.hpp"
+#include "item.hpp"
 
 class blood_pool;
 
-class snake : public boost::noncopyable, public renderable, public intersectable_with_circle {
+class snake : public boost::noncopyable, public item {
 	struct impl;
 	boost::scoped_ptr<impl> d;
 
+	void forward(float);
+
 public:
-	snake();
+	snake(float speed);
 	~snake();
 
 	void score(float amount);
 
 	// 1, 0, -1: left, forward, right
 	void set_turn(int dir);
-	void forward(float length);
+	void move();
 
 	void render(skin&) const;
 
@@ -33,6 +34,9 @@ public:
 
 	// To check if the blood pool is the only remaining segment
 	bool is_single_segment() const;
+
+	void hit_by(player&);
+	bool is_dead() const;
 };
 
 #endif

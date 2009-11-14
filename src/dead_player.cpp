@@ -26,7 +26,7 @@ dead_player::~dead_player() {
 }
 
 void dead_player::move() {
-	d->s->forward(d->speed);
+	d->s->move();
 	if (d->s->is_single_segment()) {
 		d->ic.add_renderable(std::auto_ptr<renderable>(new blood_pool(d->pool->get_head_pos(), d->pool->get_radius())));
 		die();
