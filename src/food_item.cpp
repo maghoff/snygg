@@ -39,8 +39,8 @@ void food_item::render(skin& s) const {
 	s.circle(d->p, d->r);
 }
 
-bool food_item::intersect_with_circle(float x, float y, float r) const {
-	vec2f dist(x, y);
+bool food_item::intersect_with_circle(const ymse::vec2f& p, float r) const {
+	vec2f dist(p);
 	dist -= d->p;
 
 	float total_r = r + d->r;

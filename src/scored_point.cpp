@@ -37,7 +37,7 @@ float scored_point::tail_forward(float length) {
 	}
 }
 
-bool scored_point::intersect_with_circle(float x, float y, float r) const {
+bool scored_point::intersect_with_circle(const ymse::vec2f&, float) const {
 
 	// Stub this out. It will be a bit difficult to implement it properly
 	// without having the player crash with it whenever it scores.

@@ -23,7 +23,7 @@ float blood_pool::tail_forward(float length) {
 	return -1;
 }
 
-bool blood_pool::intersect_with_circle(float x, float y, float r) const {
+bool blood_pool::intersect_with_circle(const ymse::vec2f&, float) const {
 	// This is just debris
 	return false;
 }

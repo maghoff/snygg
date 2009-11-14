@@ -15,7 +15,7 @@ public:
 
 	void render(skin&) const;
 
-	bool intersect_with_circle(float x, float y, float r) const;
+	bool intersect_with_circle(const ymse::vec2f&, float r) const;
 };
 
 #endif

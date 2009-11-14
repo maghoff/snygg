@@ -49,8 +49,8 @@ float line::tail_forward(float l) {
 	}
 }
 
-bool line::intersect_with_circle(float x2, float y2, float r2) const {
-	vec2f A(x, y), B(x2, y2);
+bool line::intersect_with_circle(const ymse::vec2f& B, float r2) const {
+	vec2f A(x, y);
 	vec2f AB(B); AB -= A;
 
 	float u = AB[0] * dx + AB[1] * dy;

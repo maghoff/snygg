@@ -42,11 +42,11 @@ float segment_sequence::tail_forward(float length) {
 	return length;
 }
 
-bool segment_sequence::intersect_with_circle(float x, float y, float r) const {
+bool segment_sequence::intersect_with_circle(const ymse::vec2f& p, float r) const {
 	typedef boost::ptr_list<segment>::iterator iter;
 	iter end = d->body.end();
 	for (iter i = d->body.begin(); i !=  end; ++i) {
-		if (i->intersect_with_circle(x, y, r)) return true;
+		if (i->intersect_with_circle(p, r)) return true;
 	}
 	return false;
 }

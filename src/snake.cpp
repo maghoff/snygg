@@ -111,11 +111,11 @@ bool snake::crashes_with(intersectable_with_circle& object) const {
 	if (&object == this) return false;
 
 	vec2f head(d->body.get_head_pos());
-	return object.intersect_with_circle(head[0], head[1], 2.5f);
+	return object.intersect_with_circle(head, 2.5f);
 }
 
-bool snake::intersect_with_circle(float x, float y, float r) const {
-	return d->body.intersect_with_circle(x, y, r);
+bool snake::intersect_with_circle(const ymse::vec2f& p, float r) const {
+	return d->body.intersect_with_circle(p, r);
 }
 
 void snake::crack_head() {

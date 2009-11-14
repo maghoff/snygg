@@ -28,7 +28,7 @@ public:
 
 	bool crashes_with(intersectable_with_circle&) const;
 
-	bool intersect_with_circle(float x, float y, float r) const;
+	bool intersect_with_circle(const ymse::vec2f&, float r) const;
 
 	// Start "moving" into a blood pool
 	void crack_head();
