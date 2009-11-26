@@ -23,10 +23,12 @@ void plain_skin::circle(ymse::vec2f p, float r) {
 	glEnd();
 }
 
-void plain_skin::fat_arc(float x, float y, float r, float t, float begin, float end) {
+void plain_skin::fat_arc(ymse::vec2f p, float r, float t, float begin, float end) {
 	float r1 = r-t, r2 = r+t;
 	float step_size = get_step_size(r2);
 	if (begin > end) std::swap(begin, end);
+
+	float &x(p[0]), &y(p[1]);
 
 	glBegin(GL_TRIANGLE_STRIP);
 
@@ -41,7 +43,9 @@ void plain_skin::fat_arc(float x, float y, float r, float t, float begin, float 
 	glEnd();
 }
 
-void plain_skin::fat_line(float x1, float y1, float dx, float dy, float len, float t) {
+void plain_skin::fat_line(ymse::vec2f p, ymse::vec2f d, float len, float t) {
+	float &x1(p[0]), &y1(p[1]), &dx(d[0]), &dy(d[1]);
+
 	// Calculate normal * thickness:
 	float nx = dy * t, ny = -dx * t;
 	float x2 = x1 + dx*len, y2 = y1 + dy * len;

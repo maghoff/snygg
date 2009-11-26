@@ -122,5 +122,5 @@ bool arc::intersect_with_circle(const ymse::vec2f& c_center, float c_r, float& s
 }
 
 void arc::render(skin& s) const {
-	s.fat_arc(x, y, r, thickness, begin, end);
+	s.fat_arc(ymse::vec2f(x, y), r, thickness, begin, end);
 }

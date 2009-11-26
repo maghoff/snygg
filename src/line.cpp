@@ -101,5 +101,5 @@ ymse::vec2f line::get_head_direction() const {
 }
 
 void line::render(skin& s) const {
-	s.fat_line(x, y, dx, dy, length, thickness);
+	s.fat_line(ymse::vec2f(x, y), ymse::vec2f(dx, dy), length, thickness);
 }
