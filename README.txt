@@ -16,7 +16,7 @@ Ymse
 
 You need a checkout of ymse. From some proper directory, do this:
 
-    hg clone http://munkeliv.ath.cx/~mag/hg/ymse
+    hg clone http://bitbucket.org/maghoff/ymse/
     cd ymse
     cmake .
     make -j3
