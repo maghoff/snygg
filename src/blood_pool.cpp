@@ -41,6 +41,14 @@ vec2f blood_pool::get_head_direction() const {
 	throw std::logic_error("blood_pool::get_head_direction(...) called");
 }
 
+float blood_pool::length() const {
+	return 0;
+}
+
+void blood_pool::render(skin& s, float) const {
+	render(s);
+}
+
 void blood_pool::render(skin& s) const {
 	// I am not sure that it is proper of me to set the colour here.
 

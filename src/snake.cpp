@@ -104,7 +104,7 @@ void snake::render(skin& s) const {
 
 	s.circle(head, 2.5f);
 	s.circle(tail, 2.5f);
-	d->body.render(s);
+	d->body.render(s, 0);
 }
 
 bool snake::crashes_with(intersectable_with_circle& object) const {
@@ -121,7 +121,9 @@ bool snake::intersect_with_circle(const ymse::vec2f& p, float r) const {
 }
 
 void snake::crack_head() {
-	d->ic.add_renderable(renderable_ptr(d->head = new blood_pool(d->head->get_head_pos(), 2.5f)));
+	std::auto_ptr<blood_pool> p(new blood_pool(d->head->get_head_pos(), 2.5f));
+	d->head = p.get();
+	d->ic.add_renderable(renderable_ptr(p));
 }
 
 void snake::hit_by(player& p) {

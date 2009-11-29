@@ -57,6 +57,10 @@ vec2f scored_point::get_head_direction() const {
 	return vec2f(dx, dy);
 }
 
-void scored_point::render(skin& s) const {
+float scored_point::length() const {
+	return 0;
+}
+
+void scored_point::render(skin& s, float head_b) const {
 	s.circle(vec2f(x, y), r);
 }

@@ -3,7 +3,7 @@
 
 #include "segment.hpp"
 
-class blood_pool : public segment {
+class blood_pool : public segment, public renderable {
 	float x, y, r;
 public:
 	blood_pool(ymse::vec2f pos, float r);
@@ -17,6 +17,9 @@ public:
 	ymse::vec2f get_head_pos() const;
 	ymse::vec2f get_tail_pos() const;
 	ymse::vec2f get_head_direction() const;
+
+	float length() const;
+	void render(skin&, float head_b) const;
 
 	void render(skin&) const;
 };

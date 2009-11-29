@@ -77,8 +77,13 @@ vec2f segment_sequence::get_head_direction() const {
 	return d->head().get_head_direction();
 }
 
-void segment_sequence::render(skin& s) const {
-	render_sequence(d->body, s);
+float segment_sequence::length() const {
+	assert(false);
+	return 0;
+}
+
+void segment_sequence::render(skin& s, float head_b) const {
+	render_sequence(d->body, s, 0);
 }
 
 void segment_sequence::push_back(std::auto_ptr<segment> s) {

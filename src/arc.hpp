@@ -34,7 +34,8 @@ public:
 	ymse::vec2f get_tail_pos() const;
 	ymse::vec2f get_head_direction() const;
 
-	void render(skin&) const;
+	float length() const;
+	void render(skin&, float head_b) const;
 };
 
 #endif

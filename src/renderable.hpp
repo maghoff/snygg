@@ -11,6 +11,6 @@ public:
 };
 
 template <class T>
-void render_sequence(const T&, skin&);
+void render_sequence(const T&, skin&, float head_b);
 
 #endif

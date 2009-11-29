@@ -39,7 +39,7 @@ board::~board() {
 }
 
 void board::render(skin& s) const {
-	render_sequence(d->b, s);
+	render_sequence(d->b, s, 0);
 }
 
 bool board::intersect_with_circle(const ymse::vec2f& p, float r) const {
