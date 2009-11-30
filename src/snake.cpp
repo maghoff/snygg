@@ -25,6 +25,8 @@ struct snake::impl {
 	float speed;
 	int dir;
 
+	float front_b;
+
 	impl(item_container& ic_) : ic(ic_) { }
 };
 
@@ -84,6 +86,8 @@ void snake::set_turn(int dir_) {
 }
 
 void snake::forward(float length) {
+	if (d->head != d->tail) d->front_b += length;
+
 	d->head->head_forward(length);
 
 	float l = d->tail->tail_forward(length);
@@ -104,7 +108,7 @@ void snake::render(skin& s) const {
 
 	s.circle(head, 2.5f);
 	s.circle(tail, 2.5f);
-	d->body.render(s, 0);
+	d->body.render(s, d->front_b);
 }
 
 bool snake::crashes_with(intersectable_with_circle& object) const {
