@@ -56,9 +56,17 @@ bool board::intersect_with_circle(const ymse::vec2f& p, float r) const {
 // For the future: return the actual *bounding* box, not the bounding box
 // of the core of the frame. (This does not include the thickness)
 ymse::rectf board::bounding_box() const {
-	ymse::rectf bb = {
+	// Classic board:
+	/*ymse::rectf bb = {
 		x1: -200, y1: -50,
 		x2: 200, y2: 50
+	};*/
+
+	// 16:9 YouTube-friendly board:
+	ymse::rectf bb = {
+		x1: -120, y1: -65,
+		x2: 120, y2: 65
 	};
+
 	return bb;
 }

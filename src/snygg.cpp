@@ -5,6 +5,7 @@
 #include <boost/ptr_container/ptr_vector.hpp>
 #include <ymse/bindable_keyboard_handler.hpp>
 #include <ymse/gl_box_reshaper.hpp>
+#include <ymse/rect.hpp>
 #include "board.hpp"
 #include "food_generator.hpp"
 #include "item.hpp"
@@ -42,13 +43,15 @@ snygg::snygg() :
 	glEnable(GL_LINE_SMOOTH);
 	glEnable(GL_POLYGON_SMOOTH);
 
+	d->active_board.reset(new board);
+
 	d->reshaper.reset(new ymse::gl_box_reshaper);
-	d->reshaper->set_box(-220, -70, 220, 70);
+	ymse::rectf bb = d->active_board->bounding_box();
+	const float margin = 10.f;
+	d->reshaper->set_box(bb.x1 - margin, bb.y1 - margin, bb.x2 + margin, bb.y2 + margin);
 
 	d->active_skin.reset(new textured_skin("skins/snakeskin"));
 	d->reshaper->set_pixels_per_unit_listener(d->active_skin.get());
-
-	d->active_board.reset(new board);
 
 	d->kbd.reset(new ymse::bindable_keyboard_handler);
 
