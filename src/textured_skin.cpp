@@ -6,6 +6,8 @@
 #include <ymse/gl/shader.hpp>
 #include "textured_skin.hpp"
 
+const int snake_coord = 4;
+
 struct textured_skin::impl {
 	ymse::gl::program prog;
 };
@@ -20,6 +22,8 @@ textured_skin::textured_skin(const std::string& path) :
 
 	d->prog.attach(vertex);
 	d->prog.attach(fragment);
+
+	d->prog.bind_attrib_location(snake_coord, "snake_coord_in");
 
 	d->prog.link();
 
@@ -41,18 +45,32 @@ void textured_skin::fat_arc(ymse::vec2f p, float r, float t, float begin, float 
 
 	float r1 = r-t, r2 = r+t;
 	float step_size = get_step_size(r2);
-	if (begin > end) std::swap(begin, end);
+	float inner_a = -1, outer_a = 1;
+	if (begin > end) {
+		std::swap(begin, end);
+		std::swap(b_begin, b_end);
+		std::swap(inner_a, outer_a);
+	}
+
+	float b_step_size = (b_end - b_begin) / ((end - begin) / step_size);
 
 	float &x(p[0]), &y(p[1]);
 
 	glBegin(GL_TRIANGLE_STRIP);
 
+	float b = b_begin;
+
 	for (float d = begin; d < end; d += step_size) {
+		glVertexAttrib2f(snake_coord, inner_a, b);
 		glVertex2f(x + r1 * cos(d), y + r1 * sin(d));
+		glVertexAttrib2f(snake_coord, outer_a, b);
 		glVertex2f(x + r2 * cos(d), y + r2 * sin(d));
+		b += b_step_size;
 	}
 
+	glVertexAttrib2f(snake_coord, inner_a, b_end);
 	glVertex2f(x + r1 * cos(end), y + r1 * sin(end));
+	glVertexAttrib2f(snake_coord, outer_a, b_end);
 	glVertex2f(x + r2 * cos(end), y + r2 * sin(end));
 
 	glEnd();
@@ -70,9 +88,13 @@ void textured_skin::fat_line(ymse::vec2f p, ymse::vec2f dir, float len, float t,
 	float x2 = x1 + dx*len, y2 = y1 + dy * len;
 
 	glBegin(GL_QUADS);
+	glVertexAttrib2f(snake_coord, 1, b_begin);
 	glVertex2f(x1 + nx, y1 + ny);
+	glVertexAttrib2f(snake_coord, 1, b_end);
 	glVertex2f(x2 + nx, y2 + ny);
+	glVertexAttrib2f(snake_coord, -1, b_end);
 	glVertex2f(x2 - nx, y2 - ny);
+	glVertexAttrib2f(snake_coord, -1, b_begin);
 	glVertex2f(x1 - nx, y1 - ny);
 	glEnd();
 

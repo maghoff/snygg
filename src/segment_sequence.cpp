@@ -83,7 +83,7 @@ float segment_sequence::length() const {
 }
 
 void segment_sequence::render(skin& s, float head_b) const {
-	render_sequence(d->body, s, 0);
+	render_sequence(d->body, s, head_b);
 }
 
 void segment_sequence::push_back(std::auto_ptr<segment> s) {
