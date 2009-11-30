@@ -21,6 +21,7 @@ add_executable(
 	snake.cpp
 	snake_direction_listener.cpp
 	snygg.cpp
+	textured_skin.cpp
 )
 
 target_link_libraries(
@@ -35,7 +36,7 @@ set_target_properties(
 	snygg
 	PROPERTIES
 	COMPILE_FLAGS "-ggdb -ffast-math -pipe -fvisibility-inlines-hidden -Wall"
-	COMPILE_DEFINITIONS "DEBUG;EBUG"
+	COMPILE_DEFINITIONS "DEBUG;EBUG;GL_GLEXT_PROTOTYPES"
 #	COMPILE_FLAGS "-O3 -ffast-math -pipe -fvisibility-inlines-hidden"
 #	COMPILE_DEFINITIONS "NDEBUG;GL_GLEXT_PROTOTYPES"
 )

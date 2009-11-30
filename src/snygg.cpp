@@ -8,7 +8,7 @@
 #include "board.hpp"
 #include "food_generator.hpp"
 #include "item.hpp"
-#include "plain_skin.hpp"
+#include "textured_skin.hpp"
 #include "player.hpp"
 #include "snygg.hpp"
 
@@ -45,7 +45,7 @@ snygg::snygg() :
 	d->reshaper.reset(new ymse::gl_box_reshaper);
 	d->reshaper->set_box(-220, -70, 220, 70);
 
-	d->active_skin.reset(new plain_skin);
+	d->active_skin.reset(new textured_skin("skins/snakeskin"));
 	d->reshaper->set_pixels_per_unit_listener(d->active_skin.get());
 
 	d->active_board.reset(new board);
