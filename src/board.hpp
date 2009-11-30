@@ -5,6 +5,13 @@
 #include "intersectable_with_circle.hpp"
 #include "renderable.hpp"
 
+namespace ymse {
+	template <typename T>
+	struct rect;
+
+	typedef rect<float> rectf;
+}
+
 class board : public renderable, public intersectable_with_circle {
 	struct impl;
 	boost::scoped_ptr<impl> d;
@@ -16,6 +23,8 @@ public:
 	void render(skin&) const;
 
 	bool intersect_with_circle(const ymse::vec2f&, float r) const;
+
+	ymse::rectf bounding_box() const;
 };
 
 #endif
