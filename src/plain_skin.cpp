@@ -4,13 +4,7 @@
 #include <ymse/vec.hpp>
 #include "plain_skin.hpp"
 
-plain_skin::plain_skin() :
-	detail_modifier(1.f)
-{
-}
-
-float plain_skin::get_step_size(float r) {
-	return std::min<float>(detail_modifier / r, M_PI * 2. / 8.);
+plain_skin::plain_skin() {
 }
 
 void plain_skin::circle(ymse::vec2f p, float r) {
@@ -56,23 +50,4 @@ void plain_skin::fat_line(ymse::vec2f p, ymse::vec2f d, float len, float t, floa
 	glVertex2f(x2 - nx, y2 - ny);
 	glVertex2f(x1 - nx, y1 - ny);
 	glEnd();
-}
-
-
-/* For a circle:
-  step_size
-	= 2pi / desired_number_of_vertices
-	= 2pi / (circumference_in_pixels * level_of_detail)
-	= 2pi / (circumference_in_screen_units * pixels_per_unit * level_of_detail)
-	= 2pi / (2pi * r * pixels_per_unit * level_of_detail)
-	= 1 / (r * pixels_per_unit * level_of_detail)
-	= (1 / r) * (1 / (pixels_per_unit * level_of_detail))
-	= (1 / r) * detail_modifier
-	= detail_modifier / r
-*/
-
-const float level_of_detail = 0.4f;
-
-void plain_skin::set_pixels_per_unit(float pixels_per_unit) {
-	detail_modifier = 1. / (pixels_per_unit * level_of_detail);
 }

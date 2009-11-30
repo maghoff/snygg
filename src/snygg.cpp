@@ -15,7 +15,7 @@
 
 struct snygg::impl {
 	boost::scoped_ptr<ymse::gl_box_reshaper> reshaper;
-	boost::scoped_ptr<plain_skin> active_skin;
+	boost::scoped_ptr<scalable_skin> active_skin;
 	boost::scoped_ptr<board> active_board;
 	boost::ptr_list<item> items;
 	boost::ptr_list<renderable> renderables;
