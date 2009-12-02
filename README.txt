@@ -6,7 +6,11 @@ Dependencies
 
 Assuming you are on Ubuntu:
 
-    sudo apt-get install build-essential cmake freeglut3-dev libboost-dev
+    sudo apt-get install build-essential cmake freeglut3-dev libboost-dev curl
+
+    # For textures:
+    curl -L -o skins/snakeskin/diffuse.jpg http://imgur.com/xKUVi.jpg
+    curl -L -o skins/snakeskin/normal.jpg http://imgur.com/IkERt.jpg
 
 (Please add more packages as you discover needs)
 
