@@ -41,6 +41,8 @@ snake::snake(item_container& ic, float speed) :
 	d->body.push_back(segment_ptr(new line(pos, dir, 20.f)));
 
 	d->tail = d->head = &d->body;
+
+	d->front_b = 0;
 }
 
 snake::~snake() {
