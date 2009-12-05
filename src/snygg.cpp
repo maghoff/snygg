@@ -15,13 +15,13 @@
 
 
 struct snygg::impl {
+	boost::scoped_ptr<ymse::bindable_keyboard_handler> kbd;
 	boost::scoped_ptr<ymse::gl_box_reshaper> reshaper;
 	boost::scoped_ptr<scalable_skin> active_skin;
 	boost::scoped_ptr<board> active_board;
 	boost::ptr_list<item> items;
 	boost::ptr_list<renderable> renderables;
 	boost::ptr_vector<player> players;
-	boost::scoped_ptr<ymse::bindable_keyboard_handler> kbd;
 	boost::scoped_ptr<food_generator> fg;
 };
 
@@ -35,13 +35,20 @@ snygg::snygg() :
 	glDisable(GL_DEPTH_TEST);
 
 	glShadeModel(GL_SMOOTH);
+
+	glEnable(GL_TEXTURE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+
 	glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
+	glEnable(GL_LINE_SMOOTH);
+
+	// Modern consumer grade cards often don't implement this. Use FSAA instead. (Or in addition)
 	glHint(GL_POLYGON_SMOOTH_HINT, GL_NICEST);
+	glEnable(GL_POLYGON_SMOOTH);
+
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA_SATURATE, GL_ONE);
-
-	glEnable(GL_LINE_SMOOTH);
-	glEnable(GL_POLYGON_SMOOTH);
 
 	d->active_board.reset(new board);
 
