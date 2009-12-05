@@ -105,12 +105,13 @@ void snake::move() {
 }
 
 void snake::render(skin& s) const {
+	d->body.render(s, d->front_b);
+
 	vec2f head(d->body.get_head_pos());
 	vec2f tail(d->body.get_tail_pos());
 
 	s.circle(head, 2.5f);
 	s.circle(tail, 2.5f);
-	d->body.render(s, d->front_b);
 }
 
 bool snake::crashes_with(intersectable_with_circle& object) const {
