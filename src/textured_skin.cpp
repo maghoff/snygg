@@ -9,7 +9,7 @@
 #include <ymse/sdl/surface.hpp>
 #include "textured_skin.hpp"
 
-const int snake_coord = 4;
+const int snake_coord = 4, across = 5, along = 6;
 
 struct textured_skin::impl {
 	ymse::gl::program prog;
@@ -28,12 +28,12 @@ textured_skin::textured_skin(const std::string& path) :
 	d->prog.attach(fragment);
 
 	d->prog.bind_attrib_location(snake_coord, "snake_coord_in");
+	d->prog.bind_attrib_location(across, "across_in");
+	d->prog.bind_attrib_location(along, "along_in");
 
 	d->prog.link();
 
 	// shaders go out of scope, but are kept alive by OpenGL because of d->prog
-
-	//glEnable(GL_TEXTURE_2D);
 
 	ymse::sdl::img_load(path + "/diffuse.jpg").copy_to(d->diffuse);
 	ymse::sdl::img_load(path + "/normal.jpg").copy_to(d->normal);
@@ -46,6 +46,8 @@ textured_skin::textured_skin(const std::string& path) :
 
 void textured_skin::circle(ymse::vec2f p, float r) {
 	float step_size = get_step_size(r);
+
+	glColor4f(1, 1, 1, 1);
 
 	glBegin(GL_TRIANGLE_FAN);
 	for (float d = 0.f; d < M_PI * 2.f; d += step_size) {
@@ -63,10 +65,12 @@ void textured_skin::fat_arc(ymse::vec2f p, float r, float t, float begin, float 
 	float r1 = r-t, r2 = r+t;
 	float step_size = get_step_size(r2);
 	float inner_a = -1, outer_a = 1;
+	float direction = 1;
 	if (begin > end) {
 		std::swap(begin, end);
 		std::swap(b_begin, b_end);
 		std::swap(inner_a, outer_a);
+		direction *= -1;
 	}
 
 	float b_step_size = (b_end - b_begin) / ((end - begin) / step_size);
@@ -78,12 +82,18 @@ void textured_skin::fat_arc(ymse::vec2f p, float r, float t, float begin, float 
 	float b = b_begin;
 
 	for (float d = begin; d < end; d += step_size) {
+		glVertexAttrib3f(across, direction*cos(d), direction*sin(d), 0);
+		glVertexAttrib3f(along, -direction*-sin(d), -direction*cos(d), 0);
+
 		glVertexAttrib2f(snake_coord, inner_a, b);
 		glVertex2f(x + r1 * cos(d), y + r1 * sin(d));
 		glVertexAttrib2f(snake_coord, outer_a, b);
 		glVertex2f(x + r2 * cos(d), y + r2 * sin(d));
 		b += b_step_size;
 	}
+
+	glVertexAttrib3f(across, direction*cos(end), direction*sin(end), 0);
+	glVertexAttrib3f(along, -direction*-sin(end), -direction*cos(end), 0);
 
 	glVertexAttrib2f(snake_coord, inner_a, b_end);
 	glVertex2f(x + r1 * cos(end), y + r1 * sin(end));
@@ -106,6 +116,9 @@ void textured_skin::fat_line(ymse::vec2f p, ymse::vec2f dir, float len, float t,
 	// Calculate normal * thickness:
 	float nx = dy * t, ny = -dx * t;
 	float x2 = x1 + dx*len, y2 = y1 + dy * len;
+
+	glVertexAttrib3f(across, nx, ny, 0);
+	glVertexAttrib3f(along, -dx, -dy, 0);
 
 	glBegin(GL_QUADS);
 	glVertexAttrib2f(snake_coord, 1, b_begin);
