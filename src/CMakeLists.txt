@@ -29,14 +29,18 @@ target_link_libraries(
 	GL
 	glut
 	${YMSE_LIBRARY}
+	${SDLIMAGE_LIBRARY}
 	${SDL_LIBRARY}
 )
 
 set_target_properties(
 	snygg
 	PROPERTIES
+
 	COMPILE_FLAGS "-ggdb -ffast-math -pipe -fvisibility-inlines-hidden -Wall"
 	COMPILE_DEFINITIONS "DEBUG;EBUG;GL_GLEXT_PROTOTYPES"
+
 #	COMPILE_FLAGS "-O3 -ffast-math -pipe -fvisibility-inlines-hidden"
 #	COMPILE_DEFINITIONS "NDEBUG;GL_GLEXT_PROTOTYPES"
+#	LINK_FLAGS "-s"
 )

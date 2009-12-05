@@ -4,12 +4,16 @@
 #include <ymse/vec.hpp>
 #include <ymse/gl/program.hpp>
 #include <ymse/gl/shader.hpp>
+#include <ymse/gl/texture.hpp>
+#include <ymse/sdl/img_load.hpp>
+#include <ymse/sdl/surface.hpp>
 #include "textured_skin.hpp"
 
 const int snake_coord = 4;
 
 struct textured_skin::impl {
 	ymse::gl::program prog;
+	ymse::gl::texture diffuse, normal;
 };
 
 textured_skin::textured_skin(const std::string& path) :
@@ -28,6 +32,16 @@ textured_skin::textured_skin(const std::string& path) :
 	d->prog.link();
 
 	// shaders go out of scope, but are kept alive by OpenGL because of d->prog
+
+	//glEnable(GL_TEXTURE_2D);
+
+	ymse::sdl::img_load(path + "/diffuse.jpg").copy_to(d->diffuse);
+	ymse::sdl::img_load(path + "/normal.jpg").copy_to(d->normal);
+
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, d->diffuse.get_id());
+	glActiveTexture(GL_TEXTURE1);
+	glBindTexture(GL_TEXTURE_2D, d->normal.get_id());
 }
 
 void textured_skin::circle(ymse::vec2f p, float r) {
@@ -42,6 +56,9 @@ void textured_skin::circle(ymse::vec2f p, float r) {
 
 void textured_skin::fat_arc(ymse::vec2f p, float r, float t, float begin, float end, float b_begin, float b_end) {
 	glUseProgram(d->prog.get_id());
+
+	d->prog.set_uniform("diffuse_map", 0);
+	d->prog.set_uniform("normal_map", 1);
 
 	float r1 = r-t, r2 = r+t;
 	float step_size = get_step_size(r2);
@@ -80,6 +97,9 @@ void textured_skin::fat_arc(ymse::vec2f p, float r, float t, float begin, float 
 
 void textured_skin::fat_line(ymse::vec2f p, ymse::vec2f dir, float len, float t, float b_begin, float b_end) {
 	glUseProgram(d->prog.get_id());
+
+	d->prog.set_uniform("diffuse_map", 0);
+	d->prog.set_uniform("normal_map", 1);
 
 	float &x1(p[0]), &y1(p[1]), &dx(dir[0]), &dy(dir[1]);
 
