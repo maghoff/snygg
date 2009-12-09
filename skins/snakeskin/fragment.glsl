@@ -13,8 +13,8 @@ void main(void) {
 	vec3 across = normalize(across_i);
 	vec3 along = normalize(along_i);
 
-	float ang = acos(snake_coord[0]);
-	float len_around = clamp(ang / M_PI, 0.0, 1.0);
+	float ang = acos(clamp(snake_coord[0], -1.0, 1.0));
+	float len_around = ang / M_PI;
 	vec2 texture_coord = vec2(len_around * (max_a - min_a) + min_a + snake_coord[1] * 0.001, -snake_coord[1] * density);
 
 	vec4 diffuse = texture2D(diffuse_map, texture_coord);
@@ -40,7 +40,7 @@ void main(void) {
 
 	vec3 w = vec3(world_coord[0], world_coord[1], h*2.5);
 
-	vec3 light = normalize(vec3(0, 0, 10) - w);
+	vec3 light = normalize(vec3(0, 0, 3) - w);
 
 	vec4 final_color = diffuse * vec4(0.2, 0.2, 0.2, 1);
 
