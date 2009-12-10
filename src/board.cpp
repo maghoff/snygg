@@ -1,3 +1,4 @@
+#include <SDL.h>
 #include <cmath>
 #include <boost/ptr_container/ptr_vector.hpp>
 #include <ymse/rect.hpp>
@@ -41,7 +42,7 @@ board::~board() {
 }
 
 void board::render(skin& s) const {
-	render_sequence(d->b, s, 0);
+	render_sequence(d->b, s, SDL_GetTicks() * 0.0002);
 }
 
 bool board::intersect_with_circle(const ymse::vec2f& p, float r) const {
@@ -67,6 +68,12 @@ ymse::rectf board::bounding_box() const {
 		x1: -120, y1: -65,
 		x2: 120, y2: 65
 	};
+
+	// Extremists board
+	/*ymse::rectf bb = {
+		x1: -24, y1: -48,
+		x2: 24, y2: 0
+	};*/
 
 	return bb;
 }

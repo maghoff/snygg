@@ -1,3 +1,4 @@
+#include <SDL.h>
 #include <cmath>
 #include <vector>
 #include <GL/gl.h>
@@ -6,6 +7,7 @@
 #include <ymse/bindable_keyboard_handler.hpp>
 #include <ymse/gl_box_reshaper.hpp>
 #include <ymse/rect.hpp>
+#include <ymse/keycodes.hpp>
 #include "board.hpp"
 #include "food_generator.hpp"
 #include "item.hpp"
@@ -25,6 +27,11 @@ struct snygg::impl {
 	boost::scoped_ptr<food_generator> fg;
 };
 
+static void fs_toggle(bool in) {
+	if (in) {
+		SDL_WM_ToggleFullScreen(SDL_GetVideoSurface());
+	}
+}
 
 snygg::snygg() :
 	d(new impl)
@@ -61,6 +68,8 @@ snygg::snygg() :
 	d->reshaper->set_pixels_per_unit_listener(d->active_skin.get());
 
 	d->kbd.reset(new ymse::bindable_keyboard_handler);
+
+	d->kbd->bind(ymse::KEY_F, &fs_toggle);
 
 	d->fg.reset(new food_generator(*this, *d->active_board));
 	d->fg->generate();
