@@ -47,8 +47,6 @@ textured_skin::textured_skin(const std::string& path) :
 void textured_skin::circle(ymse::vec2f p, float r) {
 	float step_size = get_step_size(r);
 
-	glColor4f(1, 1, 1, 1);
-
 	glBegin(GL_TRIANGLE_FAN);
 	for (float d = 0.f; d < M_PI * 2.f; d += step_size) {
 		glVertex2f(p[0] + r * cos(d), p[1] + r * sin(d));
