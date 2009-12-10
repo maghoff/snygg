@@ -63,7 +63,7 @@ bool segment_sequence::intersect_with_self(const ymse::vec2f& p, float r) const 
 		if (i->intersect_with_circle(p, r, skiplength)) return true;
 	}
 
-	if (skiplength < 2.5f) {
+	if (skiplength <= 0) {
 		namespace i = ymse::intersect;
 		vec2f tail(get_tail_pos());
 		if (i::circle_with_circle(p, r, tail, 2.5f)) return true;

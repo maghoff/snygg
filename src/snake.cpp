@@ -36,10 +36,10 @@ snake::snake(item_container& ic, float speed) :
 	d(new impl(ic))
 {
 	d->speed = speed;
-	d->dir = 0;
+	d->dir = -100; //< Invalid direction, forces set_turn to add a segment
 
 	vec2f pos(0, -40), dir(0, 1);
-	d->body.push_back(segment_ptr(new line(pos, dir, 20.f)));
+	d->body.push_back(segment_ptr(new scored_point(pos, sqrt(2.5*2.5 + 20.), 2.5f, dir)));
 
 	d->tail = d->head = &d->body;
 
