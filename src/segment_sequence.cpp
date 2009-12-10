@@ -1,5 +1,6 @@
 #include <set>
 #include <boost/ptr_container/ptr_list.hpp>
+#include <ymse/geometry_intersection.hpp>
 #include <ymse/vec.hpp>
 #include "segment_sequence.hpp"
 
@@ -60,6 +61,12 @@ bool segment_sequence::intersect_with_self(const ymse::vec2f& p, float r) const 
 
 	for (iter i = d->body.rbegin(); i != end; ++i) {
 		if (i->intersect_with_circle(p, r, skiplength)) return true;
+	}
+
+	if (skiplength < 2.5f) {
+		namespace i = ymse::intersect;
+		vec2f tail(get_tail_pos());
+		if (i::circle_with_circle(p, r, tail, 2.5f)) return true;
 	}
 
 	return false;
