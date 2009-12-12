@@ -61,7 +61,7 @@ snygg::snygg() :
 
 	d->reshaper.reset(new ymse::gl_box_reshaper);
 	ymse::rectf bb = d->active_board->bounding_box();
-	const float margin = 10.f;
+	const float margin = 5.f;
 	d->reshaper->set_box(bb.x1 - margin, bb.y1 - margin, bb.x2 + margin, bb.y2 + margin);
 
 	d->active_skin.reset(new textured_skin("skins/snakeskin"));

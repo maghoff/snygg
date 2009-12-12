@@ -1,6 +1,7 @@
 #include <cassert>
 #include <cmath>
 #include <stdexcept>
+#include <ymse/rect.hpp>
 #include <ymse/vec.hpp>
 #include "scored_point.hpp"
 #include "skin.hpp"
@@ -63,4 +64,13 @@ float scored_point::length() const {
 
 void scored_point::render(skin& s, float head_b) const {
 	s.circle(vec2f(x, y), r);
+}
+
+ymse::rectf scored_point::bounding_box() const {
+	ymse::rectf bb = {
+		x1: x - r, y1: y - r,
+		x2: x + r, y2: y + r
+	};
+
+	return bb;
 }

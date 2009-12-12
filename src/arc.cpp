@@ -1,5 +1,6 @@
 #include <algorithm>
 #include <cmath>
+#include <ymse/rect.hpp>
 #include <ymse/vec.hpp>
 #include "skin.hpp"
 #include "arc.hpp"
@@ -127,4 +128,18 @@ float arc::length() const {
 
 void arc::render(skin& s, float head_b) const {
 	s.fat_arc(ymse::vec2f(x, y), r, thickness, begin, end, head_b + length(), head_b);
+}
+
+ymse::rectf arc::bounding_box() const {
+
+	// This is the bounding box of the entire circle with thickness, not just the arc
+
+	// TODO: Make the box smaller when needed
+
+	ymse::rectf bb = {
+		x1: x - r - thickness, y1: y - r - thickness,
+		x2: x + r + thickness, y2: y + r + thickness
+	};
+
+	return bb;
 }

@@ -1,6 +1,7 @@
 #include <set>
 #include <boost/ptr_container/ptr_list.hpp>
 #include <ymse/geometry_intersection.hpp>
+#include <ymse/rect.hpp>
 #include <ymse/vec.hpp>
 #include "segment_sequence.hpp"
 
@@ -95,4 +96,18 @@ void segment_sequence::render(skin& s, float head_b) const {
 
 void segment_sequence::push_back(std::auto_ptr<segment> s) {
 	d->body.push_back(s);
+}
+
+ymse::rectf segment_sequence::bounding_box() const {
+	assert(d->body.size() > 0);
+
+	ymse::rectf bb = d->body.front().bounding_box();
+
+	typedef boost::ptr_list<segment>::const_iterator iter;
+	iter end = d->body.end();
+	for (iter i = d->body.begin(); i != end; ++i) {
+		bb = ymse::bounding_box(bb, i->bounding_box());
+	}
+
+	return bb;
 }

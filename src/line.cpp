@@ -1,3 +1,8 @@
+#include <cmath>
+#include <cassert>
+
+#include <algorithm>
+#include <ymse/rect.hpp>
 #include <ymse/vec.hpp>
 #include "skin.hpp"
 #include "line.hpp"
@@ -106,4 +111,31 @@ float line::length() const {
 
 void line::render(skin& s, float head_b) const {
 	s.fat_line(ymse::vec2f(x, y), ymse::vec2f(dx, dy), len, thickness, head_b + len, head_b);
+}
+
+ymse::rectf line::bounding_box() const {
+
+	assert(fabs(1-(dx*dx + dy*dy)) < 0.001);
+
+	float nx = thickness * -dy, ny = thickness * dx;
+
+	float xs[4], ys[4];
+	xs[0] = x - nx; ys[0] = y - ny;
+	xs[1] = x + nx; ys[1] = y + ny;
+	xs[2] = xs[0] + dx * len; ys[2] = ys[0] + dy * len;
+	xs[3] = xs[1] + dx * len; ys[3] = ys[1] + dy * len;
+
+	ymse::rectf bb = {
+		x1: xs[0], y1: ys[0],
+		x2: xs[0], y2: ys[0]
+	};
+
+	for (int i=1; i<4; ++i) {
+		bb.x1 = std::min(bb.x1, xs[i]);
+		bb.y1 = std::min(bb.y1, ys[i]);
+		bb.x2 = std::max(bb.x2, xs[i]);
+		bb.y2 = std::max(bb.y2, ys[i]);
+	}
+
+	return bb;
 }

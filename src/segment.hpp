@@ -9,6 +9,11 @@ namespace ymse {
 	struct vec;
 
 	typedef vec<2, float> vec2f;
+
+	template <typename T>
+	struct rect;
+
+	typedef rect<float> rectf;
 }
 
 class skin;
@@ -24,6 +29,8 @@ public:
 
 	virtual float length() const = 0;
 	virtual void render(skin&, float head_b) const = 0;
+
+	virtual ymse::rectf bounding_box() const = 0;
 };
 
 #endif

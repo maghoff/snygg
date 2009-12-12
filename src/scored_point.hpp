@@ -25,6 +25,8 @@ public:
 
 	float length() const;
 	void render(skin&, float head_b) const;
+
+	ymse::rectf bounding_box() const;
 };
 
 #endif

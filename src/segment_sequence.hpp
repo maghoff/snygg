@@ -29,6 +29,8 @@ public:
 	float length() const;
 	void render(skin&, float head_b) const;
 
+	ymse::rectf bounding_box() const;
+
 	// This segment_sequence assumes ownership
 	void push_back(std::auto_ptr<segment>);
 };

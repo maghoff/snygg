@@ -34,8 +34,33 @@ void box(boost::ptr_vector<segment>& b, const ymse::rectf& rc, float r) {
 board::board() :
 	d(new impl)
 {
-	d->b.reserve(8);
-	box(d->b, bounding_box(), 10);
+	d->b.reserve(16);
+
+	// Classic board:
+	/*ymse::rectf bb = {
+		x1: -200, y1: -50,
+		x2: 200, y2: 50
+	};*/
+
+	// 16:9 YouTube-friendly board:
+	ymse::rectf bb = {
+		x1: -120, y1: -65,
+		x2: 120, y2: 65
+	};
+
+	// Extremists board
+	/*ymse::rectf bb = {
+		x1: -24, y1: -48,
+		x2: 24, y2: 0
+	};*/
+
+	ymse::rectf inner_box = {
+		x1: -100, y1: 0,
+		x2: 100, y2: 45
+	};
+
+	box(d->b, bb, 10);
+	box(d->b, inner_box, 10);
 }
 
 board::~board() {
@@ -54,26 +79,14 @@ bool board::intersect_with_circle(const ymse::vec2f& p, float r) const {
 	return false;
 }
 
-// For the future: return the actual *bounding* box, not the bounding box
-// of the core of the frame. (This does not include the thickness)
 ymse::rectf board::bounding_box() const {
-	// Classic board:
-	/*ymse::rectf bb = {
-		x1: -200, y1: -50,
-		x2: 200, y2: 50
-	};*/
+	ymse::rectf bb = d->b[0].bounding_box();
 
-	// 16:9 YouTube-friendly board:
-	ymse::rectf bb = {
-		x1: -120, y1: -65,
-		x2: 120, y2: 65
-	};
-
-	// Extremists board
-	/*ymse::rectf bb = {
-		x1: -24, y1: -48,
-		x2: 24, y2: 0
-	};*/
+	typedef boost::ptr_vector<segment>::const_iterator iter;
+	iter end = d->b.end();
+	for (iter i = d->b.begin(); i != end; ++i) {
+		bb = ymse::bounding_box(bb, i->bounding_box());
+	}
 
 	return bb;
 }

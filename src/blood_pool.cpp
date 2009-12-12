@@ -2,6 +2,7 @@
 #include <cmath>
 #include <stdexcept>
 #include <GL/gl.h>
+#include <ymse/rect.hpp>
 #include <ymse/vec.hpp>
 #include "blood_pool.hpp"
 #include "skin.hpp"
@@ -55,4 +56,13 @@ void blood_pool::render(skin& s) const {
 	glColor4f(1.f, 0.f, 0.f, 1.f);
 	s.circle(vec2f(x, y), r);
 	glColor4f(1.f, 1.f, 1.f, 1.f);
+}
+
+ymse::rectf blood_pool::bounding_box() const {
+	ymse::rectf bb = {
+		x1: x, y1: y,
+		x2: x, y2: y
+	};
+
+	return bb;
 }
