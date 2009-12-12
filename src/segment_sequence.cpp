@@ -111,3 +111,15 @@ ymse::rectf segment_sequence::bounding_box() const {
 
 	return bb;
 }
+
+int segment_sequence::left_hline_intersections(ymse::vec2f p) const {
+	int n = 0;
+
+	typedef boost::ptr_list<segment>::const_iterator iter;
+	iter end = d->body.end();
+	for (iter i = d->body.begin(); i != end; ++i) {
+		n += i->left_hline_intersections(p);
+	}
+
+	return n;
+}

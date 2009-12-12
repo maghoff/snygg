@@ -24,6 +24,8 @@ public:
 	void render(skin&) const;
 
 	ymse::rectf bounding_box() const;
+
+	int left_hline_intersections(ymse::vec2f) const;
 };
 
 

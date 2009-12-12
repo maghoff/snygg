@@ -1,3 +1,4 @@
+#include <cassert>
 #include <algorithm>
 #include <cmath>
 #include <ymse/rect.hpp>
@@ -142,4 +143,53 @@ ymse::rectf arc::bounding_box() const {
 	};
 
 	return bb;
+}
+
+int arc::left_hline_intersections(ymse::vec2f p) const {
+	if (p[1] < y - r) return 0;
+	if (p[1] > y + r) return 0;
+
+	float dy = (p[1] - y) / r;
+	float ang1 = asin(dy), ang2 = M_PI - ang1;
+	if (ang1 < 0) ang1 += 2.0 * M_PI;
+
+	float x1 = x + cos(ang1) * r, x2 = x + cos(ang2) * r;
+
+	// (x1, p[1]) and (x2, p[1]) are the two possible intersection points.
+	// Each point counts iff x < p[0] and the angle is included in this arc:
+
+	float b1 = begin, e1 = end;
+	if (b1 > e1) std::swap(b1, e1);
+
+	while (e1 < 0) {
+		b1 += 2. * M_PI;
+		e1 += 2. * M_PI;
+	}
+
+	while (b1 >= 0) {
+		b1 -= 2. * M_PI;
+		e1 -= 2. * M_PI;
+	}
+
+	float b2 = b1 + 2. * M_PI, e2 = e1 + 2. * M_PI;
+
+	int n = 0;
+
+	assert(b1 < e1);
+	assert(-2.01*M_PI <= b1 && b1 < 0);
+	assert(e1 < 2. * M_PI);
+	assert(0 <= ang1 && ang1 < 2. * M_PI);
+	assert(0 <= ang2 && ang2 < 2. * M_PI);
+
+	if (x1 < p[0]) {
+		if (b1 <= ang1 && ang1 < e1) n++;
+		else if (b2 <= ang1 && ang1 < e2) n++;
+	}
+
+	if (x2 < p[0]) {
+		if (b1 <= ang2 && ang2 < e1) n++;
+		else if (b2 <= ang2 && ang2 < e2) n++;
+	}
+
+	return n;
 }

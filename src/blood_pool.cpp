@@ -66,3 +66,8 @@ ymse::rectf blood_pool::bounding_box() const {
 
 	return bb;
 }
+
+int blood_pool::left_hline_intersections(ymse::vec2f) const {
+	assert(!"Not implemented");
+	return 0;
+}

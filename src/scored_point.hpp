@@ -28,6 +28,8 @@ public:
 	void render(skin&, float head_b) const;
 
 	ymse::rectf bounding_box() const;
+
+	int left_hline_intersections(ymse::vec2f) const;
 };
 
 #endif

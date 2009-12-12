@@ -79,3 +79,8 @@ ymse::rectf scored_point::bounding_box() const {
 
 	return bb;
 }
+
+int scored_point::left_hline_intersections(ymse::vec2f) const {
+	assert(!"Not implemented");
+	return 0;
+}

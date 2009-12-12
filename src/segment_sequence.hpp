@@ -31,6 +31,8 @@ public:
 
 	ymse::rectf bounding_box() const;
 
+	int left_hline_intersections(ymse::vec2f) const;
+
 	// This segment_sequence assumes ownership
 	void push_back(std::auto_ptr<segment>);
 };

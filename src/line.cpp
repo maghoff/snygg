@@ -114,9 +114,6 @@ void line::render(skin& s, float head_b) const {
 }
 
 ymse::rectf line::bounding_box() const {
-
-	assert(fabs(1-(dx*dx + dy*dy)) < 0.001);
-
 	float nx = thickness * -dy, ny = thickness * dx;
 
 	float xs[4], ys[4];
@@ -138,4 +135,16 @@ ymse::rectf line::bounding_box() const {
 	}
 
 	return bb;
+}
+
+int line::left_hline_intersections(ymse::vec2f p) const {
+	float y1 = y, y2 = y1 + dy * len;
+
+	if (p[1] < y1 && p[1] <= y2) return 0;
+	if (p[1] > y1 && p[1] >= y2) return 0;
+
+	float u = (p[1] - y1) / dy;
+	float xu = x + dx * u;
+
+	return xu < p[0];
 }

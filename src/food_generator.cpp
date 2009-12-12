@@ -3,6 +3,7 @@
 #include <boost/random/uniform_real.hpp>
 #include <boost/random/variate_generator.hpp>
 #include <ymse/rect.hpp>
+#include <ymse/vec.hpp>
 #include "board.hpp"
 #include "item_container.hpp"
 #include "food_item.hpp"
@@ -23,6 +24,19 @@ struct food_generator::impl {
 };
 
 
+namespace {
+
+template <class Rand>
+ymse::vec2f get_random_pos(Rand rand, ymse::rectf bb) {
+	return ymse::vec2f(
+		bb.left() + rand() * bb.width(),
+		bb.top() + rand() * bb.height()
+	);
+}
+
+}
+
+
 food_generator::food_generator(item_container& ic, board& b) :
 	d(new impl(ic, b))
 {
@@ -34,13 +48,16 @@ food_generator::~food_generator() {
 
 void food_generator::generate() {
 	ymse::rectf bb = d->b.bounding_box();
-	const float e1 = 7.5f, e2 = e1 * 2.f;
+
+	ymse::vec2f pos;
+	do {
+		pos = get_random_pos(d->rand, bb);
+	} while (
+		((d->b.winding_number(pos) & 1) == 0) ||
+		(d->b.intersect_with_circle(pos, 5.f))
+	);
+
 	d->ic.add_item(std::auto_ptr<item>(
-		new food_item(
-			bb.left() + e1 + d->rand() * (bb.width() - e2),
-			bb.top() + e1 + d->rand() * (bb.height() - e2),
-			5.f,
-			*this
-		))
+		new food_item(pos[0], pos[1], 5.f, *this))
 	);
 }

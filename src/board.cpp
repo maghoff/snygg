@@ -2,6 +2,7 @@
 #include <cmath>
 #include <boost/ptr_container/ptr_vector.hpp>
 #include <ymse/rect.hpp>
+#include <ymse/vec.hpp>
 #include "arc.hpp"
 #include "line.hpp"
 #include "board.hpp"
@@ -34,33 +35,39 @@ void box(boost::ptr_vector<segment>& b, const ymse::rectf& rc, float r) {
 board::board() :
 	d(new impl)
 {
-	d->b.reserve(16);
-
 	// Classic board:
 	/*ymse::rectf bb = {
 		x1: -200, y1: -50,
 		x2: 200, y2: 50
-	};*/
+	};
+	box(d->b, bb, 10);*/
 
 	// 16:9 YouTube-friendly board:
 	ymse::rectf bb = {
 		x1: -120, y1: -65,
 		x2: 120, y2: 65
 	};
+	ymse::rectf inner_left_box = {
+		x1: -100, y1: -45,
+		x2: -40, y2: 45
+	};
+	ymse::rectf inner_right_box = {
+		x1: 40, y1: -45,
+		x2: 100, y2: 45
+	};
+	box(d->b, bb, 10);
+	box(d->b, inner_left_box, 10);
+	box(d->b, inner_right_box, 10);
 
 	// Extremists board
 	/*ymse::rectf bb = {
 		x1: -24, y1: -48,
 		x2: 24, y2: 0
-	};*/
-
-	ymse::rectf inner_box = {
-		x1: -100, y1: 0,
-		x2: 100, y2: 45
 	};
+	box(d->b, bb, 10);*/
 
-	box(d->b, bb, 10);
-	//box(d->b, inner_box, 10);
+	// Family circus board:
+	//d->b.push_back(new arc(0, 0, 70, 0, 2.*M_PI, 1));
 }
 
 board::~board() {
@@ -89,4 +96,16 @@ ymse::rectf board::bounding_box() const {
 	}
 
 	return bb;
+}
+
+int board::winding_number(ymse::vec2f p) const {
+	int n = 0;
+
+	typedef boost::ptr_vector<segment>::const_iterator iter;
+	iter end = d->b.end();
+	for (iter i = d->b.begin(); i != end; ++i) {
+		n += i->left_hline_intersections(p);
+	}
+
+	return n;
 }
