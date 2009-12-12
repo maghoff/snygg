@@ -60,7 +60,7 @@ board::board() :
 	};
 
 	box(d->b, bb, 10);
-	box(d->b, inner_box, 10);
+	//box(d->b, inner_box, 10);
 }
 
 board::~board() {

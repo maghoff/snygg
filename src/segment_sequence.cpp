@@ -58,7 +58,7 @@ bool segment_sequence::intersect_with_self(const ymse::vec2f& p, float r) const 
 	typedef boost::ptr_list<segment>::reverse_iterator iter;
 	iter end = d->body.rend();
 
-	float skiplength = r*2.f;
+	float skiplength = r*2.f + 10.f;
 
 	for (iter i = d->body.rbegin(); i != end; ++i) {
 		if (i->intersect_with_circle(p, r, skiplength)) return true;

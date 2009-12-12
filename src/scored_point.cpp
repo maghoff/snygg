@@ -1,6 +1,7 @@
 #include <cassert>
 #include <cmath>
 #include <stdexcept>
+#include <ymse/geometry_intersection.hpp>
 #include <ymse/rect.hpp>
 #include <ymse/vec.hpp>
 #include "scored_point.hpp"
@@ -38,13 +39,23 @@ float scored_point::tail_forward(float length) {
 	}
 }
 
-bool scored_point::intersect_with_circle(const ymse::vec2f&, float) const {
+bool scored_point::intersect_with_circle(const ymse::vec2f& p2, float r2) const {
+
+	return ymse::intersect::circle_with_circle(ymse::vec2f(x, y), r, p2, r2);
 
 	// Stub this out. It will be a bit difficult to implement it properly
 	// without having the player crash with it whenever it scores.
 
-	return false;
+	//return false;
 }
+
+bool scored_point::intersect_with_circle(const ymse::vec2f& p2, float r2, float& skiplength) const {
+	return
+		skiplength <= 0.f &&
+		intersect_with_circle(p2, r2)
+	;
+}
+
 
 vec2f scored_point::get_head_pos() const {
 	return vec2f(x, y);
