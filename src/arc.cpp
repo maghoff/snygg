@@ -116,7 +116,7 @@ bool arc::intersect_with_circle(const ymse::vec2f& c_center, float c_r, float& s
 		return false;
 	}
 
-	float new_end = end - direction * skiplength;
+	float new_end = end - direction * (skiplength / r);
 	skiplength = 0;
 
 	return fat_arc_intersect_with_circle(vec2f(x, y), r, thickness, begin, new_end, c_center, c_r);
