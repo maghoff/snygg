@@ -16,7 +16,7 @@ class snygg : public ymse::game, public item_container {
 	boost::scoped_ptr<impl> d;
 
 public:
-	snygg();
+	snygg(const std::string& board_filename);
 	~snygg();
 
 	void render();

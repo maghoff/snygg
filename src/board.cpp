@@ -20,10 +20,10 @@ struct board::impl {
 };
 
 
-board::board() :
+board::board(const std::string& filename) :
 	d(new impl)
 {
-	d->lvm.dofile("levels/wide_screen.lua");
+	d->lvm.dofile(filename);
 
 	d->b.push_back(
 		luabind::call_function<segment*>(d->lvm.get_L(), "create_board") [

@@ -33,7 +33,7 @@ static void fs_toggle(bool in) {
 	}
 }
 
-snygg::snygg() :
+snygg::snygg(const std::string& board_filename) :
 	d(new impl)
 {
 	glClearColor(0.0, 0.0, 0.0, 0.0);
@@ -57,7 +57,7 @@ snygg::snygg() :
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA_SATURATE, GL_ONE);
 
-	d->active_board.reset(new board);
+	d->active_board.reset(new board(board_filename));
 
 	d->reshaper.reset(new ymse::gl_box_reshaper);
 	ymse::rectf bb = d->active_board->bounding_box();

@@ -1,4 +1,5 @@
 #include <iostream>
+#include <string>
 #include <typeinfo>
 #include <ymse/core.hpp>
 #include <ymse/core_factory.hpp>
@@ -9,7 +10,10 @@ try {
 	std::auto_ptr<ymse::core> c(ymse::core_factory());
 	c->init(argc, argv);
 
-	snygg g;
+	std::string board = "levels/wide_screen.lua";
+	if (argc >= 2) board = argv[1];
+
+	snygg g(board);
 
 	c->set_game_object(&g);
 
