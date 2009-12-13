@@ -10,6 +10,7 @@ add_executable(
 	item_container.cpp
 	item_with_life.cpp
 	line.cpp
+	luamod/lua_vm.cpp
 	main.cpp
 	plain_skin.cpp
 	player.cpp

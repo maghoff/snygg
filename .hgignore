@@ -1,5 +1,6 @@
 syntax: glob
 *~
+*.user
 cmake_install.cmake
 CMakeFiles/*
 CMakeCache.txt

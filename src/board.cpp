@@ -1,73 +1,35 @@
 #include <SDL.h>
 #include <cmath>
 #include <boost/ptr_container/ptr_vector.hpp>
+#include <lua.hpp>
+#include <luabind/luabind.hpp>
+#include <luabind/adopt_policy.hpp>
 #include <ymse/rect.hpp>
 #include <ymse/vec.hpp>
 #include "arc.hpp"
 #include "line.hpp"
+#include "luamod/lua_vm.hpp"
 #include "board.hpp"
+#include "segment_sequence.hpp"
 
 
 struct board::impl {
 	boost::ptr_vector<segment> b;
+
+	luamod::lua_vm lvm;
 };
-
-
-namespace {
-
-void box(boost::ptr_vector<segment>& b, const ymse::rectf& rc, float r) {
-	const float &x1 = rc.x1, &y1 = rc.y1, &x2 = rc.x2, &y2 = rc.y2;
-	float w = rc.width(), h = rc.height();
-
-	b.push_back(new line(x1 + r, y1    ,  1,  0, w - 2*r));
-	b.push_back(new arc (x2 - r, y1 + r,  r,  M_PI * -0.5, M_PI *  0.0, 1));
-	b.push_back(new line(x2    , y1 + r,  0,  1, h - 2*r));
-	b.push_back(new arc (x2 - r, y2 - r,  r,  M_PI *  0.0, M_PI *  0.5, 1));
-	b.push_back(new line(x2 - r, y2    , -1,  0, w - 2*r));
-	b.push_back(new arc (x1 + r, y2 - r,  r,  M_PI *  0.5, M_PI *  1.0, 1));
-	b.push_back(new line(x1    , y2 - r,  0, -1, h - 2*r));
-	b.push_back(new arc (x1 + r, y1 + r,  r,  M_PI * -1.0, M_PI * -0.5, 1));
-}
-
-}
 
 
 board::board() :
 	d(new impl)
 {
-	// Classic board:
-	/*ymse::rectf bb = {
-		x1: -200, y1: -50,
-		x2: 200, y2: 50
-	};
-	box(d->b, bb, 10);*/
+	d->lvm.dofile("levels/wide_screen.lua");
 
-	// 16:9 YouTube-friendly board:
-	ymse::rectf bb = {
-		x1: -120, y1: -65,
-		x2: 120, y2: 65
-	};
-	ymse::rectf inner_left_box = {
-		x1: -100, y1: -45,
-		x2: -40, y2: 45
-	};
-	ymse::rectf inner_right_box = {
-		x1: 40, y1: -45,
-		x2: 100, y2: 45
-	};
-	box(d->b, bb, 10);
-	box(d->b, inner_left_box, 10);
-	box(d->b, inner_right_box, 10);
-
-	// Extremists board
-	/*ymse::rectf bb = {
-		x1: -24, y1: -48,
-		x2: 24, y2: 0
-	};
-	box(d->b, bb, 10);*/
-
-	// Family circus board:
-	//d->b.push_back(new arc(0, 0, 70, 0, 2.*M_PI, 1));
+	d->b.push_back(
+		luabind::call_function<segment*>(d->lvm.get_L(), "create_board") [
+			luabind::adopt(luabind::result)
+		]
+	);
 }
 
 board::~board() {

@@ -86,8 +86,15 @@ vec2f segment_sequence::get_head_direction() const {
 }
 
 float segment_sequence::length() const {
-	assert(false);
-	return 0;
+	double len = 0;
+
+	typedef boost::ptr_list<segment>::const_iterator iter;
+	iter end = d->body.end();
+	for (iter i = d->body.begin(); i != end; ++i) {
+		len += i->length();
+	}
+
+	return len;
 }
 
 void segment_sequence::render(skin& s, float head_b) const {
@@ -95,6 +102,10 @@ void segment_sequence::render(skin& s, float head_b) const {
 }
 
 void segment_sequence::push_back(std::auto_ptr<segment> s) {
+	d->body.push_back(s);
+}
+
+void segment_sequence::push_back(segment* s) {
 	d->body.push_back(s);
 }
 
