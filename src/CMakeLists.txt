@@ -31,6 +31,8 @@ target_link_libraries(
 	${YMSE_LIBRARY}
 	${SDLIMAGE_LIBRARY}
 	${SDL_LIBRARY}
+	${LUABIND_LIBRARIES}
+	${LUA_LIBRARIES}
 )
 
 set_target_properties(
