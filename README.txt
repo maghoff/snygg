@@ -6,7 +6,7 @@ Dependencies
 
 Assuming you are on Ubuntu:
 
-    sudo apt-get install build-essential cmake freeglut3-dev libboost-dev libsdl-dev curl libluabind-dev
+    sudo apt-get install build-essential cmake freeglut3-dev libboost-dev libsdl-dev libsdl-image1.2-dev curl libluabind-dev
 
     # For textures:
     curl -L -o skins/snakeskin/diffuse.jpg http://imgur.com/xKUVi.jpg
