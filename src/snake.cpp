@@ -3,10 +3,11 @@
 #include <ymse/vec.hpp>
 #include "arc.hpp"
 #include "blood_pool.hpp"
+#include "digesting_growth_policy.hpp"
+#include "immediate_growth_policy.hpp"
 #include "item_container.hpp"
 #include "line.hpp"
 #include "player.hpp"
-#include "scored_point.hpp"
 #include "segment_sequence.hpp"
 #include "skin.hpp"
 #include "snake.hpp"
@@ -17,6 +18,8 @@ using ymse::vec2f;
 
 struct snake::impl {
 	item_container& ic;
+
+	boost::scoped_ptr<growth_policy> grow;
 
 	segment_sequence body;
 
@@ -35,11 +38,13 @@ struct snake::impl {
 snake::snake(item_container& ic, float speed) :
 	d(new impl(ic))
 {
+	d->grow.reset(new immediate_growth_policy);
+
 	d->speed = speed;
 	d->dir = -100; //< Invalid direction, forces set_turn to add a segment
 
 	vec2f pos(0, -40), dir(0, 1);
-	d->body.push_back(segment_ptr(new scored_point(pos, sqrt(2.5*2.5 + 20.), 2.5f, dir)));
+	d->body.push_back(d->grow->growth_segment(pos, dir, 20.f));
 
 	d->tail = d->head = &d->body;
 
@@ -50,13 +55,10 @@ snake::~snake() {
 }
 
 void snake::score(float amount) {
-	vec2f pos = d->body.get_head_pos();
-	vec2f v_dir = d->body.get_head_direction();
+	d->grow->grow(d->body, amount);
 
-	const float min_r = 2.5;
-	float r = sqrt(min_r * min_r + amount);
-
-	d->body.push_back(segment_ptr(new scored_point(pos, r, min_r, v_dir)));
+	// TODO: Potential cleanup.
+	// We don't need to set_turn when using immediate_growth_policy
 	int old_dir = d->dir;
 	d->dir = -100; //< invalid value
 	set_turn(old_dir);

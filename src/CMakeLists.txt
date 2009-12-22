@@ -3,9 +3,12 @@ add_executable(
 	arc.cpp
 	blood_pool.cpp
 	board.cpp
+	digesting_growth_policy.cpp
 	extender.cpp
 	food_generator.cpp
 	food_item.cpp
+	growth_policy.cpp
+	immediate_growth_policy.cpp
 	intersectable_with_circle.cpp
 	item.cpp
 	item_container.cpp
