@@ -36,6 +36,9 @@ public:
 	// This segment_sequence assumes ownership
 	void push_back(std::auto_ptr<segment>);
 
+	// This segment_sequence assumes ownership
+	void push_front(std::auto_ptr<segment>);
+
 	// Added for convenience for luabind
 	void push_back(segment*);
 };

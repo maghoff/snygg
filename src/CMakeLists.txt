@@ -3,6 +3,7 @@ add_executable(
 	arc.cpp
 	blood_pool.cpp
 	board.cpp
+	extender.cpp
 	food_generator.cpp
 	food_item.cpp
 	intersectable_with_circle.cpp

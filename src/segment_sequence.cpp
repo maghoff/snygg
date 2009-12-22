@@ -105,6 +105,10 @@ void segment_sequence::push_back(std::auto_ptr<segment> s) {
 	d->body.push_back(s);
 }
 
+void segment_sequence::push_front(std::auto_ptr<segment> s) {
+	d->body.push_front(s);
+}
+
 void segment_sequence::push_back(segment* s) {
 	d->body.push_back(s);
 }
