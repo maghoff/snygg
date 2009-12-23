@@ -29,6 +29,7 @@ struct snygg::impl {
 
 static void fs_toggle(bool in) {
 	if (in) {
+		// This breaks abstraction. Only ymse should need to know about SDL.
 		SDL_WM_ToggleFullScreen(SDL_GetVideoSurface());
 	}
 }
