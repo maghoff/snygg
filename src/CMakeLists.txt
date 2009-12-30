@@ -38,6 +38,7 @@ target_link_libraries(
 	${SDL_LIBRARY}
 	${LUABIND_LIBRARIES}
 	${LUA_LIBRARIES}
+	${Boost_PROGRAM_OPTIONS_LIBRARY}
 )
 
 set_target_properties(
@@ -51,3 +52,4 @@ set_target_properties(
 #	COMPILE_DEFINITIONS "NDEBUG;GL_GLEXT_PROTOTYPES"
 #	LINK_FLAGS "-s"
 )
+

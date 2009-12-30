@@ -1,5 +1,9 @@
 cmake_minimum_required(VERSION 2.6)
 
+if (POLICY CMP0011)
+  cmake_policy(SET CMP0011 NEW)
+endif (POLICY CMP0011)
+
 find_path(YMSE_PATH ymse/core.hpp $ENV{YMSE_PATH})
 find_library(YMSE_LIBRARY ymse $ENV{YMSE_PATH}/src)
 
@@ -16,3 +20,4 @@ else (YMSE_PATH AND YMSE_LIBRARY)
 		)
 	endif (Ymse_FIND_REQUIRED)
 endif (YMSE_PATH AND YMSE_LIBRARY)
+
