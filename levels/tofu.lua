@@ -50,18 +50,14 @@ function create_board()
 	local C = vec(right, top)
 	local D = vec(left, top)
 
-	s:push_back(arc(A, corner_radius, 2/2 * math.pi, 3/2 * math.pi + pinch, 1))
-
+	s:push_back(arc(A, corner_radius, 2/2 * math.pi + pinch, 3/2 * math.pi + pinch, 1))
 	s:push_back(bent_line(A, B, corner_radius, pinch))
-
-	s:push_back(arc(B, corner_radius, 3/2 * math.pi - pinch, 4/2 * math.pi, 1))
-	s:push_back(line(vec(right + corner_radius, bottom), vec(0, 1), height))
-	s:push_back(arc(C, corner_radius, 0/2 * math.pi, 1/2 * math.pi + pinch, 1))
-
+	s:push_back(arc(B, corner_radius, 3/2 * math.pi - pinch, 4/2 * math.pi - pinch, 1))
+	s:push_back(bent_line(B, C, corner_radius, -pinch))
+	s:push_back(arc(C, corner_radius, 0/2 * math.pi + pinch, 1/2 * math.pi + pinch, 1))
 	s:push_back(bent_line(C, D, corner_radius, pinch))
-
-	s:push_back(arc(D, corner_radius, 1/2 * math.pi - pinch, 2/2 * math.pi, 1))
-	s:push_back(line(vec(left - corner_radius, top), vec(0, -1), height))
+	s:push_back(arc(D, corner_radius, 1/2 * math.pi - pinch, 2/2 * math.pi - pinch, 1))
+	s:push_back(bent_line(D, A, corner_radius, -pinch))
 
 	return s
 end
