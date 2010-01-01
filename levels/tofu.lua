@@ -3,6 +3,8 @@
 -- This level exposes a weakness with the calculation of the bounding box
 
 function bent_line(A, B, corner_radius, pinch)
+	local AB, lr, e, f, ang, C, base_angle, pinch_radius
+
 	AB = B + -1 * A
 
 	lr = AB:length() / (2 * math.sin(pinch))
@@ -15,6 +17,11 @@ function bent_line(A, B, corner_radius, pinch)
 
 	base_angle = math.atan2(-y(e), -x(e))
 
+	if pinch_radius < 0 then
+		pinch_radius = -pinch_radius
+		base_angle = math.pi + base_angle
+	end
+
 	return arc(
 		C, pinch_radius,
 		base_angle + pinch, base_angle - pinch,
@@ -23,33 +30,37 @@ function bent_line(A, B, corner_radius, pinch)
 end
 
 function create_board()
-	s = segment_sequence()
+	local s = segment_sequence()
 
-	corner_radius = 10
+	local corner_radius = 10
 
-	pinch = 0.3
+	local pinch = 0.3
 
-	height = 90
-	width = 160
+	local height = 90
+	local width = 160
 
 	-- Inner dimensions:
-	left = 0 - width/2
-	right = left + width
-	bottom = 0 - height/2 - 10
-	top = bottom + height
+	local left = 0 - width/2
+	local right = left + width
+	local bottom = 0 - height/2 - 10
+	local top = bottom + height
 
+	local A = vec(left, bottom)
+	local B = vec(right, bottom)
+	local C = vec(right, top)
+	local D = vec(left, top)
 
-	s:push_back(arc(vec(left, bottom), corner_radius, 2/2 * math.pi, 3/2 * math.pi + pinch, 1))
+	s:push_back(arc(A, corner_radius, 2/2 * math.pi, 3/2 * math.pi + pinch, 1))
 
-	s:push_back(bent_line(vec(left, bottom), vec(right, bottom), corner_radius, pinch))
+	s:push_back(bent_line(A, B, corner_radius, pinch))
 
-	s:push_back(arc(vec(right, bottom), corner_radius, 3/2 * math.pi - pinch, 4/2 * math.pi, 1))
+	s:push_back(arc(B, corner_radius, 3/2 * math.pi - pinch, 4/2 * math.pi, 1))
 	s:push_back(line(vec(right + corner_radius, bottom), vec(0, 1), height))
-	s:push_back(arc(vec(right, top), corner_radius, 0/2 * math.pi, 1/2 * math.pi + pinch, 1))
+	s:push_back(arc(C, corner_radius, 0/2 * math.pi, 1/2 * math.pi + pinch, 1))
 
-	s:push_back(bent_line(vec(right, top), vec(left, top), corner_radius, pinch))
+	s:push_back(bent_line(C, D, corner_radius, pinch))
 
-	s:push_back(arc(vec(left, top), corner_radius, 1/2 * math.pi - pinch, 2/2 * math.pi, 1))
+	s:push_back(arc(D, corner_radius, 1/2 * math.pi - pinch, 2/2 * math.pi, 1))
 	s:push_back(line(vec(left - corner_radius, top), vec(0, -1), height))
 
 	return s
