@@ -1,6 +1,7 @@
 #include <lua.hpp>
 #include <luabind/luabind.hpp>
 #include <luabind/adopt_policy.hpp>
+#include <luabind/operator.hpp>
 #include "lua_vm.hpp"
 
 // For exposing to lua:
@@ -43,6 +44,9 @@ segment_sequence* box(const rectw& rc, float r) {
 	return s.release();
 }
 
+float x(const ymse::vec2f& v) { return v[0]; }
+float y(const ymse::vec2f& v) { return v[1]; }
+
 void register_modules(lua_State* L) {
 	using namespace luabind;
 	module(L) [
@@ -52,7 +56,14 @@ void register_modules(lua_State* L) {
 
 		class_<ymse::vec2f>("vec")
 			.def(constructor<float, float>())
+			.def("length", &ymse::vec2f::length)
+			.def(const_self + const_self)
+			.def(const_self * float())
+			.def(float() * const_self)
 		,
+
+		def("x", &x),
+		def("y", &y),
 
 		def("box", &box, adopt(result)),
 
