@@ -1,3 +1,5 @@
+#include <iostream>
+
 #include <SDL.h>
 #include <cmath>
 #include <boost/ptr_container/ptr_vector.hpp>
@@ -23,13 +25,22 @@ struct board::impl {
 board::board(const std::string& filename) :
 	d(new impl)
 {
-	d->lvm.dofile(filename);
+	try  {
+		d->lvm.dofile(filename);
 
-	d->b.push_back(
-		luabind::call_function<segment*>(d->lvm.get_L(), "create_board") [
-			luabind::adopt(luabind::result)
-		]
-	);
+		d->b.push_back(
+			luabind::call_function<segment*>(d->lvm.get_L(), "create_board") [
+				luabind::adopt(luabind::result)
+			]
+		);
+	}
+	catch (const luabind::error& e) {
+		luabind::object error_msg(luabind::from_stack(e.state(), -1));
+		std::cerr << "Lua error: " << error_msg << std::endl << std::endl;
+
+		// This is a bit drastic, but the luabind exception mechanism is cramping my style:
+		exit(-1);
+	}
 }
 
 board::~board() {
