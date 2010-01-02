@@ -93,9 +93,7 @@ void register_modules(lua_State* L) {
 
 lua_vm::lua_vm() {
 	L = lua_open();
-	luaopen_base(L);
-	luaopen_string(L);
-	luaopen_math(L);
+	luaL_openlibs(L);
 	luabind::open(L);
 
 	register_modules(L);
@@ -106,7 +104,8 @@ lua_vm::~lua_vm() {
 }
 
 void lua_vm::dofile(const std::string& filename) {
-	luaL_dofile(L, filename.c_str());
+	int result = luaL_dofile(L, filename.c_str());
+	if (result) throw luabind::error(L);
 }
 
 lua_State* lua_vm::get_L() {
