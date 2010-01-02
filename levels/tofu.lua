@@ -1,7 +1,5 @@
 -- Eat food inside a block of tofu
 
--- This level exposes a weakness with the calculation of the bounding box
-
 function bent_line(A, B, corner_radius, pinch)
 	local AB, lr, e, f, ang, C, base_angle, pinch_radius
 

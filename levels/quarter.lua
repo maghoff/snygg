@@ -1,4 +1,4 @@
--- Big quarter circle -- to demonstrate a problem in the calculation of the bounding box
+-- Big quarter circle
 
 function create_board()
 	s = segment_sequence()

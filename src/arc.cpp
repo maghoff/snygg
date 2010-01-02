@@ -34,6 +34,8 @@ arc::arc(
 	direction(direction_),
 	thickness(2.5)
 {
+	assert(r >= 0);
+//	assert((end - begin) * (direction) >= 0);
 }
 
 arc::~arc() {
@@ -132,15 +134,32 @@ void arc::render(skin& s, float head_b) const {
 }
 
 ymse::rectf arc::bounding_box() const {
+	using namespace ymse;
 
-	// This is the bounding box of the entire circle with thickness, not just the arc
+	const float r1 = r - thickness, r2 = r + thickness;
+	vec2f b1(x + cos(begin) * r1, y + sin(begin) * r1);
+	vec2f b2(x + cos(begin) * r2, y + sin(begin) * r2);
+	vec2f e1(x + cos(end) * r1, y + sin(end) * r1);
+	vec2f e2(x + cos(end) * r2, y + sin(end) * r2);
 
-	// TODO: Make the box smaller when needed
+	rectf bb = { x1: b1[0], y1: b1[1], x2: b1[0], y2: b1[1]};
+	bb = ymse::bounding_box(bb, b2);
+	bb = ymse::bounding_box(bb, e1);
+	bb = ymse::bounding_box(bb, e2);
 
-	ymse::rectf bb = {
-		x1: x - r - thickness, y1: y - r - thickness,
-		x2: x + r + thickness, y2: y + r + thickness
-	};
+	const float a1 = 0, a2 = M_PI * 1./2., a3 = M_PI * 2./2., a4 = M_PI * 3./2.;
+
+	float bg = begin, en = end;
+	if (bg > en) std::swap(bg, en);
+	while (en > 2. * M_PI) { bg -= 2. * M_PI; en -= 2. * M_PI; }
+	while (en < 0) { bg += 2. * M_PI; en += 2. * M_PI; }
+	if (bg <= a1 && en >= a1) bb = ymse::bounding_box(bb, vec2f(x + r2, y));
+	while (en < a2) { bg += 2. * M_PI; en += 2. * M_PI; }
+	if (bg <= a2 && en >= a2) bb = ymse::bounding_box(bb, vec2f(x, y + r2));
+	while (en < a3) { bg += 2. * M_PI; en += 2. * M_PI; }
+	if (bg <= a3 && en >= a3) bb = ymse::bounding_box(bb, vec2f(x - r2, y));
+	while (en < a4) { bg += 2. * M_PI; en += 2. * M_PI; }
+	if (bg <= a4 && en >= a4) bb = ymse::bounding_box(bb, vec2f(x, y - r2));
 
 	return bb;
 }
