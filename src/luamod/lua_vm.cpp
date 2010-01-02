@@ -26,24 +26,6 @@ public:
 	}
 };
 
-segment_sequence* box(const rectw& rc, float r) {
-	std::auto_ptr<segment_sequence> s(new segment_sequence);
-
-	const float &x1 = rc.x1, &y1 = rc.y1, &x2 = rc.x2, &y2 = rc.y2;
-	float w = rc.width(), h = rc.height();
-
-	s->push_back(new line(x1 + r, y1    ,  1,  0, w - 2*r));
-	s->push_back(new arc (x2 - r, y1 + r,  r,  M_PI * -0.5, M_PI *  0.0, 1));
-	s->push_back(new line(x2    , y1 + r,  0,  1, h - 2*r));
-	s->push_back(new arc (x2 - r, y2 - r,  r,  M_PI *  0.0, M_PI *  0.5, 1));
-	s->push_back(new line(x2 - r, y2    , -1,  0, w - 2*r));
-	s->push_back(new arc (x1 + r, y2 - r,  r,  M_PI *  0.5, M_PI *  1.0, 1));
-	s->push_back(new line(x1    , y2 - r,  0, -1, h - 2*r));
-	s->push_back(new arc (x1 + r, y1 + r,  r,  M_PI * -1.0, M_PI * -0.5, 1));
-
-	return s.release();
-}
-
 float x(const ymse::vec2f& v) { return v[0]; }
 float y(const ymse::vec2f& v) { return v[1]; }
 
@@ -52,6 +34,16 @@ void register_modules(lua_State* L) {
 	module(L) [
 		class_<rectw>("rect")
 			.def(constructor<float, float, float, float>())
+			.def("top", &rectw::top)
+			.def("bottom", &rectw::bottom)
+			.def("left", &rectw::left)
+			.def("right", &rectw::right)
+			.def("width", &rectw::width)
+			.def("height", &rectw::height)
+			.def_readwrite("x1", &rectw::x1)
+			.def_readwrite("y1", &rectw::y1)
+			.def_readwrite("x2", &rectw::x2)
+			.def_readwrite("y2", &rectw::y2)
 		,
 
 		class_<ymse::vec2f>("vec")
@@ -64,8 +56,6 @@ void register_modules(lua_State* L) {
 
 		def("x", &x),
 		def("y", &y),
-
-		def("box", &box, adopt(result)),
 
 		class_<segment>("segment")
 			.def("get_head_pos", &segment::get_head_pos)

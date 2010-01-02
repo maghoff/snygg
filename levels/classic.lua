@@ -1,5 +1,7 @@
 -- Classic board
 
+require "levels/util"
+
 function create_board()
-    return box(rect(-200, -50, 200, 50), 10)
+	return box(rect(-200, -50, 200, 50), 10)
 end
