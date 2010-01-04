@@ -47,6 +47,11 @@ food_generator::~food_generator() {
 }
 
 void food_generator::generate() {
+#ifdef DISALLOW_LONG_PLAYING
+	static int count = 0;
+	if (count++ >= 3) exit(0);
+#endif
+
 	ymse::rectf bb = d->b.bounding_box();
 
 	ymse::vec2f pos;
