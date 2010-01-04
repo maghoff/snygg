@@ -8,6 +8,7 @@
 #include <ymse/gl_box_reshaper.hpp>
 #include <ymse/rect.hpp>
 #include <ymse/keycodes.hpp>
+#include <ymse/vec.hpp>
 #include "board.hpp"
 #include "food_generator.hpp"
 #include "item.hpp"
@@ -102,6 +103,17 @@ void snygg::render() {
 	for (riter i = d->renderables.begin(); i != rend; ++i) {
 		i->render(*d->active_skin);
 	}
+
+
+	std::vector<ymse::vec3f> balls;
+	balls.push_back(ymse::vec3f(0, 0, 10));
+	balls.push_back(ymse::vec3f(10, 0, 5));
+	balls.push_back(ymse::vec3f(8, 8, 5));
+
+	ymse::rectf bb = d->active_board->bounding_box();
+
+	static_cast<textured_skin*>(d->active_skin.get())->metaballs(bb, balls);
+
 }
 
 void snygg::tick() {

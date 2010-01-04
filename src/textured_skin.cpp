@@ -1,6 +1,7 @@
 #include <GL/gl.h>
 #include <algorithm>
 #include <cmath>
+#include <ymse/rect.hpp>
 #include <ymse/vec.hpp>
 #include <ymse/gl/program.hpp>
 #include <ymse/gl/shader.hpp>
@@ -12,7 +13,7 @@
 const int snake_coord = 4, across = 5, along = 6;
 
 struct textured_skin::impl {
-	ymse::gl::program prog;
+	ymse::gl::program prog, metaballs;
 	ymse::gl::texture diffuse, normal;
 };
 
@@ -42,6 +43,18 @@ textured_skin::textured_skin(const std::string& path) :
 	glBindTexture(GL_TEXTURE_2D, d->diffuse.get_id());
 	glActiveTexture(GL_TEXTURE1);
 	glBindTexture(GL_TEXTURE_2D, d->normal.get_id());
+
+
+
+	ymse::gl::shader mb_vertex(GL_VERTEX_SHADER), mb_fragment(GL_FRAGMENT_SHADER);
+
+	mb_vertex.source_file(path + "/mb_vertex.glsl");
+	mb_fragment.source_file(path + "/mb_fragment.glsl");
+
+	d->metaballs.attach(mb_vertex);
+	d->metaballs.attach(mb_fragment);
+
+	d->metaballs.link();
 }
 
 void textured_skin::circle(ymse::vec2f p, float r) {
@@ -127,6 +140,19 @@ void textured_skin::fat_line(ymse::vec2f p, ymse::vec2f dir, float len, float t,
 	glVertex2f(x2 - nx, y2 - ny);
 	glVertexAttrib2f(snake_coord, -1, b_begin);
 	glVertex2f(x1 - nx, y1 - ny);
+	glEnd();
+
+	glUseProgram(0);
+}
+
+void textured_skin::metaballs(ymse::rectf bb, const std::vector<ymse::vec3f>& p) {
+	glUseProgram(d->metaballs.get_id());
+
+	glBegin(GL_QUADS);
+	glVertex2f(bb.x1, bb.y1);
+	glVertex2f(bb.x1, bb.y2);
+	glVertex2f(bb.x2, bb.y2);
+	glVertex2f(bb.x2, bb.y1);
 	glEnd();
 
 	glUseProgram(0);
