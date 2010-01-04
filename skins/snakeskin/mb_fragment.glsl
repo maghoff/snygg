@@ -9,7 +9,7 @@ void main(void) {
 	for (int i=0; i<number_of_balls; ++i) {
 		vec3 v = texture(balls, float(i+1)/float(number_of_balls+1));
 		vec2 c = vec2(v.x, v.y) - world_coord;
-		val = val + (10.*v.z)/(c.x*c.x + c.y*c.y);
+		val = val + (30.*v.z)/(c.x*c.x + c.y*c.y);
 	}
 
 	const vec4 color = vec4(1, 0, 0, 1);

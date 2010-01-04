@@ -102,16 +102,9 @@ void snygg::render() {
 		i->render(*d->active_skin);
 	}
 
-
-	std::vector<ymse::vec3f> balls;
-	balls.push_back(ymse::vec3f(0.0, 1.0, 5));
-	balls.push_back(ymse::vec3f(10.0, 0, 30));
-	balls.push_back(ymse::vec3f(20.0, -1.0, 5));
-
 	ymse::rectf bb = d->active_board->bounding_box();
 
-	static_cast<textured_skin*>(d->active_skin.get())->metaballs(bb, balls);
-
+	static_cast<textured_skin*>(d->active_skin.get())->render_metaballs(bb);
 }
 
 void snygg::tick() {

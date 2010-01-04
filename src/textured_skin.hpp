@@ -22,12 +22,14 @@ public:
 	textured_skin(const std::string& path);
 
 	void circle(ymse::vec2f p, float r);
+	void blood(ymse::vec2f p, float r);
 
 	void fat_arc(ymse::vec2f p, float r, float t, float begin, float end, float b_begin, float b_end);
 	void fat_line(ymse::vec2f p, ymse::vec2f d, float len, float t, float b_begin, float b_end);
 
 	// Three coordinates: x, y and size
 	void metaballs(ymse::rectf rc, const std::vector<ymse::vec3f>&);
+	void render_metaballs(ymse::rectf bb);
 };
 
 #endif // TEXTURED_SKIN_HPP

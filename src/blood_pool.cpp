@@ -51,11 +51,7 @@ void blood_pool::render(skin& s, float) const {
 }
 
 void blood_pool::render(skin& s) const {
-	// I am not sure that it is proper of me to set the colour here.
-
-	glColor4f(1.f, 0.f, 0.f, 1.f);
-	s.circle(vec2f(x, y), r);
-	glColor4f(1.f, 1.f, 1.f, 1.f);
+	s.blood(vec2f(x, y), r);
 }
 
 ymse::rectf blood_pool::bounding_box() const {

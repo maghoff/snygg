@@ -18,6 +18,8 @@ struct textured_skin::impl {
 
 	ymse::gl::program metaballs;
 	ymse::gl::texture metaballs_coordinates;
+
+	std::vector<ymse::vec3f> balls;
 };
 
 textured_skin::textured_skin(const std::string& path) :
@@ -81,6 +83,10 @@ void textured_skin::circle(ymse::vec2f p, float r) {
 		glVertex2f(p[0] + r * cos(d), p[1] + r * sin(d));
 	}
 	glEnd();
+}
+
+void textured_skin::blood(ymse::vec2f p, float r) {
+	d->balls.push_back(ymse::vec3f(p[0], p[1], r));
 }
 
 void textured_skin::fat_arc(ymse::vec2f p, float r, float t, float begin, float end, float b_begin, float b_end) {
@@ -176,4 +182,9 @@ void textured_skin::metaballs(ymse::rectf bb, const std::vector<ymse::vec3f>& p)
 	glEnd();
 
 	glUseProgram(0);
+}
+
+void textured_skin::render_metaballs(ymse::rectf bb) {
+	metaballs(bb, d->balls);
+	d->balls.clear();
 }

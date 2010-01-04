@@ -17,6 +17,12 @@ void plain_skin::circle(ymse::vec2f p, float r) {
 	glEnd();
 }
 
+void plain_skin::blood(ymse::vec2f p, float r) {
+	glColor4f(1, 0, 0, 1);
+	circle(p, r);
+	glColor4f(1, 1, 1, 1);
+}
+
 void plain_skin::fat_arc(ymse::vec2f p, float r, float t, float begin, float end, float b_begin, float b_end) {
 	float r1 = r-t, r2 = r+t;
 	float step_size = get_step_size(r2);
