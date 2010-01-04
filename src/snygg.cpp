@@ -38,6 +38,8 @@ static void fs_toggle(bool in) {
 snygg::snygg(const std::string& board_filename) :
 	d(new impl)
 {
+	assert(glGetError() == GL_NO_ERROR);
+
 	glClearColor(0.0, 0.0, 0.0, 0.0);
 	glClearDepth(1.0);
 
@@ -45,9 +47,8 @@ snygg::snygg(const std::string& board_filename) :
 
 	glShadeModel(GL_SMOOTH);
 
-	glEnable(GL_TEXTURE);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+	glEnable(GL_TEXTURE_1D);
+	glEnable(GL_TEXTURE_2D);
 
 	glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
 	glEnable(GL_LINE_SMOOTH);
@@ -106,9 +107,9 @@ void snygg::render() {
 
 
 	std::vector<ymse::vec3f> balls;
-	balls.push_back(ymse::vec3f(0, 0, 10));
-	balls.push_back(ymse::vec3f(10, 0, 5));
-	balls.push_back(ymse::vec3f(8, 8, 5));
+	balls.push_back(ymse::vec3f(0.0, 1.0, 5));
+	balls.push_back(ymse::vec3f(10.0, 0, 30));
+	balls.push_back(ymse::vec3f(20.0, -1.0, 5));
 
 	ymse::rectf bb = d->active_board->bounding_box();
 

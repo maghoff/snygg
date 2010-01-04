@@ -3,15 +3,13 @@ uniform sampler1D balls;
 varying vec2 world_coord;
 
 void main(void) {
-	//f(x,y,z) = 1 / ((x − x0)2 + (y − y0)2 + (z − z0)2)
+	float number_of_balls = textureSize(balls, 0);
 
 	float val = 0;
-	for (int i=0; i<1; ++i) {
-		vec2 c = vec2(0, 0) - world_coord;
-		val = val + 300/(c.x*c.x + c.y*c.y);
-
-		c = vec2(10, 0) - world_coord;
-		val = val + 300/(c.x*c.x + c.y*c.y);
+	for (int i=0; i<number_of_balls; ++i) {
+		vec3 v = texture(balls, float(i+1)/float(number_of_balls+1));
+		vec2 c = vec2(v.x, v.y) - world_coord;
+		val = val + (10.*v.z)/(c.x*c.x + c.y*c.y);
 	}
 
 	const vec4 color = vec4(1, 0, 0, 1);
