@@ -1,8 +1,12 @@
 levels/circus.lua
 levels/classic.lua
+levels/four.lua
+levels/quarter.lua
 levels/round_and_round.lua
 levels/small.lua
+levels/tofu.lua
 levels/tricky.lua
+levels/util.lua
 levels/wide_screen.lua
 skins/snakeskin/fragment.glsl
 skins/snakeskin/vertex.glsl
