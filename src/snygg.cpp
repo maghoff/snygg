@@ -47,9 +47,6 @@ snygg::snygg(const std::string& board_filename) :
 
 	glShadeModel(GL_SMOOTH);
 
-	glEnable(GL_TEXTURE_1D);
-	glEnable(GL_TEXTURE_2D);
-
 	glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
 	glEnable(GL_LINE_SMOOTH);
 
