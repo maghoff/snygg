@@ -26,6 +26,8 @@ struct snygg::impl {
 	boost::ptr_list<renderable> renderables;
 	boost::ptr_vector<player> players;
 	boost::scoped_ptr<food_generator> fg;
+
+	ymse::rectf metaballs_rect;
 };
 
 static void fs_toggle(bool in) {
@@ -63,6 +65,11 @@ snygg::snygg(const std::string& board_filename) :
 	ymse::rectf bb = d->active_board->bounding_box();
 	const float margin = 5.f;
 	d->reshaper->set_box(bb.x1 - margin, bb.y1 - margin, bb.x2 + margin, bb.y2 + margin);
+
+	d->metaballs_rect.x1 = bb.x1 - margin;
+	d->metaballs_rect.y1 = bb.y1 - margin;
+	d->metaballs_rect.x2 = bb.x2 + margin;
+	d->metaballs_rect.y2 = bb.y2 + margin;
 
 	d->active_skin.reset(new textured_skin("skins/snakeskin"));
 	d->reshaper->set_pixels_per_unit_listener(d->active_skin.get());
@@ -102,9 +109,7 @@ void snygg::render() {
 		i->render(*d->active_skin);
 	}
 
-	ymse::rectf bb = d->active_board->bounding_box();
-
-	static_cast<textured_skin*>(d->active_skin.get())->render_metaballs(bb);
+	static_cast<textured_skin*>(d->active_skin.get())->render_metaballs(d->metaballs_rect);
 }
 
 void snygg::tick() {
