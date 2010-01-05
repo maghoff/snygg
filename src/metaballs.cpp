@@ -5,18 +5,19 @@
 #include <ymse/rect.hpp>
 #include <ymse/vec.hpp>
 #include "metaballs.hpp"
+#include "plain_skin.hpp"
+#include "textured_skin.hpp"
 
-struct metaballs::impl {
+template <class BaseSkin>
+struct metaballs<BaseSkin>::impl {
 	ymse::gl::program metaballs;
 	ymse::gl::texture metaballs_coordinates;
 
 	std::vector<ymse::vec3f> balls;
 };
 
-metaballs::metaballs(const std::string& path) :
-	textured_skin(path),
-	d(new impl)
-{
+template <class BaseSkin>
+void metaballs<BaseSkin>::init(const std::string& path) {
 	ymse::gl::shader mb_vertex(GL_VERTEX_SHADER), mb_fragment(GL_FRAGMENT_SHADER);
 
 	mb_vertex.source_file(path + "/mb_vertex.glsl");
@@ -33,20 +34,38 @@ metaballs::metaballs(const std::string& path) :
 	glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 }
 
-metaballs::~metaballs() {
+template <>
+metaballs<plain_skin>::metaballs(const std::string& path) :
+	d(new impl)
+{
+	init(path);
 }
 
-void metaballs::blood(ymse::vec2f p, float r) {
+template <>
+metaballs<textured_skin>::metaballs(const std::string& path) :
+	textured_skin(path),
+	d(new impl)
+{
+	init(path);
+}
+
+template <class BaseSkin>
+metaballs<BaseSkin>::~metaballs() {
+}
+
+template <class BaseSkin>
+void metaballs<BaseSkin>::blood(ymse::vec2f p, float r) {
 	d->balls.push_back(ymse::vec3f(p[0], p[1], r));
 }
 
-void metaballs::render_metaballs(ymse::rectf bb, const std::vector<ymse::vec3f>& p) {
+template <class BaseSkin>
+void metaballs<BaseSkin>::render_metaballs(ymse::rectf bb, const std::vector<ymse::vec3f>& p) {
 	glTexImage1D(GL_TEXTURE_1D, 0, GL_RGB16F, p.size(), 0, GL_RGB, GL_FLOAT, &p[0]);
 
 	glUseProgram(d->metaballs.get_id());
 
-	d->metaballs.set_uniform<int>("number_of_balls", p.size());
-	d->metaballs.set_uniform<int>("balls", 0);
+	d->metaballs.set_uniform("number_of_balls", (int)p.size());
+	d->metaballs.set_uniform("balls", 0);
 
 	glBegin(GL_QUADS);
 	glVertex2f(bb.x1, bb.y1);
@@ -58,7 +77,12 @@ void metaballs::render_metaballs(ymse::rectf bb, const std::vector<ymse::vec3f>&
 	glUseProgram(0);
 }
 
-void metaballs::finish_frame(ymse::rectf bb) {
+template <class BaseSkin>
+void metaballs<BaseSkin>::finish_frame(ymse::rectf bb) {
 	render_metaballs(bb, d->balls);
 	d->balls.clear();
 }
+
+
+template class metaballs<plain_skin>;
+template class metaballs<textured_skin>;

@@ -1,8 +1,8 @@
 #ifndef METABALLS_HPP
 #define METABALLS_HPP
 
+#include <boost/scoped_ptr.hpp>
 #include <vector>
-#include "textured_skin.hpp"
 
 namespace ymse {
 	typedef vec<3, float> vec3f;
@@ -13,9 +13,12 @@ namespace ymse {
 	typedef rect<float> rectf;
 }
 
-class metaballs : public textured_skin {
+template <class BaseSkin>
+class metaballs : public BaseSkin {
 	struct impl;
 	boost::scoped_ptr<impl> d;
+
+	void init(const std::string& path);
 
 	// Three coordinates: x, y and size
 	void render_metaballs(ymse::rectf rc, const std::vector<ymse::vec3f>&);

@@ -75,7 +75,8 @@ snygg::snygg(const std::string& board_filename) :
 
 	//d->active_skin.reset(new plain_skin);
 	//d->active_skin.reset(new textured_skin("skins/snakeskin"));
-	d->active_skin.reset(new metaballs("skins/snakeskin"));
+	//d->active_skin.reset(new metaballs<plain_skin>("skins/snakeskin"));
+	d->active_skin.reset(new metaballs<textured_skin>("skins/snakeskin"));
 
 	d->reshaper->set_pixels_per_unit_listener(d->active_skin.get());
 
