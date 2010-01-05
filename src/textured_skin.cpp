@@ -172,6 +172,7 @@ void textured_skin::metaballs(ymse::rectf bb, const std::vector<ymse::vec3f>& p)
 
 	glUseProgram(d->metaballs.get_id());
 
+	d->metaballs.set_uniform<int>("number_of_balls", p.size());
 	d->metaballs.set_uniform<int>("balls", 0);
 
 	glBegin(GL_QUADS);

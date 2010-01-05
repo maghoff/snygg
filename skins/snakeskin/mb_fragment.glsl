@@ -1,13 +1,12 @@
+uniform int number_of_balls;
 uniform sampler1D balls;
 
 varying vec2 world_coord;
 
 void main(void) {
-	float number_of_balls = textureSize(balls, 0);
-
 	float val = 0;
 	for (int i=0; i<number_of_balls; ++i) {
-		vec3 v = texture(balls, float(i+1)/float(number_of_balls+1));
+		vec3 v = texture(balls, (float(i) + 0.5)/float(number_of_balls));
 		vec2 c = vec2(v.x, v.y) - world_coord;
 		val = val + (10.*v.z*v.z)/(c.x*c.x + c.y*c.y);
 	}
