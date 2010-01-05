@@ -1,6 +1,7 @@
 #ifndef TEXTURED_SKIN_HPP
 #define TEXTURED_SKIN_HPP
 
+#include <string>
 #include <vector>
 #include <boost/scoped_ptr.hpp>
 #include "scalable_skin.hpp"
@@ -18,11 +19,9 @@ class textured_skin : public scalable_skin {
 	struct impl;
 	boost::scoped_ptr<impl> d;
 
-	// Three coordinates: x, y and size
-	void metaballs(ymse::rectf rc, const std::vector<ymse::vec3f>&);
-
 public:
 	textured_skin(const std::string& path);
+	~textured_skin();
 
 	void circle(ymse::vec2f p, float r);
 	void blood(ymse::vec2f p, float r);

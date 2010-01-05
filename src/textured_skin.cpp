@@ -15,11 +15,6 @@ const int snake_coord = 4, across = 5, along = 6;
 struct textured_skin::impl {
 	ymse::gl::program prog;
 	ymse::gl::texture diffuse, normal;
-
-	ymse::gl::program metaballs;
-	ymse::gl::texture metaballs_coordinates;
-
-	std::vector<ymse::vec3f> balls;
 };
 
 textured_skin::textured_skin(const std::string& path) :
@@ -54,25 +49,9 @@ textured_skin::textured_skin(const std::string& path) :
 	glBindTexture(GL_TEXTURE_2D, d->normal.get_id());
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+}
 
-
-	assert(glGetError() == GL_NO_ERROR);
-
-
-	ymse::gl::shader mb_vertex(GL_VERTEX_SHADER), mb_fragment(GL_FRAGMENT_SHADER);
-
-	mb_vertex.source_file(path + "/mb_vertex.glsl");
-	mb_fragment.source_file(path + "/mb_fragment.glsl");
-
-	d->metaballs.attach(mb_vertex);
-	d->metaballs.attach(mb_fragment);
-
-	d->metaballs.link();
-
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_1D, d->metaballs_coordinates.get_id());
-	glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+textured_skin::~textured_skin() {
 }
 
 void textured_skin::circle(ymse::vec2f p, float r) {
@@ -86,7 +65,9 @@ void textured_skin::circle(ymse::vec2f p, float r) {
 }
 
 void textured_skin::blood(ymse::vec2f p, float r) {
-	d->balls.push_back(ymse::vec3f(p[0], p[1], r));
+	glColor4f(1, 0, 0, 1);
+	circle(p, r);
+	glColor4f(1, 1, 1, 1);
 }
 
 void textured_skin::fat_arc(ymse::vec2f p, float r, float t, float begin, float end, float b_begin, float b_end) {
@@ -167,25 +148,5 @@ void textured_skin::fat_line(ymse::vec2f p, ymse::vec2f dir, float len, float t,
 	glUseProgram(0);
 }
 
-void textured_skin::metaballs(ymse::rectf bb, const std::vector<ymse::vec3f>& p) {
-	glTexImage1D(GL_TEXTURE_1D, 0, GL_RGB16F, p.size(), 0, GL_RGB, GL_FLOAT, &p[0]);
-
-	glUseProgram(d->metaballs.get_id());
-
-	d->metaballs.set_uniform<int>("number_of_balls", p.size());
-	d->metaballs.set_uniform<int>("balls", 0);
-
-	glBegin(GL_QUADS);
-	glVertex2f(bb.x1, bb.y1);
-	glVertex2f(bb.x1, bb.y2);
-	glVertex2f(bb.x2, bb.y2);
-	glVertex2f(bb.x2, bb.y1);
-	glEnd();
-
-	glUseProgram(0);
-}
-
 void textured_skin::finish_frame(ymse::rectf bb) {
-	metaballs(bb, d->balls);
-	d->balls.clear();
 }

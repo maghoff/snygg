@@ -12,6 +12,7 @@
 #include "board.hpp"
 #include "food_generator.hpp"
 #include "item.hpp"
+#include "metaballs.hpp"
 #include "plain_skin.hpp"
 #include "player.hpp"
 #include "snygg.hpp"
@@ -73,7 +74,8 @@ snygg::snygg(const std::string& board_filename) :
 	d->metaballs_rect.y2 = bb.y2 + margin;
 
 	//d->active_skin.reset(new plain_skin);
-	d->active_skin.reset(new textured_skin("skins/snakeskin"));
+	//d->active_skin.reset(new textured_skin("skins/snakeskin"));
+	d->active_skin.reset(new metaballs("skins/snakeskin"));
 
 	d->reshaper->set_pixels_per_unit_listener(d->active_skin.get());
 

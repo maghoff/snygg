@@ -16,6 +16,7 @@ add_executable(
 	line.cpp
 	luamod/lua_vm.cpp
 	main.cpp
+	metaballs.cpp
 	plain_skin.cpp
 	player.cpp
 	renderable.cpp
