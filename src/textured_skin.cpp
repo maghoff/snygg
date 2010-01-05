@@ -189,6 +189,3 @@ void textured_skin::finish_frame(ymse::rectf bb) {
 	metaballs(bb, d->balls);
 	d->balls.clear();
 }
-
-void finish_frame() {
-}
