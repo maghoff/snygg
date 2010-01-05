@@ -1,7 +1,17 @@
 #ifndef METABALLS_HPP
 #define METABALLS_HPP
 
+#include <vector>
 #include "textured_skin.hpp"
+
+namespace ymse {
+	typedef vec<3, float> vec3f;
+
+	template <typename T>
+	struct rect;
+
+	typedef rect<float> rectf;
+}
 
 class metaballs : public textured_skin {
 	struct impl;

@@ -2,18 +2,8 @@
 #define TEXTURED_SKIN_HPP
 
 #include <string>
-#include <vector>
 #include <boost/scoped_ptr.hpp>
 #include "scalable_skin.hpp"
-
-namespace ymse {
-	typedef vec<3, float> vec3f;
-
-	template <typename T>
-	struct rect;
-
-	typedef rect<float> rectf;
-}
 
 class textured_skin : public scalable_skin {
 	struct impl;
