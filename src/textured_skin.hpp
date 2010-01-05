@@ -18,6 +18,9 @@ class textured_skin : public scalable_skin {
 	struct impl;
 	boost::scoped_ptr<impl> d;
 
+	// Three coordinates: x, y and size
+	void metaballs(ymse::rectf rc, const std::vector<ymse::vec3f>&);
+
 public:
 	textured_skin(const std::string& path);
 
@@ -27,9 +30,7 @@ public:
 	void fat_arc(ymse::vec2f p, float r, float t, float begin, float end, float b_begin, float b_end);
 	void fat_line(ymse::vec2f p, ymse::vec2f d, float len, float t, float b_begin, float b_end);
 
-	// Three coordinates: x, y and size
-	void metaballs(ymse::rectf rc, const std::vector<ymse::vec3f>&);
-	void render_metaballs(ymse::rectf bb);
+	void finish_frame(ymse::rectf bb);
 };
 
 #endif // TEXTURED_SKIN_HPP

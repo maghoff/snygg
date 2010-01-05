@@ -1,6 +1,7 @@
 #include <algorithm>
 #include <cmath>
 #include <GL/gl.h>
+#include <ymse/rect.hpp>
 #include <ymse/vec.hpp>
 #include "plain_skin.hpp"
 
@@ -56,4 +57,7 @@ void plain_skin::fat_line(ymse::vec2f p, ymse::vec2f d, float len, float t, floa
 	glVertex2f(x2 - nx, y2 - ny);
 	glVertex2f(x1 - nx, y1 - ny);
 	glEnd();
+}
+
+void plain_skin::finish_frame(ymse::rectf) {
 }

@@ -185,7 +185,10 @@ void textured_skin::metaballs(ymse::rectf bb, const std::vector<ymse::vec3f>& p)
 	glUseProgram(0);
 }
 
-void textured_skin::render_metaballs(ymse::rectf bb) {
+void textured_skin::finish_frame(ymse::rectf bb) {
 	metaballs(bb, d->balls);
 	d->balls.clear();
+}
+
+void finish_frame() {
 }

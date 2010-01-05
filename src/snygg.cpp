@@ -12,9 +12,10 @@
 #include "board.hpp"
 #include "food_generator.hpp"
 #include "item.hpp"
-#include "textured_skin.hpp"
+#include "plain_skin.hpp"
 #include "player.hpp"
 #include "snygg.hpp"
+#include "textured_skin.hpp"
 
 
 struct snygg::impl {
@@ -71,7 +72,9 @@ snygg::snygg(const std::string& board_filename) :
 	d->metaballs_rect.x2 = bb.x2 + margin;
 	d->metaballs_rect.y2 = bb.y2 + margin;
 
+	//d->active_skin.reset(new plain_skin);
 	d->active_skin.reset(new textured_skin("skins/snakeskin"));
+
 	d->reshaper->set_pixels_per_unit_listener(d->active_skin.get());
 
 	d->kbd.reset(new ymse::bindable_keyboard_handler);
@@ -109,7 +112,7 @@ void snygg::render() {
 		i->render(*d->active_skin);
 	}
 
-	static_cast<textured_skin*>(d->active_skin.get())->render_metaballs(d->metaballs_rect);
+	d->active_skin->finish_frame(d->metaballs_rect);
 }
 
 void snygg::tick() {
