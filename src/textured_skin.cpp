@@ -1,6 +1,7 @@
 #include <GL/gl.h>
 #include <algorithm>
 #include <cmath>
+#include <ymse/rect.hpp>
 #include <ymse/vec.hpp>
 #include <ymse/gl/program.hpp>
 #include <ymse/gl/shader.hpp>
@@ -19,6 +20,8 @@ struct textured_skin::impl {
 textured_skin::textured_skin(const std::string& path) :
 	d(new impl)
 {
+	assert(glGetError() == GL_NO_ERROR);
+
 	ymse::gl::shader vertex(GL_VERTEX_SHADER), fragment(GL_FRAGMENT_SHADER);
 
 	vertex.source_file(path + "/vertex.glsl");
@@ -40,8 +43,15 @@ textured_skin::textured_skin(const std::string& path) :
 
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, d->diffuse.get_id());
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 	glActiveTexture(GL_TEXTURE1);
 	glBindTexture(GL_TEXTURE_2D, d->normal.get_id());
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+}
+
+textured_skin::~textured_skin() {
 }
 
 void textured_skin::circle(ymse::vec2f p, float r) {
@@ -52,6 +62,12 @@ void textured_skin::circle(ymse::vec2f p, float r) {
 		glVertex2f(p[0] + r * cos(d), p[1] + r * sin(d));
 	}
 	glEnd();
+}
+
+void textured_skin::blood(ymse::vec2f p, float r) {
+	glColor4f(1, 0, 0, 1);
+	circle(p, r);
+	glColor4f(1, 1, 1, 1);
 }
 
 void textured_skin::fat_arc(ymse::vec2f p, float r, float t, float begin, float end, float b_begin, float b_end) {
@@ -130,4 +146,7 @@ void textured_skin::fat_line(ymse::vec2f p, ymse::vec2f dir, float len, float t,
 	glEnd();
 
 	glUseProgram(0);
+}
+
+void textured_skin::finish_frame(ymse::rectf bb) {
 }

@@ -8,12 +8,15 @@
 #include <ymse/gl_box_reshaper.hpp>
 #include <ymse/rect.hpp>
 #include <ymse/keycodes.hpp>
+#include <ymse/vec.hpp>
 #include "board.hpp"
 #include "food_generator.hpp"
 #include "item.hpp"
-#include "textured_skin.hpp"
+#include "metaballs.hpp"
+#include "plain_skin.hpp"
 #include "player.hpp"
 #include "snygg.hpp"
+#include "textured_skin.hpp"
 
 
 struct snygg::impl {
@@ -25,6 +28,8 @@ struct snygg::impl {
 	boost::ptr_list<renderable> renderables;
 	boost::ptr_vector<player> players;
 	boost::scoped_ptr<food_generator> fg;
+
+	ymse::rectf metaballs_rect;
 };
 
 static void fs_toggle(bool in) {
@@ -37,16 +42,14 @@ static void fs_toggle(bool in) {
 snygg::snygg(const std::string& board_filename) :
 	d(new impl)
 {
+	assert(glGetError() == GL_NO_ERROR);
+
 	glClearColor(0.0, 0.0, 0.0, 0.0);
 	glClearDepth(1.0);
 
 	glDisable(GL_DEPTH_TEST);
 
 	glShadeModel(GL_SMOOTH);
-
-	glEnable(GL_TEXTURE);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 
 	glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
 	glEnable(GL_LINE_SMOOTH);
@@ -65,7 +68,16 @@ snygg::snygg(const std::string& board_filename) :
 	const float margin = 5.f;
 	d->reshaper->set_box(bb.x1 - margin, bb.y1 - margin, bb.x2 + margin, bb.y2 + margin);
 
-	d->active_skin.reset(new textured_skin("skins/snakeskin"));
+	d->metaballs_rect.x1 = bb.x1 - margin;
+	d->metaballs_rect.y1 = bb.y1 - margin;
+	d->metaballs_rect.x2 = bb.x2 + margin;
+	d->metaballs_rect.y2 = bb.y2 + margin;
+
+	//d->active_skin.reset(new plain_skin);
+	//d->active_skin.reset(new textured_skin("skins/snakeskin"));
+	//d->active_skin.reset(new metaballs<plain_skin>("skins/snakeskin"));
+	d->active_skin.reset(new metaballs<textured_skin>("skins/snakeskin"));
+
 	d->reshaper->set_pixels_per_unit_listener(d->active_skin.get());
 
 	d->kbd.reset(new ymse::bindable_keyboard_handler);
@@ -102,6 +114,8 @@ void snygg::render() {
 	for (riter i = d->renderables.begin(); i != rend; ++i) {
 		i->render(*d->active_skin);
 	}
+
+	d->active_skin->finish_frame(d->metaballs_rect);
 }
 
 void snygg::tick() {

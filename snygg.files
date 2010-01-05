@@ -9,6 +9,8 @@ levels/tricky.lua
 levels/util.lua
 levels/wide_screen.lua
 skins/snakeskin/fragment.glsl
+skins/snakeskin/mb_fragment.glsl
+skins/snakeskin/mb_vertex.glsl
 skins/snakeskin/vertex.glsl
 src/arc.cpp
 src/arc.hpp

@@ -1,6 +1,7 @@
 #include <algorithm>
 #include <cmath>
 #include <GL/gl.h>
+#include <ymse/rect.hpp>
 #include <ymse/vec.hpp>
 #include "plain_skin.hpp"
 
@@ -15,6 +16,12 @@ void plain_skin::circle(ymse::vec2f p, float r) {
 		glVertex2f(p[0] + r * cos(d), p[1] + r * sin(d));
 	}
 	glEnd();
+}
+
+void plain_skin::blood(ymse::vec2f p, float r) {
+	glColor4f(1, 0, 0, 1);
+	circle(p, r);
+	glColor4f(1, 1, 1, 1);
 }
 
 void plain_skin::fat_arc(ymse::vec2f p, float r, float t, float begin, float end, float b_begin, float b_end) {
@@ -50,4 +57,7 @@ void plain_skin::fat_line(ymse::vec2f p, ymse::vec2f d, float len, float t, floa
 	glVertex2f(x2 - nx, y2 - ny);
 	glVertex2f(x1 - nx, y1 - ny);
 	glEnd();
+}
+
+void plain_skin::finish_frame(ymse::rectf) {
 }
