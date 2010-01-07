@@ -2,6 +2,7 @@
 #include <cmath>
 #include <vector>
 #include <GL/gl.h>
+#include <boost/bind.hpp>
 #include <boost/ptr_container/ptr_list.hpp>
 #include <boost/ptr_container/ptr_vector.hpp>
 #include <ymse/bindable_keyboard_handler.hpp>
@@ -22,7 +23,8 @@
 struct snygg::impl {
 	boost::scoped_ptr<ymse::bindable_keyboard_handler> kbd;
 	boost::scoped_ptr<ymse::gl_box_reshaper> reshaper;
-	boost::scoped_ptr<scalable_skin> active_skin;
+	boost::ptr_vector<scalable_skin> skins;
+	scalable_skin* active_skin;
 	boost::scoped_ptr<board> active_board;
 	boost::ptr_list<item> items;
 	boost::ptr_list<renderable> renderables;
@@ -39,17 +41,13 @@ static void fs_toggle(bool in) {
 	}
 }
 
-snygg::snygg(const std::string& board_filename) :
-	d(new impl)
-{
-	assert(glGetError() == GL_NO_ERROR);
-
+void init_gl() {
 	glClearColor(0.0, 0.0, 0.0, 0.0);
 	glClearDepth(1.0);
 
 	glDisable(GL_DEPTH_TEST);
 
-	glShadeModel(GL_SMOOTH);
+	glShadeModel(GL_FLAT);
 
 	glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
 	glEnable(GL_LINE_SMOOTH);
@@ -60,6 +58,14 @@ snygg::snygg(const std::string& board_filename) :
 
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA_SATURATE, GL_ONE);
+}
+
+snygg::snygg(const std::string& board_filename) :
+	d(new impl)
+{
+	d->kbd.reset(new ymse::bindable_keyboard_handler);
+
+	init_gl();
 
 	d->active_board.reset(new board(board_filename));
 
@@ -73,14 +79,17 @@ snygg::snygg(const std::string& board_filename) :
 	d->metaballs_rect.x2 = bb.x2 + margin;
 	d->metaballs_rect.y2 = bb.y2 + margin;
 
-	//d->active_skin.reset(new plain_skin);
-	//d->active_skin.reset(new textured_skin("skins/snakeskin"));
-	//d->active_skin.reset(new metaballs<plain_skin>("skins/snakeskin"));
-	d->active_skin.reset(new metaballs<textured_skin>("skins/snakeskin"));
+	d->skins.push_back(new plain_skin);
+	d->skins.push_back(new metaballs<plain_skin>("skins/snakeskin"));
+	d->skins.push_back(new textured_skin("skins/snakeskin"));
+	d->skins.push_back(new metaballs<textured_skin>("skins/snakeskin"));
+	d->active_skin = &d->skins.back();
 
-	d->reshaper->set_pixels_per_unit_listener(d->active_skin.get());
+	for (int i=0; i<d->skins.size(); ++i) {
+		d->kbd->bind(ymse::KEY_F1 + i, boost::bind(&snygg::set_skin_key, this, &d->skins[i], _1));
+	}
 
-	d->kbd.reset(new ymse::bindable_keyboard_handler);
+	d->reshaper->set_pixels_per_unit_listener(d->active_skin);
 
 	d->kbd->bind(ymse::KEY_F, &fs_toggle);
 
@@ -94,6 +103,10 @@ snygg::snygg(const std::string& board_filename) :
 snygg::~snygg() {
 }
 
+
+void snygg::set_skin_key(scalable_skin* skin, bool pressed) {
+	if (pressed) d->active_skin = skin;
+}
 
 void snygg::render() {
 	typedef boost::ptr_vector<player>::iterator piter;

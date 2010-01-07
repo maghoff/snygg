@@ -11,9 +11,13 @@ namespace ymse {
 	class reshaper;
 }
 
+class scalable_skin;
+
 class snygg : public ymse::game, public item_container {
 	struct impl;
 	boost::scoped_ptr<impl> d;
+
+	void set_skin_key(scalable_skin*, bool);
 
 public:
 	snygg(const std::string& board_filename);
