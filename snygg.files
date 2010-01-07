@@ -43,6 +43,8 @@ src/line.hpp
 src/luamod/lua_vm.cpp
 src/luamod/lua_vm.hpp
 src/main.cpp
+src/metaballs.cpp
+src/metaballs.hpp
 src/plain_skin.cpp
 src/plain_skin.hpp
 src/player.cpp
