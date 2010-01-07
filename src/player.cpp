@@ -25,15 +25,18 @@ player::player(ymse::bindable_keyboard_handler& kbd, item_container& ic) :
 	d->speed = 0.4f;
 	d->del.reset(new snake_direction_listener);
 	d->dir.reset(new ymse::signaling_opposite_keys(kbd, ymse::KEY_RIGHT, ymse::KEY_LEFT, *d->del));
-	kbd.bind(ymse::KEY_SPACE, boost::bind(&player::spawn, this, _1));
-	spawn(true);
+	kbd.bind(ymse::KEY_SPACE, boost::bind(&player::spawn_key, this, _1));
 }
 
 player::~player() {
 }
 
-void player::spawn(bool do_spawn) {
-	if (do_spawn && !d->s) {
+void player::spawn_key(bool do_spawn) {
+	if (do_spawn) spawn();
+}
+
+void player::spawn() {
+	if (!d->s) {
 		d->ic.add_item(item_ptr(d->s = new snake(d->ic, d->speed)));
 		d->s->set_turn(d->dir->val());
 		d->del->set_target(d->s);

@@ -16,11 +16,13 @@ class player : public boost::noncopyable {
 	struct impl;
 	boost::scoped_ptr<impl> d;
 
-	void spawn(bool);
+	void spawn_key(bool);
 
 public:
 	player(ymse::bindable_keyboard_handler&, item_container&);
 	virtual ~player();
+
+	void spawn();
 
 	bool crashes_with(intersectable_with_circle&) const;
 	void die();
