@@ -43,14 +43,19 @@ void main(void) {
 	vec3 shape_normal = vec3(circle_coord[0], circle_coord[1], h);
 	vec3 out_v = shape_normal[0] * across + shape_normal[1] * along + shape_normal[2] * vec3(0, 0, 1);
 
-	vec3 normal = out_v;
-/*
-	vec3 normal =
-		bump_normal.x * along +
-		bump_normal.y * across +
+	vec3 xdir = along, ydir = across;
+
+	xdir = vec3(sin(ang), 0, -cos(ang));
+
+	float yang = acos(circle_coord.y);
+	ydir = vec3(-sin(yang), 0, cos(yang));
+
+	vec3 normal = normalize(
+		bump_normal.x * xdir +
+		bump_normal.y * ydir +
 		bump_normal.z * out_v
-	;
-*/
+	);
+
 //	float h = sqrt(1 - circle_coord[0]*circle_coord[0] - circle_coord[1]*circle_coord[1]);
 //	gl_FragColor = vec4(h, 0, 0.5, 1);
 
@@ -68,7 +73,7 @@ void main(void) {
 */
 	vec3 w = vec3(world_coord[0], world_coord[1], h*2.5);
 
-	vec3 light = normalize(vec3(0, 0, 3) - w);
+	vec3 light = normalize(vec3(0, 0, 30) - w);
 
 	vec4 final_color = diffuse * vec4(0.2, 0.2, 0.2, 1);
 

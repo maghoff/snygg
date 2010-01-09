@@ -185,9 +185,31 @@ void textured_skin::finish_frame(ymse::rectf bb) {
 	d->cap.set_uniform("diffuse_map", 0);
 	d->cap.set_uniform("normal_map", 1);
 
-	cap_test(ymse::vec2f(50, -50));
-	cap_test(ymse::vec2f(10, 10));
 	cap_test(ymse::vec2f(0, 0));
+
+	float r = 7.5;
+
+	for (int i=0; i<6; ++i) {
+		const double ang = (double)(i) * M_PI / 3;
+		ymse::vec2f p(cos(ang) * r, sin(ang) * r);
+		cap_test(p);
+	}
+
+	r = 15;
+
+	for (int i=0; i<12; ++i) {
+		const double ang = (double)(i) * M_PI / 6;
+		ymse::vec2f p(cos(ang) * r, sin(ang) * r);
+		cap_test(p);
+	}
+
+	r = 22.5;
+
+	for (int i=0; i<18; ++i) {
+		const double ang = (double)(i) * M_PI / 9;
+		ymse::vec2f p(cos(ang) * r, sin(ang) * r);
+		cap_test(p);
+	}
 
 	glUseProgram(0);
 }
