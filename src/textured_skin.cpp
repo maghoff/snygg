@@ -10,11 +10,13 @@
 #include <ymse/sdl/surface.hpp>
 #include "textured_skin.hpp"
 
-const int snake_coord = 4, across = 5, along = 6;
+const int snake_coord = 4, across = 5, along = 6, circle_coord = 7;
 
 struct textured_skin::impl {
 	ymse::gl::program prog;
 	ymse::gl::texture diffuse, normal;
+
+	ymse::gl::program cap;
 };
 
 textured_skin::textured_skin(const std::string& path) :
@@ -37,6 +39,20 @@ textured_skin::textured_skin(const std::string& path) :
 	d->prog.link();
 
 	// shaders go out of scope, but are kept alive by OpenGL because of d->prog
+
+	ymse::gl::shader cap_vertex(GL_VERTEX_SHADER), cap_fragment(GL_FRAGMENT_SHADER);
+
+	cap_vertex.source_file(path + "/cap_vertex.glsl");
+	cap_fragment.source_file(path + "/cap_fragment.glsl");
+
+	d->cap.attach(cap_vertex);
+	d->cap.attach(cap_fragment);
+
+	d->cap.bind_attrib_location(circle_coord, "circle_coord_in");
+	d->cap.bind_attrib_location(across, "across_in");
+	d->cap.bind_attrib_location(along, "along_in");
+
+	d->cap.link();
 
 	ymse::sdl::img_load(path + "/diffuse.jpg").copy_to(d->diffuse);
 	ymse::sdl::img_load(path + "/normal.jpg").copy_to(d->normal);
@@ -148,5 +164,30 @@ void textured_skin::fat_line(ymse::vec2f p, ymse::vec2f dir, float len, float t,
 	glUseProgram(0);
 }
 
+void textured_skin::cap_test(ymse::vec2f p) {
+	const float r = 2.5;
+	const float step_size = get_step_size(r);
+
+	glVertexAttrib3f(across, 1, 0, 0);
+	glVertexAttrib3f(along, 0, 1, 0);
+
+	glBegin(GL_TRIANGLE_FAN);
+	for (float d = 0.f; d < M_PI * 2.f; d += step_size) {
+		glVertexAttrib2f(circle_coord, cos(d), sin(d));
+		glVertex2f(p[0] + r * cos(d), p[1] + r * sin(d));
+	}
+	glEnd();
+}
+
 void textured_skin::finish_frame(ymse::rectf bb) {
+	glUseProgram(d->cap.get_id());
+
+	d->cap.set_uniform("diffuse_map", 0);
+	d->cap.set_uniform("normal_map", 1);
+
+	cap_test(ymse::vec2f(50, -50));
+	cap_test(ymse::vec2f(10, 10));
+	cap_test(ymse::vec2f(0, 0));
+
+	glUseProgram(0);
 }

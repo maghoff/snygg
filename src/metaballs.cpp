@@ -81,6 +81,8 @@ template <class BaseSkin>
 void metaballs<BaseSkin>::finish_frame(ymse::rectf bb) {
 	render_metaballs(bb, d->balls);
 	d->balls.clear();
+
+	BaseSkin::finish_frame(bb);
 }
 
 

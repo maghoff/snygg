@@ -9,6 +9,8 @@ class textured_skin : public scalable_skin {
 	struct impl;
 	boost::scoped_ptr<impl> d;
 
+	void cap_test(ymse::vec2f);
+
 public:
 	textured_skin(const std::string& path);
 	~textured_skin();
