@@ -4,10 +4,13 @@ uniform sampler2D normal_map;
 varying vec2 snake_coord, world_coord;
 varying vec3 across_i, along_i;
 
+const float M_PI = 3.14159265358979;
+
 const float density = 0.04;
 const float min_a = 0.1, max_a = 0.45;
 
-const float M_PI = 3.14159265358979;
+extern const vec4 ambient;
+vec4 directional_light(vec3 normal, vec3 light, vec4 diffuse, float local_variance);
 
 void main(void) {
 	vec3 across = normalize(across_i);
@@ -42,21 +45,8 @@ void main(void) {
 
 	vec3 light = normalize(vec3(0, 0, 3) - w);
 
-	vec4 final_color = diffuse * vec4(0.2, 0.2, 0.2, 1);
-
-	float lambertTerm = dot(normal, light);
-
-	if (lambertTerm > 0.0) {
-		final_color += 0.8 * diffuse * lambertTerm;
-
-		vec3 eye = vec3(0, 0, 1);
-		vec3 r = reflect(-light, normal);
-
-		// Using the local variance estimate to soften the specular
-		// lighting in order to reduce specular aliasing
-		float specular = pow(max(dot(r, eye), 0.0), 5.0) / (local_variance*local_variance*local_variance);
-		final_color += 0.3 * specular;
-	}
-
-	gl_FragColor = final_color;
+	gl_FragColor =
+		diffuse * ambient +
+		directional_light(normal, light, diffuse, local_variance)
+	;
 }
