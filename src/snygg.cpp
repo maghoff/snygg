@@ -85,7 +85,7 @@ snygg::snygg(const std::string& board_filename) :
 	d->skins.push_back(new metaballs<textured_skin>("skins/snakeskin"));
 	d->active_skin = &d->skins.back();
 
-	for (int i=0; i<d->skins.size(); ++i) {
+	for (size_t i=0; i<d->skins.size(); ++i) {
 		d->kbd->bind(ymse::KEY_F1 + i, boost::bind(&snygg::set_skin_key, this, &d->skins[i], _1));
 	}
 
@@ -105,7 +105,10 @@ snygg::~snygg() {
 
 
 void snygg::set_skin_key(scalable_skin* skin, bool pressed) {
-	if (pressed) d->active_skin = skin;
+	if (pressed) {
+		d->active_skin = skin;
+		d->reshaper->set_pixels_per_unit_listener(d->active_skin);
+	}
 }
 
 void snygg::render() {

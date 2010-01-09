@@ -3,7 +3,7 @@
 #include "scalable_skin.hpp"
 
 scalable_skin::scalable_skin() :
-	detail_modifier(1.f)
+	detail_modifier(10.f)
 {
 }
 
@@ -15,7 +15,7 @@ float scalable_skin::get_step_size(float r) {
   step_size
 	= 2pi / desired_number_of_vertices
 	= 2pi / (circumference_in_pixels * level_of_detail)
-	= 2pi / (circumference_in_screen_units * pixels_per_unit * level_of_detail)
+	= 2pi / (circumference_in_world_units * pixels_per_unit * level_of_detail)
 	= 2pi / (2pi * r * pixels_per_unit * level_of_detail)
 	= 1 / (r * pixels_per_unit * level_of_detail)
 	= (1 / r) * (1 / (pixels_per_unit * level_of_detail))
