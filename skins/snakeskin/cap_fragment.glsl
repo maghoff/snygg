@@ -47,7 +47,8 @@ void main(void) {
 
 	xdir = vec3(sin(ang), 0, -cos(ang));
 
-	float yang = acos(circle_coord.y);
+	float ang2 = asin(circle_coord.x);
+	float yang = acos(circle_coord.y /abs(cos(ang2)));
 	ydir = vec3(0, -sin(yang), cos(yang));
 
 	vec3 normal = normalize(
