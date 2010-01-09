@@ -187,28 +187,17 @@ void textured_skin::finish_frame(ymse::rectf bb) {
 
 	cap_test(ymse::vec2f(0, 0));
 
-	float r = 7.5;
+	float r = 0;
+	int n = 0;
 
-	for (int i=0; i<6; ++i) {
-		const double ang = (double)(i) * M_PI / 3;
-		ymse::vec2f p(cos(ang) * r, sin(ang) * r);
-		cap_test(p);
-	}
-
-	r = 15;
-
-	for (int i=0; i<12; ++i) {
-		const double ang = (double)(i) * M_PI / 6;
-		ymse::vec2f p(cos(ang) * r, sin(ang) * r);
-		cap_test(p);
-	}
-
-	r = 22.5;
-
-	for (int i=0; i<18; ++i) {
-		const double ang = (double)(i) * M_PI / 9;
-		ymse::vec2f p(cos(ang) * r, sin(ang) * r);
-		cap_test(p);
+	for (int j=0; j<9; ++j) {
+		n += 6;
+		r += 7.5;
+		for (int i=0; i<n; ++i) {
+			const double ang = (double)(i) * M_PI / (n/2);
+			ymse::vec2f p(cos(ang) * r, sin(ang) * r);
+			cap_test(p);
+		}
 	}
 
 	glUseProgram(0);

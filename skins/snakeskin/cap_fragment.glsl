@@ -48,7 +48,7 @@ void main(void) {
 	xdir = vec3(sin(ang), 0, -cos(ang));
 
 	float yang = acos(circle_coord.y);
-	ydir = vec3(-sin(yang), 0, cos(yang));
+	ydir = vec3(0, -sin(yang), cos(yang));
 
 	vec3 normal = normalize(
 		bump_normal.x * xdir +
@@ -73,7 +73,7 @@ void main(void) {
 */
 	vec3 w = vec3(world_coord[0], world_coord[1], h*2.5);
 
-	vec3 light = normalize(vec3(0, 0, 30) - w);
+	vec3 light = normalize(vec3(0, 0, 3) - w);
 
 	vec4 final_color = diffuse * vec4(0.2, 0.2, 0.2, 1);
 
