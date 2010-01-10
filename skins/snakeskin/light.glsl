@@ -6,7 +6,7 @@ vec4 directional_light(
 	vec4 diffuse,
 	float local_variance
 ) {
-	vec4 final_color = vec4(0, 0, 0, 0);
+	vec4 final_color = vec4(0, 0, 0, 1);
 
 	float lambertTerm = dot(normal, light);
 
