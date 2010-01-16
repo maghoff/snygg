@@ -12,7 +12,7 @@ const float min_a = 0.1, max_a = 0.45;
 extern const vec4 ambient;
 vec4 directional_light(vec3 normal, vec3 light, vec4 diffuse, float local_variance);
 
-mat3 calculate_world_from_skin(in mat3 world_from_snake, in vec2 circle_coord) {
+mat3 calculate_snake_from_skin(in vec2 circle_coord) {
 	float ang1 = asin(circle_coord.y);
 	float width = abs(cos(ang1));
 	float ang = acos(clamp(circle_coord.x/width, -1.0, 1.0));
@@ -20,16 +20,13 @@ mat3 calculate_world_from_skin(in mat3 world_from_snake, in vec2 circle_coord) {
 	float h = sqrt(1 - circle_coord.x*circle_coord.x - circle_coord.y*circle_coord.y);
 
 	vec3 shape_normal = vec3(circle_coord.x, circle_coord.y, h);
-	vec3 zdir = world_from_snake * shape_normal;
+	vec3 zdir = shape_normal;
 
 	vec3 xdir = vec3(sin(ang), 0, -cos(ang));
 
 	float ang2 = asin(circle_coord.x);
 	float yang = acos(circle_coord.y / abs(cos(ang2)));
 	vec3 ydir = vec3(0, -sin(yang), cos(yang));
-
-	xdir = world_from_snake * xdir;
-	ydir = world_from_snake * ydir;
 
 	return mat3(xdir, ydir, zdir);
 }
@@ -56,11 +53,10 @@ void main(void) {
 	vec4 diffuse = texture2D(diffuse_map, texture_coord);
 
 	// 3: Calculate transformation matrix from skin coordinates to world coordinates
-	mat3 world_from_skin = calculate_world_from_skin(world_from_snake, circle_coord);
+	mat3 world_from_skin = world_from_snake * calculate_snake_from_skin(circle_coord);
 
-	// 4: Look up and transform the normal from the bump map
+	// 4: Look up and transform the normal from the bump map (in skin coordinates)
 	vec3 bump_normal = (vec3(texture2D(normal_map, texture_coord)) * 2.0 - 1.0) * vec3(-1, -1, 1);
-	bump_normal = vec3(0, 0, 1);
 
 	// The length of the interpolated bump_normal can be used as an estimate for
 	// the local variance in normals, and can be used to reduced specular aliasing.
@@ -69,7 +65,6 @@ void main(void) {
 	bump_normal = normalize(bump_normal);
 
 	vec3 normal = world_from_skin * vec3(bump_normal);
-	//vec3 normal = world_from_snake * vec3(0, 0, 1);
 
 	// 5: Set up the light
 	float h = sqrt(1 - circle_coord.x*circle_coord.x - circle_coord.y*circle_coord.y);

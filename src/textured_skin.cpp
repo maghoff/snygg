@@ -245,7 +245,7 @@ void textured_skin::finish_frame(ymse::rectf bb) {
 	static float base_ang = 0;
 	base_ang += 0.01;
 
-//*
+/*
 	stick_test(base_ang, ymse::vec2f(-30, 15));
 	stick_test(base_ang, ymse::vec2f(0, 15));
 	stick_test(base_ang, ymse::vec2f(30, 15));
@@ -260,6 +260,10 @@ void textured_skin::finish_frame(ymse::rectf bb) {
 
 //*
 	glUseProgram(d->cap.get_id());
+
+	d->cap.set_uniform("diffuse_map", 0);
+	d->cap.set_uniform("normal_map", 1);
+
 	beautiful_cap_test(base_ang);
 	glUseProgram(0);
 //*/
