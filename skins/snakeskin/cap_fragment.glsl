@@ -28,6 +28,9 @@ mat3 calculate_world_from_skin(in mat3 world_from_snake, in vec2 circle_coord) {
 	float yang = acos(circle_coord.y / abs(cos(ang2)));
 	vec3 ydir = vec3(0, -sin(yang), cos(yang));
 
+	xdir = world_from_snake * xdir;
+	ydir = world_from_snake * ydir;
+
 	return mat3(xdir, ydir, zdir);
 }
 
@@ -65,6 +68,7 @@ void main(void) {
 	bump_normal = normalize(bump_normal);
 
 	vec3 normal = world_from_skin * vec3(bump_normal);
+	//vec3 normal = world_from_snake * vec3(0, 0, 1);
 
 	// 5: Set up the light
 	float h = sqrt(1 - circle_coord.x*circle_coord.x - circle_coord.y*circle_coord.y);
