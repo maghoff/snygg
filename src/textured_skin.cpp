@@ -169,16 +169,18 @@ void textured_skin::fat_line(ymse::vec2f p, ymse::vec2f dir, float len, float t,
 	glUseProgram(0);
 }
 
-void textured_skin::cap_test(ymse::vec2f p, float base_ang) {
+void textured_skin::cap_test(ymse::vec2f p, float direction) {
 	const float r = 2.5;
 	const float step_size = get_step_size(r);
 
-	glVertexAttrib3f(across, sin(base_ang), cos(base_ang), 0);
-	glVertexAttrib3f(along, cos(base_ang), -sin(base_ang), 0);
+	float base_ang = direction - M_PI*0.5;
+
+	glVertexAttrib3f(across, cos(base_ang), sin(base_ang), 0);
+	glVertexAttrib3f(along, -sin(base_ang), cos(base_ang), 0);
 
 	glBegin(GL_TRIANGLE_FAN);
 	for (float d = 0.f; d < M_PI * 2.f; d += step_size) {
-		glVertexAttrib2f(circle_coord, cos(d+base_ang), sin(d+base_ang));
+		glVertexAttrib2f(circle_coord, cos(d-base_ang), sin(d-base_ang));
 		glVertex2f(p[0] + r * cos(d), p[1] + r * sin(d));
 	}
 	glEnd();
@@ -207,8 +209,8 @@ void textured_skin::half_cap_test(ymse::vec2f p, float direction) {
 
 	float base_ang = direction - M_PI*0.5;
 
-	glVertexAttrib3f(across, sin(base_ang), cos(base_ang), 0);
-	glVertexAttrib3f(along, cos(base_ang), -sin(base_ang), 0);
+	glVertexAttrib3f(across, cos(base_ang), sin(base_ang), 0);
+	glVertexAttrib3f(along, -sin(base_ang), cos(base_ang), 0);
 
 	glBegin(GL_TRIANGLE_FAN);
 	for (float d = direction - M_PI * 0.5; d < direction + M_PI * 0.5; d += step_size) {
@@ -228,8 +230,6 @@ void textured_skin::stick_test(float base_ang, ymse::vec2f c) {
 	d->cap.set_uniform("diffuse_map", 0);
 	d->cap.set_uniform("normal_map", 1);
 
-	//beautiful_cap_test(base_ang);
-
 	ymse::vec2f d(cos(base_ang), sin(base_ang));
 	float len = 10;
 
@@ -245,8 +245,22 @@ void textured_skin::finish_frame(ymse::rectf bb) {
 	static float base_ang = 0;
 	base_ang += 0.01;
 
+//*
+	stick_test(base_ang, ymse::vec2f(-30, 15));
+	stick_test(base_ang, ymse::vec2f(0, 15));
+	stick_test(base_ang, ymse::vec2f(30, 15));
+
 	stick_test(base_ang, ymse::vec2f(-15, 0));
 	stick_test(base_ang, ymse::vec2f(15, 0));
+
+	stick_test(base_ang, ymse::vec2f(-30, -15));
 	stick_test(base_ang, ymse::vec2f(0, -15));
-	stick_test(base_ang, ymse::vec2f(0, 15));
+	stick_test(base_ang, ymse::vec2f(30, -15));
+//*/
+
+//*
+	glUseProgram(d->cap.get_id());
+	beautiful_cap_test(base_ang);
+	glUseProgram(0);
+//*/
 }

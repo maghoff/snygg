@@ -22,6 +22,7 @@ void main(void) {
 
 	vec4 diffuse = texture2D(diffuse_map, texture_coord);
 	vec4 bump_normal = (texture2D(normal_map, texture_coord) * 2.0 - 1.0) * vec4(-1, -1, 1, 0);
+	bump_normal = vec4(0, 0, 1, 0);
 
 	// The length of the interpolated bump_normal can be used
 	// as an estimate for the local variance in normals.
