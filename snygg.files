@@ -8,9 +8,9 @@ levels/tofu.lua
 levels/tricky.lua
 levels/util.lua
 levels/wide_screen.lua
-skins/snakeskin/cap_fragment.glsl
-skins/snakeskin/cap_vertex.glsl
+levels/wide_screen_small.lua
 skins/snakeskin/fragment.glsl
+skins/snakeskin/light.glsl
 skins/snakeskin/mb_fragment.glsl
 skins/snakeskin/mb_vertex.glsl
 skins/snakeskin/vertex.glsl

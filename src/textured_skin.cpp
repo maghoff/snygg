@@ -10,7 +10,7 @@
 #include <ymse/sdl/surface.hpp>
 #include "textured_skin.hpp"
 
-const int snake_coord = 4, across = 5, along = 6, circle_coord = 7, b_attribute = 8;
+const int across = 5, along = 6, circle_coord = 7, b_attribute = 8;
 
 enum shader_state_t {
 	no_shader,
@@ -20,7 +20,7 @@ enum shader_state_t {
 struct textured_skin::impl {
 	shader_state_t shader_state;
 
-	ymse::gl::program cap;
+	ymse::gl::program prog;
 	ymse::gl::texture diffuse, normal;
 };
 
@@ -31,26 +31,25 @@ textured_skin::textured_skin(const std::string& path) :
 
 	d->shader_state = no_shader;
 
-	ymse::gl::shader light(GL_FRAGMENT_SHADER);
+	ymse::gl::shader vertex(GL_VERTEX_SHADER);
+	ymse::gl::shader fragment(GL_FRAGMENT_SHADER), light(GL_FRAGMENT_SHADER);
+
+	vertex.source_file(path + "/vertex.glsl");
+	fragment.source_file(path + "/fragment.glsl");
 	light.source_file(path + "/light.glsl");
 
+	d->prog.attach(vertex);
+	d->prog.attach(fragment);
+	d->prog.attach(light);
+
+	d->prog.bind_attrib_location(circle_coord, "circle_coord_in");
+	d->prog.bind_attrib_location(across, "across_in");
+	d->prog.bind_attrib_location(along, "along_in");
+	d->prog.bind_attrib_location(b_attribute, "b_in");
+
+	d->prog.link();
+
 	// shaders go out of scope, but are kept alive by OpenGL because of d->prog
-
-	ymse::gl::shader cap_vertex(GL_VERTEX_SHADER), cap_fragment(GL_FRAGMENT_SHADER);
-
-	cap_vertex.source_file(path + "/cap_vertex.glsl");
-	cap_fragment.source_file(path + "/cap_fragment.glsl");
-
-	d->cap.attach(cap_vertex);
-	d->cap.attach(cap_fragment);
-	d->cap.attach(light);
-
-	d->cap.bind_attrib_location(circle_coord, "circle_coord_in");
-	d->cap.bind_attrib_location(across, "across_in");
-	d->cap.bind_attrib_location(along, "along_in");
-	d->cap.bind_attrib_location(b_attribute, "b_in");
-
-	d->cap.link();
 
 	ymse::sdl::img_load(path + "/diffuse.jpg").copy_to(d->diffuse);
 	ymse::sdl::img_load(path + "/normal.jpg").copy_to(d->normal);
@@ -76,13 +75,13 @@ void textured_skin::to_no_shader() {
 	d->shader_state = no_shader;
 }
 
-void textured_skin::to_cap_shader() {
+void textured_skin::to_texture_shader() {
 	if (d->shader_state == cap_shader) return;
 
-	glUseProgram(d->cap.get_id());
+	glUseProgram(d->prog.get_id());
 
-	d->cap.set_uniform("diffuse_map", 0);
-	d->cap.set_uniform("normal_map", 1);
+	d->prog.set_uniform("diffuse_map", 0);
+	d->prog.set_uniform("normal_map", 1);
 
 	d->shader_state = cap_shader;
 }
@@ -108,7 +107,7 @@ void textured_skin::blood(ymse::vec2f p, float r) {
 }
 
 void textured_skin::fat_arc(ymse::vec2f p, float r, float t, float begin, float end, float b_begin, float b_end) {
-	to_cap_shader();
+	to_texture_shader();
 
 	float r1 = r-t, r2 = r+t;
 	float step_size = get_step_size(r2);
@@ -154,7 +153,7 @@ void textured_skin::fat_arc(ymse::vec2f p, float r, float t, float begin, float 
 }
 
 void textured_skin::fat_line(ymse::vec2f p, ymse::vec2f dir, float len, float t, float b_begin, float b_end) {
-	to_cap_shader();
+	to_texture_shader();
 
 	float &x1(p[0]), &y1(p[1]), &dx(dir[0]), &dy(dir[1]);
 
@@ -182,7 +181,7 @@ void textured_skin::fat_line(ymse::vec2f p, ymse::vec2f dir, float len, float t,
 }
 
 void textured_skin::cap_front(ymse::vec2f p, float direction, float b_coord) {
-	to_cap_shader();
+	to_texture_shader();
 
 	const float r = 2.5;
 	const float step_size = get_step_size(r);
@@ -206,7 +205,7 @@ void textured_skin::cap_front(ymse::vec2f p, float direction, float b_coord) {
 }
 
 void textured_skin::cap_back(ymse::vec2f p, float direction, float b_coord) {
-	to_cap_shader();
+	to_texture_shader();
 
 	const float r = 2.5;
 	const float step_size = get_step_size(r);
