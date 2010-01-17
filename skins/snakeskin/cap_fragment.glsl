@@ -13,7 +13,23 @@ const float min_a = 0.1, max_a = 0.45;
 extern const vec4 ambient;
 vec4 directional_light(vec3 normal, vec3 light, vec4 diffuse, float local_variance);
 
-mat3 calculate_snake_from_skin(in vec2 circle_coord);
+mat3 calculate_snake_from_skin(in vec2 circle_coord) {
+	float ang1 = asin(circle_coord.y);
+	float width = abs(cos(ang1));
+	float ang = acos(clamp(circle_coord.x/width, -1.0, 1.0));
+
+	vec3 xdir = vec3(sin(ang), 0, -cos(ang));
+
+	float h = sqrt(1 - circle_coord.x*circle_coord.x - circle_coord.y*circle_coord.y);
+
+	vec3 shape_normal = vec3(circle_coord.x, -circle_coord.y, h);
+	vec3 zdir = shape_normal;
+
+	float ang2 = atan2(h, circle_coord.y);
+	vec3 ydir = vec3(0, -sin(ang2), -cos(ang2));
+
+	return mat3(xdir, ydir, zdir);
+}
 
 void main(void) {
 	mat3 world_from_snake = mat3(normalize(across_i), normalize(along_i), vec3(0, 0, 1));
