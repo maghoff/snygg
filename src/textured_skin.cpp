@@ -14,7 +14,7 @@ const int across = 5, along = 6, circle_coord = 7, b_attribute = 8;
 
 enum shader_state_t {
 	no_shader,
-	cap_shader
+	texture_shader
 };
 
 struct textured_skin::impl {
@@ -76,14 +76,14 @@ void textured_skin::to_no_shader() {
 }
 
 void textured_skin::to_texture_shader() {
-	if (d->shader_state == cap_shader) return;
+	if (d->shader_state == texture_shader) return;
 
 	glUseProgram(d->prog.get_id());
 
 	d->prog.set_uniform("diffuse_map", 0);
 	d->prog.set_uniform("normal_map", 1);
 
-	d->shader_state = cap_shader;
+	d->shader_state = texture_shader;
 }
 
 void textured_skin::circle(ymse::vec2f p, float r) {
