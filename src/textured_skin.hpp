@@ -12,6 +12,8 @@ class textured_skin : public scalable_skin {
 	void to_no_shader();
 	void to_texture_shader();
 
+	void cap(ymse::vec2f p, float direction, float cap_direction, float b_coord);
+
 public:
 	textured_skin(const std::string& path);
 	~textured_skin();
