@@ -180,38 +180,31 @@ void textured_skin::fat_line(ymse::vec2f p, ymse::vec2f dir, float len, float t,
 	glEnd();
 }
 
-void textured_skin::cap(ymse::vec2f p, float snake_direction, float cap_direction, float b_coord) {
+void textured_skin::cap(ymse::vec2f p, float snake_direction_in, float cap_direction_in, float b_coord) {
 	to_texture_shader();
 
 	const float r = 2.5;
 	const float step_size = get_step_size(r);
 
-	float base_ang = snake_direction - M_PI*0.5;
+	float snake_dir = snake_direction_in - M_PI*0.5;
+	float cap_dir = cap_direction_in - M_PI*0.5;
 
-	glVertexAttrib3f(across, cos(base_ang), sin(base_ang), 0);
-	glVertexAttrib3f(along, sin(base_ang), -cos(base_ang), 0);
+	glVertexAttrib3f(across, cos(snake_dir), sin(snake_dir), 0);
+	glVertexAttrib3f(along, sin(snake_dir), -cos(snake_dir), 0);
 	glVertexAttrib1f(b_attribute, b_coord);
 
 	glBegin(GL_TRIANGLE_FAN);
 
-	for (float d = cap_direction; d < cap_direction + M_PI; d += step_size) {
+	for (float d = cap_dir; d < cap_dir + M_PI; d += step_size) {
 		glVertexAttrib2f(circle_coord, cos(d), sin(d));
-		glVertex2f(p[0] + r * cos(base_ang + d), p[1] + r * sin(base_ang + d));
+		glVertex2f(p[0] + r * cos(snake_dir + d), p[1] + r * sin(snake_dir + d));
 	}
 
-	float d = cap_direction + M_PI;
+	float d = cap_dir + M_PI;
 	glVertexAttrib2f(circle_coord, cos(d), sin(d));
-	glVertex2f(p[0] + r * cos(base_ang + d), p[1] + r * sin(base_ang + d));
+	glVertex2f(p[0] + r * cos(snake_dir + d), p[1] + r * sin(snake_dir + d));
 
 	glEnd();
-}
-
-void textured_skin::cap_front(ymse::vec2f p, float direction, float b_coord) {
-	cap(p, direction, 0, b_coord);
-}
-
-void textured_skin::cap_back(ymse::vec2f p, float direction, float b_coord) {
-	cap(p, direction, M_PI, b_coord);
 }
 
 void textured_skin::finish_frame(ymse::rectf bounding_box) {
