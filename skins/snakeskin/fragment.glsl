@@ -31,51 +31,46 @@ mat3 calculate_snake_from_skin(in vec2 circle_coord) {
 	return mat3(xdir, ydir, zdir);
 }
 
-void main(void) {
-	mat3 world_from_snake = mat3(normalize(across_i), normalize(along_i), vec3(0, 0, 1));
+mat3 calculate_world_from_skin(in vec3 across, in vec3 along, in vec2 circle_coord) {
+	mat3 world_from_snake = mat3(across, along, vec3(0, 0, 1));
+	mat3 world_from_skin = world_from_snake * calculate_snake_from_skin(circle_coord);
+	return world_from_skin;
+}
 
-	// 1: Calculate texture_coord
-
+vec2 calculate_texture_coord_due_to_cap(in vec2 circle_coord) {
 	float ang1 = asin(circle_coord.y);
 	float width = abs(cos(ang1));
 	float ang = acos(clamp(circle_coord.x/width, -1.0, 1.0));
+
 	float len_around_x = ((ang / M_PI) - 0.5) * 2 * width;
 	float len_around_y = ((acos(circle_coord.y) / M_PI) - 0.5) * 2 * 2.5 * M_PI;
-	vec2 texture_coord =
-		vec2(
-			(len_around_x / 2) * (max_a - min_a) + ((max_a - min_a) / 2) +
-			b * 0.001
-		,
-			(len_around_y / 2) * density +
-			b * density
-		)
-	;
 
-	// 2: Look up diffuse color
+	return vec2((len_around_x / 2) * (max_a - min_a) + ((max_a - min_a) / 2), (len_around_y / 2) * density);
+}
+
+void main(void) {
+	vec2 texture_coord_due_to_cap = calculate_texture_coord_due_to_cap(circle_coord);
+	vec2 texture_coord_due_to_b = vec2(b * 0.001, b * density);
+	vec2 texture_coord = texture_coord_due_to_cap + texture_coord_due_to_b;
+
 	vec4 diffuse = texture2D(diffuse_map, texture_coord);
 
-	// 3: Calculate transformation matrix from skin coordinates to world coordinates
-	mat3 world_from_skin = world_from_snake * calculate_snake_from_skin(circle_coord);
-
-	// 4: Look up and transform the normal from the bump map (in skin coordinates)
 	vec3 bump_normal = (vec3(texture2D(normal_map, texture_coord)) * 2.0 - 1.0) * vec3(-1, -1, 1);
-	//bump_normal = vec3(0, 0, 1);
 
 	// The length of the interpolated bump_normal can be used as an estimate for
 	// the local variance in normals, and can be used to reduced specular aliasing.
 	float local_variance = 1.0 / length(bump_normal);
 
+	// Add something to z to lower the perceived total height of the bump map
 	bump_normal = normalize(bump_normal + vec3(0, 0, 0.5));
 
-	// I apparently have to normalize here as well. Why?
-	vec3 normal = normalize(world_from_skin * bump_normal);
+	mat3 world_from_skin = calculate_world_from_skin(normalize(across_i), normalize(along_i), circle_coord);
+	vec3 normal = world_from_skin * bump_normal;
 
-	// 5: Set up the light
 	float h = sqrt(1 - circle_coord.x*circle_coord.x - circle_coord.y*circle_coord.y);
 	vec3 w = vec3(world_coord[0], world_coord[1], h*2.5);
 	vec3 light = normalize(vec3(0, 0, 3) - w);
 
-	// 6: Calculate the lighting
 	gl_FragColor =
 		diffuse * ambient +
 		directional_light(normal, light, diffuse, local_variance)
