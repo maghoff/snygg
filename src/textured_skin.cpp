@@ -34,8 +34,9 @@ textured_skin::textured_skin(const std::string& path) :
 
 	d->shader_state = no_shader;
 
-	ymse::gl::shader light(GL_FRAGMENT_SHADER);
+	ymse::gl::shader light(GL_FRAGMENT_SHADER), util(GL_FRAGMENT_SHADER);
 	light.source_file(path + "/light.glsl");
+	util.source_file(path + "/util.glsl");
 
 	ymse::gl::shader vertex(GL_VERTEX_SHADER), fragment(GL_FRAGMENT_SHADER);
 
@@ -45,6 +46,7 @@ textured_skin::textured_skin(const std::string& path) :
 	d->prog.attach(vertex);
 	d->prog.attach(fragment);
 	d->prog.attach(light);
+	d->prog.attach(util);
 
 	d->prog.bind_attrib_location(snake_coord, "snake_coord_in");
 	d->prog.bind_attrib_location(across, "across_in");
@@ -62,6 +64,7 @@ textured_skin::textured_skin(const std::string& path) :
 	d->cap.attach(cap_vertex);
 	d->cap.attach(cap_fragment);
 	d->cap.attach(light);
+	d->cap.attach(util);
 
 	d->cap.bind_attrib_location(circle_coord, "circle_coord_in");
 	d->cap.bind_attrib_location(across, "across_in");
