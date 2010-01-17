@@ -22,7 +22,7 @@ player::player(ymse::bindable_keyboard_handler& kbd, item_container& ic) :
 	d(new impl(ic))
 {
 	d->s = 0;
-	d->speed = 0.3f;
+	d->speed = 0.4f;
 	d->del.reset(new snake_direction_listener);
 	d->dir.reset(new ymse::signaling_opposite_keys(kbd, ymse::KEY_RIGHT, ymse::KEY_LEFT, *d->del));
 	kbd.bind(ymse::KEY_SPACE, boost::bind(&player::spawn_key, this, _1));
