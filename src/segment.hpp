@@ -24,8 +24,9 @@ public:
 	virtual float tail_forward(float) = 0;
 
 	virtual ymse::vec2f get_head_pos() const = 0;
-	virtual ymse::vec2f get_tail_pos() const = 0;
 	virtual ymse::vec2f get_head_direction() const = 0;
+	virtual ymse::vec2f get_tail_pos() const = 0;
+	virtual ymse::vec2f get_tail_direction() const = 0;
 
 	virtual float length() const = 0;
 	virtual void render(skin&, float head_b) const = 0;

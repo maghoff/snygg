@@ -9,6 +9,9 @@ class textured_skin : public scalable_skin {
 	struct impl;
 	boost::scoped_ptr<impl> d;
 
+	void to_no_shader();
+	void to_texture_shader();
+
 public:
 	textured_skin(const std::string& path);
 	~textured_skin();
@@ -19,7 +22,9 @@ public:
 	void fat_arc(ymse::vec2f p, float r, float t, float begin, float end, float b_begin, float b_end);
 	void fat_line(ymse::vec2f p, ymse::vec2f d, float len, float t, float b_begin, float b_end);
 
-	void finish_frame(ymse::rectf bb);
+	void cap(ymse::vec2f p, float snake_direction, float cap_direction, float b_coord);
+
+	void finish_frame(ymse::rectf bounding_box);
 };
 
 #endif // TEXTURED_SKIN_HPP

@@ -63,6 +63,13 @@ vec2f arc::get_head_pos() const {
 	);
 }
 
+vec2f arc::get_head_direction() const {
+	return vec2f(
+		-sin(end) * direction,
+		cos(end) * direction
+	);
+}
+
 vec2f arc::get_tail_pos() const {
 	return vec2f(
 		x + cos(begin) * r,
@@ -70,10 +77,10 @@ vec2f arc::get_tail_pos() const {
 	);
 }
 
-vec2f arc::get_head_direction() const {
+vec2f arc::get_tail_direction() const {
 	return vec2f(
-		-sin(end) * direction,
-		cos(end) * direction
+		-sin(begin) * direction,
+		cos(begin) * direction
 	);
 }
 

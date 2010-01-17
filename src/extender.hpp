@@ -20,8 +20,9 @@ public:
 	float tail_forward(float);
 
 	ymse::vec2f get_head_pos() const;
-	ymse::vec2f get_tail_pos() const;
 	ymse::vec2f get_head_direction() const;
+	ymse::vec2f get_tail_pos() const;
+	ymse::vec2f get_tail_direction() const;
 
 	float length() const;
 	void render(skin&, float head_b) const;

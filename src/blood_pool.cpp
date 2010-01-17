@@ -33,13 +33,18 @@ vec2f blood_pool::get_head_pos() const {
 	return vec2f(x, y);
 }
 
+vec2f blood_pool::get_head_direction() const {
+	assert(false);
+	throw std::logic_error("blood_pool::get_head_direction(...) called");
+}
+
 vec2f blood_pool::get_tail_pos() const {
 	return vec2f(x, y);
 }
 
-vec2f blood_pool::get_head_direction() const {
+vec2f blood_pool::get_tail_direction() const {
 	assert(false);
-	throw std::logic_error("blood_pool::get_head_direction(...) called");
+	throw std::logic_error("blood_pool::get_tail_direction(...) called");
 }
 
 float blood_pool::length() const {

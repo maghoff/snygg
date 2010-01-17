@@ -59,5 +59,9 @@ void plain_skin::fat_line(ymse::vec2f p, ymse::vec2f d, float len, float t, floa
 	glEnd();
 }
 
+void plain_skin::cap(ymse::vec2f p, float, float, float) {
+	circle(p, 2.5);
+}
+
 void plain_skin::finish_frame(ymse::rectf) {
 }

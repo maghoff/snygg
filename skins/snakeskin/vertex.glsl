@@ -1,14 +1,17 @@
-attribute vec2 snake_coord_in;
+attribute vec2 circle_coord_in;
 attribute vec3 across_in, along_in;
+attribute float b_in;
 
-varying vec2 snake_coord, world_coord;
+varying vec2 circle_coord, world_coord;
 varying vec3 across_i, along_i;
+varying float b;
 
 void main(void) {
-	snake_coord = snake_coord_in;
+	circle_coord = circle_coord_in;
 	world_coord = gl_Vertex;
 	across_i = across_in;
 	along_i = along_in;
+	b = b_in;
 
 	gl_Position = ftransform();
 }

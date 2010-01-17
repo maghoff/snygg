@@ -97,7 +97,6 @@ snygg::snygg(const std::string& board_filename) :
 	d->fg->generate();
 
 	d->players.push_back(new player(*d->kbd, *this));
-	d->players[0].spawn();
 }
 
 snygg::~snygg() {
