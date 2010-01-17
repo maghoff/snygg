@@ -9,6 +9,10 @@ class textured_skin : public scalable_skin {
 	struct impl;
 	boost::scoped_ptr<impl> d;
 
+	void to_no_shader();
+	void to_texture_shader();
+	void to_cap_shader();
+
 public:
 	textured_skin(const std::string& path);
 	~textured_skin();

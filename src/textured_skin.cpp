@@ -12,7 +12,15 @@
 
 const int snake_coord = 4, across = 5, along = 6, circle_coord = 7, b_attribute = 8;
 
+enum shader_state_t {
+	no_shader,
+	texture_shader,
+	cap_shader
+};
+
 struct textured_skin::impl {
+	shader_state_t shader_state;
+
 	ymse::gl::program prog;
 	ymse::gl::texture diffuse, normal;
 
@@ -23,6 +31,8 @@ textured_skin::textured_skin(const std::string& path) :
 	d(new impl)
 {
 	assert(glGetError() == GL_NO_ERROR);
+
+	d->shader_state = no_shader;
 
 	ymse::gl::shader light(GL_FRAGMENT_SHADER);
 	light.source_file(path + "/light.glsl");
@@ -76,7 +86,39 @@ textured_skin::textured_skin(const std::string& path) :
 textured_skin::~textured_skin() {
 }
 
+void textured_skin::to_no_shader() {
+	if (d->shader_state == no_shader) return;
+
+	glUseProgram(0);
+
+	d->shader_state = no_shader;
+}
+
+void textured_skin::to_texture_shader() {
+	if (d->shader_state == texture_shader) return;
+
+	glUseProgram(d->prog.get_id());
+
+	d->prog.set_uniform("diffuse_map", 0);
+	d->prog.set_uniform("normal_map", 1);
+
+	d->shader_state = texture_shader;
+}
+
+void textured_skin::to_cap_shader() {
+	if (d->shader_state == cap_shader) return;
+
+	glUseProgram(d->cap.get_id());
+
+	d->cap.set_uniform("diffuse_map", 0);
+	d->cap.set_uniform("normal_map", 1);
+
+	d->shader_state = cap_shader;
+}
+
 void textured_skin::circle(ymse::vec2f p, float r) {
+	to_no_shader();
+
 	float step_size = get_step_size(r);
 
 	glBegin(GL_TRIANGLE_FAN);
@@ -87,16 +129,15 @@ void textured_skin::circle(ymse::vec2f p, float r) {
 }
 
 void textured_skin::blood(ymse::vec2f p, float r) {
+	to_no_shader();
+
 	glColor4f(1, 0, 0, 1);
 	circle(p, r);
 	glColor4f(1, 1, 1, 1);
 }
 
 void textured_skin::fat_arc(ymse::vec2f p, float r, float t, float begin, float end, float b_begin, float b_end) {
-	glUseProgram(d->prog.get_id());
-
-	d->prog.set_uniform("diffuse_map", 0);
-	d->prog.set_uniform("normal_map", 1);
+	to_texture_shader();
 
 	float r1 = r-t, r2 = r+t;
 	float step_size = get_step_size(r2);
@@ -137,15 +178,10 @@ void textured_skin::fat_arc(ymse::vec2f p, float r, float t, float begin, float 
 	glVertex2f(x + r2 * cos(end), y + r2 * sin(end));
 
 	glEnd();
-
-	glUseProgram(0);
 }
 
 void textured_skin::fat_line(ymse::vec2f p, ymse::vec2f dir, float len, float t, float b_begin, float b_end) {
-	glUseProgram(d->prog.get_id());
-
-	d->prog.set_uniform("diffuse_map", 0);
-	d->prog.set_uniform("normal_map", 1);
+	to_texture_shader();
 
 	float &x1(p[0]), &y1(p[1]), &dx(dir[0]), &dy(dir[1]);
 
@@ -166,15 +202,10 @@ void textured_skin::fat_line(ymse::vec2f p, ymse::vec2f dir, float len, float t,
 	glVertexAttrib2f(snake_coord, -1, b_begin);
 	glVertex2f(x1 - nx, y1 - ny);
 	glEnd();
-
-	glUseProgram(0);
 }
 
 void textured_skin::cap_front(ymse::vec2f p, float direction, float b_coord) {
-	glUseProgram(d->cap.get_id());
-
-	d->cap.set_uniform("diffuse_map", 0);
-	d->cap.set_uniform("normal_map", 1);
+	to_cap_shader();
 
 	const float r = 2.5;
 	const float step_size = get_step_size(r);
@@ -195,15 +226,10 @@ void textured_skin::cap_front(ymse::vec2f p, float direction, float b_coord) {
 	glVertex2f(p[0] + r * cos(d), p[1] + r * sin(d));
 
 	glEnd();
-
-	glUseProgram(0);
 }
 
 void textured_skin::cap_back(ymse::vec2f p, float direction, float b_coord) {
-	glUseProgram(d->cap.get_id());
-
-	d->cap.set_uniform("diffuse_map", 0);
-	d->cap.set_uniform("normal_map", 1);
+	to_cap_shader();
 
 	const float r = 2.5;
 	const float step_size = get_step_size(r);
@@ -224,9 +250,8 @@ void textured_skin::cap_back(ymse::vec2f p, float direction, float b_coord) {
 	glVertex2f(p[0] + r * cos(d), p[1] + r * sin(d));
 
 	glEnd();
-
-	glUseProgram(0);
 }
 
 void textured_skin::finish_frame(ymse::rectf bounding_box) {
+	d->shader_state = no_shader; //< Because of metaballs
 }
