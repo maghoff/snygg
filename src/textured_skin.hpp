@@ -9,11 +9,6 @@ class textured_skin : public scalable_skin {
 	struct impl;
 	boost::scoped_ptr<impl> d;
 
-	void cap_test(ymse::vec2f, float);
-	void beautiful_cap_test(float base_ang);
-
-	void stick_test(float base_ang, ymse::vec2f c);
-
 public:
 	textured_skin(const std::string& path);
 	~textured_skin();
@@ -27,7 +22,7 @@ public:
 	void cap_front(ymse::vec2f p, float direction, float b_coord);
 	void cap_back(ymse::vec2f p, float direction, float b_coord);
 
-	void finish_frame(ymse::rectf bb);
+	void finish_frame(ymse::rectf bounding_box);
 };
 
 #endif // TEXTURED_SKIN_HPP

@@ -170,41 +170,6 @@ void textured_skin::fat_line(ymse::vec2f p, ymse::vec2f dir, float len, float t,
 	glUseProgram(0);
 }
 
-void textured_skin::cap_test(ymse::vec2f p, float direction) {
-	const float r = 2.5;
-	const float step_size = get_step_size(r);
-
-	float base_ang = direction - M_PI*0.5;
-
-	glVertexAttrib3f(across, cos(base_ang), sin(base_ang), 0);
-	glVertexAttrib3f(along, -sin(base_ang), cos(base_ang), 0);
-	glVertexAttrib1f(b_attribute, 0);
-
-	glBegin(GL_TRIANGLE_FAN);
-	for (float d = 0.f; d < M_PI * 2.f; d += step_size) {
-		glVertexAttrib2f(circle_coord, cos(d-base_ang), sin(d-base_ang));
-		glVertex2f(p[0] + r * cos(d), p[1] + r * sin(d));
-	}
-	glEnd();
-}
-
-void textured_skin::beautiful_cap_test(float base_ang) {
-	cap_test(ymse::vec2f(0, 0), base_ang);
-
-	float r = 0;
-	int n = 0;
-
-	for (int j=0; j<9; ++j) {
-		n += 6;
-		r += 7.5;
-		for (int i=0; i<n; ++i) {
-			const double ang = (double)(i) * M_PI / (n/2);
-			ymse::vec2f p(cos(ang) * r, sin(ang) * r);
-			cap_test(p, base_ang);
-		}
-	}
-}
-
 void textured_skin::cap_front(ymse::vec2f p, float direction, float b_coord) {
 	glUseProgram(d->cap.get_id());
 
@@ -263,40 +228,5 @@ void textured_skin::cap_back(ymse::vec2f p, float direction, float b_coord) {
 	glUseProgram(0);
 }
 
-void textured_skin::stick_test(float base_ang, ymse::vec2f c) {
-	ymse::vec2f d(cos(base_ang), sin(base_ang));
-	float len = 10;
-
-	cap_front(c + (float)(len/2.) * d, base_ang, 10);
-	cap_back(c + (float)-(len/2.) * d, base_ang, 0);
-
-	fat_line(c + (float)-(len/2.) * d, d, len, 2.5, 0, len);
-}
-
-void textured_skin::finish_frame(ymse::rectf bb) {
-	static float base_ang = 0;
-	base_ang += 0.01;
-
-/*
-	stick_test(base_ang, ymse::vec2f(-30, 15));
-	stick_test(base_ang, ymse::vec2f(0, 15));
-	stick_test(base_ang, ymse::vec2f(30, 15));
-
-	stick_test(base_ang, ymse::vec2f(-15, 0));
-	stick_test(base_ang, ymse::vec2f(15, 0));
-
-	stick_test(base_ang, ymse::vec2f(-30, -15));
-	stick_test(base_ang, ymse::vec2f(0, -15));
-	stick_test(base_ang, ymse::vec2f(30, -15));
-//*/
-
-/*
-	glUseProgram(d->cap.get_id());
-
-	d->cap.set_uniform("diffuse_map", 0);
-	d->cap.set_uniform("normal_map", 1);
-
-	beautiful_cap_test(base_ang);
-	glUseProgram(0);
-//*/
+void textured_skin::finish_frame(ymse::rectf bounding_box) {
 }
