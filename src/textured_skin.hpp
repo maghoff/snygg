@@ -11,7 +11,8 @@ class textured_skin : public scalable_skin {
 
 	void cap_test(ymse::vec2f, float);
 	void beautiful_cap_test(float base_ang);
-	void half_cap_test(ymse::vec2f p, float base_ang);
+	void cap_front_test(ymse::vec2f p, float base_ang);
+	void cap_back_test(ymse::vec2f p, float base_ang);
 
 	void stick_test(float base_ang, ymse::vec2f c);
 

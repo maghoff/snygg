@@ -17,16 +17,15 @@ mat3 calculate_snake_from_skin(in vec2 circle_coord) {
 	float width = abs(cos(ang1));
 	float ang = acos(clamp(circle_coord.x/width, -1.0, 1.0));
 
+	vec3 xdir = vec3(sin(ang), 0, -cos(ang));
+
 	float h = sqrt(1 - circle_coord.x*circle_coord.x - circle_coord.y*circle_coord.y);
 
 	vec3 shape_normal = vec3(circle_coord.x, circle_coord.y, h);
 	vec3 zdir = shape_normal;
 
-	vec3 xdir = vec3(sin(ang), 0, -cos(ang));
-
-	float ang2 = asin(circle_coord.x);
-	float yang = acos(circle_coord.y / abs(cos(ang2)));
-	vec3 ydir = vec3(0, -sin(yang), cos(yang));
+	float ang2 = atan2(h, circle_coord.y);
+	vec3 ydir = vec3(0, -sin(ang2), -cos(ang2));
 
 	return mat3(xdir, ydir, zdir);
 }
@@ -57,12 +56,13 @@ void main(void) {
 
 	// 4: Look up and transform the normal from the bump map (in skin coordinates)
 	vec3 bump_normal = (vec3(texture2D(normal_map, texture_coord)) * 2.0 - 1.0) * vec3(-1, -1, 1);
+	//bump_normal = vec3(0, 0, 1);
 
 	// The length of the interpolated bump_normal can be used as an estimate for
 	// the local variance in normals, and can be used to reduced specular aliasing.
 	float local_variance = 1.0 / length(bump_normal);
 
-	bump_normal = normalize(bump_normal);
+	bump_normal = normalize(bump_normal + vec3(0, 0, 0.5));
 
 	vec3 normal = world_from_skin * vec3(bump_normal);
 
