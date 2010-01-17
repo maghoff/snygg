@@ -12,9 +12,12 @@ const float min_a = 0.1, max_a = 0.45;
 extern const vec4 ambient;
 vec4 directional_light(vec3 normal, vec3 light, vec4 diffuse, float local_variance);
 
+mat3 calculate_snake_from_skin(in vec2 circle_coord);
+
 void main(void) {
 	vec3 across = normalize(across_i);
 	vec3 along = normalize(along_i);
+	mat3 world_from_snake = mat3(across, along, vec3(0, 0, 1));
 
 	float ang = acos(clamp(snake_coord[0], -1.0, 1.0));
 	float len_around = (ang / M_PI - 0.5) * 2;
@@ -27,7 +30,6 @@ void main(void) {
 
 	vec4 diffuse = texture2D(diffuse_map, texture_coord);
 	vec3 bump_normal = (vec3(texture2D(normal_map, texture_coord)) * 2.0 - 1.0) * vec3(-1, -1, 1);
-	//bump_normal = normalize(vec3(0, 0, 1));
 
 	// The length of the interpolated bump_normal can be used
 	// as an estimate for the local variance in normals.
@@ -35,19 +37,12 @@ void main(void) {
 
 	bump_normal = normalize(bump_normal + vec3(0, 0, 0.5));
 
+	mat3 snake_from_skin = calculate_snake_from_skin(vec2(snake_coord[0], 0));
+	mat3 world_from_skin = world_from_snake * snake_from_skin;
+
+	vec3 normal = normalize(world_from_skin * bump_normal);
+
 	float h = sqrt(1 - snake_coord[0]*snake_coord[0]);
-	vec2 shape_normal = vec2(snake_coord[0], h);
-
-	mat2x3 world_from_snake = mat2x3(across, vec3(0, 0, 1));
-
-	vec3 out_v = world_from_snake * shape_normal;
-	vec3 out_v_p = world_from_snake * vec2(shape_normal[1], -shape_normal[0]);
-
-	mat3 world_from_skin = mat3(out_v_p, along, out_v);
-	vec3 normal = world_from_skin * bump_normal;
-	//vec3 normal = bump_normal[0] * out_v_p + bump_normal[1] * along + bump_normal[2] * out_v;
-	//normal = vec4(shape_normal[0], shape_normal[1], 0, 0);
-
 	vec3 w = vec3(world_coord[0], world_coord[1], h*2.5);
 
 	vec3 light = normalize(vec3(0, 0, 3) - w);
