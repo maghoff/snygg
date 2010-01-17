@@ -77,12 +77,16 @@ vec2f segment_sequence::get_head_pos() const {
 	return d->head().get_head_pos();
 }
 
+vec2f segment_sequence::get_head_direction() const {
+	return d->head().get_head_direction();
+}
+
 vec2f segment_sequence::get_tail_pos() const {
 	return d->tail().get_tail_pos();
 }
 
-vec2f segment_sequence::get_head_direction() const {
-	return d->head().get_head_direction();
+vec2f segment_sequence::get_tail_direction() const {
+	return d->tail().get_tail_direction();
 }
 
 float segment_sequence::length() const {

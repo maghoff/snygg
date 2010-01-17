@@ -10,7 +10,7 @@
 #include <ymse/sdl/surface.hpp>
 #include "textured_skin.hpp"
 
-const int snake_coord = 4, across = 5, along = 6, circle_coord = 7;
+const int snake_coord = 4, across = 5, along = 6, circle_coord = 7, b_attribute = 8;
 
 struct textured_skin::impl {
 	ymse::gl::program prog;
@@ -56,6 +56,7 @@ textured_skin::textured_skin(const std::string& path) :
 	d->cap.bind_attrib_location(circle_coord, "circle_coord_in");
 	d->cap.bind_attrib_location(across, "across_in");
 	d->cap.bind_attrib_location(along, "along_in");
+	d->cap.bind_attrib_location(b_attribute, "b_in");
 
 	d->cap.link();
 
@@ -177,6 +178,7 @@ void textured_skin::cap_test(ymse::vec2f p, float direction) {
 
 	glVertexAttrib3f(across, cos(base_ang), sin(base_ang), 0);
 	glVertexAttrib3f(along, -sin(base_ang), cos(base_ang), 0);
+	glVertexAttrib1f(b_attribute, 0);
 
 	glBegin(GL_TRIANGLE_FAN);
 	for (float d = 0.f; d < M_PI * 2.f; d += step_size) {
@@ -203,7 +205,12 @@ void textured_skin::beautiful_cap_test(float base_ang) {
 	}
 }
 
-void textured_skin::cap_front_test(ymse::vec2f p, float direction) {
+void textured_skin::cap_front(ymse::vec2f p, float direction, float b_coord) {
+	glUseProgram(d->cap.get_id());
+
+	d->cap.set_uniform("diffuse_map", 0);
+	d->cap.set_uniform("normal_map", 1);
+
 	const float r = 2.5;
 	const float step_size = get_step_size(r);
 
@@ -211,6 +218,7 @@ void textured_skin::cap_front_test(ymse::vec2f p, float direction) {
 
 	glVertexAttrib3f(across, cos(base_ang), sin(base_ang), 0);
 	glVertexAttrib3f(along, -sin(base_ang), cos(base_ang), 0);
+	glVertexAttrib1f(b_attribute, b_coord);
 
 	glBegin(GL_TRIANGLE_FAN);
 	for (float d = direction - M_PI * 0.5; d < direction + M_PI * 0.5; d += step_size) {
@@ -222,9 +230,16 @@ void textured_skin::cap_front_test(ymse::vec2f p, float direction) {
 	glVertex2f(p[0] + r * cos(d), p[1] + r * sin(d));
 
 	glEnd();
+
+	glUseProgram(0);
 }
 
-void textured_skin::cap_back_test(ymse::vec2f p, float direction) {
+void textured_skin::cap_back(ymse::vec2f p, float direction, float b_coord) {
+	glUseProgram(d->cap.get_id());
+
+	d->cap.set_uniform("diffuse_map", 0);
+	d->cap.set_uniform("normal_map", 1);
+
 	const float r = 2.5;
 	const float step_size = get_step_size(r);
 
@@ -232,6 +247,7 @@ void textured_skin::cap_back_test(ymse::vec2f p, float direction) {
 
 	glVertexAttrib3f(across, cos(base_ang), sin(base_ang), 0);
 	glVertexAttrib3f(along, -sin(base_ang), cos(base_ang), 0);
+	glVertexAttrib1f(b_attribute, b_coord);
 
 	glBegin(GL_TRIANGLE_FAN);
 	for (float d = direction - M_PI * 0.5 + M_PI; d < direction + M_PI * 0.5 + M_PI; d += step_size) {
@@ -243,21 +259,16 @@ void textured_skin::cap_back_test(ymse::vec2f p, float direction) {
 	glVertex2f(p[0] + r * cos(d), p[1] + r * sin(d));
 
 	glEnd();
+
+	glUseProgram(0);
 }
 
 void textured_skin::stick_test(float base_ang, ymse::vec2f c) {
-	glUseProgram(d->cap.get_id());
-
-	d->cap.set_uniform("diffuse_map", 0);
-	d->cap.set_uniform("normal_map", 1);
-
 	ymse::vec2f d(cos(base_ang), sin(base_ang));
 	float len = 10;
 
-	cap_front_test(c + (float)(len/2.) * d, base_ang);
-	cap_back_test(c + (float)-(len/2.) * d, base_ang);
-
-	glUseProgram(0);
+	cap_front(c + (float)(len/2.) * d, base_ang, 10);
+	cap_back(c + (float)-(len/2.) * d, base_ang, 0);
 
 	fat_line(c + (float)-(len/2.) * d, d, len, 2.5, 0, len);
 }
@@ -266,7 +277,7 @@ void textured_skin::finish_frame(ymse::rectf bb) {
 	static float base_ang = 0;
 	base_ang += 0.01;
 
-//*
+/*
 	stick_test(base_ang, ymse::vec2f(-30, 15));
 	stick_test(base_ang, ymse::vec2f(0, 15));
 	stick_test(base_ang, ymse::vec2f(30, 15));

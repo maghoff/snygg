@@ -18,7 +18,12 @@ void main(void) {
 
 	float ang = acos(clamp(snake_coord[0], -1.0, 1.0));
 	float len_around = (ang / M_PI - 0.5) * 2;
-	vec2 texture_coord = vec2(len_around/2 * (max_a - min_a) + ((max_a - min_a) / 2) + snake_coord[1] * 0.001, snake_coord[1] * density);
+	vec2 texture_coord = vec2(
+		len_around/2 * (max_a - min_a) + ((max_a - min_a) / 2) +
+		snake_coord[1] * 0.001
+	,
+		snake_coord[1] * density
+	);
 
 	vec4 diffuse = texture2D(diffuse_map, texture_coord);
 	vec3 bump_normal = (vec3(texture2D(normal_map, texture_coord)) * 2.0 - 1.0) * vec3(-1, -1, 1);

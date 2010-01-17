@@ -42,12 +42,16 @@ ymse::vec2f extender::get_head_pos() const {
 	return d->pos;
 }
 
-ymse::vec2f extender::get_tail_pos() const {
-	return d->pos;
-}
-
 ymse::vec2f extender::get_head_direction() const {
 	return d->dir;
+}
+
+ymse::vec2f extender::get_tail_pos() const {
+	return get_head_pos();
+}
+
+ymse::vec2f extender::get_tail_direction() const {
+	return get_head_direction();
 }
 
 float extender::length() const {

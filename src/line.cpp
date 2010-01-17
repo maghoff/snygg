@@ -97,12 +97,16 @@ ymse::vec2f line::get_head_pos() const {
 	return v;
 }
 
+ymse::vec2f line::get_head_direction() const {
+	return vec2f(dx, dy);
+}
+
 ymse::vec2f line::get_tail_pos() const {
 	return vec2f(x, y);
 }
 
-ymse::vec2f line::get_head_direction() const {
-	return vec2f(dx, dy);
+ymse::vec2f line::get_tail_direction() const {
+	return get_head_direction();
 }
 
 float line::length() const {

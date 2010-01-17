@@ -12,6 +12,6 @@ segment_ptr immediate_growth_policy::growth_segment(ymse::vec2f pos, ymse::vec2f
 
 void immediate_growth_policy::grow(segment_sequence& body, float length) {
 	ymse::vec2f pos = body.get_tail_pos();
-	ymse::vec2f dir(1, 0); //< This direction is never read from the extender
+	ymse::vec2f dir = body.get_tail_direction();
 	body.push_front(segment_ptr(new extender(pos, dir, length)));
 }

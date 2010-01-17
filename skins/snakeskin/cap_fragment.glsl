@@ -3,6 +3,7 @@ uniform sampler2D normal_map;
 
 varying vec2 circle_coord, world_coord;
 varying vec3 across_i, along_i;
+varying float b;
 
 const float M_PI = 3.14159265358979;
 
@@ -42,9 +43,11 @@ void main(void) {
 	float len_around_y = ((acos(circle_coord.y) / M_PI) - 0.5) * 2 * 2.5 * M_PI;
 	vec2 texture_coord =
 		vec2(
-			(len_around_x / 2) * (max_a - min_a) + ((max_a - min_a) / 2)
+			(len_around_x / 2) * (max_a - min_a) + ((max_a - min_a) / 2) +
+			b * 0.001
 		,
-			(len_around_y / 2) * density
+			(len_around_y / 2) * density +
+			b * density
 		)
 	;
 
@@ -64,7 +67,8 @@ void main(void) {
 
 	bump_normal = normalize(bump_normal + vec3(0, 0, 0.5));
 
-	vec3 normal = world_from_skin * vec3(bump_normal);
+	// I apparently have to normalize here as well. Why?
+	vec3 normal = normalize(world_from_skin * bump_normal);
 
 	// 5: Set up the light
 	float h = sqrt(1 - circle_coord.x*circle_coord.x - circle_coord.y*circle_coord.y);

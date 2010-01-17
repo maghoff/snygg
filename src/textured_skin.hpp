@@ -11,8 +11,6 @@ class textured_skin : public scalable_skin {
 
 	void cap_test(ymse::vec2f, float);
 	void beautiful_cap_test(float base_ang);
-	void cap_front_test(ymse::vec2f p, float base_ang);
-	void cap_back_test(ymse::vec2f p, float base_ang);
 
 	void stick_test(float base_ang, ymse::vec2f c);
 
@@ -25,6 +23,9 @@ public:
 
 	void fat_arc(ymse::vec2f p, float r, float t, float begin, float end, float b_begin, float b_end);
 	void fat_line(ymse::vec2f p, ymse::vec2f d, float len, float t, float b_begin, float b_end);
+
+	void cap_front(ymse::vec2f p, float direction, float b_coord);
+	void cap_back(ymse::vec2f p, float direction, float b_coord);
 
 	void finish_frame(ymse::rectf bb);
 };

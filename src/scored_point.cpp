@@ -55,12 +55,16 @@ vec2f scored_point::get_head_pos() const {
 	return vec2f(x, y);
 }
 
-vec2f scored_point::get_tail_pos() const {
-	return vec2f(x, y);
-}
-
 vec2f scored_point::get_head_direction() const {
 	return vec2f(dx, dy);
+}
+
+vec2f scored_point::get_tail_pos() const {
+	return get_head_pos();
+}
+
+vec2f scored_point::get_tail_direction() const {
+	return get_head_direction();
 }
 
 float scored_point::length() const {
