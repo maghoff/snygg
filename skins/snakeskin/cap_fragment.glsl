@@ -42,7 +42,7 @@ void main(void) {
 	mat3 world_from_skin = world_from_snake * calculate_snake_from_skin(circle_coord);
 
 	// 4: Look up and transform the normal from the bump map (in skin coordinates)
-	vec3 bump_normal = (vec3(texture2D(normal_map, texture_coord)) * 2.0 - 1.0) * vec3(-1, 1, 1);
+	vec3 bump_normal = (vec3(texture2D(normal_map, texture_coord)) * 2.0 - 1.0) * vec3(-1, -1, 1);
 	//bump_normal = vec3(0, 0, 1);
 
 	// The length of the interpolated bump_normal can be used as an estimate for

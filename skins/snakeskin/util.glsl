@@ -7,7 +7,7 @@ mat3 calculate_snake_from_skin(in vec2 circle_coord) {
 
 	float h = sqrt(1 - circle_coord.x*circle_coord.x - circle_coord.y*circle_coord.y);
 
-	vec3 shape_normal = vec3(circle_coord.x, circle_coord.y, h);
+	vec3 shape_normal = vec3(circle_coord.x, -circle_coord.y, h);
 	vec3 zdir = shape_normal;
 
 	float ang2 = atan2(h, circle_coord.y);
