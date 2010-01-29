@@ -1,4 +1,5 @@
 #include <cmath>
+#include <ymse/geometry_intersection.hpp>
 #include <ymse/rect.hpp>
 #include <ymse/vec.hpp>
 #include "skin.hpp"
@@ -49,12 +50,16 @@ int open_segment::left_hline_intersections(ymse::vec2f p) const {
 }
 
 bool open_segment::intersect_with_circle(const ymse::vec2f& p, float r) const {
-	// Should consider head- and tail-caps
-	return s->intersect_with_circle(p, r);
-}
+	namespace i = ymse::intersect;
+	using ymse::vec2f;
 
-bool open_segment::intersect_with_circle(const ymse::vec2f& p, float r, float& skiplength) const {
-	// Should consider head- and tail-caps
-	return s->intersect_with_circle(p, r, skiplength);
+	vec2f head(s->get_head_pos());
+	vec2f tail(s->get_tail_pos());
+
+	return
+		i::circle_with_circle(p, r, head, 2.5f) ||
+		i::circle_with_circle(p, r, tail, 2.5f) ||
+		s->intersect_with_circle(p, r)
+	;
 }
 

@@ -31,7 +31,6 @@ public:
 	int left_hline_intersections(ymse::vec2f p) const;
 
 	bool intersect_with_circle(const ymse::vec2f&, float r) const;
-	bool intersect_with_circle(const ymse::vec2f&, float r, float& skiplength) const;
 };
 
 #endif
