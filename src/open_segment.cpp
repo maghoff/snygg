@@ -1,5 +1,7 @@
+#include <cmath>
 #include <ymse/rect.hpp>
 #include <ymse/vec.hpp>
+#include "skin.hpp"
 #include "open_segment.hpp"
 
 open_segment::open_segment(segment_ptr s_) :
@@ -26,9 +28,15 @@ ymse::vec2f open_segment::get_tail_direction() const { return s->get_tail_direct
 float open_segment::length() const { return s->length(); }
 
 void open_segment::render(skin& sk, float head_b) const {
-	// Should render head-cap
+	using ymse::vec2f;
+
+	vec2f head(s->get_head_pos()), head_dir(s->get_head_direction());
+	sk.cap(head, atan2(head_dir[1], head_dir[0]), M_PI * 0.5, head_b);
+
 	s->render(sk, head_b);
-	// Should render tail-cap
+
+	vec2f tail(s->get_tail_pos()), tail_dir(s->get_tail_direction());
+	sk.cap(tail, atan2(tail_dir[1], tail_dir[0]), M_PI * 1.5, head_b + s->length());
 }
 
 ymse::rectf open_segment::bounding_box() const {
