@@ -17,6 +17,7 @@ add_executable(
 	luamod/lua_vm.cpp
 	main.cpp
 	metaballs.cpp
+	open_segment.cpp
 	plain_skin.cpp
 	player.cpp
 	renderable.cpp

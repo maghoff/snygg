@@ -1,6 +1,7 @@
 #ifndef SNYGG_SEGMENT_HPP
 #define SNYGG_SEGMENT_HPP
 
+#include <memory>
 #include "intersectable_with_circle.hpp"
 #include "renderable.hpp"
 
@@ -41,5 +42,7 @@ public:
 	// This is used to determine the winding number of a new food item.
 	virtual int left_hline_intersections(ymse::vec2f p) const = 0;
 };
+
+typedef std::auto_ptr<segment> segment_ptr;
 
 #endif

@@ -11,6 +11,7 @@
 #include "../line.hpp"
 #include "../arc.hpp"
 #include "../segment_sequence.hpp"
+#include "../open_segment.hpp"
 
 namespace luamod {
 
@@ -76,6 +77,10 @@ void register_modules(lua_State* L) {
 				 (void(segment_sequence::*)(segment*))&segment_sequence::push_back,
 				 adopt(_2)
 			)
+		,
+
+		class_<open_segment, segment>("open_segment")
+			.def(constructor<segment*>())
 	];
 }
 
