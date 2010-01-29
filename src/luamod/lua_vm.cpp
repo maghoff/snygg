@@ -80,7 +80,7 @@ void register_modules(lua_State* L) {
 		,
 
 		class_<open_segment, segment>("open_segment")
-			.def(constructor<segment*>())
+			.def(constructor<segment*>(), adopt(_2))
 	];
 }
 
