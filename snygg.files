@@ -47,6 +47,8 @@ src/luamod/lua_vm.hpp
 src/main.cpp
 src/metaballs.cpp
 src/metaballs.hpp
+src/open_segment.cpp
+src/open_segment.hpp
 src/plain_skin.cpp
 src/plain_skin.hpp
 src/player.cpp
