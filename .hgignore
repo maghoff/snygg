@@ -13,3 +13,5 @@ skins/snakeskin/diffuse.jpg
 skins/snakeskin/normal.jpg
 media/*
 snygg-0.0-1_*
+src/config.hpp
+install.sh

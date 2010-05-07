@@ -25,3 +25,9 @@ link_directories(
 
 add_subdirectory(src)
 
+configure_file(
+	install.sh.in
+	install.sh
+	@ONLY
+)
+

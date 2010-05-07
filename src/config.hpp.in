@@ -1,0 +1,10 @@
+#ifndef CONFIGURE_HPP
+#define CONFIGURE_HPP
+
+namespace config {
+
+const char* install_prefix = "${CMAKE_INSTALL_PREFIX}";
+
+}
+
+#endif

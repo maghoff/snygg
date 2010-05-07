@@ -1,0 +1,24 @@
+#!/bin/bash
+
+# To set install prefix, run
+#    cmake -DCMAKE_INSTALL_PREFIX=<prefix> .
+#    make
+#
+# The default prefix is (apparently) /usr/local
+#
+# The EXTRA_PREFIX is used by create_deb.sh to install
+# into the debian-directory
+
+PREFIX="${EXTRA_PREFIX}@CMAKE_INSTALL_PREFIX@"
+
+BIN="$PREFIX/games"
+SHARE="$PREFIX/share/games/snygg"
+LEVELS="$SHARE/levels"
+SKINS="$SHARE/skins"
+
+mkdir -p "$BIN" "$LEVELS" "$SKINS"
+
+cp src/snygg "$BIN/"
+cp levels/*.lua "$LEVELS/"
+cp -r skins/* "$SKINS/"
+

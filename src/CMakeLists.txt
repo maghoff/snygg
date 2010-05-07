@@ -31,6 +31,12 @@ add_executable(
 	textured_skin.cpp
 )
 
+configure_file(
+	config.hpp.in
+	config.hpp
+	ESCAPE_QUOTES
+)
+
 target_link_libraries(
 	snygg
 	GL
@@ -47,11 +53,6 @@ set_target_properties(
 	snygg
 	PROPERTIES
 
-	COMPILE_FLAGS "-ggdb -ffast-math -pipe -fvisibility-inlines-hidden -Wall"
-	COMPILE_DEFINITIONS "DEBUG;EBUG;GL_GLEXT_PROTOTYPES"#;DISALLOW_LONG_PLAYING"
-
-#	COMPILE_FLAGS "-O3 -ffast-math -pipe -fvisibility-inlines-hidden"
-#	COMPILE_DEFINITIONS "NDEBUG;GL_GLEXT_PROTOTYPES"
-#	LINK_FLAGS "-s"
+	COMPILE_DEFINITIONS "GL_GLEXT_PROTOTYPES"#;DISALLOW_LONG_PLAYING"
 )
 
