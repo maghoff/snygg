@@ -1,6 +1,6 @@
 -- Four
 
-require "levels/util"
+require "util"
 
 function create_board()
 	shift_x = 10

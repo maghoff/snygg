@@ -4,6 +4,8 @@
 #include <luabind/operator.hpp>
 #include "lua_vm.hpp"
 
+#include <boost/filesystem/path.hpp>
+
 // For exposing to lua:
 #include <ymse/rect.hpp>
 #include <ymse/vec.hpp>
@@ -99,6 +101,13 @@ lua_vm::~lua_vm() {
 }
 
 void lua_vm::dofile(const std::string& filename) {
+
+	boost::filesystem::path p(filename);
+	std::string package_path(p.branch_path().string());
+
+	luabind::object package = luabind::globals(L)["package"];
+	package["path"] = package_path + "/?.lua";
+
 	int result = luaL_dofile(L, filename.c_str());
 	if (result) throw luabind::error(L);
 }

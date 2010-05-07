@@ -4,12 +4,9 @@
 #include <ymse/core.hpp>
 #include <ymse/core_factory.hpp>
 #include "snygg.hpp"
-#include "config.hpp"
 
 int main(int argc, const char *argv[])
 try {
-	std::cout << "CMAKE_INSTALL_PREFIX: " << config::install_prefix << std::endl;
-
 	std::auto_ptr<ymse::core> c(ymse::core_factory());
 	c->init(argc, argv);
 

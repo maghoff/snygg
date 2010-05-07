@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 2.6)
 project(snygg)
 
 set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}")
-find_package(Boost COMPONENTS program_options REQUIRED)
+find_package(Boost COMPONENTS program_options filesystem REQUIRED)
 find_package(Ymse REQUIRED)
 find_package(SDL REQUIRED)
 find_package(SDL_image REQUIRED)

@@ -47,6 +47,7 @@ target_link_libraries(
 	${LUABIND_LIBRARIES}
 	${LUA_LIBRARIES}
 	${Boost_PROGRAM_OPTIONS_LIBRARY}
+	${Boost_FILESYSTEM_LIBRARY}
 )
 
 set_target_properties(

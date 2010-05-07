@@ -1,6 +1,6 @@
 -- Obstacles inside the board
 
-require "levels/util"
+require "util"
 
 function create_board()
 	s = segment_sequence()

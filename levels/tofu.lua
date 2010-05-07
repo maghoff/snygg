@@ -1,6 +1,6 @@
 -- Eat food inside a block of tofu
 
-require "levels/util"
+require "util"
 
 function create_board()
 	local s = segment_sequence()
