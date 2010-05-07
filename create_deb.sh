@@ -30,13 +30,18 @@ DEBIAN_DIR="$PKG_DIR/DEBIAN"
 CONTROL="$DEBIAN_DIR/control"
 
 
+# Proper build:
+cmake -CGCCSetup.cmake -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Release .
+make -j
+
+
 rm -rf "$PKG_DIR"
 
 mkdir -p "$PKG_DIR/usr/games"
 mkdir -p "$DEBIAN_DIR"
 
 # Copy files:
-PREFIX="$PKG_DIR/usr" ./install.sh
+EXTRA_PREFIX="$PKG_DIR" ./install.sh
 
 # Create control-file:
 echo "Package: $PACKAGE" > "$CONTROL"
