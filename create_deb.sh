@@ -1,14 +1,15 @@
 #!/bin/bash
 
-
 PACKAGE=snygg
 VER=0.0-1
 SECTION=games
 PRIORITY=optional
-ARCHITECTURE=AUTO_FURTHER_DOWN
-DEPENDS=libc6
 MAINTAINER="Magnus Hoff <email@example.com>"
 DESCRIPTION="A snake-like game"
+
+# To update this list, you might want to use:
+#    objdump -p src/snygg | grep NEEDED | sed 's/ *NEEDED *//g' | xargs -n1 dpkg -S
+DEPENDS="libgl1-mesa-glx, libglu1-mesa, libsdl-image1.2, libsdl1.2debian-alsa, libc6, libluabind0.9.0, liblua5.1-0, libboost-program-options1.40.0, libstdc++6, libgcc1"
 
 
 function guess_architecture() {
