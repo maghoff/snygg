@@ -4,5 +4,5 @@
 require "util"
 
 function create_board()
-	return box(rect(-60, -35 - 10, 60, 35 - 10), 10)
+	return box(rect(-65, -35 - 10, 65, 35 - 10), 10)
 end
