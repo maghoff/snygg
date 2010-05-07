@@ -35,7 +35,6 @@ target_link_libraries(
 	snygg
 	GL
 	GLU
-	glut
 	${YMSE_LIBRARY}
 	${SDLIMAGE_LIBRARY}
 	${SDL_LIBRARY}
