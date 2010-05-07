@@ -35,7 +35,7 @@ mkdir -p "$PKG_DIR/usr/games"
 mkdir -p "$DEBIAN_DIR"
 
 # Copy files:
-cp src/snygg "$PKG_DIR/usr/games/"
+PREFIX="$PKG_DIR/usr" ./install.sh
 
 # Create control-file:
 echo "Package: $PACKAGE" > "$CONTROL"
