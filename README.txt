@@ -1,18 +1,11 @@
 Notes on how to build easily
 ============================
 
-Dependencies
-------------
+Preparation
+-----------
 
-Assuming you are on Ubuntu:
-
-    sudo apt-get install build-essential cmake freeglut3-dev libboost-dev libsdl-dev libsdl-image1.2-dev curl libluabind-dev
-
-    # For textures:
-    curl -L -o skins/snakeskin/diffuse.jpg http://imgur.com/xKUVi.jpg
-    curl -L -o skins/snakeskin/normal.jpg http://imgur.com/IkERt.jpg
-
-(Please add more packages as you discover needs)
+Run ./prepare.sh to resolve most dependencies (on Ubuntu 10.04 at least)
+and do the necessary build initialization (See CMake below)
 
 
 Ymse
@@ -34,18 +27,16 @@ To let snygg locate ymse, please set the YMSE_PATH:
 Snygg
 -----
 
-Then build snygg (again, from the proper directory):
+Then build and run snygg (again, from the proper directory):
 
-    cmake .
-    make -j3
-
-    ./src/snygg
+    make -Cdebug -j
+    debug/src/snygg
 
 
 CMake
 -----
 
-This project uses CMake. It is only necessary to run CMake the first time
-you are going to build. After that, it is sufficient to run just make (or
-the proper command for your system)
+This project uses CMake. Prepare will do the necessary initial invocations of
+CMake. After that, it is sufficient to run just make in the debug or release
+directory.
 

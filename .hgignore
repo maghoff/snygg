@@ -1,11 +1,6 @@
 syntax: glob
 *~
 *.user
-cmake_install.cmake
-CMakeFiles/*
-CMakeCache.txt
-Makefile
-src/snygg
 Doxyfile
 snygg.kdevelop.pcs
 snygg.kdevses
@@ -13,5 +8,5 @@ skins/snakeskin/diffuse.jpg
 skins/snakeskin/normal.jpg
 media/*
 snygg-0.0-1_*
-src/config.hpp
-install.sh
+debug
+release

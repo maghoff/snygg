@@ -18,7 +18,7 @@ SNAKESKIN="$SHARE/skins/snakeskin"
 
 mkdir -p "$BIN" "$LEVELS" "$SNAKESKIN"
 
-cp src/snygg "$BIN/"
+cp release/src/snygg "$BIN/"
 cp levels/*.lua "$LEVELS/"
 cp skins/snakeskin/{{diffuse,normal}.jpg,{{mb_,}{vertex,fragment},light}.glsl} "$SNAKESKIN/"
 
