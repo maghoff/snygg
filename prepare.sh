@@ -1,6 +1,6 @@
 #!/bin/bash
 
-PACKAGES="build-essential cmake freeglut3-dev libboost-dev libsdl-dev libsdl-image1.2-dev curl libluabind-dev"
+PACKAGES="build-essential cmake freeglut3-dev libboost-dev libboost-filesystem-dev libboost-program-options-dev libsdl-dev libsdl-image1.2-dev curl libluabind-dev lintian"
 CMAKE_PARAMS="-C../GCCSetup.cmake -DCMAKE_INSTALL_PREFIX=/usr"
 BUILD_TYPES="debug release"
 
