@@ -16,6 +16,7 @@ function guess_architecture() {
     M="`uname -m`"
     case "$M" in
     x86_64) echo amd64 ;;
+    i686) echo i386 ;;
     *) echo "$M" ;;
     esac
 }
