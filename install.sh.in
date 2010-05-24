@@ -15,10 +15,18 @@ BIN="$PREFIX/games"
 SHARE="$PREFIX/share/games/snygg"
 LEVELS="$SHARE/levels"
 SNAKESKIN="$SHARE/skins/snakeskin"
+DESKTOPDIR="$SHARE/applications"
 
-mkdir -p "$BIN" "$LEVELS" "$SNAKESKIN"
+mkdir -p "$BIN" "$LEVELS" "$SNAKESKIN" "$DESKTOPDIR"
 
 cp release/src/snygg "$BIN/"
 cp levels/*.lua "$LEVELS/"
 cp skins/snakeskin/{{diffuse,normal}.jpg,{{mb_,}{vertex,fragment},light}.glsl} "$SNAKESKIN/"
+cp snygg.desktop "$DESKTOPDIR/"
+
+if ! desktop-file-validate "$DESKTOPDIR/snygg.desktop"
+then
+	echo "desktop-file-validate complained. Failing"
+	exit 1
+fi
 
