@@ -22,11 +22,11 @@ struct board::impl {
 };
 
 
-board::board(const std::string& filename) :
+board::board(const boost::filesystem::path& filename) :
 	d(new impl)
 {
 	try  {
-		d->lvm.dofile(filename);
+		d->lvm.dofile(filename.string());
 
 		d->b.push_back(
 			luabind::call_function<segment*>(d->lvm.get_L(), "create_board") [

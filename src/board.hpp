@@ -2,6 +2,7 @@
 #define SNYGG_BOARD_HPP
 
 #include <string>
+#include <boost/filesystem/path.hpp>
 #include <boost/scoped_ptr.hpp>
 #include "intersectable_with_circle.hpp"
 #include "renderable.hpp"
@@ -18,7 +19,7 @@ class board : public renderable, public intersectable_with_circle {
 	boost::scoped_ptr<impl> d;
 
 public:
-	board(const std::string& filename);
+	board(const boost::filesystem::path& filename);
 	~board();
 
 	void render(skin&) const;

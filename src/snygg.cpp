@@ -14,6 +14,7 @@
 #include "food_generator.hpp"
 #include "item.hpp"
 #include "metaballs.hpp"
+#include "paths.hpp"
 #include "plain_skin.hpp"
 #include "player.hpp"
 #include "snygg.hpp"
@@ -63,11 +64,14 @@ void init_gl() {
 snygg::snygg(const std::string& board_filename) :
 	d(new impl)
 {
+	using boost::filesystem::path;
+
 	d->kbd.reset(new ymse::bindable_keyboard_handler);
 
 	init_gl();
 
-	d->active_board.reset(new board(board_filename));
+	path board_path(paths::find_absolute_or_in_path(board_filename, paths::levels()));
+	d->active_board.reset(new board(board_path));
 
 	d->reshaper.reset(new ymse::gl_box_reshaper);
 	ymse::rectf bb = d->active_board->bounding_box();
@@ -79,10 +83,11 @@ snygg::snygg(const std::string& board_filename) :
 	d->metaballs_rect.x2 = bb.x2 + margin;
 	d->metaballs_rect.y2 = bb.y2 + margin;
 
+	std::string snakeskin = (paths::skins() / "snakeskin").string();
 	d->skins.push_back(new plain_skin);
-	d->skins.push_back(new metaballs<plain_skin>("skins/snakeskin"));
-	d->skins.push_back(new textured_skin("skins/snakeskin"));
-	d->skins.push_back(new metaballs<textured_skin>("skins/snakeskin"));
+	d->skins.push_back(new metaballs<plain_skin>(snakeskin));
+	d->skins.push_back(new textured_skin(snakeskin));
+	d->skins.push_back(new metaballs<textured_skin>(snakeskin));
 	d->active_skin = &d->skins.back();
 
 	for (size_t i=0; i<d->skins.size(); ++i) {

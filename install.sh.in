@@ -12,9 +12,10 @@
 PREFIX="${EXTRA_PREFIX}@CMAKE_INSTALL_PREFIX@"
 
 BIN="$PREFIX/games"
-SHARE="$PREFIX/share/games/snygg"
-LEVELS="$SHARE/levels"
-SNAKESKIN="$SHARE/skins/snakeskin"
+SHARE="$PREFIX/share"
+DATA="$SHARE/games/snygg"
+LEVELS="$DATA/levels"
+SNAKESKIN="$DATA/skins/snakeskin"
 DESKTOPDIR="$SHARE/applications"
 
 mkdir -p "$BIN" "$LEVELS" "$SNAKESKIN" "$DESKTOPDIR"

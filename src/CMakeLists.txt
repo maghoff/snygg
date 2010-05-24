@@ -1,3 +1,7 @@
+include_directories(
+	${CMAKE_CURRENT_BINARY_DIR}
+)
+
 add_executable(
 	snygg
 	arc.cpp
@@ -18,6 +22,7 @@ add_executable(
 	main.cpp
 	metaballs.cpp
 	open_segment.cpp
+	paths.cpp
 	plain_skin.cpp
 	player.cpp
 	renderable.cpp

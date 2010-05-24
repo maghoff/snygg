@@ -3,14 +3,17 @@
 #include <typeinfo>
 #include <ymse/core.hpp>
 #include <ymse/core_factory.hpp>
+#include "paths.hpp"
 #include "snygg.hpp"
 
 int main(int argc, const char *argv[])
 try {
+	paths::set_argv_zero(argv[0]);
+
 	std::auto_ptr<ymse::core> c(ymse::core_factory());
 	c->init(argc, argv);
 
-	std::string board = "levels/wide_screen.lua";
+	std::string board = "wide_screen.lua";
 	if (argc >= 2) board = argv[1];
 
 	snygg g(board);
