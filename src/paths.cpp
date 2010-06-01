@@ -47,7 +47,7 @@ path guess_prefix() {
 	path configured_prefix(config::install_prefix);
 
 	path p(executable_path());
-	if (p.filename() == "bin") return p.branch_path();
+	if (p.filename() == "games" || p.filename() == "bin") return p.branch_path();
 	else return configured_prefix;
 }
 
