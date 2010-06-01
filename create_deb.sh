@@ -8,8 +8,8 @@ MAINTAINER="Magnus Hoff <email@example.com>"
 DESCRIPTION="A snake-like game"
 
 # To update this list, you might want to use:
-#    objdump -p src/snygg | grep NEEDED | sed 's/ *NEEDED *//g' | xargs -n1 dpkg -S
-DEPENDS="libgl1-mesa-glx, libglu1-mesa, libsdl-image1.2, libsdl1.2debian-alsa, libc6, libluabind0.9.0, liblua5.1-0, libboost-program-options1.40.0, libstdc++6, libgcc1"
+#    objdump -p src/snygg | grep NEEDED | sed 's/ *NEEDED *//g' | xargs -n1 dpkg -S | sed 's/\(.*\):.*/\1/g' | sort -u
+DEPENDS="libgl1-mesa-glx, libglu1-mesa, libsdl-image1.2, libsdl1.2debian-alsa, libc6, libluabind0.9.0, liblua5.1-0, libboost-program-options1.40.0, libboost-filesystem1.40.0, libboost-system1.40.0, libstdc++6, libgcc1"
 
 
 function guess_architecture() {
