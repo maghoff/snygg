@@ -37,8 +37,8 @@ add_executable(
 )
 
 configure_file(
-	config.hpp.in
-	config.hpp
+	${CMAKE_CURRENT_SOURCE_DIR}/config.hpp.in
+	${CMAKE_CURRENT_BINARY_DIR}/config.hpp
 	ESCAPE_QUOTES
 )
 
