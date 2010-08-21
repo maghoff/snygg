@@ -9,6 +9,13 @@ namespace {
 
 std::string g_argv_zero;
 
+std::string get_from_proc() {
+	char buffer[FILENAME_MAX + 1];
+	int len = readlink("/proc/self/exe", buffer, FILENAME_MAX);
+	if (len > 0) return std::string(buffer, buffer+len);
+	return std::string();
+}
+
 }
 
 namespace paths {
@@ -19,13 +26,9 @@ void set_argv_zero(const char* argv_zero) {
 
 path executed_file() {
 	std::string p;
-	char buffer[FILENAME_MAX + 1];
 
-	int len = readlink("/proc/self/exe", buffer, FILENAME_MAX);
-	if (len) p = std::string(buffer, buffer+len);
-
+	if (p.empty()) p = get_from_proc();
 	if (p.empty()) p = g_argv_zero;
-
 	if (p.empty()) p = "snygg"; // Fail. Give a stupid default
 
 	return path(p);
