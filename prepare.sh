@@ -1,6 +1,6 @@
 #!/bin/bash
 
-PACKAGES="build-essential cmake freeglut3-dev libboost-dev libboost-filesystem-dev libboost-program-options-dev libsdl-dev libsdl-image1.2-dev curl libluabind-dev lintian desktop-file-utils"
+PACKAGES="build-essential cmake freeglut3-dev libboost-dev libboost-filesystem-dev libboost-program-options-dev libsdl-dev libsdl-image1.2-dev curl lintian desktop-file-utils"
 CMAKE_PARAMS="-C../GCCSetup.cmake -DCMAKE_INSTALL_PREFIX=/usr"
 BUILD_TYPES="debug release"
 
@@ -23,6 +23,11 @@ function get() {
 
 get skins/snakeskin/diffuse.jpg http://imgur.com/xKUVi.jpg
 get skins/snakeskin/normal.jpg http://imgur.com/IkERt.jpg
+
+
+pushd import
+./dl.sh
+popd
 
 
 for x in $BUILD_TYPES
