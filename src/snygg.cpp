@@ -1,7 +1,7 @@
 #include <SDL.h>
 #include <cmath>
 #include <vector>
-#include <GL/gl.h>
+#include <ymse/gl.h>
 #include <boost/bind.hpp>
 #include <boost/ptr_container/ptr_list.hpp>
 #include <boost/ptr_container/ptr_vector.hpp>

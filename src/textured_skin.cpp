@@ -1,4 +1,4 @@
-#include <GL/gl.h>
+#include <ymse/gl.h>
 #include <algorithm>
 #include <cmath>
 #include <ymse/rect.hpp>

@@ -1,7 +1,7 @@
 #include <cassert>
 #include <cmath>
 #include <stdexcept>
-#include <GL/gl.h>
+#include <ymse/gl.h>
 #include <ymse/rect.hpp>
 #include <ymse/vec.hpp>
 #include "blood_pool.hpp"

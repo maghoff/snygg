@@ -1,6 +1,6 @@
 #include <algorithm>
 #include <cmath>
-#include <GL/gl.h>
+#include <ymse/gl.h>
 #include <ymse/rect.hpp>
 #include <ymse/vec.hpp>
 #include "plain_skin.hpp"

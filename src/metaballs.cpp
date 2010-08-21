@@ -1,4 +1,4 @@
-#include <GL/gl.h>
+#include <ymse/gl.h>
 #include <ymse/gl/program.hpp>
 #include <ymse/gl/shader.hpp>
 #include <ymse/gl/texture.hpp>
