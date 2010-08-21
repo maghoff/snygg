@@ -1,7 +1,7 @@
 #!/bin/bash
 
 PACKAGES="build-essential cmake freeglut3-dev libboost-dev libboost-filesystem-dev libboost-program-options-dev libsdl-dev libsdl-image1.2-dev curl libluabind-dev lintian desktop-file-utils"
-CMAKE_PARAMS="-C../GCCSetup.cmake -DCMAKE_INSTALL_PREFIX=/usr -DLUABIND_MODE=system"
+CMAKE_PARAMS="-C../GCCSetup.cmake -DCMAKE_INSTALL_PREFIX=/usr -DLUABIND_MODE=system -DUSE_SDLMAIN=no"
 BUILD_TYPES="debug release"
 
 

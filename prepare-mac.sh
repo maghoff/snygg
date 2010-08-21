@@ -11,5 +11,13 @@ popd
 
 mkdir -p xcode
 pushd xcode
-cmake -GXcode -C../GCCSetup.cmake -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=debug -DCMAKE_OSX_ARCHITECTURES=x86_64 -DLUABIND_MODE=localbuild ..
+cmake \
+	-GXcode \
+	-C../GCCSetup.cmake \
+	-DCMAKE_INSTALL_PREFIX=/usr \
+	-DCMAKE_BUILD_TYPE=debug \
+	-DCMAKE_OSX_ARCHITECTURES=x86_64 \
+	-DLUABIND_MODE=localbuild \
+	-DUSE_SDLMAIN=macosx \
+	..
 popd

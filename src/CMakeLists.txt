@@ -2,6 +2,12 @@ include_directories(
 	${CMAKE_CURRENT_BINARY_DIR}
 )
 
+set(SDLMAIN "")
+
+if (${USE_SDLMAIN} STREQUAL "macosx")
+	set(SDLMAIN ../import/SDLmain.m)
+endif (${USE_SDLMAIN} STREQUAL "macosx")
+
 add_executable(
 	snygg
 	arc.cpp
@@ -34,6 +40,7 @@ add_executable(
 	snake_direction_listener.cpp
 	snygg.cpp
 	textured_skin.cpp
+	${SDLMAIN}
 )
 
 configure_file(
@@ -48,6 +55,7 @@ target_link_libraries(
 	${OPENGL_glu_LIBRARY}
 	${YMSE_LIBRARY}
 	${SDLIMAGE_LIBRARY}
+	${SDLMAIN_LIBRARY}
 	${SDL_LIBRARY}
 	${LUABIND_LIBRARIES}
 	${LUA_LIBRARIES}

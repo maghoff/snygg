@@ -1,3 +1,4 @@
+#include <SDL_main.h>
 #include <iostream>
 #include <string>
 #include <typeinfo>
@@ -6,12 +7,12 @@
 #include "paths.hpp"
 #include "snygg.hpp"
 
-int main(int argc, const char *argv[])
+int main(int argc, char *argv[])
 try {
 	paths::set_argv_zero(argv[0]);
 
 	std::auto_ptr<ymse::core> c(ymse::core_factory());
-	c->init(argc, argv);
+	c->init(argc, const_cast<const char**>(argv));
 
 	std::string board = "wide_screen.lua";
 	if (argc >= 2) board = argv[1];
