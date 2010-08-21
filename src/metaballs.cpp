@@ -60,7 +60,7 @@ void metaballs<BaseSkin>::blood(ymse::vec2f p, float r) {
 
 template <class BaseSkin>
 void metaballs<BaseSkin>::render_metaballs(ymse::rectf bb, const std::vector<ymse::vec3f>& p) {
-	glTexImage1D(GL_TEXTURE_1D, 0, GL_RGB16F, p.size(), 0, GL_RGB, GL_FLOAT, &p[0]);
+	glTexImage1D(GL_TEXTURE_1D, 0, GL_RGB16F_ARB, p.size(), 0, GL_RGB, GL_FLOAT, &p[0]);
 
 	glUseProgram(d->metaballs.get_id());
 
