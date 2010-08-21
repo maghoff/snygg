@@ -8,7 +8,7 @@ varying float b;
 
 void main(void) {
 	circle_coord = circle_coord_in;
-	world_coord = gl_Vertex;
+	world_coord = gl_Vertex.xy;
 	across_i = across_in;
 	along_i = along_in;
 	b = b_in;

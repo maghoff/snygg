@@ -10,7 +10,7 @@ const float M_PI = 3.14159265358979;
 const float density = 0.04;
 const float min_a = 0.1, max_a = 0.45;
 
-extern const vec4 ambient;
+const vec4 ambient = vec4(0.2, 0.2, 0.2, 1.0);
 vec4 directional_light(vec3 normal, vec3 light, vec4 diffuse, float local_variance);
 
 mat3 calculate_snake_from_skin(in vec2 circle_coord) {
@@ -20,12 +20,12 @@ mat3 calculate_snake_from_skin(in vec2 circle_coord) {
 
 	vec3 xdir = vec3(sin(ang), 0, -cos(ang));
 
-	float h = sqrt(1 - circle_coord.x*circle_coord.x - circle_coord.y*circle_coord.y);
+	float h = sqrt(1. - circle_coord.x*circle_coord.x - circle_coord.y*circle_coord.y);
 
 	vec3 shape_normal = vec3(circle_coord.x, -circle_coord.y, h);
 	vec3 zdir = shape_normal;
 
-	float ang2 = atan2(h, circle_coord.y);
+	float ang2 = atan(h, circle_coord.y);
 	vec3 ydir = vec3(0, -sin(ang2), -cos(ang2));
 
 	return mat3(xdir, ydir, zdir);
@@ -42,10 +42,10 @@ vec2 calculate_texture_coord_due_to_cap(in vec2 circle_coord) {
 	float width = abs(cos(ang1));
 	float ang = acos(clamp(circle_coord.x/width, -1.0, 1.0));
 
-	float len_around_x = ((ang / M_PI) - 0.5) * 2 * width;
-	float len_around_y = ((acos(circle_coord.y) / M_PI) - 0.5) * 2 * 2.5 * M_PI;
+	float len_around_x = ((ang / M_PI) - 0.5) * 2. * width;
+	float len_around_y = ((acos(circle_coord.y) / M_PI) - 0.5) * 2. * 2.5 * M_PI;
 
-	return vec2((len_around_x / 2) * (max_a - min_a) + ((max_a - min_a) / 2), (len_around_y / 2) * density);
+	return vec2((len_around_x / 2.) * (max_a - min_a) + ((max_a - min_a) / 2.), (len_around_y / 2.) * density);
 }
 
 void main(void) {
@@ -67,7 +67,7 @@ void main(void) {
 	mat3 world_from_skin = calculate_world_from_skin(normalize(across_i), normalize(along_i), circle_coord);
 	vec3 normal = world_from_skin * bump_normal;
 
-	float h = sqrt(1 - circle_coord.x*circle_coord.x - circle_coord.y*circle_coord.y);
+	float h = sqrt(1. - circle_coord.x*circle_coord.x - circle_coord.y*circle_coord.y);
 	vec3 w = vec3(world_coord[0], world_coord[1], h*2.5);
 	vec3 light = normalize(vec3(0, 0, 3) - w);
 
