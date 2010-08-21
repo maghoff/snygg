@@ -6,9 +6,10 @@ find_package(Boost COMPONENTS program_options filesystem REQUIRED)
 find_package(Ymse REQUIRED)
 find_package(SDL REQUIRED)
 find_package(SDL_image REQUIRED)
+find_package(OpenGL REQUIRED)
 
 find_package(PkgConfig REQUIRED)
-pkg_check_modules(LUA lua5.1 REQUIRED)
+pkg_search_module(LUA REQUIRED lua5.1 lua)
 pkg_check_modules(LUABIND luabind REQUIRED)
 
 include_directories(

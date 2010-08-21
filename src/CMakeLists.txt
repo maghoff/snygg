@@ -44,8 +44,8 @@ configure_file(
 
 target_link_libraries(
 	snygg
-	GL
-	GLU
+	${OPENGL_gl_LIBRARY}
+	${OPENGL_glu_LIBRARY}
 	${YMSE_LIBRARY}
 	${SDLIMAGE_LIBRARY}
 	${SDL_LIBRARY}
