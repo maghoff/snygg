@@ -11,9 +11,6 @@ find_package(OpenGL REQUIRED)
 find_package(PkgConfig REQUIRED)
 pkg_search_module(LUA REQUIRED lua5.1 lua)
 
-set(LUABIND_INCLUDE_DIRS import/luabind-0.9)
-set(LUABIND_LIBRARIES luabind)
-
 include_directories(
 	${YMSE_PATH}
 	${SDL_INCLUDE_DIR}
@@ -27,7 +24,18 @@ link_directories(
 	${LUA_LIBRARY_DIRS}
 )
 
-add_subdirectory(import)
+if ("${LUABIND_MODE}" STREQUAL "localbuild")
+	add_subdirectory(import)
+	set(LUABIND_INCLUDE_DIRS import/luabind-0.9)
+	set(LUABIND_LIBRARIES luabind)
+else ("${LUABIND_MODE}" STREQUAL "localbuild")
+	pkg_check_modules(LUABIND REQUIRED luabind)
+endif ("${LUABIND_MODE}" STREQUAL "localbuild")
+
+include_directories(
+	${LUABIND_INCLUDE_DIRS}
+)
+
 add_subdirectory(src)
 
 configure_file(
