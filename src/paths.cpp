@@ -1,3 +1,9 @@
+#ifdef __MACH__
+#include <CFBundle.h>
+#endif
+
+#include <iostream>
+
 #include <cstdlib>
 #include <fstream>
 #include "config.hpp"
@@ -15,6 +21,36 @@ std::string get_from_proc() {
 	if (len > 0) return std::string(buffer, buffer+len);
 	return std::string();
 }
+
+#ifdef __MACH__
+path get_bundle_resources_directory() {
+	path ret;
+	char buf[FILENAME_MAX+1];
+	CFBundleRef main_bundle;
+	CFURLRef resources_url;
+	CFStringRef resources_str;
+	Boolean ok;
+
+	main_bundle = CFBundleGetMainBundle();
+	if (main_bundle == NULL) goto failed_early;
+	resources_url = CFBundleCopyBundleURL(main_bundle);
+	if (resources_url == NULL) goto failed_early;
+	resources_str = CFURLCopyFileSystemPath(resources_url, kCFURLPOSIXPathStyle);
+	if (resources_str == NULL) goto failed_after_resources_url;
+	ok = CFStringGetCString(resources_str, buf, FILENAME_MAX, kCFStringEncodingUTF8);
+	if (!ok) goto failed_after_resources_str;
+
+	buf[FILENAME_MAX] = '\0';
+	ret = path(buf) / "Contents/Resources";
+
+failed_after_resources_str:
+	CFRelease(resources_str);
+failed_after_resources_url:
+	CFRelease(resources_url);
+failed_early:
+	return ret;
+}
+#endif
 
 }
 
@@ -62,8 +98,18 @@ path guess_project_dir() {
 }
 
 path data() {
-	if (is_installed()) return guess_prefix() / "share/games/snygg";
-	else return guess_project_dir();
+	path dir;
+
+#ifdef __MACH__
+	if (dir.empty()) dir = get_bundle_resources_directory();
+#endif
+
+	if (dir.empty()) {
+		if (is_installed()) dir = guess_prefix() / "share/games/snygg";
+		else dir = guess_project_dir();
+	}
+
+	return dir;
 }
 
 path levels() {

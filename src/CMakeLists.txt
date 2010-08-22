@@ -9,7 +9,7 @@ if (${USE_SDLMAIN} STREQUAL "macosx")
 endif (${USE_SDLMAIN} STREQUAL "macosx")
 
 add_executable(
-	snygg
+	snygg MACOSX_BUNDLE
 	arc.cpp
 	blood_pool.cpp
 	board.cpp
@@ -62,6 +62,7 @@ target_link_libraries(
 	${Boost_PROGRAM_OPTIONS_LIBRARY}
 	${Boost_FILESYSTEM_LIBRARY}
 	${Boost_SYSTEM_LIBRARY}
+	${COREFOUNDATION_LIBRARY}
 )
 
 set_target_properties(
@@ -70,4 +71,16 @@ set_target_properties(
 
 	COMPILE_DEFINITIONS "GL_GLEXT_PROTOTYPES"#;DISALLOW_LONG_PLAYING"
 )
+
+# Stupid CMake does not make it easy to put resources into a bundle
+if (APPLE)
+	add_custom_target(
+		osx_bundle_dirs
+		COMMAND mkdir -p ${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_BUILD_TYPE}/snygg.app/Contents/Resources/levels
+		COMMAND cp ${CMAKE_CURRENT_SOURCE_DIR}/../levels/*.lua ${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_BUILD_TYPE}/snygg.app/Contents/Resources/levels/
+		COMMAND cp -r ${CMAKE_CURRENT_SOURCE_DIR}/../skins ${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_BUILD_TYPE}/snygg.app/Contents/Resources/
+	)
+	add_dependencies(snygg osx_bundle_dirs)
+endif (APPLE)
+
 
