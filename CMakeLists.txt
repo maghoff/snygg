@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 2.6)
 project(snygg)
 
 set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}")
+set(Boost_USE_STATIC_LIBS ON)
 find_package(Boost COMPONENTS program_options filesystem system REQUIRED)
 find_package(Ymse REQUIRED)
 find_package(SDL REQUIRED)
