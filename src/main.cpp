@@ -2,8 +2,7 @@
 #include <iostream>
 #include <string>
 #include <typeinfo>
-#include <ymse/core.hpp>
-#include <ymse/core_factory.hpp>
+#include <ymse/sdl_core.hpp>
 #include "paths.hpp"
 #include "snygg.hpp"
 
@@ -11,25 +10,16 @@ int main(int argc, char *argv[])
 try {
 	paths::set_argv_zero(argv[0]);
 
-	std::auto_ptr<ymse::core> c(ymse::core_factory());
-	c->init(argc, const_cast<const char**>(argv));
+	ymse::sdl_core core;
+	core.init(argc, const_cast<const char**>(argv));
 
 	std::string board = "wide_screen.lua";
 	if (argc >= 2) board = argv[1];
 
 	snygg g(board);
+	g.attach_to_core(core);
 
-	c->set_game_object(&g);
-
-	c->set_reshaper_object(g.get_reshaper_object());
-
-	c->set_keyboard_handler(g.get_keyboard_handler());
-
-	int ret = c->run();
-
-	c.reset();
-
-	return ret;
+	return core.run();
 }
 catch (const std::exception& e) {
 	std::cerr <<

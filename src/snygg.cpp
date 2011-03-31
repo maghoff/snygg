@@ -8,6 +8,7 @@
 #include <ymse/bindable_keyboard_handler.hpp>
 #include <ymse/gl_box_reshaper.hpp>
 #include <ymse/rect.hpp>
+#include <ymse/sdl_core.hpp>
 #include <ymse/keycodes.hpp>
 #include <ymse/vec.hpp>
 #include "board.hpp"
@@ -34,13 +35,6 @@ struct snygg::impl {
 
 	ymse::rectf metaballs_rect;
 };
-
-static void fs_toggle(bool in) {
-	if (in) {
-		// This breaks abstraction. Only ymse should need to know about SDL.
-		SDL_WM_ToggleFullScreen(SDL_GetVideoSurface());
-	}
-}
 
 void init_gl() {
 	glClearColor(0.0, 0.0, 0.0, 0.0);
@@ -91,12 +85,10 @@ snygg::snygg(const std::string& board_filename) :
 	d->active_skin = &d->skins.back();
 
 	for (size_t i=0; i<d->skins.size(); ++i) {
-		d->kbd->bind(ymse::KEY_F1 + i, boost::bind(&snygg::set_skin_key, this, &d->skins[i], _1));
+		d->kbd->bind_pressed(ymse::KEY_F1 + i, boost::bind(&snygg::set_skin_key, this, &d->skins[i]));
 	}
 
 	d->reshaper->set_pixels_per_unit_listener(d->active_skin);
-
-	d->kbd->bind(ymse::KEY_F, &fs_toggle);
 
 	d->fg.reset(new food_generator(*this, *d->active_board));
 	d->fg->generate();
@@ -107,12 +99,19 @@ snygg::snygg(const std::string& board_filename) :
 snygg::~snygg() {
 }
 
+void snygg::attach_to_core(ymse::sdl_core& core) {
+	core.set_game_object(this);
+	core.set_reshaper_object(d->reshaper.get());
+	core.set_keyboard_handler(d->kbd.get());
 
-void snygg::set_skin_key(scalable_skin* skin, bool pressed) {
-	if (pressed) {
-		d->active_skin = skin;
-		d->reshaper->set_pixels_per_unit_listener(d->active_skin);
-	}
+	d->kbd->bind_pressed(ymse::KEY_Q, boost::bind(&ymse::sdl_core::stop, &core, 0));
+	d->kbd->bind_pressed(ymse::KEY_F, boost::bind(&ymse::sdl_core::toggle_fullscreen, &core));
+}
+
+
+void snygg::set_skin_key(scalable_skin* skin) {
+	d->active_skin = skin;
+	d->reshaper->set_pixels_per_unit_listener(d->active_skin);
 }
 
 void snygg::render() {
@@ -172,14 +171,6 @@ void snygg::tick() {
 		++j;
 		if (i->is_dead()) d->items.erase(i);
 	}
-}
-
-ymse::keyboard_handler* snygg::get_keyboard_handler() {
-	return &*d->kbd;
-}
-
-ymse::reshaper* snygg::get_reshaper_object() {
-	return &*d->reshaper;
 }
 
 void snygg::add_item(std::auto_ptr<item> i) {

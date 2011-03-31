@@ -7,8 +7,7 @@
 #include "item_container.hpp"
 
 namespace ymse {
-	class keyboard_handler;
-	class reshaper;
+	class sdl_core;
 }
 
 class scalable_skin;
@@ -17,17 +16,16 @@ class snygg : public ymse::game, public item_container {
 	struct impl;
 	boost::scoped_ptr<impl> d;
 
-	void set_skin_key(scalable_skin*, bool);
+	void set_skin_key(scalable_skin*);
 
 public:
 	snygg(const std::string& board_filename);
 	~snygg();
 
+	void attach_to_core(ymse::sdl_core&);
+
 	void render();
 	void tick();
-
-	ymse::keyboard_handler* get_keyboard_handler();
-	ymse::reshaper* get_reshaper_object();
 
 	void add_item(std::auto_ptr<item>);
 	void add_renderable(std::auto_ptr<renderable>);
