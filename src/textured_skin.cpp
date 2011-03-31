@@ -86,9 +86,7 @@ void textured_skin::to_texture_shader() {
 	d->shader_state = texture_shader;
 }
 
-void textured_skin::circle(ymse::vec2f p, float r) {
-	to_no_shader();
-
+void textured_skin::circle_core(ymse::vec2f p, float r) {
 	float step_size = get_step_size(r);
 
 	glBegin(GL_TRIANGLE_FAN);
@@ -98,11 +96,19 @@ void textured_skin::circle(ymse::vec2f p, float r) {
 	glEnd();
 }
 
+void textured_skin::circle(ymse::vec2f p, float r) {
+	to_no_shader();
+
+	glColor4f(1., 1., 0.2f, 1);
+	circle_core(p, r);
+	glColor4f(1, 1, 1, 1);
+}
+
 void textured_skin::blood(ymse::vec2f p, float r) {
 	to_no_shader();
 
-	glColor4f(1, 0, 0, 1);
-	circle(p, r);
+	glColor4f(0.7, 0, 0, 1);
+	circle_core(p, r);
 	glColor4f(1, 1, 1, 1);
 }
 
@@ -209,4 +215,13 @@ void textured_skin::cap(ymse::vec2f p, float snake_direction_in, float cap_direc
 
 void textured_skin::finish_frame(ymse::rectf bounding_box) {
 	d->shader_state = no_shader; //< Because of metaballs
+
+	ymse::rectf &bb = bounding_box;
+	glColor4f(0.12, 0.12, 0.12, 1.0);
+	glBegin(GL_QUADS);
+	glVertex2f(bb.x1, bb.y1);
+	glVertex2f(bb.x1, bb.y2);
+	glVertex2f(bb.x2, bb.y2);
+	glVertex2f(bb.x2, bb.y1);
+	glEnd();
 }

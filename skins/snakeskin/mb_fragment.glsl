@@ -13,7 +13,7 @@ void main(void) {
 		val = val + sqr(sqr(v.z))/sqr(sqr(c.x) + sqr(c.y));
 	}
 
-	const vec4 color = vec4(1, 0, 0, 1);
+	const vec4 color = vec4(0.7, 0, 0, 1);
 	const vec4 back_color = vec4(0, 0, 0, 0);
 
 	float color_f = smoothstep(1., 1.1, val);
