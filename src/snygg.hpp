@@ -4,6 +4,7 @@
 #include <memory>
 #include <boost/scoped_ptr.hpp>
 #include <ymse/game.hpp>
+#include <ymse/reshaper.hpp>
 #include "item_container.hpp"
 
 namespace ymse {
@@ -12,12 +13,14 @@ namespace ymse {
 
 class scalable_skin;
 
-class snygg : public ymse::game, public item_container {
+class snygg : public ymse::game, ymse::reshaper, public item_container {
 	struct impl;
 	boost::scoped_ptr<impl> d;
 
 	void set_skin_key(scalable_skin*);
 
+	void reshape(int width, int height);
+	
 public:
 	snygg(const std::string& board_filename);
 	~snygg();

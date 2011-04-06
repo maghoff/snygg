@@ -17,6 +17,8 @@ class skin {
 public:
 	virtual ~skin();
 
+	virtual void load_opengl_resources();
+	
 	virtual void circle(ymse::vec2f p, float r) = 0;
 	virtual void blood(ymse::vec2f p, float r) = 0;
 

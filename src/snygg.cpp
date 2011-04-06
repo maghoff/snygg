@@ -101,13 +101,19 @@ snygg::~snygg() {
 
 void snygg::attach_to_core(ymse::sdl_core& core) {
 	core.set_game_object(this);
-	core.set_reshaper_object(d->reshaper.get());
+	core.set_reshaper_object(this);
 	core.set_keyboard_handler(d->kbd.get());
 
 	d->kbd->bind_pressed(ymse::KEY_Q, boost::bind(&ymse::sdl_core::stop, &core, 0));
 	d->kbd->bind_pressed(ymse::KEY_F, boost::bind(&ymse::sdl_core::toggle_fullscreen, &core));
 }
 
+void snygg::reshape(int width, int height) {
+	d->reshaper->reshape(width, height);
+	for (size_t i=0; i<d->skins.size(); ++i) {
+		d->skins[i].load_opengl_resources();
+	}
+}
 
 void snygg::set_skin_key(scalable_skin* skin) {
 	d->active_skin = skin;
@@ -118,6 +124,8 @@ void snygg::render() {
 	typedef boost::ptr_vector<player>::iterator piter;
 	typedef boost::ptr_list<item>::iterator iiter;
 	typedef boost::ptr_list<renderable>::iterator riter;
+
+	init_gl();
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 

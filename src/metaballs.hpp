@@ -27,6 +27,8 @@ public:
 	metaballs(const std::string& path);
 	~metaballs();
 
+	void load_opengl_resources();
+
 	void blood(ymse::vec2f p, float r);
 
 	void finish_frame(ymse::rectf bb);

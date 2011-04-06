@@ -18,6 +18,8 @@ public:
 	textured_skin(const std::string& path);
 	~textured_skin();
 
+	void load_opengl_resources();
+
 	void circle(ymse::vec2f p, float r);
 	void blood(ymse::vec2f p, float r);
 

@@ -2,3 +2,6 @@
 
 skin::~skin() {
 }
+
+void skin::load_opengl_resources() {
+}

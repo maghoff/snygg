@@ -1,6 +1,7 @@
 #include <ymse/gl.h>
 #include <algorithm>
 #include <cmath>
+#include <boost/scoped_ptr.hpp>
 #include <ymse/rect.hpp>
 #include <ymse/vec.hpp>
 #include <ymse/gl/program.hpp>
@@ -20,7 +21,11 @@ enum shader_state_t {
 struct textured_skin::impl {
 	shader_state_t shader_state;
 
-	ymse::gl::program prog;
+	std::string path;
+	
+	ymse::sdl::surface diffuse_surface, normal_surface;
+	
+	boost::scoped_ptr<ymse::gl::program> prog;
 	ymse::gl::texture diffuse, normal;
 };
 
@@ -29,31 +34,47 @@ textured_skin::textured_skin(const std::string& path) :
 {
 	assert(glGetError() == GL_NO_ERROR);
 
+	d->path = path; //< This is the wrong thing to store.
+	
 	d->shader_state = no_shader;
+
+	d->diffuse_surface = ymse::sdl::img_load(path + "/diffuse.jpg");
+	d->normal_surface = ymse::sdl::img_load(path + "/normal.jpg");
+}
+
+textured_skin::~textured_skin() {
+}
+
+void textured_skin::load_opengl_resources() {
+	glGetError();
+	d->prog.reset();
+	glGetError();
+	d->prog.reset(new ymse::gl::program);
+	glGetError();
 
 	ymse::gl::shader vertex(GL_VERTEX_SHADER);
 	ymse::gl::shader fragment(GL_FRAGMENT_SHADER), light(GL_FRAGMENT_SHADER);
-
-	vertex.source_file(path + "/vertex.glsl");
-	fragment.source_file(path + "/fragment.glsl");
-	light.source_file(path + "/light.glsl");
-
-	d->prog.attach(vertex);
-	d->prog.attach(fragment);
-	d->prog.attach(light);
-
-	d->prog.bind_attrib_location(circle_coord, "circle_coord_in");
-	d->prog.bind_attrib_location(across, "across_in");
-	d->prog.bind_attrib_location(along, "along_in");
-	d->prog.bind_attrib_location(b_attribute, "b_in");
-
-	d->prog.link();
-
+	
+	vertex.source_file(d->path + "/vertex.glsl");
+	fragment.source_file(d->path + "/fragment.glsl");
+	light.source_file(d->path + "/light.glsl");
+	
+	d->prog->attach(vertex);
+	d->prog->attach(fragment);
+	d->prog->attach(light);
+	
+	d->prog->bind_attrib_location(circle_coord, "circle_coord_in");
+	d->prog->bind_attrib_location(across, "across_in");
+	d->prog->bind_attrib_location(along, "along_in");
+	d->prog->bind_attrib_location(b_attribute, "b_in");
+	
+	d->prog->link();
+	
 	// shaders go out of scope, but are kept alive by OpenGL because of d->prog
-
-	ymse::sdl::img_load(path + "/diffuse.jpg").copy_to(d->diffuse);
-	ymse::sdl::img_load(path + "/normal.jpg").copy_to(d->normal);
-
+	
+	d->diffuse_surface.copy_to(d->diffuse);
+	d->normal_surface.copy_to(d->normal);
+	
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, d->diffuse.get_id());
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
@@ -62,9 +83,6 @@ textured_skin::textured_skin(const std::string& path) :
 	glBindTexture(GL_TEXTURE_2D, d->normal.get_id());
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-}
-
-textured_skin::~textured_skin() {
 }
 
 void textured_skin::to_no_shader() {
@@ -78,10 +96,14 @@ void textured_skin::to_no_shader() {
 void textured_skin::to_texture_shader() {
 	if (d->shader_state == texture_shader) return;
 
-	glUseProgram(d->prog.get_id());
+	glUseProgram(d->prog->get_id());
 
-	d->prog.set_uniform("diffuse_map", 0);
-	d->prog.set_uniform("normal_map", 1);
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, d->diffuse.get_id());
+	glActiveTexture(GL_TEXTURE1);
+	glBindTexture(GL_TEXTURE_2D, d->normal.get_id());
+	d->prog->set_uniform("diffuse_map", 0);
+	d->prog->set_uniform("normal_map", 1);
 
 	d->shader_state = texture_shader;
 }
