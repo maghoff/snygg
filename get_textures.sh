@@ -9,5 +9,5 @@ function get() {
     fi
 }
 
-get skins/snakeskin/diffuse.jpg http://imgur.com/xKUVi.jpg
-get skins/snakeskin/normal.jpg http://imgur.com/IkERt.jpg
+get skins/snakeskin/diffuse.jpg http://bitbucket.org/maghoff/snygg/downloads/diffuse.jpg
+get skins/snakeskin/normal.jpg  http://bitbucket.org/maghoff/snygg/downloads/normal.jpg
