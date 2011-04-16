@@ -4,6 +4,7 @@
 #include <string>
 #include <boost/filesystem/path.hpp>
 #include <boost/scoped_ptr.hpp>
+#include <ymse/vec.hpp>
 #include "intersectable_with_circle.hpp"
 #include "renderable.hpp"
 
@@ -26,6 +27,7 @@ public:
 
 	bool intersect_with_circle(const ymse::vec2f&, float r) const;
 
+	ymse::vec2f get_starting_position();
 	ymse::rectf bounding_box() const;
 	int winding_number(ymse::vec2f) const;
 };

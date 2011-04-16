@@ -6,6 +6,7 @@
 #include "item_container.hpp"
 #include "player.hpp"
 #include "snake.hpp"
+#include "board.hpp"
 #include "snake_direction_listener.hpp"
 
 struct player::impl {
@@ -14,12 +15,13 @@ struct player::impl {
 	boost::scoped_ptr<snake_direction_listener> del;
 	boost::scoped_ptr<ymse::signaling_opposite_keys> dir;
 	float speed;
+	board& game_board;
 
-	impl(item_container& ic_) : ic(ic_) { }
+	impl(item_container& ic_, board& _board) : ic(ic_), game_board(_board) { }
 };
 
-player::player(ymse::bindable_keyboard_handler& kbd, item_container& ic) :
-	d(new impl(ic))
+player::player(ymse::bindable_keyboard_handler& kbd, item_container& ic, board& _board) :
+	d(new impl(ic, _board))
 {
 	d->s = 0;
 	d->speed = 0.4f;
@@ -37,7 +39,7 @@ void player::spawn_key(bool do_spawn) {
 
 void player::spawn() {
 	if (!d->s) {
-		d->ic.add_item(item_ptr(d->s = new snake(d->ic, d->speed)));
+		d->ic.add_item(item_ptr(d->s = new snake(d->ic, d->speed, d->game_board.get_starting_position())));
 		d->s->set_turn(d->dir->val());
 		d->del->set_target(d->s);
 	}

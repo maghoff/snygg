@@ -46,6 +46,18 @@ board::board(const boost::filesystem::path& filename) :
 board::~board() {
 }
 
+ymse::vec2f board::get_starting_position()
+{
+	try  {
+		return ymse::vec2f(*luabind::call_function<ymse::vec2f*>(d->lvm.get_L(), "get_starting_position") [
+			luabind::adopt(luabind::result)
+        ]);
+	}
+	catch (const luabind::error& e) {
+		return ymse::vec2f(0, -40);
+	}
+}
+
 void board::render(skin& s) const {
 	render_sequence(d->b, s, SDL_GetTicks() * 0.0002);
 }

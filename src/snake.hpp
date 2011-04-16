@@ -3,6 +3,7 @@
 
 #include <boost/scoped_ptr.hpp>
 #include <boost/noncopyable.hpp>
+#include <ymse/vec.hpp>
 #include "item_with_life.hpp"
 
 class blood_pool;
@@ -15,7 +16,7 @@ class snake : public boost::noncopyable, public item_with_life {
 	void forward(float);
 
 public:
-	snake(item_container&, float speed);
+	snake(item_container&, float speed, ymse::vec2f pos);
 	~snake();
 
 	void score(float amount);

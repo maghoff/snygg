@@ -35,7 +35,7 @@ struct snake::impl {
 };
 
 
-snake::snake(item_container& ic, float speed) :
+snake::snake(item_container& ic, float speed, vec2f pos) :
 	d(new impl(ic))
 {
 	d->grow.reset(new immediate_growth_policy);
@@ -43,7 +43,7 @@ snake::snake(item_container& ic, float speed) :
 	d->speed = speed;
 	d->dir = -100; //< Invalid direction, forces set_turn to add a segment
 
-	vec2f pos(0, -40), dir(0, 1);
+	vec2f dir(0, 1);
 	d->body.push_back(d->grow->growth_segment(pos, dir, 20.f));
 
 	d->tail = d->head = &d->body;

@@ -93,7 +93,7 @@ snygg::snygg(const std::string& board_filename) :
 	d->fg.reset(new food_generator(*this, *d->active_board));
 	d->fg->generate();
 
-	d->players.push_back(new player(*d->kbd, *this));
+	d->players.push_back(new player(*d->kbd, *this, *d->active_board));
 }
 
 snygg::~snygg() {

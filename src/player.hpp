@@ -11,6 +11,7 @@ namespace ymse {
 
 class intersectable_with_circle;
 class item_container;
+class board;
 
 class player : public boost::noncopyable {
 	struct impl;
@@ -19,7 +20,7 @@ class player : public boost::noncopyable {
 	void spawn_key(bool);
 
 public:
-	player(ymse::bindable_keyboard_handler&, item_container&);
+	player(ymse::bindable_keyboard_handler&, item_container&, board&);
 	virtual ~player();
 
 	void spawn();
