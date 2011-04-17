@@ -1,28 +1,14 @@
 #ifndef OPEN_SEGMENT_HPP
 #define OPEN_SEGMENT_HPP
 
-#include <boost/scoped_ptr.hpp>
-#include "segment.hpp"
+#include "segment_filter.hpp"
 
-class open_segment : public segment {
-	boost::scoped_ptr<segment> s;
-
+class open_segment : public segment_filter {
 public:
 	open_segment(segment_ptr);
 	open_segment(segment*); //< For luabind... hmm...
 	~open_segment();
 
-	// Most of the following functions are just forwarded to the underlying segment:
-
-	void head_forward(float);
-	float tail_forward(float);
-
-	ymse::vec2f get_head_pos() const;
-	ymse::vec2f get_head_direction() const;
-	ymse::vec2f get_tail_pos() const;
-	ymse::vec2f get_tail_direction() const;
-
-	float length() const;
 	void render(skin&, float head_b) const;
 
 	ymse::rectf bounding_box() const;

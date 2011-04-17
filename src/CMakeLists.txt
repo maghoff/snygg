@@ -31,6 +31,7 @@ add_executable(
 	scalable_skin.cpp
 	schematic_skin.cpp
 	scored_point.cpp
+	segment_filter.cpp
 	segment_sequence.cpp
 	skin.cpp
 	snake.cpp
