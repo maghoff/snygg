@@ -16,3 +16,13 @@ function create_board()
 
 	return s
 end
+
+i = 0
+
+function get_starting_position()
+	local pos = vec(-10 + i * 20, -40)
+
+	i = (i + 1) % 2
+
+	return pos
+end
