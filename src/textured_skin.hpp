@@ -28,7 +28,7 @@ public:
 
 	void cap(ymse::vec2f p, float snake_direction, float cap_direction, float b_coord);
 
-	void finish_frame(ymse::rectf bounding_box);
+	void floor(const complex_polygon&);
 };
 
 #endif // TEXTURED_SKIN_HPP

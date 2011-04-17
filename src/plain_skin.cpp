@@ -63,5 +63,5 @@ void plain_skin::cap(ymse::vec2f p, float, float, float) {
 	circle(p, 2.5);
 }
 
-void plain_skin::finish_frame(ymse::rectf) {
+void plain_skin::floor(const complex_polygon&) {
 }

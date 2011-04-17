@@ -144,7 +144,7 @@ void snygg::render() {
 		i->render(*d->active_skin);
 	}
 
-	d->active_skin->finish_frame(d->metaballs_rect);
+	d->active_skin->floor(d->active_board->floor_polygon());
 }
 
 void snygg::tick() {

@@ -70,7 +70,7 @@ void metaballs<BaseSkin>::blood(ymse::vec2f p, float r) {
 }
 
 template <class BaseSkin>
-void metaballs<BaseSkin>::render_metaballs(ymse::rectf bb, const std::vector<ymse::vec3f>& p) {
+void metaballs<BaseSkin>::render_metaballs(const complex_polygon& floor_poly, const std::vector<ymse::vec3f>& p) {
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_1D, d->metaballs_coordinates.get_id());
 	glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
@@ -83,24 +83,18 @@ void metaballs<BaseSkin>::render_metaballs(ymse::rectf bb, const std::vector<yms
 	d->metaballs->set_uniform("number_of_balls", (int)p.size());
 	d->metaballs->set_uniform("balls", 0);
 
-	glBegin(GL_QUADS);
-	glVertex2f(bb.x1, bb.y1);
-	glVertex2f(bb.x1, bb.y2);
-	glVertex2f(bb.x2, bb.y2);
-	glVertex2f(bb.x2, bb.y1);
-	glEnd();
+	floor_poly.draw();
 
 	glUseProgram(0);
 }
 
 template <class BaseSkin>
-void metaballs<BaseSkin>::finish_frame(ymse::rectf bb) {
-	render_metaballs(bb, d->balls);
+void metaballs<BaseSkin>::floor(const complex_polygon& floor_poly) {
+	render_metaballs(floor_poly, d->balls);
 	d->balls.clear();
 
-	BaseSkin::finish_frame(bb);
+	BaseSkin::floor(floor_poly);
 }
-
 
 template class metaballs<plain_skin>;
 template class metaballs<textured_skin>;

@@ -6,12 +6,9 @@ namespace ymse {
 	class vec;
 
 	typedef vec<2, float> vec2f;
-
-	template <typename T>
-	struct rect;
-
-	typedef rect<float> rectf;
 }
+
+class complex_polygon;
 
 class skin {
 public:
@@ -27,8 +24,7 @@ public:
 
 	virtual void cap(ymse::vec2f p, float snake_direction, float cap_direction, float b_coord) = 0;
 
-	// Give the skin opportunity to put on the last finish:
-	virtual void finish_frame(ymse::rectf bounding_box) = 0;
+	virtual void floor(const complex_polygon&) = 0;
 };
 
 #endif

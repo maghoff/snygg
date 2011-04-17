@@ -9,6 +9,7 @@
 #include <ymse/gl/texture.hpp>
 #include <ymse/sdl/img_load.hpp>
 #include <ymse/sdl/surface.hpp>
+#include "complex_polygon.hpp"
 #include "textured_skin.hpp"
 
 const int across = 5, along = 6, circle_coord = 7, b_attribute = 8;
@@ -235,15 +236,11 @@ void textured_skin::cap(ymse::vec2f p, float snake_direction_in, float cap_direc
 	glEnd();
 }
 
-void textured_skin::finish_frame(ymse::rectf bounding_box) {
-	d->shader_state = no_shader; //< Because of metaballs
+void textured_skin::floor(const complex_polygon& floor_poly) {
+	glUseProgram(0);
+	d->shader_state = no_shader;
 
-	ymse::rectf &bb = bounding_box;
-	glColor4f(0.12, 0.12, 0.12, 1.0);
-	glBegin(GL_QUADS);
-	glVertex2f(bb.x1, bb.y1);
-	glVertex2f(bb.x1, bb.y2);
-	glVertex2f(bb.x2, bb.y2);
-	glVertex2f(bb.x2, bb.y1);
+	glColor4f(0.22, 0.22, 0.22, 1.0);
+	floor_poly.draw();
 	glEnd();
 }

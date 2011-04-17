@@ -5,13 +5,14 @@
 #include <vector>
 
 namespace ymse {
+	template <int Dim, typename T>
+	class vec;
+
+	typedef vec<2, float> vec2f;
 	typedef vec<3, float> vec3f;
-
-	template <typename T>
-	struct rect;
-
-	typedef rect<float> rectf;
 }
+
+class complex_polygon;
 
 template <class BaseSkin>
 class metaballs : public BaseSkin {
@@ -21,7 +22,7 @@ class metaballs : public BaseSkin {
 	void init(const std::string& path);
 
 	// Three coordinates: x, y and size
-	void render_metaballs(ymse::rectf rc, const std::vector<ymse::vec3f>&);
+	void render_metaballs(const complex_polygon&, const std::vector<ymse::vec3f>&);
 
 public:
 	metaballs(const std::string& path);
@@ -31,7 +32,7 @@ public:
 
 	void blood(ymse::vec2f p, float r);
 
-	void finish_frame(ymse::rectf bb);
+	void floor(const complex_polygon&);
 };
 
 #endif // METABALLS_HPP
