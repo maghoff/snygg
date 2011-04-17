@@ -12,6 +12,7 @@
 #include <ymse/keycodes.hpp>
 #include <ymse/vec.hpp>
 #include "board.hpp"
+#include "complex_polygon.hpp"
 #include "food_generator.hpp"
 #include "item.hpp"
 #include "metaballs.hpp"

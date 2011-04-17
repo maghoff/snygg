@@ -17,6 +17,7 @@ namespace ymse {
 	typedef rect<float> rectf;
 }
 
+class complex_polygon_triangulator;
 class skin;
 
 class segment : /*public renderable,*/ public intersectable_with_circle {
@@ -41,6 +42,8 @@ public:
 	//
 	// This is used to determine the winding number of a new food item.
 	virtual int left_hline_intersections(ymse::vec2f p) const = 0;
+
+	virtual void add_to_triangulator(complex_polygon_triangulator*) const { }
 };
 
 typedef std::auto_ptr<segment> segment_ptr;

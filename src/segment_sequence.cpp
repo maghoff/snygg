@@ -142,3 +142,11 @@ int segment_sequence::left_hline_intersections(ymse::vec2f p) const {
 
 	return n;
 }
+
+void segment_sequence::add_to_triangulator(complex_polygon_triangulator* triangulator) const {
+	typedef boost::ptr_list<segment>::const_iterator iter;
+	iter end = d->body.end();
+	for (iter i = d->body.begin(); i != end; ++i) {
+		i->add_to_triangulator(triangulator);
+	}
+}

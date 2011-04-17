@@ -41,6 +41,8 @@ public:
 	ymse::rectf bounding_box() const;
 
 	int left_hline_intersections(ymse::vec2f) const;
+
+	void add_to_triangulator(complex_polygon_triangulator*) const;
 };
 
 #endif

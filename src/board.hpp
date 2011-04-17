@@ -20,9 +20,13 @@ namespace ymse {
 	typedef vec<2, float> vec2f;
 }
 
+class complex_polygon;
+
 class board : public renderable, public intersectable_with_circle {
 	struct impl;
 	boost::scoped_ptr<impl> d;
+
+	void calculate_floor_poly();
 
 public:
 	board(const boost::filesystem::path& filename);
@@ -35,6 +39,8 @@ public:
 	ymse::vec2f get_starting_position();
 	ymse::rectf bounding_box() const;
 	int winding_number(ymse::vec2f) const;
+
+	const complex_polygon& floor_polygon() const;
 };
 
 #endif

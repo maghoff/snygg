@@ -31,6 +31,8 @@ public:
 
 	int left_hline_intersections(ymse::vec2f) const;
 
+	void add_to_triangulator(complex_polygon_triangulator*) const;
+
 	// This segment_sequence assumes ownership
 	void push_back(std::auto_ptr<segment>);
 

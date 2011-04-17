@@ -9,6 +9,8 @@
 #include <ymse/rect.hpp>
 #include <ymse/vec.hpp>
 #include "arc.hpp"
+#include "complex_polygon.hpp"
+#include "complex_polygon_triangulator.hpp"
 #include "line.hpp"
 #include "luamod/lua_vm.hpp"
 #include "board.hpp"
@@ -17,6 +19,7 @@
 
 struct board::impl {
 	boost::ptr_vector<segment> b;
+	complex_polygon floor_poly;
 
 	luamod::lua_vm lvm;
 };
@@ -41,6 +44,8 @@ board::board(const boost::filesystem::path& filename) :
 		// This is a bit drastic, but the luabind exception mechanism is cramping my style:
 		exit(-1);
 	}
+
+	calculate_floor_poly();
 }
 
 board::~board() {
@@ -93,4 +98,21 @@ int board::winding_number(ymse::vec2f p) const {
 	}
 
 	return n;
+}
+
+void board::calculate_floor_poly() {
+	complex_polygon_triangulator triangulator;
+
+	triangulator.start_contour();
+	typedef boost::ptr_vector<segment>::const_iterator seg_it;
+	for (seg_it it = d->b.begin(); it != d->b.end(); ++it) {
+		it->add_to_triangulator(&triangulator);
+	}
+	triangulator.end_contour();
+
+	d->floor_poly = triangulator.get_complex_polygon();
+}
+
+const complex_polygon& board::floor_polygon() const {
+	return d->floor_poly;
 }

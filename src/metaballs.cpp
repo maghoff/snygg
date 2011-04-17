@@ -4,6 +4,7 @@
 #include <ymse/gl/texture.hpp>
 #include <ymse/rect.hpp>
 #include <ymse/vec.hpp>
+#include "complex_polygon.hpp"
 #include "metaballs.hpp"
 #include "plain_skin.hpp"
 #include "textured_skin.hpp"

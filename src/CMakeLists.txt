@@ -7,6 +7,8 @@ add_executable(
 	arc.cpp
 	blood_pool.cpp
 	board.cpp
+	complex_polygon.cpp
+	complex_polygon_triangulator.cpp
 	digesting_growth_policy.cpp
 	extender.cpp
 	food_generator.cpp
