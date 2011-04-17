@@ -20,7 +20,7 @@ class player : public boost::noncopyable {
 	void spawn_key(bool);
 
 public:
-	player(ymse::bindable_keyboard_handler&, item_container&, board&);
+	player(ymse::bindable_keyboard_handler&, item_container&, board&, int left, int right, int spawn);
 	virtual ~player();
 
 	void spawn();

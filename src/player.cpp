@@ -20,14 +20,18 @@ struct player::impl {
 	impl(item_container& ic_, board& _board) : ic(ic_), game_board(_board) { }
 };
 
-player::player(ymse::bindable_keyboard_handler& kbd, item_container& ic, board& _board) :
+player::player(
+	ymse::bindable_keyboard_handler& kbd,
+	item_container& ic, board& _board,
+	int left, int right, int spawn
+) :
 	d(new impl(ic, _board))
 {
 	d->s = 0;
 	d->speed = 0.4f;
 	d->del.reset(new snake_direction_listener);
-	d->dir.reset(new ymse::signaling_opposite_keys(kbd, ymse::KEY_RIGHT, ymse::KEY_LEFT, *d->del));
-	kbd.bind(ymse::KEY_SPACE, boost::bind(&player::spawn_key, this, _1));
+	d->dir.reset(new ymse::signaling_opposite_keys(kbd, right, left, *d->del));
+	kbd.bind(spawn, boost::bind(&player::spawn_key, this, _1));
 }
 
 player::~player() {
