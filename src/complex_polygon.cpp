@@ -24,3 +24,13 @@ void complex_polygon::draw() const {
 	}
 	glEnd();
 }
+
+void complex_polygon::draw_outlines() const {
+	for (unsigned i=0; i<triangles.size(); i += 3) {
+		glBegin(GL_LINE_LOOP);
+		glVertex2f(points[triangles[i+0]].x(), points[triangles[i+0]].y());
+		glVertex2f(points[triangles[i+1]].x(), points[triangles[i+1]].y());
+		glVertex2f(points[triangles[i+2]].x(), points[triangles[i+2]].y());
+		glEnd();
+	}
+}

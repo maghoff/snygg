@@ -19,6 +19,7 @@
 #include "paths.hpp"
 #include "plain_skin.hpp"
 #include "player.hpp"
+#include "schematic_skin.hpp"
 #include "snygg.hpp"
 #include "textured_skin.hpp"
 
@@ -79,6 +80,7 @@ snygg::snygg(const std::string& board_filename) :
 	d->metaballs_rect.y2 = bb.y2 + margin;
 
 	std::string snakeskin = (paths::skins() / "snakeskin").string();
+	d->skins.push_back(new schematic_skin);
 	d->skins.push_back(new plain_skin);
 	d->skins.push_back(new metaballs<plain_skin>(snakeskin));
 	d->skins.push_back(new textured_skin(snakeskin));

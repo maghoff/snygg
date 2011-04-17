@@ -23,6 +23,7 @@ public:
 	~complex_polygon();
 
 	void draw() const;
+	void draw_outlines() const;
 };
 
 #endif // COMPLEX_POLYGON_HPP

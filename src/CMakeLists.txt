@@ -29,6 +29,7 @@ add_executable(
 	player.cpp
 	renderable.cpp
 	scalable_skin.cpp
+	schematic_skin.cpp
 	scored_point.cpp
 	segment_sequence.cpp
 	skin.cpp
