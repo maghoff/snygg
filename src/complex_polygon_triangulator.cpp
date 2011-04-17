@@ -10,6 +10,10 @@ extern "C" {
 }
 
 
+// How far apart to points must be to not be considered the same point:
+const double EPSILON = 0.01;
+
+
 complex_polygon_triangulator::complex_polygon_triangulator() :
 	state(initial)
 {
@@ -41,7 +45,12 @@ void complex_polygon_triangulator::end_contour() {
 void complex_polygon_triangulator::point(ymse::vec2f p) {
 	assert(state == in_contour);
 
-	if ((current_contour_size() == 0) || (points.back() != p)) points.push_back(p);
+	if (current_contour_size() != 0) {
+		const double EPSILON_SQ = EPSILON * EPSILON;
+		if ((points.back() - p).square_length() < EPSILON_SQ) return;
+		if ((points[contour_start] - p).square_length() < EPSILON_SQ) return;
+	}
+	points.push_back(p);
 }
 
 complex_polygon complex_polygon_triangulator::get_complex_polygon() const {
