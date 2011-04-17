@@ -14,6 +14,8 @@
 #include "../arc.hpp"
 #include "../segment_sequence.hpp"
 #include "../open_segment.hpp"
+#include "../contour_segment.hpp"
+#include "../reverse_contour_segment.hpp"
 
 namespace luamod {
 
@@ -82,6 +84,12 @@ void register_modules(lua_State* L) {
 		,
 
 		class_<open_segment, segment>("open_segment")
+			.def(constructor<segment*>(), adopt(_2)),
+
+		class_<contour_segment, segment>("contour")
+			.def(constructor<segment*>(), adopt(_2)),
+
+		class_<reverse_contour_segment, segment>("reverse_contour")
 			.def(constructor<segment*>(), adopt(_2))
 	];
 }

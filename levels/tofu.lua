@@ -32,5 +32,5 @@ function create_board()
 	s:push_back(arc(D, corner_radius, 1/2 * math.pi - pinch, 2/2 * math.pi - pinch, 1))
 	s:push_back(bent_line(D, A, corner_radius, -pinch))
 
-	return s
+	return contour(s)
 end

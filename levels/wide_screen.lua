@@ -3,5 +3,5 @@
 require "util"
 
 function create_board()
-	return box(rect(-120, -65, 120, 65), 10)
+	return contour(box(rect(-120, -65, 120, 65), 10))
 end

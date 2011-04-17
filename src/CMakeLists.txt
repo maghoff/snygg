@@ -9,6 +9,7 @@ add_executable(
 	board.cpp
 	complex_polygon.cpp
 	complex_polygon_triangulator.cpp
+	contour_segment.cpp
 	digesting_growth_policy.cpp
 	extender.cpp
 	food_generator.cpp
@@ -28,6 +29,7 @@ add_executable(
 	plain_skin.cpp
 	player.cpp
 	renderable.cpp
+	reverse_contour_segment.cpp
 	scalable_skin.cpp
 	schematic_skin.cpp
 	scored_point.cpp

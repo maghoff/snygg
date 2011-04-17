@@ -17,6 +17,9 @@ public:
 	int left_hline_intersections(ymse::vec2f p) const;
 
 	bool intersect_with_circle(const ymse::vec2f&, float r) const;
+
+	// Never adds anything
+	void add_to_triangulator(complex_polygon_triangulator*) const;
 };
 
 #endif

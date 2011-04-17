@@ -31,6 +31,15 @@ void complex_polygon_triangulator::start_contour() {
 	state = in_contour;
 
 	contour_start = points.size();
+	contour_is_reverse = false;
+}
+
+void complex_polygon_triangulator::start_reverse_contour() {
+	assert(state == initial);
+	state = in_contour;
+
+	contour_start = points.size();
+	contour_is_reverse = true;
 }
 
 void complex_polygon_triangulator::end_contour() {
@@ -50,7 +59,11 @@ void complex_polygon_triangulator::point(ymse::vec2f p) {
 		if ((points.back() - p).square_length() < EPSILON_SQ) return;
 		if ((points[contour_start] - p).square_length() < EPSILON_SQ) return;
 	}
-	points.push_back(p);
+	if (contour_is_reverse) {
+		points.insert(points.begin() + contour_start, p);
+	} else {
+		points.push_back(p);
+	}
 }
 
 complex_polygon complex_polygon_triangulator::get_complex_polygon() const {
@@ -62,7 +75,7 @@ complex_polygon complex_polygon_triangulator::get_complex_polygon() const {
 		pts[i+1][1] = points[i][1];
 	}
 
-	const unsigned n_triangles = points.size() - contour_sizes.size() * 2;
+	const unsigned n_triangles = points.size() - 4 + 2 * contour_sizes.size();
 	int tris[n_triangles][3];
 
 	int res = triangulate_polygon(

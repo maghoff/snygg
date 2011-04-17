@@ -13,5 +13,5 @@ function create_board()
 	s:push_back(arc(vec(-br+sr, 0), sr, 1/2 * math.pi, math.pi, 1))
 	s:push_back(arc(vec(0, 0), br, math.pi, 3/2 * math.pi, 1))
 
-	return s
+	return contour(s)
 end

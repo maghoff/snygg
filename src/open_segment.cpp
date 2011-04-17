@@ -52,3 +52,6 @@ bool open_segment::intersect_with_circle(const ymse::vec2f& p, float r) const {
 		segment_filter::intersect_with_circle(p, r)
 	;
 }
+
+void open_segment::add_to_triangulator(complex_polygon_triangulator*) const {
+}
