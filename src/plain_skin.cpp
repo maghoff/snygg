@@ -3,6 +3,7 @@
 #include <ymse/gl.h>
 #include <ymse/rect.hpp>
 #include <ymse/vec.hpp>
+#include "complex_polygon.hpp"
 #include "plain_skin.hpp"
 
 plain_skin::plain_skin() {
@@ -63,5 +64,15 @@ void plain_skin::cap(ymse::vec2f p, float, float, float) {
 	circle(p, 2.5);
 }
 
-void plain_skin::floor(const complex_polygon&) {
+void plain_skin::floor(const complex_polygon& p) {
+	glColor4f(0, 0, 0, 1);
+	p.draw();
+
+	glColor4f(1, 1, 1, 1);
+	glBegin(GL_QUADS);
+	glVertex2f( 1000, -1000);
+	glVertex2f( 1000,  1000);
+	glVertex2f(-1000,  1000);
+	glVertex2f(-1000, -1000);
+	glEnd();
 }
