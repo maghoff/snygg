@@ -34,6 +34,11 @@ add_executable(
 	snake_direction_listener.cpp
 	snygg.cpp
 	textured_skin.cpp
+
+	triangulation/construct.c
+	triangulation/misc.c
+	triangulation/monotone.c
+	triangulation/tri.c
 )
 
 configure_file(
