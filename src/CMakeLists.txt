@@ -14,6 +14,7 @@ add_executable(
 	extender.cpp
 	food_generator.cpp
 	food_item.cpp
+	gl_fbo.cpp
 	growth_policy.cpp
 	immediate_growth_policy.cpp
 	intersectable_with_circle.cpp
