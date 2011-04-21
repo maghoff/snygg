@@ -11,6 +11,7 @@ find_package(OpenGL REQUIRED)
 
 find_package(PkgConfig REQUIRED)
 pkg_search_module(LUA REQUIRED lua5.1 lua)
+pkg_search_module(IMLIB2 REQUIRED imlib2)
 
 if (APPLE)
 	find_library(COREFOUNDATION_LIBRARY CoreFoundation REQUIRED)
@@ -27,11 +28,13 @@ include_directories(
 	${LUABIND_INCLUDE_DIRS}
 	${Boost_INCLUDE_DIRS}
 	${COREFOUNDATION_INCLUDE_DIRS}
+	${IMLIB2_INCLUDE_DIRS}
 )
 
 link_directories(
 	${Boost_LIBRARY_DIRS}
 	${LUA_LIBRARY_DIRS}
+	${IMLIB2_LIBRARY_DIRS}
 )
 
 if ("${LUABIND_MODE}" STREQUAL "localbuild")

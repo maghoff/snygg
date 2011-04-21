@@ -67,6 +67,7 @@ target_link_libraries(
 	${Boost_FILESYSTEM_LIBRARY}
 	${Boost_SYSTEM_LIBRARY}
 	${COREFOUNDATION_LIBRARY}
+	Imlib2 # Stupid CMake. ${IMLIB2_LIBRARY}
 )
 
 set_target_properties(
@@ -86,5 +87,3 @@ if (APPLE)
 	)
 	add_dependencies(snygg osx_bundle_dirs)
 endif (APPLE)
-
-
