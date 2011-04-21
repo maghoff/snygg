@@ -20,7 +20,11 @@ class snygg : public ymse::game, ymse::reshaper, public item_container {
 	void set_skin_key(scalable_skin*);
 
 	void reshape(int width, int height);
-	
+
+	void take_screenshot(const std::string& filename, unsigned, unsigned w, unsigned h);
+	void screenshot_with_skin(const std::string& filename, scalable_skin*);
+	void screenshot_key();
+
 public:
 	snygg(const std::string& board_filename);
 	~snygg();

@@ -6,14 +6,17 @@
 #include <boost/ptr_container/ptr_list.hpp>
 #include <boost/ptr_container/ptr_vector.hpp>
 #include <ymse/bindable_keyboard_handler.hpp>
+#include <ymse/gl/texture.hpp>
 #include <ymse/gl_box_reshaper.hpp>
 #include <ymse/rect.hpp>
 #include <ymse/sdl_core.hpp>
 #include <ymse/keycodes.hpp>
 #include <ymse/vec.hpp>
+#include <Imlib2.h>
 #include "board.hpp"
 #include "complex_polygon.hpp"
 #include "food_generator.hpp"
+#include "gl_fbo.hpp"
 #include "item.hpp"
 #include "metaballs.hpp"
 #include "paths.hpp"
@@ -98,6 +101,8 @@ snygg::snygg(const std::string& board_filename) :
 
 	d->players.push_back(new player(*d->kbd, *this, *d->active_board, ymse::KEY_LEFT, ymse::KEY_RIGHT, ymse::KEY_SPACE));
 	d->players.push_back(new player(*d->kbd, *this, *d->active_board, ymse::KEY_A, ymse::KEY_D, ymse::KEY_W));
+
+	d->kbd->bind_pressed(ymse::KEY_P, boost::bind(&snygg::screenshot_key, this));
 }
 
 snygg::~snygg() {
@@ -110,6 +115,86 @@ void snygg::attach_to_core(ymse::sdl_core& core) {
 
 	d->kbd->bind_pressed(ymse::KEY_Q, boost::bind(&ymse::sdl_core::stop, &core, 0));
 	d->kbd->bind_pressed(ymse::KEY_F, boost::bind(&ymse::sdl_core::toggle_fullscreen, &core));
+}
+
+static void save_screenshot(std::string filename, std::auto_ptr<std::vector<unsigned char> > pixels, unsigned w, unsigned h) {
+	Imlib_Image img;
+
+	img = imlib_create_image_using_data(w, h, reinterpret_cast<unsigned int*>(pixels->data()));
+
+	imlib_context_set_image(img);
+	imlib_image_set_has_alpha(1);
+
+	imlib_image_set_format("png");
+	imlib_save_image(filename.c_str());
+
+	imlib_free_image();
+}
+
+void snygg::take_screenshot(const std::string& filename, unsigned tex_id, unsigned w, unsigned h) {
+	std::auto_ptr<std::vector<unsigned char> > px_buf(new std::vector<unsigned char>(4*w*h));
+	unsigned char* pixels = px_buf->data();
+
+	glGetError();
+	glBindTexture(GL_TEXTURE_2D, tex_id);
+	assert(glGetError() == GL_NONE);
+	glGetTexImage(GL_TEXTURE_2D, 0, GL_BGRA, GL_UNSIGNED_BYTE, pixels);
+	assert(glGetError() == GL_NONE);
+	glBindTexture(GL_TEXTURE_2D, 0);
+	assert(glGetError() == GL_NONE);
+
+	for (unsigned y=0; y<h; ++y) {
+		for (unsigned x=0; x<w; ++x) {
+			unsigned char* px = pixels + (y*w + x) * 4;
+			double a = px[3] / 255.;
+			for (int i=0; i<3; ++i) px[i] /= a;
+		}
+	}
+
+	for (unsigned y=0; y<h/2; ++y) {
+		unsigned char* a = pixels + y*w*4;
+		unsigned char* b = pixels + (h-1-y)*w*4;
+		unsigned pitch = w*4;
+		std::swap_ranges(a, a+pitch, b);
+	}
+
+	save_screenshot(filename, px_buf, w, h);
+}
+
+void snygg::screenshot_with_skin(const std::string& filename, scalable_skin* selected_skin) {
+	const unsigned screenshot_w = 4096, screenshot_h = 2560;
+
+	const SDL_VideoInfo* vinf = SDL_GetVideoInfo();
+	const unsigned w = vinf->current_w, h = vinf->current_h;
+	glViewport(0, 0, screenshot_w, screenshot_h);
+	d->reshaper->reshape(screenshot_w, screenshot_h);
+
+	ymse::gl::texture tx;
+	gl_fbo fbo;
+
+	glBindTexture(GL_TEXTURE_2D, tx.get_id());
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, screenshot_w, screenshot_h, 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
+	fbo.set_size(screenshot_w, screenshot_h);
+
+	fbo.render_to(tx.get_id());
+	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, fbo.get_id());
+
+	scalable_skin* prev_skin = d->active_skin;
+	set_skin_key(selected_skin);
+	render();
+	set_skin_key(prev_skin);
+
+	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
+
+	take_screenshot(filename, tx.get_id(), screenshot_w, screenshot_h);
+
+	glViewport(0, 0, w, h);
+	d->reshaper->reshape(w, h);
+}
+
+void snygg::screenshot_key() {
+	screenshot_with_skin("schematic.png", &d->skins[0]);
+	screenshot_with_skin("snakeskin.png", &d->skins[4]);
 }
 
 void snygg::reshape(int width, int height) {
