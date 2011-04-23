@@ -10,7 +10,7 @@ namespace ymse {
 	class vec;
 
 	typedef vec<2, float> vec2f;
-	typedef vec<3, float> vec3f;
+	typedef vec<4, float> vec4f;
 }
 
 class complex_polygon;
@@ -22,7 +22,7 @@ class metaballs : public scalable_skin {
 	void init(const std::string& path);
 
 	// Three coordinates: x, y and size
-	void render_metaballs(const complex_polygon&, const std::vector<ymse::vec3f>&);
+	void render_metaballs(const complex_polygon&, const std::vector<ymse::vec4f>&);
 
 public:
 	metaballs(scalable_skin*, const std::string& path);
