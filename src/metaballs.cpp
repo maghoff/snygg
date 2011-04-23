@@ -1,4 +1,5 @@
 #include <ymse/gl.h>
+#include <set>
 #include <ymse/gl/program.hpp>
 #include <ymse/gl/shader.hpp>
 #include <ymse/gl/texture.hpp>
@@ -16,7 +17,16 @@ struct metaballs<BaseSkin>::impl {
 	boost::scoped_ptr<ymse::gl::program> metaballs;
 	ymse::gl::texture metaballs_coordinates;
 
-	std::vector<ymse::vec3f> balls;
+	struct {
+		std::set<ymse::vec3f> permanent;
+		std::set<ymse::vec3f> gen[2];
+		int next_gen_index;
+
+		std::set<ymse::vec3f>& prev_gen() { return gen[next_gen_index ^ 1]; }
+		std::set<ymse::vec3f>& next_gen() { return gen[next_gen_index]; }
+
+		void step_generation() { next_gen_index ^= 1; }
+	} balls;
 };
 
 template <class BaseSkin>
@@ -40,6 +50,8 @@ void metaballs<BaseSkin>::load_opengl_resources() {
 	d->metaballs->attach(mb_fragment);
 
 	d->metaballs->link();
+
+	d->balls.next_gen_index = 0;
 
 	BaseSkin::load_opengl_resources();
 }
@@ -66,7 +78,7 @@ metaballs<BaseSkin>::~metaballs() {
 
 template <class BaseSkin>
 void metaballs<BaseSkin>::blood(ymse::vec2f p, float r) {
-	d->balls.push_back(ymse::vec3f(p[0], p[1], r));
+	d->balls.next_gen().insert(ymse::vec3f(p[0], p[1], r));
 }
 
 template <class BaseSkin>
@@ -90,8 +102,11 @@ void metaballs<BaseSkin>::render_metaballs(const complex_polygon& floor_poly, co
 
 template <class BaseSkin>
 void metaballs<BaseSkin>::floor(const complex_polygon& floor_poly) {
-	render_metaballs(floor_poly, d->balls);
-	d->balls.clear();
+	std::vector<ymse::vec3f> balls;
+	std::copy(d->balls.next_gen().begin(), d->balls.next_gen().end(), std::back_inserter(balls));
+	render_metaballs(floor_poly, balls);
+	d->balls.step_generation();
+	d->balls.next_gen().clear();
 
 	BaseSkin::floor(floor_poly);
 }
