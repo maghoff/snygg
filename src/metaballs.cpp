@@ -7,11 +7,10 @@
 #include <ymse/vec.hpp>
 #include "complex_polygon.hpp"
 #include "metaballs.hpp"
-#include "plain_skin.hpp"
-#include "textured_skin.hpp"
 
-template <class BaseSkin>
-struct metaballs<BaseSkin>::impl {
+struct metaballs::impl {
+	scalable_skin* target;
+
 	std::string path; //< This is sooo the wrong thing to store;
 
 	boost::scoped_ptr<ymse::gl::program> metaballs;
@@ -29,13 +28,7 @@ struct metaballs<BaseSkin>::impl {
 	} balls;
 };
 
-template <class BaseSkin>
-void metaballs<BaseSkin>::init(const std::string& path) {
-	d->path = path;
-}
-
-template <class BaseSkin>
-void metaballs<BaseSkin>::load_opengl_resources() {
+void metaballs::load_opengl_resources() {
 	glGetError();
 	d->metaballs.reset();
 	glGetError();
@@ -53,36 +46,24 @@ void metaballs<BaseSkin>::load_opengl_resources() {
 
 	d->balls.next_gen_index = 0;
 
-	BaseSkin::load_opengl_resources();
+	//d->target->load_opengl_resources();
 }
 
-
-template <>
-metaballs<plain_skin>::metaballs(const std::string& path) :
+metaballs::metaballs(scalable_skin* s, const std::string& path) :
 	d(new impl)
 {
-	init(path);
+	d->target = s;
+	d->path = path;
 }
 
-template <>
-metaballs<textured_skin>::metaballs(const std::string& path) :
-	textured_skin(path),
-	d(new impl)
-{
-	init(path);
+metaballs::~metaballs() {
 }
 
-template <class BaseSkin>
-metaballs<BaseSkin>::~metaballs() {
-}
-
-template <class BaseSkin>
-void metaballs<BaseSkin>::blood(ymse::vec2f p, float r) {
+void metaballs::blood(ymse::vec2f p, float r) {
 	d->balls.next_gen().insert(ymse::vec3f(p[0], p[1], r));
 }
 
-template <class BaseSkin>
-void metaballs<BaseSkin>::render_metaballs(const complex_polygon& floor_poly, const std::vector<ymse::vec3f>& p) {
+void metaballs::render_metaballs(const complex_polygon& floor_poly, const std::vector<ymse::vec3f>& p) {
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_1D, d->metaballs_coordinates.get_id());
 	glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
@@ -100,16 +81,33 @@ void metaballs<BaseSkin>::render_metaballs(const complex_polygon& floor_poly, co
 	glUseProgram(0);
 }
 
-template <class BaseSkin>
-void metaballs<BaseSkin>::floor(const complex_polygon& floor_poly) {
+void metaballs::floor(const complex_polygon& floor_poly) {
 	std::vector<ymse::vec3f> balls;
 	std::copy(d->balls.next_gen().begin(), d->balls.next_gen().end(), std::back_inserter(balls));
 	render_metaballs(floor_poly, balls);
 	d->balls.step_generation();
 	d->balls.next_gen().clear();
 
-	BaseSkin::floor(floor_poly);
+	d->target->floor(floor_poly);
 }
 
-template class metaballs<plain_skin>;
-template class metaballs<textured_skin>;
+void metaballs::circle(ymse::vec2f p, float r) {
+	d->target->circle(p, r);
+}
+
+void metaballs::fat_arc(ymse::vec2f p, float r, float t, float begin, float end, float b_begin, float b_end) {
+	d->target->fat_arc(p, r, t, begin, end, b_begin, b_end);
+}
+
+void metaballs::fat_line(ymse::vec2f p, ymse::vec2f dir, float len, float t, float b_begin, float b_end) {
+	d->target->fat_line(p, dir, len, t, b_begin, b_end);
+}
+
+void metaballs::cap(ymse::vec2f p, float snake_direction, float cap_direction, float b_coord) {
+	d->target->cap(p, snake_direction, cap_direction, b_coord);
+}
+
+void metaballs::set_pixels_per_unit(float ppu) {
+	scalable_skin::set_pixels_per_unit(ppu);
+	d->target->set_pixels_per_unit(ppu);
+}

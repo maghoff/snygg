@@ -85,9 +85,9 @@ snygg::snygg(const std::string& board_filename) :
 	std::string snakeskin = (paths::skins() / "snakeskin").string();
 	d->skins.push_back(new schematic_skin);
 	d->skins.push_back(new plain_skin);
-	d->skins.push_back(new metaballs<plain_skin>(snakeskin));
+	d->skins.push_back(new metaballs(&d->skins.back(), snakeskin));
 	d->skins.push_back(new textured_skin(snakeskin));
-	d->skins.push_back(new metaballs<textured_skin>(snakeskin));
+	d->skins.push_back(new metaballs(&d->skins.back(), snakeskin));
 	d->active_skin = &d->skins.back();
 
 	for (size_t i=0; i<d->skins.size(); ++i) {
