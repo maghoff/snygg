@@ -24,16 +24,18 @@ struct metaballs::impl {
 
 	struct {
 		std::set<ymse::vec3f> gen[2];
-		ymse::gl::texture stored_value[2];
 		int next_gen_index;
+
+		ymse::gl::texture stored_value[2];
+		int next_tex_index;
 
 		std::set<ymse::vec3f>& prev_gen() { return gen[next_gen_index ^ 1]; }
 		std::set<ymse::vec3f>& next_gen() { return gen[next_gen_index]; }
-
-		ymse::gl::texture& prev_tex() { return stored_value[next_gen_index ^ 1]; }
-		ymse::gl::texture& next_tex() { return stored_value[next_gen_index]; }
-
 		void step_generation() { next_gen_index ^= 1; }
+
+		ymse::gl::texture& prev_tex() { return stored_value[next_tex_index ^ 1]; }
+		ymse::gl::texture& next_tex() { return stored_value[next_tex_index]; }
+		void step_tex() { next_tex_index ^= 1; }
 	} balls;
 };
 
@@ -103,37 +105,41 @@ void metaballs::blood(ymse::vec2f p, float r) {
 }
 
 void metaballs::render_metaballs(const complex_polygon& floor_poly, const std::vector<ymse::vec4f>& p) {
-	d->fbo.render_to(d->balls.next_tex().get_id());
+	if (!p.empty()) {
+		d->fbo.render_to(d->balls.next_tex().get_id());
 
-	glDisable(GL_BLEND);
-	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, d->fbo.get_id());
-	glUseProgram(d->metaballs->get_id());
-	glClampColorARB(GL_CLAMP_FRAGMENT_COLOR_ARB, GL_FALSE);
+		glDisable(GL_BLEND);
+		glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, d->fbo.get_id());
+		glUseProgram(d->metaballs->get_id());
+		glClampColorARB(GL_CLAMP_FRAGMENT_COLOR_ARB, GL_FALSE);
 
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_1D, d->metaballs_coordinates.get_id());
-	glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	glTexImage1D(GL_TEXTURE_1D, 0, GL_RGBA16F_ARB, p.size(), 0, GL_RGBA, GL_FLOAT, &p[0]);
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_1D, d->metaballs_coordinates.get_id());
+		glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+		glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+		glTexImage1D(GL_TEXTURE_1D, 0, GL_RGBA16F_ARB, p.size(), 0, GL_RGBA, GL_FLOAT, &p[0]);
 
-	glActiveTexture(GL_TEXTURE1);
-	glBindTexture(GL_TEXTURE_2D, d->balls.prev_tex().get_id());
+		glActiveTexture(GL_TEXTURE1);
+		glBindTexture(GL_TEXTURE_2D, d->balls.prev_tex().get_id());
 
-	d->metaballs->set_uniform("number_of_balls", (int)p.size());
-	d->metaballs->set_uniform("balls", 0);
-	d->metaballs->set_uniform("storedValue", 1);
+		d->metaballs->set_uniform("number_of_balls", (int)p.size());
+		d->metaballs->set_uniform("balls", 0);
+		d->metaballs->set_uniform("storedValue", 1);
 
-	glClear(GL_COLOR_BUFFER_BIT);
-	floor_poly.draw();
+		glClear(GL_COLOR_BUFFER_BIT);
+		floor_poly.draw();
 
-	glClampColorARB(GL_CLAMP_FRAGMENT_COLOR_ARB, GL_TRUE);
-	glUseProgram(0);
-	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
-	glEnable(GL_BLEND);
+		glClampColorARB(GL_CLAMP_FRAGMENT_COLOR_ARB, GL_TRUE);
+		glUseProgram(0);
+		glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
+		glEnable(GL_BLEND);
+
+		d->balls.step_tex();
+	}
 
 	glUseProgram(d->mapping->get_id());
 	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, d->balls.next_tex().get_id());
+	glBindTexture(GL_TEXTURE_2D, d->balls.prev_tex().get_id());
 	floor_poly.draw();
 	glUseProgram(0);
 }
