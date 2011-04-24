@@ -94,6 +94,7 @@ metaballs::metaballs(scalable_skin* s, const std::string& path) :
 {
 	d->target = s;
 	d->path = path;
+	d->balls.next_tex_index = 0;
 	d->balls.next_gen_index = 0;
 }
 
