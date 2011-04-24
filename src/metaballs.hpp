@@ -42,6 +42,8 @@ public:
 	void cap(ymse::vec2f p, float snake_direction, float cap_direction, float b_coord);
 
 	void set_pixels_per_unit(float);
+
+	void enter_state(state_t);
 };
 
 #endif // METABALLS_HPP

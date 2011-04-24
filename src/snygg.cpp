@@ -220,7 +220,10 @@ void snygg::render() {
 
 	glColor4f(1.0, 1.0, 1.0, 1.0);
 
+	d->active_skin->enter_state(skin::board_state);
 	d->active_board->render(*d->active_skin);
+
+	d->active_skin->enter_state(skin::other_state);
 
 	iiter iend = d->items.end();
 	for (iiter i = d->items.begin(); i != iend; ++i) {

@@ -12,6 +12,11 @@ class complex_polygon;
 
 class skin {
 public:
+	enum state_t {
+		other_state,
+		board_state
+	};
+
 	virtual ~skin();
 
 	virtual void load_opengl_resources();
@@ -25,6 +30,8 @@ public:
 	virtual void cap(ymse::vec2f p, float snake_direction, float cap_direction, float b_coord) = 0;
 
 	virtual void floor(const complex_polygon&) = 0;
+
+	virtual void enter_state(state_t) { }
 };
 
 #endif

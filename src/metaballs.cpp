@@ -195,3 +195,7 @@ void metaballs::set_pixels_per_unit(float ppu) {
 	scalable_skin::set_pixels_per_unit(ppu);
 	d->target->set_pixels_per_unit(ppu);
 }
+
+void metaballs::enter_state(state_t st) {
+	d->target->enter_state(st);
+}

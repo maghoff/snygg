@@ -11,6 +11,9 @@ class textured_skin : public scalable_skin {
 
 	void to_no_shader();
 	void to_texture_shader();
+	void to_snakeskin_shader();
+	void to_wall_shader();
+	void to_food_shader();
 
 	void circle_core(ymse::vec2f p, float r);
 
@@ -29,6 +32,8 @@ public:
 	void cap(ymse::vec2f p, float snake_direction, float cap_direction, float b_coord);
 
 	void floor(const complex_polygon&);
+
+	void enter_state(state_t);
 };
 
 #endif // TEXTURED_SKIN_HPP

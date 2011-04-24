@@ -16,7 +16,9 @@ const int across = 5, along = 6, circle_coord = 7, b_attribute = 8;
 
 enum shader_state_t {
 	no_shader,
-	texture_shader
+	snakeskin_shader,
+	wall_shader,
+	food_shader
 };
 
 struct textured_skin::impl {
@@ -26,8 +28,10 @@ struct textured_skin::impl {
 	
 	ymse::sdl::surface diffuse_surface, normal_surface;
 	
-	boost::scoped_ptr<ymse::gl::program> prog;
+	boost::scoped_ptr<ymse::gl::program> texture_prog, color_prog;
 	ymse::gl::texture diffuse, normal;
+
+	skin::state_t stored_state;
 };
 
 textured_skin::textured_skin(const std::string& path) :
@@ -41,6 +45,8 @@ textured_skin::textured_skin(const std::string& path) :
 
 	d->diffuse_surface = ymse::sdl::img_load(path + "/diffuse.jpg");
 	d->normal_surface = ymse::sdl::img_load(path + "/normal.jpg");
+
+	d->stored_state = other_state;
 }
 
 textured_skin::~textured_skin() {
@@ -48,31 +54,57 @@ textured_skin::~textured_skin() {
 
 void textured_skin::load_opengl_resources() {
 	glGetError();
-	d->prog.reset();
+	d->texture_prog.reset();
+	d->color_prog.reset();
 	glGetError();
-	d->prog.reset(new ymse::gl::program);
+	d->texture_prog.reset(new ymse::gl::program);
+	d->color_prog.reset(new ymse::gl::program);
 	glGetError();
 
-	ymse::gl::shader vertex(GL_VERTEX_SHADER);
-	ymse::gl::shader fragment(GL_FRAGMENT_SHADER), light(GL_FRAGMENT_SHADER), texture_mapping(GL_FRAGMENT_SHADER);
-	
-	vertex.source_file(d->path + "/vertex.glsl");
-	fragment.source_file(d->path + "/fragment.glsl");
-	light.source_file(d->path + "/light.glsl");
-	texture_mapping.source_file(d->path + "/texture_mapping.glsl");
+	{
+		ymse::gl::shader vertex(GL_VERTEX_SHADER);
+		ymse::gl::shader fragment(GL_FRAGMENT_SHADER), light(GL_FRAGMENT_SHADER), texture_mapping(GL_FRAGMENT_SHADER);
 
-	d->prog->attach(vertex);
-	d->prog->attach(fragment);
-	d->prog->attach(light);
-	d->prog->attach(texture_mapping);
+		vertex.source_file(d->path + "/vertex.glsl");
+		fragment.source_file(d->path + "/fragment.glsl");
+		light.source_file(d->path + "/light.glsl");
+		texture_mapping.source_file(d->path + "/texture_mapping.glsl");
 
-	d->prog->bind_attrib_location(circle_coord, "circle_coord_in");
-	d->prog->bind_attrib_location(across, "across_in");
-	d->prog->bind_attrib_location(along, "along_in");
-	d->prog->bind_attrib_location(b_attribute, "b_in");
+		d->texture_prog->attach(vertex);
+		d->texture_prog->attach(fragment);
+		d->texture_prog->attach(light);
+		d->texture_prog->attach(texture_mapping);
 
-	d->prog->link();
-	
+		d->texture_prog->bind_attrib_location(circle_coord, "circle_coord_in");
+		d->texture_prog->bind_attrib_location(across, "across_in");
+		d->texture_prog->bind_attrib_location(along, "along_in");
+		d->texture_prog->bind_attrib_location(b_attribute, "b_in");
+
+		d->texture_prog->link();
+	}
+
+	{
+		ymse::gl::shader vertex(GL_VERTEX_SHADER);
+		ymse::gl::shader fragment(GL_FRAGMENT_SHADER), light(GL_FRAGMENT_SHADER), mapping(GL_FRAGMENT_SHADER);
+
+		vertex.source_file(d->path + "/vertex.glsl");
+		fragment.source_file(d->path + "/fragment.glsl");
+		light.source_file(d->path + "/light.glsl");
+		mapping.source_file(d->path + "/color_mapping.glsl");
+
+		d->color_prog->attach(vertex);
+		d->color_prog->attach(fragment);
+		d->color_prog->attach(light);
+		d->color_prog->attach(mapping);
+
+		d->color_prog->bind_attrib_location(circle_coord, "circle_coord_in");
+		d->color_prog->bind_attrib_location(across, "across_in");
+		d->color_prog->bind_attrib_location(along, "along_in");
+		d->color_prog->bind_attrib_location(b_attribute, "b_in");
+
+		d->color_prog->link();
+	}
+
 	// shaders go out of scope, but are kept alive by OpenGL because of d->prog
 	
 	d->diffuse_surface.copy_to(d->diffuse);
@@ -97,19 +129,46 @@ void textured_skin::to_no_shader() {
 }
 
 void textured_skin::to_texture_shader() {
-	if (d->shader_state == texture_shader) return;
+	if (d->stored_state == board_state) to_wall_shader();
+	else to_snakeskin_shader();
+}
 
-	glUseProgram(d->prog->get_id());
+void textured_skin::to_snakeskin_shader() {
+	if (d->shader_state == snakeskin_shader) return;
+
+	glUseProgram(d->texture_prog->get_id());
 
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, d->diffuse.get_id());
 	glActiveTexture(GL_TEXTURE1);
 	glBindTexture(GL_TEXTURE_2D, d->normal.get_id());
-	d->prog->set_uniform("diffuse_map", 0);
-	d->prog->set_uniform("normal_map", 1);
-	d->prog->set_uniform("ambient", 0.4f, 0.4f, 0.4f, 1.0f);
+	d->texture_prog->set_uniform("diffuse_map", 0);
+	d->texture_prog->set_uniform("normal_map", 1);
+	d->texture_prog->set_uniform("ambient", 0.4f, 0.4f, 0.4f, 1.0f);
 
-	d->shader_state = texture_shader;
+	d->shader_state = snakeskin_shader;
+}
+
+void textured_skin::to_wall_shader() {
+	if (d->shader_state == wall_shader) return;
+
+	glUseProgram(d->color_prog->get_id());
+
+	d->color_prog->set_uniform("ambient", 0.4f, 0.4f, 0.4f, 1.0f);
+	d->color_prog->set_uniform("color", 0.1f, 0.1f, 0.1f, 1.0f);
+
+	d->shader_state = wall_shader;
+}
+
+void textured_skin::to_food_shader() {
+	if (d->shader_state == food_shader) return;
+
+	glUseProgram(d->color_prog->get_id());
+
+	d->color_prog->set_uniform("ambient", 0.4f, 0.4f, 0.4f, 1.0f);
+	d->color_prog->set_uniform("color", 0.6f, 0.4f, 0.2f, 1.0f);
+
+	d->shader_state = food_shader;
 }
 
 void textured_skin::circle_core(ymse::vec2f p, float r) {
@@ -123,11 +182,25 @@ void textured_skin::circle_core(ymse::vec2f p, float r) {
 }
 
 void textured_skin::circle(ymse::vec2f p, float r) {
-	to_no_shader();
+	to_food_shader();
 
-	glColor4f(1., 1., 0.2f, 1);
-	circle_core(p, r);
-	glColor4f(1, 1, 1, 1);
+	const float step_size = get_step_size(r);
+	const float b_coord = 0;
+
+	float snake_dir = 0;
+
+	glVertexAttrib3f(across, cos(snake_dir), sin(snake_dir), 0);
+	glVertexAttrib3f(along, sin(snake_dir), -cos(snake_dir), 0);
+	glVertexAttrib1f(b_attribute, b_coord);
+
+	glBegin(GL_TRIANGLE_FAN);
+
+	for (float d = 0; d < 2.0 * M_PI; d += step_size) {
+		glVertexAttrib2f(circle_coord, cos(d), sin(d));
+		glVertex2f(p[0] + r * cos(snake_dir + d), p[1] + r * sin(snake_dir + d));
+	}
+
+	glEnd();
 }
 
 void textured_skin::blood(ymse::vec2f p, float r) {
@@ -246,4 +319,8 @@ void textured_skin::floor(const complex_polygon& floor_poly) {
 	glColor4f(0.22, 0.22, 0.22, 1.0);
 	floor_poly.draw();
 	glEnd();
+}
+
+void textured_skin::enter_state(state_t st) {
+	d->stored_state = st;
 }
