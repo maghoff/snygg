@@ -78,7 +78,7 @@ void metaballs::load_opengl_resources() {
 		glBindTexture(GL_TEXTURE_2D, d->balls.stored_value[i].get_id());
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_R16F, w, h, 0, GL_RED, GL_FLOAT, buf);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_R32F, w, h, 0, GL_RED, GL_FLOAT, buf);
 		assert(glGetError() == GL_NONE);
 
 		d->balls.gen[i].clear();
