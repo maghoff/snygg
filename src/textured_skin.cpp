@@ -54,21 +54,23 @@ void textured_skin::load_opengl_resources() {
 	glGetError();
 
 	ymse::gl::shader vertex(GL_VERTEX_SHADER);
-	ymse::gl::shader fragment(GL_FRAGMENT_SHADER), light(GL_FRAGMENT_SHADER);
+	ymse::gl::shader fragment(GL_FRAGMENT_SHADER), light(GL_FRAGMENT_SHADER), texture_mapping(GL_FRAGMENT_SHADER);
 	
 	vertex.source_file(d->path + "/vertex.glsl");
 	fragment.source_file(d->path + "/fragment.glsl");
 	light.source_file(d->path + "/light.glsl");
-	
+	texture_mapping.source_file(d->path + "/texture_mapping.glsl");
+
 	d->prog->attach(vertex);
 	d->prog->attach(fragment);
 	d->prog->attach(light);
-	
+	d->prog->attach(texture_mapping);
+
 	d->prog->bind_attrib_location(circle_coord, "circle_coord_in");
 	d->prog->bind_attrib_location(across, "across_in");
 	d->prog->bind_attrib_location(along, "along_in");
 	d->prog->bind_attrib_location(b_attribute, "b_in");
-	
+
 	d->prog->link();
 	
 	// shaders go out of scope, but are kept alive by OpenGL because of d->prog
@@ -105,6 +107,7 @@ void textured_skin::to_texture_shader() {
 	glBindTexture(GL_TEXTURE_2D, d->normal.get_id());
 	d->prog->set_uniform("diffuse_map", 0);
 	d->prog->set_uniform("normal_map", 1);
+	d->prog->set_uniform("ambient", 0.4f, 0.4f, 0.4f, 1.0f);
 
 	d->shader_state = texture_shader;
 }

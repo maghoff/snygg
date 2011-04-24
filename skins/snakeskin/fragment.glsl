@@ -1,5 +1,3 @@
-uniform sampler2D diffuse_map;
-uniform sampler2D normal_map;
 uniform vec4 ambient;
 
 varying vec2 circle_coord, world_coord;
@@ -12,6 +10,9 @@ const float density = 0.04;
 const float min_a = 0.1, max_a = 0.45;
 
 vec4 directional_light(vec3 normal, vec3 light, vec4 diffuse, float local_variance);
+
+vec4 get_diffuse(vec2 texture_coord);
+vec3 get_bump_normal(vec2 texture_coord);
 
 mat3 calculate_snake_from_skin(in vec2 circle_coord) {
 	float ang1 = asin(circle_coord.y);
@@ -53,9 +54,8 @@ void main(void) {
 	vec2 texture_coord_due_to_b = vec2(b * 0.001, b * density);
 	vec2 texture_coord = texture_coord_due_to_cap + texture_coord_due_to_b;
 
-	vec4 diffuse = texture2D(diffuse_map, texture_coord);
-
-	vec3 bump_normal = (vec3(texture2D(normal_map, texture_coord)) * 2.0 - 1.0) * vec3(-1, -1, 1);
+	vec4 diffuse = get_diffuse(texture_coord);
+	vec3 bump_normal = get_bump_normal(texture_coord);
 
 	// The length of the interpolated bump_normal can be used as an estimate for
 	// the local variance in normals, and can be used to reduced specular aliasing.
