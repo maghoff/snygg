@@ -1,5 +1,6 @@
 uniform sampler2D diffuse_map;
 uniform sampler2D normal_map;
+uniform vec4 ambient;
 
 varying vec2 circle_coord, world_coord;
 varying vec3 across_i, along_i;
@@ -10,7 +11,6 @@ const float M_PI = 3.14159265358979;
 const float density = 0.04;
 const float min_a = 0.1, max_a = 0.45;
 
-const vec4 ambient = vec4(0.4, 0.4, 0.4, 1.0);
 vec4 directional_light(vec3 normal, vec3 light, vec4 diffuse, float local_variance);
 
 mat3 calculate_snake_from_skin(in vec2 circle_coord) {

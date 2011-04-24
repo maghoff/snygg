@@ -1,4 +1,4 @@
-const vec4 ambient = vec4(0.4, 0.4, 0.4, 1);
+uniform vec4 ambient;
 
 vec4 directional_light(
 	vec3 normal,
