@@ -104,39 +104,39 @@ void metaballs::blood(ymse::vec2f p, float r) {
 	d->balls.next_gen().insert(ymse::vec3f(p[0], p[1], r));
 }
 
-void metaballs::render_metaballs(const complex_polygon& floor_poly, const std::vector<ymse::vec4f>& p) {
-	if (!p.empty()) {
-		d->fbo.render_to(d->balls.next_tex().get_id());
+void metaballs::update_metaballs(const complex_polygon& floor_poly, const std::vector<ymse::vec4f>& p) {
+	d->fbo.render_to(d->balls.next_tex().get_id());
 
-		glDisable(GL_BLEND);
-		glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, d->fbo.get_id());
-		glUseProgram(d->metaballs->get_id());
-		glClampColorARB(GL_CLAMP_FRAGMENT_COLOR_ARB, GL_FALSE);
+	glDisable(GL_BLEND);
+	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, d->fbo.get_id());
+	glUseProgram(d->metaballs->get_id());
+	glClampColorARB(GL_CLAMP_FRAGMENT_COLOR_ARB, GL_FALSE);
 
-		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_1D, d->metaballs_coordinates.get_id());
-		glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-		glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-		glTexImage1D(GL_TEXTURE_1D, 0, GL_RGBA16F_ARB, p.size(), 0, GL_RGBA, GL_FLOAT, &p[0]);
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_1D, d->metaballs_coordinates.get_id());
+	glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexImage1D(GL_TEXTURE_1D, 0, GL_RGBA16F_ARB, p.size(), 0, GL_RGBA, GL_FLOAT, &p[0]);
 
-		glActiveTexture(GL_TEXTURE1);
-		glBindTexture(GL_TEXTURE_2D, d->balls.prev_tex().get_id());
+	glActiveTexture(GL_TEXTURE1);
+	glBindTexture(GL_TEXTURE_2D, d->balls.prev_tex().get_id());
 
-		d->metaballs->set_uniform("number_of_balls", (int)p.size());
-		d->metaballs->set_uniform("balls", 0);
-		d->metaballs->set_uniform("storedValue", 1);
+	d->metaballs->set_uniform("number_of_balls", (int)p.size());
+	d->metaballs->set_uniform("balls", 0);
+	d->metaballs->set_uniform("storedValue", 1);
 
-		glClear(GL_COLOR_BUFFER_BIT);
-		floor_poly.draw();
+	glClear(GL_COLOR_BUFFER_BIT);
+	floor_poly.draw();
 
-		glClampColorARB(GL_CLAMP_FRAGMENT_COLOR_ARB, GL_TRUE);
-		glUseProgram(0);
-		glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
-		glEnable(GL_BLEND);
+	glClampColorARB(GL_CLAMP_FRAGMENT_COLOR_ARB, GL_TRUE);
+	glUseProgram(0);
+	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
+	glEnable(GL_BLEND);
 
-		d->balls.step_tex();
-	}
+	d->balls.step_tex();
+}
 
+void metaballs::draw_metaballs(const complex_polygon& floor_poly) {
 	glUseProgram(d->mapping->get_id());
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, d->balls.prev_tex().get_id());
@@ -164,7 +164,9 @@ void metaballs::floor(const complex_polygon& floor_poly) {
 	for (std::vector<ymse::vec3f>::const_iterator it = add.begin(); it != add.end(); ++it) {
 		balls.push_back(ymse::vec4f(it->v[0], it->v[1], it->v[2], 1));
 	}
-	render_metaballs(floor_poly, balls);
+
+	if (!balls.empty()) update_metaballs(floor_poly, balls);
+	draw_metaballs(floor_poly);
 
 	d->balls.step_generation();
 	d->balls.next_gen().clear();

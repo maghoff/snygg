@@ -21,8 +21,9 @@ class metaballs : public scalable_skin {
 
 	void init(const std::string& path);
 
-	// Three coordinates: x, y and size
-	void render_metaballs(const complex_polygon&, const std::vector<ymse::vec4f>&);
+	// Four coordinates: x, y, size and add/remove
+	void update_metaballs(const complex_polygon&, const std::vector<ymse::vec4f>&);
+	void draw_metaballs(const complex_polygon&);
 
 public:
 	metaballs(scalable_skin*, const std::string& path);
