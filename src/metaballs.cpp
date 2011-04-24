@@ -23,14 +23,14 @@ struct metaballs::impl {
 	gl_fbo fbo;
 
 	struct {
-		std::set<ymse::vec3f> gen[2];
+		std::multiset<ymse::vec3f> gen[2];
 		int next_gen_index;
 
 		ymse::gl::texture stored_value[2];
 		int next_tex_index;
 
-		std::set<ymse::vec3f>& prev_gen() { return gen[next_gen_index ^ 1]; }
-		std::set<ymse::vec3f>& next_gen() { return gen[next_gen_index]; }
+		std::multiset<ymse::vec3f>& prev_gen() { return gen[next_gen_index ^ 1]; }
+		std::multiset<ymse::vec3f>& next_gen() { return gen[next_gen_index]; }
 		void step_generation() { next_gen_index ^= 1; }
 
 		ymse::gl::texture& prev_tex() { return stored_value[next_tex_index ^ 1]; }
