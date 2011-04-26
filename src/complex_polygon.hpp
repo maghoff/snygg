@@ -2,13 +2,7 @@
 #define COMPLEX_POLYGON_HPP
 
 #include <vector>
-
-namespace ymse {
-	template <int Dim, typename T>
-	class vec;
-
-	typedef vec<2, float> vec2f;
-}
+#include <ymse/vec_fwd.hpp>
 
 class complex_polygon {
 	std::vector<ymse::vec2f> points;

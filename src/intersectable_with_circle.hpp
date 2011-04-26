@@ -1,10 +1,7 @@
 #ifndef SNYGG_INTERSECTABLE_WITH_CIRCLE_HPP
 #define SNYGG_INTERSECTABLE_WITH_CIRCLE_HPP
 
-namespace ymse {
-	template <int dim, typename T> struct vec;
-	typedef vec<2, float> vec2f;
-}
+#include <ymse/vec_fwd.hpp>
 
 class intersectable_with_circle {
 public:

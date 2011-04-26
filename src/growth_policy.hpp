@@ -2,11 +2,7 @@
 #define SNYGG_GROWTH_POLICY_HPP
 
 #include <memory>
-
-namespace ymse {
-	template <int Size, typename Type> class vec;
-	typedef vec<2, float> vec2f;
-}
+#include <ymse/vec_fwd.hpp>
 
 class segment;
 class segment_sequence;

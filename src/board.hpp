@@ -13,11 +13,6 @@ namespace ymse {
 	struct rect;
 
 	typedef rect<float> rectf;
-
-	template <int Dim, typename T>
-	class vec;
-
-	typedef vec<2, float> vec2f;
 }
 
 class complex_polygon;

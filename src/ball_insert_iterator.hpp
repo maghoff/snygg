@@ -3,14 +3,7 @@
 
 #include <iterator>
 #include <vector>
-
-namespace ymse {
-	template<int Dim, typename T>
-	class vec;
-
-	typedef vec<3, float> vec3f;
-	typedef vec<4, float> vec4f;
-}
+#include <ymse/vec_fwd.hpp>
 
 class ball_insert_iterator :
 	public std::iterator<std::output_iterator_tag, void, void, void, void>

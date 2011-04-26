@@ -3,15 +3,8 @@
 
 #include <boost/scoped_ptr.hpp>
 #include <vector>
+#include <ymse/vec_fwd.hpp>
 #include "scalable_skin.hpp"
-
-namespace ymse {
-	template <int Dim, typename T>
-	class vec;
-
-	typedef vec<2, float> vec2f;
-	typedef vec<4, float> vec4f;
-}
 
 class complex_polygon;
 

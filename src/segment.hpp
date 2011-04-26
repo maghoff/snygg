@@ -6,11 +6,6 @@
 #include "renderable.hpp"
 
 namespace ymse {
-	template <int dim, typename T>
-	struct vec;
-
-	typedef vec<2, float> vec2f;
-
 	template <typename T>
 	struct rect;
 

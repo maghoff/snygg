@@ -1,12 +1,7 @@
 #ifndef SNYGG_SKIN_HPP
 #define SNYGG_SKIN_HPP
 
-namespace ymse {
-	template <int dim, typename T>
-	class vec;
-
-	typedef vec<2, float> vec2f;
-}
+#include <ymse/vec_fwd.hpp>
 
 class complex_polygon;
 
