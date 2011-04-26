@@ -73,13 +73,13 @@ void metaballs::load_opengl_resources() {
 	const SDL_VideoInfo* vinf = SDL_GetVideoInfo();
 	const unsigned w = vinf->current_w, h = vinf->current_h;
 
-	char buf[w*h*sizeof(float)];
-	std::fill(buf, buf+sizeof(buf), 0);
+	const size_t sz = w*h*4; // 4 == sizeof(GL_R32F);
+	std::vector<char> buf(sz, 0);
 	for (int i=0; i<2; ++i) {
 		glBindTexture(GL_TEXTURE_2D, d->balls.stored_value[i].get_id());
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_R32F, w, h, 0, GL_RED, GL_FLOAT, buf);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_R32F, w, h, 0, GL_RED, GL_FLOAT, buf.data());
 		assert(glGetError() == GL_NONE);
 
 		d->balls.gen[i].clear();
