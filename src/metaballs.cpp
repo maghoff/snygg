@@ -1,5 +1,6 @@
 #include <ymse/gl.h>
 #include <SDL.h>
+#include <algorithm>
 #include <set>
 #include <ymse/gl/program.hpp>
 #include <ymse/gl/shader.hpp>
