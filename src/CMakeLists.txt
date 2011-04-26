@@ -5,6 +5,7 @@ include_directories(
 add_executable(
 	snygg MACOSX_BUNDLE
 	arc.cpp
+	ball_insert_iterator.cpp
 	blood_pool.cpp
 	board.cpp
 	complex_polygon.cpp

@@ -7,6 +7,7 @@
 #include <ymse/gl/texture.hpp>
 #include <ymse/rect.hpp>
 #include <ymse/vec.hpp>
+#include "ball_insert_iterator.hpp"
 #include "complex_polygon.hpp"
 #include "metaballs.hpp"
 #include "gl_fbo.hpp"
@@ -145,25 +146,21 @@ void metaballs::draw_metaballs(const complex_polygon& floor_poly) {
 }
 
 void metaballs::floor(const complex_polygon& floor_poly) {
-	std::vector<ymse::vec3f> remove, add;
+	std::vector<ymse::vec4f> balls;
+
+	// Removed balls:
 	std::set_difference(
 		d->balls.prev_gen().begin(), d->balls.prev_gen().end(),
 		d->balls.next_gen().begin(), d->balls.next_gen().end(),
-		std::back_inserter(remove)
-	);
-	std::set_difference(
-		d->balls.next_gen().begin(), d->balls.next_gen().end(),
-		d->balls.prev_gen().begin(), d->balls.prev_gen().end(),
-		std::back_inserter(add)
+		ball_insert_iterator(balls, -1)
 	);
 
-	std::vector<ymse::vec4f> balls;
-	for (std::vector<ymse::vec3f>::const_iterator it = remove.begin(); it != remove.end(); ++it) {
-		balls.push_back(ymse::vec4f(it->v[0], it->v[1], it->v[2], -1));
-	}
-	for (std::vector<ymse::vec3f>::const_iterator it = add.begin(); it != add.end(); ++it) {
-		balls.push_back(ymse::vec4f(it->v[0], it->v[1], it->v[2], 1));
-	}
+	// Added balls:
+	std::set_difference(
+		d->balls.next_gen().begin(), d->balls.next_gen().end(),
+		d->balls.prev_gen().begin(), d->balls.prev_gen().end(),
+		ball_insert_iterator(balls, 1)
+	);
 
 	if (!balls.empty()) update_metaballs(floor_poly, balls);
 	draw_metaballs(floor_poly);
