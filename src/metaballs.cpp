@@ -112,7 +112,6 @@ void metaballs::update_metaballs(const complex_polygon& floor_poly, const std::v
 	glDisable(GL_BLEND);
 	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, d->fbo.get_id());
 	glUseProgram(d->metaballs->get_id());
-	glClampColorARB(GL_CLAMP_FRAGMENT_COLOR_ARB, GL_FALSE);
 
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_1D, d->metaballs_coordinates.get_id());
@@ -130,7 +129,6 @@ void metaballs::update_metaballs(const complex_polygon& floor_poly, const std::v
 	glClear(GL_COLOR_BUFFER_BIT);
 	floor_poly.draw();
 
-	glClampColorARB(GL_CLAMP_FRAGMENT_COLOR_ARB, GL_TRUE);
 	glUseProgram(0);
 	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
 	glEnable(GL_BLEND);
