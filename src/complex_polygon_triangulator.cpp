@@ -2,6 +2,7 @@
 #include <stdexcept>
 #include <vector>
 #include <ymse/vec.hpp>
+#include <boost/scoped_array.hpp>
 #include "complex_polygon.hpp"
 #include "complex_polygon_triangulator.hpp"
 
@@ -69,19 +70,19 @@ void complex_polygon_triangulator::point(ymse::vec2f p) {
 complex_polygon complex_polygon_triangulator::get_complex_polygon() const {
 	assert(state == initial);
 
-	double pts[points.size()+1][2];
+	boost::scoped_array<double[2]> pts(new double[points.size()+1][2]);
 	for (size_t i=0; i<points.size(); ++i) {
 		pts[i+1][0] = points[i][0];
 		pts[i+1][1] = points[i][1];
 	}
 
 	const unsigned n_triangles = points.size() - 4 + 2 * contour_sizes.size();
-	int tris[n_triangles][3];
+	boost::scoped_array<int[3]> tris(new int[n_triangles][3]);
 
 	int res = triangulate_polygon(
 		contour_sizes.size(), const_cast<int*>(contour_sizes.data()),
-		pts,
-		tris
+		pts.get(),
+		tris.get()
 	);
 
 	if (res != 0) {
