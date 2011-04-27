@@ -1,5 +1,4 @@
 #include "triangulate.h"
-#include <sys/time.h>
 #include <string.h>
 
 static int initialise(n)

@@ -1,5 +1,5 @@
 #include "triangulate.h"
-#include <sys/time.h>
+#include <time.h>
 #include <math.h>
 
 #ifdef __STDC__
@@ -16,14 +16,11 @@ static int permute[SEGSIZE];
 int generate_random_ordering(n)
      int n;
 {
-  struct timeval tval;
-  struct timezone tzone;
   register int i;
   int m, st[SEGSIZE], *p;
   
   choose_idx = 1;
-  gettimeofday(&tval, &tzone);
-  srand48(tval.tv_sec);
+  srand48(time(NULL));
 
   for (i = 0; i <= n; i++)
     st[i] = i;
