@@ -17,6 +17,7 @@ public:
 
 	ball_insert_iterator& operator*() { return *this; }
 	ball_insert_iterator& operator++() { return *this; }
+	ball_insert_iterator& operator++(int) { return *this; }
 };
 
 #endif // BALL_INSERT_ITERATOR_HPP
