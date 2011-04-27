@@ -77,8 +77,8 @@ void scored_point::render(skin& s, float head_b) const {
 
 ymse::rectf scored_point::bounding_box() const {
 	ymse::rectf bb = {
-		x1: x - r, y1: y - r,
-		x2: x + r, y2: y + r
+		x - r, y - r,
+		x + r, y + r
 	};
 
 	return bb;

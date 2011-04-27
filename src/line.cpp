@@ -127,8 +127,8 @@ ymse::rectf line::bounding_box() const {
 	xs[3] = xs[1] + dx * len; ys[3] = ys[1] + dy * len;
 
 	ymse::rectf bb = {
-		x1: xs[0], y1: ys[0],
-		x2: xs[0], y2: ys[0]
+		xs[0], ys[0],
+		xs[0], ys[0]
 	};
 
 	for (int i=1; i<4; ++i) {

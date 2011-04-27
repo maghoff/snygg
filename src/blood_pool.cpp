@@ -61,8 +61,8 @@ void blood_pool::render(skin& s) const {
 
 ymse::rectf blood_pool::bounding_box() const {
 	ymse::rectf bb = {
-		x1: x, y1: y,
-		x2: x, y2: y
+		x, y,
+		x, y
 	};
 
 	return bb;

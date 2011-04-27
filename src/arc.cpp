@@ -150,7 +150,7 @@ ymse::rectf arc::bounding_box() const {
 	vec2f e1(x + cos(end) * r1, y + sin(end) * r1);
 	vec2f e2(x + cos(end) * r2, y + sin(end) * r2);
 
-	rectf bb = { x1: b1[0], y1: b1[1], x2: b1[0], y2: b1[1]};
+	rectf bb = { b1[0], b1[1], b1[0], b1[1] };
 	bb = ymse::bounding_box(bb, b2);
 	bb = ymse::bounding_box(bb, e1);
 	bb = ymse::bounding_box(bb, e2);

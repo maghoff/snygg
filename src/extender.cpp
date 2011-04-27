@@ -64,8 +64,8 @@ void extender::render(skin&, float head_b) const {
 
 ymse::rectf extender::bounding_box() const {
 	ymse::rectf rc = {
-		x1: d->pos[0], y1: d->pos[1],
-		x2: d->pos[0], y2: d->pos[1]
+		d->pos[0], d->pos[1],
+		d->pos[0], d->pos[1]
 	};
 	return rc;
 }
