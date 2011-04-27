@@ -2,11 +2,6 @@
 #include <time.h>
 #include <math.h>
 
-#ifdef __STDC__
-extern double log2(double);
-#else
-extern double log2();
-#endif
 
 static int choose_idx;
 static int permute[SEGSIZE];
@@ -20,7 +15,7 @@ int generate_random_ordering(n)
   int m, st[SEGSIZE], *p;
   
   choose_idx = 1;
-  srand48(time(NULL));
+  srand(time(NULL));
 
   for (i = 0; i <= n; i++)
     st[i] = i;
@@ -28,7 +23,7 @@ int generate_random_ordering(n)
   p = st;
   for (i = 1; i <= n; i++, p++)
     {
-      m = lrand48() % (n + 1 - i) + 1;
+      m = rand() % (n + 1 - i) + 1;
       permute[i] = p[m];
       if (m != 1)
 	p[m] = p[1];
@@ -122,6 +117,12 @@ int read_segments(filename, genus)
 #endif
 
 
+double my_log2(double n)
+{  
+    // log(n)/log(2) is log2.  
+    return log( n ) / log( 2 );  
+}
+
 /* Get log*n for given n */
 int math_logstar_n(n)
      int n;
@@ -130,7 +131,7 @@ int math_logstar_n(n)
   double v;
   
   for (i = 0, v = (double) n; v >= 1; i++)
-    v = log2(v);
+    v = my_log2(v);
   
   return (i - 1);
 }
@@ -144,7 +145,7 @@ int math_N(n, h)
   double v;
 
   for (i = 0, v = (int) n; i < h; i++)
-    v = log2(v);
+    v = my_log2(v);
   
   return (int) ceil((double) 1.0*n/v);
 }

@@ -1,7 +1,6 @@
 #ifndef _triangulate_h
 #define _triangulate_h
 
-#include <sys/types.h>
 #include <stdlib.h>
 #include <stdio.h>
 
