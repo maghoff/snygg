@@ -15,3 +15,4 @@ import/luabind-*
 waf-*
 .lock-wafbuild
 build
+external/downloads
