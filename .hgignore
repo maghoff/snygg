@@ -12,3 +12,6 @@ debug
 release
 xcode
 import/luabind-*
+waf-*
+.lock-wafbuild
+build
