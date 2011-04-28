@@ -94,6 +94,7 @@ path guess_project_dir() {
 	path p(executable_path());
 	if (p.filename() == "src") p = p.branch_path();
 	if (p.filename() == "debug" || p.filename() == "release") p = p.branch_path();
+	if (p.filename() == "build") p = p.branch_path();
 	return p;
 }
 
