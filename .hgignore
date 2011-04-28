@@ -13,6 +13,7 @@ release
 xcode
 import/luabind-*
 waf-*
+.waf-*
 .lock-wafbuild
 build
 external/downloads
