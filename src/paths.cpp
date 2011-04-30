@@ -83,7 +83,7 @@ bool is_installed() {
 }
 
 path guess_prefix() {
-	path configured_prefix(config::install_prefix);
+	path configured_prefix(INSTALL_PREFIX);
 
 	path p(executable_path());
 	if (p.filename() == "games" || p.filename() == "bin") return p.branch_path();

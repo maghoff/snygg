@@ -2,14 +2,27 @@
 # -*- coding: utf-8 -*-
 
 
+DOWNLOAD_FILES = {
+	'skins/snakeskin/diffuse.jpg': 'http://bitbucket.org/maghoff/snygg/downloads/diffuse.jpg',
+	'skins/snakeskin/normal.jpg':  'http://bitbucket.org/maghoff/snygg/downloads/normal.jpg',
+}
+
+
+def download(files):
+	import urllib2, os
+	for local, remote in files.iteritems():
+		if os.path.isfile(local): continue
+		r = urllib2.urlopen(remote)
+		data = r.read()
+		with open(local, 'wb') as l: l.write(data)
+
+
 def options(opt):
 	opt.load('compiler_cxx')
 	opt.load('compiler_c')
 
 	opt.add_option('--sdl-includes', dest='sdl_includes', default=None, action='store', help='The path that contains SDL.h')
 	opt.add_option('--sdl-lib', dest='sdl_lib', default=None, action='store', help='The SDL library')
-
-	opt.add_option('--sdlmain-lib', dest='sdlmain_lib', default=None, action='store', help='The SDLmain library')
 
 	opt.add_option('--sdl-image-includes', dest='sdl_image_includes', default=None, action='store', help='The path that contains SDL_image.h')
 	opt.add_option('--sdl-image-lib', dest='sdl_image_lib', default=None, action='store', help='The SDL_image library')
@@ -33,6 +46,13 @@ def configure(conf):
 	conf.load('compiler_cxx')
 	conf.load('compiler_c')
 
+	conf.check_cfg(package='sdl', uselib_store='SDL', args=['--cflags', '--libs'])
+	conf.check_cfg(package='SDL_image', uselib_store='SDL_image', args=['--cflags', '--libs'])
+	conf.check_cfg(package='lua5.1', uselib_store='lua', args=['--cflags', '--libs'])
+
+	conf.define('INSTALL_PREFIX', '/usr/games')
+	conf.write_config_header('../src/config.hpp', top=True)
+
 	cc = wafutil.get_compiler_configurator(conf)
 
 	cc.sane_default(conf.env)
@@ -47,23 +67,21 @@ def configure(conf):
 		core_env.INCLUDES_SDL = [ opt.sdl_includes ]
 	if opt.sdl_lib != None:
 		core_env.LIBPATH_SDL = [ opt.sdl_lib ]
-	core_env.LIB_SDL = [ 'SDL' ]
+		core_env.LIB_SDL = [ 'SDL' ]
 
-	if opt.sdlmain_lib != None:
-		core_env.LIBPATH_SDLmain = [ opt.sdlmain_lib ]
 	core_env.LIB_SDLmain = [ 'SDLmain' ]
 
 	if opt.sdl_image_includes != None:
 		core_env.INCLUDES_SDL_image = [ opt.sdl_image_includes ]
 	if opt.sdl_image_lib != None:
 		core_env.LIBPATH_SDL_image = [ opt.sdl_image_lib ]
-	core_env.LIB_SDL_image = [ 'SDL_image' ]
+		core_env.LIB_SDL_image = [ 'SDL_image' ]
 
 	if opt.lua_includes != None:
 		core_env.INCLUDES_lua = [ opt.lua_includes ]
 	if opt.lua_lib != None:
 		core_env.LIBPATH_lua = [ opt.lua_lib ]
-	core_env.LIB_lua = [ 'lua5.1' ]
+		core_env.LIB_lua = [ 'lua5.1' ]
 
 	debug_env = core_env.derive()
 	cc.debug_mode(debug_env)
@@ -76,6 +94,8 @@ def configure(conf):
 	conf.setenv('release', env = release_env)
 
 	wafutil.configure_ymse(debug_env, release_env)
+
+	download(DOWNLOAD_FILES)
 
 	external.do_import()
 	external.configure(debug_env, release_env)
