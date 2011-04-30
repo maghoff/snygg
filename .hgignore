@@ -18,3 +18,8 @@ waf-*
 build
 external/downloads
 src/config.hpp
+*.pyc
+snygg.config
+snygg.creator
+snygg.files
+snygg.includes
