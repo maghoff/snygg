@@ -17,3 +17,4 @@ waf-*
 .lock-wafbuild
 build
 external/downloads
+src/config.hpp
