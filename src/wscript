@@ -69,7 +69,7 @@ def build(bld):
 	obj = bld.program(
 		source=sources,
 		target='snygg',
-		use=['ymse', 'GL', 'glew', 'SDL', 'SDLmain', 'SDL_image', 'boost', 'lua', 'luabind'],
-		lib=['boost_filesystem', 'boost_system', 'Imlib2'],
+		use=['ymse', 'GL', 'glew', 'SDL', 'SDLmain', 'SDL_image', 'boost', 'lua', 'luabind', 'imlib'],
+		lib=['boost_filesystem', 'boost_system'],
 		includes=[],
 	)

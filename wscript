@@ -49,6 +49,7 @@ def configure(conf):
 	conf.check_cfg(package='sdl', uselib_store='SDL', args=['--cflags', '--libs'])
 	conf.check_cfg(package='SDL_image', uselib_store='SDL_image', args=['--cflags', '--libs'])
 	conf.check_cfg(package='lua5.1', uselib_store='lua', args=['--cflags', '--libs'])
+	conf.check_cfg(package='imlib2', uselib_store='imlib', args=['--cflags', '--libs'])
 
 	conf.define('INSTALL_PREFIX', '/usr/games')
 	conf.write_config_header('../src/config.hpp', top=True)
