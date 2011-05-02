@@ -46,7 +46,7 @@ function is_open(x, y)
 	return PACMAN_BOARD[y]:sub(x, x) ~= "X"
 end
 
-function consider_square(s, ox, oy, x, y)
+function consider_square(heap, ox, oy, x, y)
 	if is_open(x, y) then return end
 
 	lx = ox + (x-1) * SZ
@@ -64,9 +64,9 @@ function consider_square(s, ox, oy, x, y)
 
 	if n_opens == 1 then
 		if is_open(x-1, y) or is_open(x+1, y) then
-			s:push_back(open_segment(line(vec(cx, ly), vec(0, 1), SZ)))
+			heap:line(cx, ly, cx, hy)
 		else
-			s:push_back(open_segment(line(vec(lx, cy), vec(1, 0), SZ)))
+			heap:line(lx, cy, hx, cy)
 		end
 	elseif n_opens == 2 then
 		b = 0
@@ -83,7 +83,7 @@ function consider_square(s, ox, oy, x, y)
 			b = math.pi * 3/2 - b
 		end
 
-		s:push_back(open_segment(arc(vec(arc_x, arc_y), SZ/2, b, b + math.pi * 0.5, 1)))
+		heap:arc(arc_x, arc_y, SZ/2, b, b + math.pi * 0.5)
 	elseif n_opens == 0 then
 		if is_open(x-1, y-1) or is_open(x-1, y+1) or is_open(x+1, y-1) or is_open(x+1, y+1) then
 			b = 0
@@ -100,9 +100,28 @@ function consider_square(s, ox, oy, x, y)
 				b = math.pi * 3/2 - b
 			end
 
-			s:push_back(open_segment(arc(vec(arc_x, arc_y), SZ/2, b, b + math.pi * 0.5, 1)))
+			heap:arc(arc_x, arc_y, SZ/2, b, b + math.pi * 0.5)
 		end
 	end
+end
+
+function segment_heap()
+	local segs = segment_sequence()
+	return {
+		line = function(self, x1, y1, x2, y2)
+			delta = {x2-x1, y2-y1}
+			len = math.sqrt(delta[1]*delta[1] + delta[2]*delta[2])
+			segs:push_back(open_segment(line(vec(x1, y1), vec(delta[1] / len, delta[2] / len), len)))
+		end,
+		arc = function(self, x, y, r, b, e)
+			dir = 1
+			if e < b then dir = -1 end
+			segs:push_back(open_segment(arc(vec(x, y), r, b, e, dir)))
+		end,
+		to_segment_sequence = function(self)
+			return segs
+		end
+	}
 end
 
 function create_board()
@@ -115,11 +134,15 @@ function create_board()
 	s =	segment_sequence()
 	s:push_back(contour(box(rect(ox-20, -oy-20, -ox+20, oy+20), 10)))
 
+	heap = segment_heap()
+
 	for y = 1, h do
 		for x = 1, w do
-			consider_square(s, ox, oy, x, y)
+			consider_square(heap, ox, oy, x, y)
 		end
 	end
+
+	s:push_back(heap:to_segment_sequence())
 
 	return s
 end
