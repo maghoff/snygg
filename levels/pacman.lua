@@ -105,25 +105,6 @@ function consider_square(heap, ox, oy, x, y)
 	end
 end
 
-function segment_heap()
-	local segs = segment_sequence()
-	return {
-		line = function(self, x1, y1, x2, y2)
-			delta = {x2-x1, y2-y1}
-			len = math.sqrt(delta[1]*delta[1] + delta[2]*delta[2])
-			segs:push_back(open_segment(line(vec(x1, y1), vec(delta[1] / len, delta[2] / len), len)))
-		end,
-		arc = function(self, x, y, r, b, e)
-			dir = 1
-			if e < b then dir = -1 end
-			segs:push_back(open_segment(arc(vec(x, y), r, b, e, dir)))
-		end,
-		to_segment_sequence = function(self)
-			return segs
-		end
-	}
-end
-
 function create_board()
 	h = # PACMAN_BOARD
 	w = # PACMAN_BOARD[1]
@@ -142,7 +123,7 @@ function create_board()
 		end
 	end
 
-	s:push_back(heap:to_segment_sequence())
+	s:push_back(heap:to_segment())
 
 	return s
 end

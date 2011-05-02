@@ -12,6 +12,7 @@
 #include "../segment.hpp"
 #include "../line.hpp"
 #include "../arc.hpp"
+#include "../segment_heap.hpp"
 #include "../segment_sequence.hpp"
 #include "../open_segment.hpp"
 #include "../contour_segment.hpp"
@@ -61,6 +62,13 @@ void register_modules(lua_State* L) {
 
 		def("x", &x),
 		def("y", &y),
+
+		class_<segment_heap>("segment_heap")
+			.def(constructor<>())
+			.def("line", (void(segment_heap::*)(float, float, float, float))&segment_heap::line)
+			.def("arc", (void(segment_heap::*)(float, float, float, float, float))&segment_heap::arc)
+			.def("to_segment", &segment_heap::to_segment)
+		,
 
 		class_<segment>("segment")
 			.def("get_head_pos", &segment::get_head_pos)
