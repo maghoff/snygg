@@ -295,19 +295,24 @@ void textured_skin::fat_line(ymse::vec2f p, ymse::vec2f dir, float len, float t,
 	float nx = dy * t, ny = -dx * t;
 	float x2 = x1 + dx*len, y2 = y1 + dy * len;
 
+	glBegin(GL_QUADS);
 	glVertexAttrib3f(across, nx, ny, 0);
 	glVertexAttrib3f(along, -dx, -dy, 0);
-
-	glBegin(GL_QUADS);
 	glVertexAttrib2f(circle_coord, 1, 0);
 	glVertexAttrib1f(b_attribute, b_begin);
 	glVertex2f(x1 + nx, y1 + ny);
+	glVertexAttrib3f(across, nx, ny, 0);
+	glVertexAttrib3f(along, -dx, -dy, 0);
 	glVertexAttrib2f(circle_coord, 1, 0);
 	glVertexAttrib1f(b_attribute, b_end);
 	glVertex2f(x2 + nx, y2 + ny);
+	glVertexAttrib3f(across, nx, ny, 0);
+	glVertexAttrib3f(along, -dx, -dy, 0);
 	glVertexAttrib2f(circle_coord, -1, 0);
 	glVertexAttrib1f(b_attribute, b_end);
 	glVertex2f(x2 - nx, y2 - ny);
+	glVertexAttrib3f(across, nx, ny, 0);
+	glVertexAttrib3f(along, -dx, -dy, 0);
 	glVertexAttrib2f(circle_coord, -1, 0);
 	glVertexAttrib1f(b_attribute, b_begin);
 	glVertex2f(x1 - nx, y1 - ny);
