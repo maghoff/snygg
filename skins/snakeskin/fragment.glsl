@@ -9,7 +9,9 @@ const float M_PI = 3.14159265358979;
 const float density = 0.04;
 const float min_a = 0.1, max_a = 0.45;
 
-vec4 directional_light(vec3 normal, vec3 light, vec4 diffuse, float local_variance);
+const float phong_exponent = 5.0;
+
+vec4 directional_light(vec3 normal, vec3 light, vec4 diffuse, float phong_exponent, float local_variance);
 
 vec4 get_diffuse(vec2 texture_coord);
 vec3 get_bump_normal(vec2 texture_coord);
@@ -73,6 +75,6 @@ void main(void) {
 
 	gl_FragColor =
 		diffuse * ambient +
-		directional_light(normal, light, diffuse, local_variance)
+		directional_light(normal, light, diffuse, phong_exponent, local_variance)
 	;
 }

@@ -61,13 +61,15 @@ void metaballs::load_opengl_resources() {
 	}
 
 	{
-		ymse::gl::shader mb_vertex(GL_VERTEX_SHADER), mb_mapping(GL_FRAGMENT_SHADER);
+		ymse::gl::shader mb_vertex(GL_VERTEX_SHADER), mb_mapping(GL_FRAGMENT_SHADER), light(GL_FRAGMENT_SHADER);
 
 		mb_vertex.source_file(d->path + "/mb_vertex.glsl");
 		mb_mapping.source_file(d->path + "/mb_mapping.glsl");
+		light.source_file(d->path + "/light.glsl");
 
 		d->mapping->attach(mb_vertex);
 		d->mapping->attach(mb_mapping);
+		d->mapping->attach(light);
 		d->mapping->link();
 	}
 
@@ -139,8 +141,12 @@ void metaballs::update_metaballs(const complex_polygon& floor_poly, const std::v
 
 void metaballs::draw_metaballs(const complex_polygon& floor_poly) {
 	glUseProgram(d->mapping->get_id());
+
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, d->balls.prev_tex().get_id());
+
+	d->mapping->set_uniform("ambient", 0.4f, 0.4f, 0.4f, 1.0f);
+
 	floor_poly.draw();
 	glUseProgram(0);
 }
