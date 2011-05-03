@@ -6,6 +6,7 @@
 #include "line.hpp"
 #include "open_segment.hpp"
 #include "contour_segment.hpp"
+#include "reverse_contour_segment.hpp"
 #include "segment_sequence.hpp"
 #include "segment_heap.hpp"
 
@@ -156,17 +157,17 @@ std::auto_ptr<segment> segment_heap::get_connected_sequence() {
 		for (std::list<seg_ptr>::iterator i = d->segs.begin(); i != d->segs.end(); ++i) {
 			std::pair<seg_ptr, int> front = s.front();
 			std::pair<seg_ptr, int> back = s.back();
-			vec2f front_pos = front.first->pos(1 - front.second);
-			vec2f back_pos = back.first->pos(back.second);
+			vec2f front_pos = front.first->pos(front.second);
+			vec2f back_pos = back.first->pos(1 - back.second);
 			bool added = false;
 			for (int dir = 0; dir <= 1; ++dir) {
 				if (are_close(front_pos, (*i)->pos(dir))) {
 					added = true;
-					s.push_front(std::make_pair(*i, dir));
+					s.push_front(std::make_pair(*i, 1-dir));
 					break;
 				} else if (are_close(back_pos, (*i)->pos(dir))) {
 					added = true;
-					s.push_back(std::make_pair(*i, 1-dir));
+					s.push_back(std::make_pair(*i, dir));
 					break;
 				}
 			}
@@ -185,7 +186,7 @@ std::auto_ptr<segment> segment_heap::get_connected_sequence() {
 
 		if (i == j) break;
 
-		if (consolidate(i->first.get(), 1-i->second, j->first.get(), 1-j->second)) {
+		if (consolidate(i->first.get(), i->second, j->first.get(), j->second)) {
 			s.erase(j);
 		} else {
 			++i;
@@ -194,7 +195,7 @@ std::auto_ptr<segment> segment_heap::get_connected_sequence() {
 
 	std::auto_ptr<segment_sequence> ss(new segment_sequence);
 	for (std::list< std::pair<seg_ptr, int> >::iterator i = s.begin(); i != s.end(); ++i) {
-		ss->push_back(i->first->to_segment(1 - i->second));
+		ss->push_back(i->first->to_segment(i->second));
 	}
 
 	bool is_open = !are_close(ss->get_head_pos(), ss->get_tail_pos());
@@ -202,7 +203,7 @@ std::auto_ptr<segment> segment_heap::get_connected_sequence() {
 	if (is_open) {
 		return std::auto_ptr<segment>(new open_segment(ss.release()));
 	} else {
-		return std::auto_ptr<segment>(new contour_segment(ss.release()));
+		return std::auto_ptr<segment>(new reverse_contour_segment(ss.release()));
 	}
 }
 
