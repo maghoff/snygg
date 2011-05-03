@@ -1,22 +1,38 @@
 #include <cmath>
-#include <boost/ptr_container/ptr_list.hpp>
+#include <list>
+#include <boost/shared_ptr.hpp>
 #include <ymse/vec.hpp>
 #include "arc.hpp"
 #include "line.hpp"
 #include "open_segment.hpp"
+#include "contour_segment.hpp"
 #include "segment_sequence.hpp"
 #include "segment_heap.hpp"
 
 using ymse::vec2f;
 
 
+static bool are_close(vec2f a, vec2f b) {
+	const float EPSILON = 0.01;
+	const float EPSILON_SQ = EPSILON * EPSILON;
+	return (a-b).square_length() < EPSILON_SQ;
+}
+
+
 namespace heap {
+
+struct line;
+struct arc;
 
 struct seg {
 	virtual ~seg() {}
 
 	virtual vec2f pos(int) = 0;
 	virtual std::auto_ptr<segment> to_segment(int) = 0;
+
+	virtual bool consolidate_dispatcher(int j, seg*, int i) = 0;
+	virtual bool consolidate(int i, line*, int j) = 0;
+	virtual bool consolidate(int i, arc*, int j) = 0;
 };
 
 struct line : seg {
@@ -33,6 +49,21 @@ struct line : seg {
 		vec2f d = p[1-i] - p[i];
 		float len = d.length();
 		return std::auto_ptr<segment>(new ::line(p[i], d*(1.f/len), len));
+	}
+
+	bool consolidate_dispatcher(int j, seg* first, int i) {
+		return first->consolidate(i, this, j);
+	}
+
+	bool consolidate(int i, line* next, int j) {
+		if (!are_close(pos(1-i), next->pos(j))) return false;
+		//assert(direction about the same);
+		p[1-i] = next->p[1-j];
+		return true;
+	}
+
+	bool consolidate(int, arc*, int) {
+		return false;
 	}
 };
 
@@ -56,12 +87,41 @@ struct arc : seg {
 		float dir = ang[1-i] >= ang[i] ? 1 : -1;
 		return std::auto_ptr<segment>(new ::arc(p, rad, ang[i], ang[1-i], dir));
 	}
+
+	bool consolidate_dispatcher(int j, seg* first, int i) {
+		return first->consolidate(i, this, j);
+	}
+
+	bool consolidate(int i, line* next, int j) {
+		return false;
+	}
+
+	float ang_size() const {
+		return fabs(ang[1] - ang[0]);
+	}
+
+	float ang_dir(int i) const {
+		return ang[1-i] >= ang[i] ? 1 : -1;
+	}
+
+	bool consolidate(int i, arc* next, int j) {
+		if (!are_close(p, next->p)) return false;
+		if (!are_close(pos(1-i), next->pos(j))) return false;
+		ang[1-i] += ang_dir(i) * next->ang_size();
+		return true;
+	}
 };
+
+bool consolidate(seg* lhs, int i, seg* rhs, int j) {
+	return rhs->consolidate_dispatcher(j, lhs, i);
+}
 
 }
 
+typedef boost::shared_ptr<heap::seg> seg_ptr;
+
 struct segment_heap::impl {
-	boost::ptr_list<heap::seg> segs;
+	std::list<seg_ptr> segs;
 };
 
 
@@ -69,11 +129,11 @@ segment_heap::segment_heap() : d(new impl) { }
 segment_heap::~segment_heap() { }
 
 void segment_heap::line(vec2f a, vec2f b) {
-	d->segs.push_back(new heap::line(a, b));
+	d->segs.push_back(seg_ptr(new heap::line(a, b)));
 }
 
 void segment_heap::arc(vec2f p, float r, float begin, float end) {
-	d->segs.push_back(new heap::arc(p, r, begin, end));
+	d->segs.push_back(seg_ptr(new heap::arc(p, r, begin, end)));
 }
 
 void segment_heap::line(float x1, float y1, float x2, float y2) {
@@ -84,13 +144,74 @@ void segment_heap::arc(float x, float y, float r, float begin, float end) {
 	arc(ymse::vec2f(x, y), r, begin, end);
 }
 
+std::auto_ptr<segment> segment_heap::get_connected_sequence() {
+	std::list< std::pair<seg_ptr, int> > s;
+
+	s.push_back(std::make_pair(d->segs.front(), 0));
+	d->segs.pop_front();
+
+	bool still_building;
+	do {
+		still_building = false;
+		for (std::list<seg_ptr>::iterator i = d->segs.begin(); i != d->segs.end(); ++i) {
+			std::pair<seg_ptr, int> front = s.front();
+			std::pair<seg_ptr, int> back = s.back();
+			vec2f front_pos = front.first->pos(1 - front.second);
+			vec2f back_pos = back.first->pos(back.second);
+			bool added = false;
+			for (int dir = 0; dir <= 1; ++dir) {
+				if (are_close(front_pos, (*i)->pos(dir))) {
+					added = true;
+					s.push_front(std::make_pair(*i, dir));
+					break;
+				} else if (are_close(back_pos, (*i)->pos(dir))) {
+					added = true;
+					s.push_back(std::make_pair(*i, 1-dir));
+					break;
+				}
+			}
+			if (added) {
+				still_building = true;
+				d->segs.erase(i);
+				break;
+			}
+		}
+	} while (still_building);
+
+	for (std::list< std::pair<seg_ptr, int> >::iterator i = s.begin(); i != s.end();) {
+		std::list< std::pair<seg_ptr, int> >::iterator j = i;
+		++j;
+		if (j == s.end()) j = s.begin();
+
+		if (i == j) break;
+
+		if (consolidate(i->first.get(), 1-i->second, j->first.get(), 1-j->second)) {
+			s.erase(j);
+		} else {
+			++i;
+		}
+	}
+
+	std::auto_ptr<segment_sequence> ss(new segment_sequence);
+	for (std::list< std::pair<seg_ptr, int> >::iterator i = s.begin(); i != s.end(); ++i) {
+		ss->push_back(i->first->to_segment(1 - i->second));
+	}
+
+	bool is_open = !are_close(ss->get_head_pos(), ss->get_tail_pos());
+
+	if (is_open) {
+		return std::auto_ptr<segment>(new open_segment(ss.release()));
+	} else {
+		return std::auto_ptr<segment>(new contour_segment(ss.release()));
+	}
+}
+
 std::auto_ptr<segment> segment_heap::to_segment() {
 	std::auto_ptr<segment_sequence> s(new segment_sequence);
 
 	while (!d->segs.empty()) {
-		s->push_back(d->segs.begin()->to_segment(0));
-		d->segs.pop_front();
+		s->push_back(get_connected_sequence());
 	}
 
-	return std::auto_ptr<segment>(new open_segment(s.release()));
+	return std::auto_ptr<segment>(s.release());
 }
