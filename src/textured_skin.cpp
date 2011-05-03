@@ -346,6 +346,8 @@ void textured_skin::floor(const complex_polygon& floor_poly) {
 	d->shader_state = no_shader;
 	to_floor_shader();
 	floor_poly.draw();
+
+	to_no_shader();
 }
 
 void textured_skin::enter_state(state_t st) {
