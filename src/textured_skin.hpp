@@ -14,6 +14,7 @@ class textured_skin : public scalable_skin {
 	void to_snakeskin_shader();
 	void to_wall_shader();
 	void to_food_shader();
+	void to_floor_shader();
 
 	void circle_core(ymse::vec2f p, float r);
 

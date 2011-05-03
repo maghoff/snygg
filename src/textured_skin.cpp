@@ -18,7 +18,8 @@ enum shader_state_t {
 	no_shader,
 	snakeskin_shader,
 	wall_shader,
-	food_shader
+	food_shader,
+	floor_shader
 };
 
 struct textured_skin::impl {
@@ -28,7 +29,7 @@ struct textured_skin::impl {
 	
 	ymse::sdl::surface diffuse_surface, normal_surface;
 	
-	boost::scoped_ptr<ymse::gl::program> texture_prog, color_prog;
+	boost::scoped_ptr<ymse::gl::program> texture_prog, color_prog, floor_prog;
 	ymse::gl::texture diffuse, normal;
 
 	skin::state_t stored_state;
@@ -56,9 +57,11 @@ void textured_skin::load_opengl_resources() {
 	glGetError();
 	d->texture_prog.reset();
 	d->color_prog.reset();
+	d->floor_prog.reset();
 	glGetError();
 	d->texture_prog.reset(new ymse::gl::program);
 	d->color_prog.reset(new ymse::gl::program);
+	d->floor_prog.reset(new ymse::gl::program);
 	glGetError();
 
 	{
@@ -103,6 +106,21 @@ void textured_skin::load_opengl_resources() {
 		d->color_prog->bind_attrib_location(b_attribute, "b_in");
 
 		d->color_prog->link();
+	}
+
+	{
+		ymse::gl::shader vertex(GL_VERTEX_SHADER);
+		ymse::gl::shader fragment(GL_FRAGMENT_SHADER), light(GL_FRAGMENT_SHADER);
+
+		vertex.source_file(d->path + "/mb_vertex.glsl");
+		fragment.source_file(d->path + "/flat_fragment.glsl");
+		light.source_file(d->path + "/light.glsl");
+
+		d->floor_prog->attach(vertex);
+		d->floor_prog->attach(fragment);
+		d->floor_prog->attach(light);
+
+		d->floor_prog->link();
 	}
 
 	// shaders go out of scope, but are kept alive by OpenGL because of d->prog
@@ -169,6 +187,17 @@ void textured_skin::to_food_shader() {
 	d->color_prog->set_uniform("color", 0.6f, 0.4f, 0.2f, 1.0f);
 
 	d->shader_state = food_shader;
+}
+
+void textured_skin::to_floor_shader() {
+	if (d->shader_state == floor_shader) return;
+
+	glUseProgram(d->floor_prog->get_id());
+
+	d->floor_prog->set_uniform("ambient", 0.4f, 0.4f, 0.4f, 1.0f);
+	d->floor_prog->set_uniform("diffuse", 0.5f, 0.5f, 0.5f, 1.0f);
+
+	d->shader_state = floor_shader;
 }
 
 void textured_skin::circle_core(ymse::vec2f p, float r) {
@@ -315,10 +344,8 @@ void textured_skin::cap(ymse::vec2f p, float snake_direction_in, float cap_direc
 void textured_skin::floor(const complex_polygon& floor_poly) {
 	glUseProgram(0);
 	d->shader_state = no_shader;
-
-	glColor4f(0.22, 0.22, 0.22, 1.0);
+	to_floor_shader();
 	floor_poly.draw();
-	glEnd();
 }
 
 void textured_skin::enter_state(state_t st) {
