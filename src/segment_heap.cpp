@@ -1,14 +1,14 @@
 #include <cmath>
 #include <list>
+#include <boost/ptr_container/ptr_list.hpp>
 #include <boost/shared_ptr.hpp>
 #include <ymse/vec.hpp>
 #include "arc.hpp"
 #include "line.hpp"
 #include "open_segment.hpp"
-#include "contour_segment.hpp"
-#include "reverse_contour_segment.hpp"
 #include "segment_sequence.hpp"
 #include "segment_heap.hpp"
+#include "direction_decider.hpp"
 
 using ymse::vec2f;
 
@@ -198,21 +198,27 @@ std::auto_ptr<segment> segment_heap::get_connected_sequence() {
 		ss->push_back(i->first->to_segment(i->second));
 	}
 
-	bool is_open = !are_close(ss->get_head_pos(), ss->get_tail_pos());
-
-	if (is_open) {
-		return std::auto_ptr<segment>(new open_segment(ss.release()));
-	} else {
-		return std::auto_ptr<segment>(new reverse_contour_segment(ss.release()));
-	}
+	return std::auto_ptr<segment>(ss.release());
 }
 
 std::auto_ptr<segment> segment_heap::to_segment() {
-	std::auto_ptr<segment_sequence> s(new segment_sequence);
+	boost::ptr_list<segment> undecided_segments;
+	std::auto_ptr<segment_sequence> decided_segments(new segment_sequence);
 
 	while (!d->segs.empty()) {
-		s->push_back(get_connected_sequence());
+		std::auto_ptr<segment> connected_sequence = get_connected_sequence();
+
+		bool is_closed = are_close(connected_sequence->get_head_pos(), connected_sequence->get_tail_pos());
+
+		if (is_closed) {
+			undecided_segments.push_back(connected_sequence);
+		} else {
+			decided_segments->push_back(std::auto_ptr<segment>(new open_segment(connected_sequence.release())));
+		}
 	}
 
-	return std::auto_ptr<segment>(s.release());
+	direction_decider d(undecided_segments, *decided_segments);
+	d.decide_all();
+
+	return std::auto_ptr<segment>(decided_segments.release());
 }

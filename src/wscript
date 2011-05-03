@@ -11,6 +11,7 @@ def build(bld):
 		'complex_polygon_triangulator.cpp',
 		'contour_segment.cpp',
 		'digesting_growth_policy.cpp',
+		'direction_decider.cpp',
 		'extender.cpp',
 		'food_generator.cpp',
 		'food_item.cpp',
