@@ -7,10 +7,11 @@
 #include <ymse/gl/texture.hpp>
 #include <ymse/rect.hpp>
 #include <ymse/vec.hpp>
-#include "ball_insert_iterator.hpp"
 #include "complex_polygon.hpp"
 #include "metaballs.hpp"
 #include "gl_fbo.hpp"
+
+#include "ball_insert_iterator.ipp"
 
 struct metaballs::impl {
 	scalable_skin* target;

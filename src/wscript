@@ -4,7 +4,6 @@
 def build(bld):
 	sources = [
 		'arc.cpp',
-		'ball_insert_iterator.cpp',
 		'blood_pool.cpp',
 		'board.cpp',
 		'complex_polygon.cpp',
