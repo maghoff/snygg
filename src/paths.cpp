@@ -15,12 +15,14 @@ namespace {
 
 std::string g_argv_zero;
 
+#ifdef __linux__
 std::string get_from_proc() {
 	char buffer[FILENAME_MAX + 1];
 	int len = readlink("/proc/self/exe", buffer, FILENAME_MAX);
 	if (len > 0) return std::string(buffer, buffer+len);
 	return std::string();
 }
+#endif
 
 #ifdef __MACH__
 path get_bundle_resources_directory() {
@@ -63,7 +65,10 @@ void set_argv_zero(const char* argv_zero) {
 path executed_file() {
 	std::string p;
 
+#ifdef __linux__
 	if (p.empty()) p = get_from_proc();
+#endif
+
 	if (p.empty()) p = g_argv_zero;
 	if (p.empty()) p = "snygg"; // Fail. Give a stupid default
 
