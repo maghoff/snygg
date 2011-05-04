@@ -1,4 +1,3 @@
-#include <ymse/gl.h>
 #include <SDL_main.h>
 #include <iostream>
 #include <stdexcept>
@@ -16,13 +15,6 @@ try {
 	ymse::sdl_core core;
 	core.init(argc, argv);
 	core.set_cursor_visible(false);
-
-	GLenum err = glewInit();
-	if (err != GLEW_OK) {
-		std::stringstream ss;
-		ss << "GLEW init failed: " << (char*)glewGetErrorString(err) << std::endl;
-		throw std::runtime_error(ss.str());
-	}
 
 	std::string board = "wide_screen.lua";
 	if (argc >= 2) board = argv[1];
