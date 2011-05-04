@@ -26,7 +26,7 @@
 #include "textured_skin.hpp"
 
 #include "config.hpp"
-#ifdef HAVE_imlib
+#ifdef HAVE_IMLIB
 #include <Imlib2.h>
 #endif
 
@@ -122,7 +122,7 @@ void snygg::attach_to_core(ymse::sdl_core& core) {
 }
 
 static void save_screenshot(std::string filename, std::auto_ptr<std::vector<unsigned char> > pixels, unsigned w, unsigned h) {
-#ifdef HAVE_imlib
+#ifdef HAVE_IMLIB
 	Imlib_Image img;
 
 	img = imlib_create_image_using_data(w, h, reinterpret_cast<unsigned int*>(pixels->data()));
