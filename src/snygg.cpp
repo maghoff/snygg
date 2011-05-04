@@ -12,7 +12,6 @@
 #include <ymse/sdl_core.hpp>
 #include <ymse/keycodes.hpp>
 #include <ymse/vec.hpp>
-#include <Imlib2.h>
 #include "board.hpp"
 #include "complex_polygon.hpp"
 #include "food_generator.hpp"
@@ -25,6 +24,11 @@
 #include "schematic_skin.hpp"
 #include "snygg.hpp"
 #include "textured_skin.hpp"
+
+#include "config.hpp"
+#ifdef HAVE_imlib
+#include <Imlib2.h>
+#endif
 
 
 struct snygg::impl {
@@ -118,6 +122,7 @@ void snygg::attach_to_core(ymse::sdl_core& core) {
 }
 
 static void save_screenshot(std::string filename, std::auto_ptr<std::vector<unsigned char> > pixels, unsigned w, unsigned h) {
+#ifdef HAVE_imlib
 	Imlib_Image img;
 
 	img = imlib_create_image_using_data(w, h, reinterpret_cast<unsigned int*>(pixels->data()));
@@ -129,6 +134,7 @@ static void save_screenshot(std::string filename, std::auto_ptr<std::vector<unsi
 	imlib_save_image(filename.c_str());
 
 	imlib_free_image();
+#endif
 }
 
 void snygg::take_screenshot(const std::string& filename, unsigned tex_id, unsigned w, unsigned h) {

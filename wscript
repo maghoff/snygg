@@ -49,7 +49,7 @@ def configure(conf):
 	cc.many_warnings(conf.env)
 	#cc.warnings_as_errors(conf.env)
 
-	core_env = conf.env.derive()
+	core_env = conf.env
 
 	from Options import options as opt
 
@@ -76,7 +76,7 @@ def configure(conf):
 		core_env.LIBPATH_lua = [ opt.lua_root ]
 		core_env.LIB_lua = [ 'lua5.1' ]
 
-	conf.check_cfg(package='imlib2', uselib_store='imlib', args=['--cflags', '--libs'])
+	conf.check_cfg(package='imlib2', uselib_store='imlib', args=['--cflags', '--libs'], mandatory=False)
 
 	conf.write_config_header('../src/config.hpp', top=True)
 
