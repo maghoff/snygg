@@ -11,7 +11,7 @@ try {
 	paths::set_argv_zero(argv[0]);
 
 	ymse::sdl_core core;
-	core.init(argc, const_cast<const char**>(argv));
+	core.init(argc, argv);
 	core.set_cursor_visible(false);
 
 	std::string board = "wide_screen.lua";
