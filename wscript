@@ -21,14 +21,9 @@ def options(opt):
 	opt.load('compiler_cxx')
 	opt.load('compiler_c')
 
-	opt.add_option('--sdl-includes', dest='sdl_includes', default=None, action='store', help='The path that contains SDL.h')
-	opt.add_option('--sdl-lib', dest='sdl_lib', default=None, action='store', help='The SDL library')
-
-	opt.add_option('--sdl-image-includes', dest='sdl_image_includes', default=None, action='store', help='The path that contains SDL_image.h')
-	opt.add_option('--sdl-image-lib', dest='sdl_image_lib', default=None, action='store', help='The SDL_image library')
-
-	opt.add_option('--lua-includes', dest='lua_includes', default=None, action='store', help='The path that contains lua.h')
-	opt.add_option('--lua-lib', dest='lua_lib', default=None, action='store', help='The LUA library')
+	opt.add_option('--sdl', dest='sdl_root', default=None, action='store', help='The path that contains include/SDL.h')
+	opt.add_option('--sdl-image', dest='sdl_image_root', default=None, action='store', help='The path that contains include/SDL_image.h')
+	opt.add_option('--lua', dest='lua_root', default=None, action='store', help='The path that contains include/lua.h')
 
 
 def configure(conf):
@@ -46,13 +41,7 @@ def configure(conf):
 	conf.load('compiler_cxx')
 	conf.load('compiler_c')
 
-	conf.check_cfg(package='sdl', uselib_store='SDL', args=['--cflags', '--libs'])
-	conf.check_cfg(package='SDL_image', uselib_store='SDL_image', args=['--cflags', '--libs'])
-	conf.check_cfg(package='lua5.1', uselib_store='lua', args=['--cflags', '--libs'])
-	conf.check_cfg(package='imlib2', uselib_store='imlib', args=['--cflags', '--libs'])
-
 	conf.define('INSTALL_PREFIX', '/usr/games')
-	conf.write_config_header('../src/config.hpp', top=True)
 
 	cc = wafutil.get_compiler_configurator(conf)
 
@@ -64,25 +53,32 @@ def configure(conf):
 
 	from Options import options as opt
 
-	if opt.sdl_includes != None:
-		core_env.INCLUDES_SDL = [ opt.sdl_includes ]
-	if opt.sdl_lib != None:
-		core_env.LIBPATH_SDL = [ opt.sdl_lib ]
+	if opt.sdl_root == None:
+		conf.check_cfg(package='sdl', uselib_store='SDL', args=['--cflags', '--libs'])
+	else:
+		core_env.INCLUDES_SDL = [ os.path.join(opt.sdl_root, 'include') ]
+		core_env.LIBPATH_SDL = [ os.path.join(opt.sdl_root, 'lib') ]
 		core_env.LIB_SDL = [ 'SDL' ]
 
 	core_env.LIB_SDLmain = [ 'SDLmain' ]
 
-	if opt.sdl_image_includes != None:
-		core_env.INCLUDES_SDL_image = [ opt.sdl_image_includes ]
-	if opt.sdl_image_lib != None:
-		core_env.LIBPATH_SDL_image = [ opt.sdl_image_lib ]
+	if opt.sdl_image_root == None:
+		conf.check_cfg(package='SDL_image', uselib_store='SDL_image', args=['--cflags', '--libs'])
+	else:
+		core_env.INCLUDES_SDL_image = [ os.path.join(opt.sdl_image_root, 'include') ]
+		core_env.LIBPATH_SDL_image = [ os.path.join(opt.sdl_image_root, 'lib') ]
 		core_env.LIB_SDL_image = [ 'SDL_image' ]
 
-	if opt.lua_includes != None:
-		core_env.INCLUDES_lua = [ opt.lua_includes ]
-	if opt.lua_lib != None:
-		core_env.LIBPATH_lua = [ opt.lua_lib ]
+	if opt.lua_root == None:
+		conf.check_cfg(package='lua5.1', uselib_store='lua', args=['--cflags', '--libs'])
+	else:
+		core_env.INCLUDES_lua = [ os.path.join(opt.lua_root, 'include') ]
+		core_env.LIBPATH_lua = [ opt.lua_root ]
 		core_env.LIB_lua = [ 'lua5.1' ]
+
+	conf.check_cfg(package='imlib2', uselib_store='imlib', args=['--cflags', '--libs'])
+
+	conf.write_config_header('../src/config.hpp', top=True)
 
 	debug_env = core_env.derive()
 	cc.debug_mode(debug_env)
