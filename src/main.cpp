@@ -1,7 +1,5 @@
 #include <SDL_main.h>
 #include <iostream>
-#include <stdexcept>
-#include <sstream>
 #include <string>
 #include <typeinfo>
 #include <ymse/sdl_core.hpp>
