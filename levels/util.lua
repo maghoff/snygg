@@ -48,3 +48,42 @@ function box(rc, sr)
 
 	return s
 end
+
+function util_heap()
+	function turtle(heap, x, y, dx, dy)
+		forward = function(len)
+			x2, y2 = x + dx*len, y + dy*len
+			heap:line(x, y, x2, y2)
+			x, y = x2, y2
+		end
+
+		left = function(r, ang)
+			nx, ny = -dy, dx
+			if ang < 0 then nx, ny = -nx, -ny end
+			cx, cy = x+nx*r, y+ny*r
+			start_ang = math.atan2(-ny, -nx)
+			end_ang = start_ang + ang
+			heap:arc(cx, cy, r, start_ang, end_ang)
+			nx2, ny2 = math.cos(end_ang), math.sin(end_ang)
+			dx, dy = -ny2, nx2
+			if ang < 0 then dx, dy = -dx, -dy end
+			x, y = cx+nx2*r, cy+ny2*r
+		end
+
+		right = function(r, ang)
+			left(r, -ang)
+		end
+
+		return {
+			forward = forward,
+			left = left,
+			right = right
+		}
+	end
+
+	heap = segment_heap()
+
+	heap.turtle = turtle
+
+	return heap
+end
