@@ -86,21 +86,24 @@ function consider_square(heap, ox, oy, x, y)
 		heap:arc(arc_x, arc_y, SZ/2, b, b + math.pi * 0.5)
 	elseif n_opens == 0 then
 		if is_open(x-1, y-1) or is_open(x-1, y+1) or is_open(x+1, y-1) or is_open(x+1, y+1) then
-			b = 0
-
 			arc_x = lx
+			dx = 1
+			ang = math.pi * 0.5
+
 			if is_open(x+1, y-1) or is_open(x+1, y+1) then
 				arc_x = hx
-				b = b + math.pi * 0.5
+				dx = -1
+				ang = -ang
 			end
 
-			arc_y = ly
-			if is_open(x-1, y-1) or is_open(x+1, y-1) then
-				arc_y = hy
-				b = math.pi * 3/2 - b
+			if is_open(x-1, y+1) or is_open(x+1, y+1) then
+				ang = -ang
 			end
 
-			heap:arc(arc_x, arc_y, SZ/2, b, b + math.pi * 0.5)
+			t = heap:turtle(arc_x, cy, dx, 0)
+			t.forward(SZ*0.15)
+			t.left(SZ*0.35, ang)
+			t.forward(SZ*0.15)
 		end
 	end
 end
@@ -113,9 +116,10 @@ function create_board()
 	oy =  0.5 * SZ * h
 
 	s =	segment_sequence()
-	s:push_back(contour(box(rect(ox-20, -oy-20, -ox+20, oy+20), 10)))
+	margin = 20
+	s:push_back(contour(box(rect(ox-margin, -oy-margin, -ox+margin, oy+margin), 10)))
 
-	heap = segment_heap()
+	heap = util_heap()
 
 	for y = 1, h do
 		for x = 1, w do
