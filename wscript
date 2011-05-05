@@ -70,7 +70,9 @@ def configure(conf):
 		core_env.LIB_SDL_image = [ 'SDL_image' ]
 
 	if opt.lua_root == None:
-		conf.check_cfg(package='lua5.1', uselib_store='lua', args=['--cflags', '--libs'])
+		conf.check_cfg(package='lua5.1', uselib_store='lua', args=['--cflags', '--libs'], mandatory=False)
+		if 'HAVE_LUA' not in conf.env['define_key']:
+			conf.check_cfg(package='lua', uselib_store='lua', args=['--cflags', '--libs'])
 	else:
 		core_env.INCLUDES_lua = [ os.path.join(opt.lua_root, 'include') ]
 		core_env.LIBPATH_lua = [ opt.lua_root ]
