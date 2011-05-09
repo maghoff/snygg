@@ -3,12 +3,15 @@
 require "util"
 
 function create_board()
+	local heap = util_heap()
+
 	s = segment_sequence()
 	s.circle = function(self, x, y, rad)
 		self:push_back(contour(arc(vec(x, y), rad, 2 * math.pi, 0, 1)))
 	end
 
-	s:push_back(contour(box(rect(-100, -50, 100, 50), 10)))
+	heap:box(-100, -50, 100, 50, 10)
+	s:push_back(heap:to_segment())
 
 	for y=-2, 2 do
 		s:circle(0, y * 20, 3)

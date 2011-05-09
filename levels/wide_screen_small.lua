@@ -4,5 +4,7 @@
 require "util"
 
 function create_board()
-	return contour(box(rect(-65, -35 - 10, 65, 35 - 10), 10))
+	local heap = util_heap()
+	heap:box(-65, -35 - 10, 65, 35 - 10, 10)
+	return heap:to_segment()
 end

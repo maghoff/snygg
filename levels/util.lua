@@ -25,46 +25,22 @@ function bent_line(A, B, corner_radius, pinch)
 	)
 end
 
-function box(rc, sr)
-	local s = segment_sequence()
-	local x1, y1, x2, y2, w, h, pi
-
-	x1 = rc.x1
-	y1 = rc.y1
-	x2 = rc.x2
-	y2 = rc.y2
-	w = rc:width() - 2 * sr
-	h = rc:height() - 2 * sr
-	pi = math.pi
-
-	s:push_back(line(vec(x1 + sr, y1     ), vec( 1,  0), w))
-	s:push_back(arc (vec(x2 - sr, y1 + sr), sr, pi * -0.5, pi *  0.0, 1))
-	s:push_back(line(vec(x2     , y1 + sr), vec( 0,  1), h))
-	s:push_back(arc (vec(x2 - sr, y2 - sr), sr, pi *  0.0, pi *  0.5, 1))
-	s:push_back(line(vec(x2 - sr, y2     ), vec(-1,  0), w))
-	s:push_back(arc (vec(x1 + sr, y2 - sr), sr, pi *  0.5, pi *  1.0, 1))
-	s:push_back(line(vec(x1     , y2 - sr), vec( 0, -1), h))
-	s:push_back(arc (vec(x1 + sr, y1 + sr), sr, pi * -1.0, pi * -0.5, 1))
-
-	return s
-end
-
 function util_heap()
 	function turtle(heap, x, y, dx, dy)
 		forward = function(len)
-			x2, y2 = x + dx*len, y + dy*len
+			local x2, y2 = x + dx*len, y + dy*len
 			heap:line(x, y, x2, y2)
 			x, y = x2, y2
 		end
 
 		left = function(r, ang)
-			nx, ny = -dy, dx
+			local nx, ny = -dy, dx
 			if ang < 0 then nx, ny = -nx, -ny end
-			cx, cy = x+nx*r, y+ny*r
-			start_ang = math.atan2(-ny, -nx)
-			end_ang = start_ang + ang
+			local cx, cy = x+nx*r, y+ny*r
+			local start_ang = math.atan2(-ny, -nx)
+			local end_ang = start_ang + ang
 			heap:arc(cx, cy, r, start_ang, end_ang)
-			nx2, ny2 = math.cos(end_ang), math.sin(end_ang)
+			local nx2, ny2 = math.cos(end_ang), math.sin(end_ang)
 			dx, dy = -ny2, nx2
 			if ang < 0 then dx, dy = -dx, -dy end
 			x, y = cx+nx2*r, cy+ny2*r
@@ -81,9 +57,28 @@ function util_heap()
 		}
 	end
 
+	function box(heap, x1, y1, x2, y2, sr)
+		local w, h, pi
+
+		w = (x2-x1) - 2 * sr
+		h = (y2-y1) - 2 * sr
+		pi = math.pi
+
+		heap:line(x1 + sr, y1     , x2 - sr, y1     )
+		heap:line(x1 + sr, y2     , x2 - sr, y2     )
+		heap:line(x1     , y1 + sr, x1     , y2 - sr)
+		heap:line(x2     , y1 + sr, x2     , y2 - sr)
+
+		heap:arc(x2 - sr, y2 - sr, sr, pi * 0.0, pi * 0.5)
+		heap:arc(x1 + sr, y2 - sr, sr, pi * 0.5, pi * 1.0)
+		heap:arc(x1 + sr, y1 + sr, sr, pi * 1.0, pi * 1.5)
+		heap:arc(x2 - sr, y1 + sr, sr, pi * 1.5, pi * 2.0)
+	end
+
 	heap = segment_heap()
 
 	heap.turtle = turtle
+	heap.box = box
 
 	return heap
 end

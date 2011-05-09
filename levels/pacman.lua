@@ -49,6 +49,8 @@ end
 function consider_square(heap, ox, oy, x, y)
 	if is_open(x, y) then return end
 
+	local lx, ly, hx, hy, cx, cy
+
 	lx = ox + (x-1) * SZ
 	hy = oy - (y-1) * SZ
 	hx = lx + SZ
@@ -109,14 +111,15 @@ function consider_square(heap, ox, oy, x, y)
 end
 
 function create_board()
-	h = # PACMAN_BOARD
-	w = # PACMAN_BOARD[1]
+	local h = # PACMAN_BOARD
+	local w = # PACMAN_BOARD[1]
 
-	ox = -0.5 * SZ * w
-	oy =  0.5 * SZ * h
+	local ox = -0.5 * SZ * w
+	local oy =  0.5 * SZ * h
 
-	heap = util_heap()
+	local heap = util_heap()
 
+	local x, y
 	for y = 1, h do
 		for x = 1, w do
 			consider_square(heap, ox, oy, x, y)
