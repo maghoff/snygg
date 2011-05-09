@@ -1,5 +1,9 @@
 -- Family circus board
 
+require "util"
+
 function create_board()
-	return contour(arc(vec(0, 0), 70, 0, 2 * math.pi, 1))
+	local heap = util_heap()
+	heap:circle(0, 0, 70)
+	return heap:to_segment()
 end

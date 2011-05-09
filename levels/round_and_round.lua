@@ -1,13 +1,18 @@
 -- Round and round!
 -- Patience might be more valuable than skill...
 
+require "util"
+
 function create_board()
-	s = segment_sequence()
-	s:push_back(contour(arc(vec(0, 0), 100, 0 * math.pi, 2 * math.pi, 1)))
-	s:push_back(open_segment(arc(vec(0, 0), 80,  1 * math.pi, 2 * math.pi, 1)))
-	s:push_back(open_segment(arc(vec(0, 0), 65,  0 * math.pi, 1 * math.pi, 1)))
-	s:push_back(open_segment(arc(vec(0, 0), 50,  1 * math.pi, 2 * math.pi, 1)))
-	s:push_back(open_segment(arc(vec(0, 0), 35,  0 * math.pi, 1 * math.pi, 1)))
-	return s
+	local heap = util_heap()
+	local pi = math.pi
+
+	heap:circle(0, 0, 100)
+	heap:arc(0, 0, 80, 1 * pi, 2 * pi)
+	heap:arc(0, 0, 65, 0 * pi, 1 * pi)
+	heap:arc(0, 0, 50, 1 * pi, 2 * pi)
+	heap:arc(0, 0, 35, 0 * pi, 1 * pi)
+
+	return heap:to_segment()
 end
 
