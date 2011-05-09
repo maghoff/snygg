@@ -1,34 +1,21 @@
 #ifndef COMPLEX_POLYGON_TRIANGULATOR_HPP
 #define COMPLEX_POLYGON_TRIANGULATOR_HPP
 
-#include <vector>
-#include <ymse/vec.hpp>
+#include <ymse/vec_fwd.hpp>
 
 class complex_polygon;
 
 class complex_polygon_triangulator {
-	std::vector<int> contour_sizes;
-	std::vector<ymse::vec2f> points;
-
-	int contour_start;
-
-	bool contour_is_reverse;
-
-	enum { initial, in_contour } state;
-
-	unsigned current_contour_size() const;
-
 public:
-	complex_polygon_triangulator();
-	~complex_polygon_triangulator();
+	virtual ~complex_polygon_triangulator();
 
-	void start_contour();
-	void start_reverse_contour();
-	void end_contour();
+	virtual void start_contour() = 0;
+	virtual void start_reverse_contour() = 0;
+	virtual void end_contour() = 0;
 
-	void point(ymse::vec2f);
+	virtual void point(ymse::vec2f) = 0;
 
-	complex_polygon get_complex_polygon() const;
+	virtual complex_polygon get_complex_polygon() const = 0;
 };
 
 #endif // COMPLEX_POLYGON_TRIANGULATOR_HPP

@@ -10,7 +10,8 @@
 #include <ymse/vec.hpp>
 #include "arc.hpp"
 #include "complex_polygon.hpp"
-#include "complex_polygon_triangulator.hpp"
+#include "complex_polygon_triangulator_gpc.hpp"
+#include "complex_polygon_triangulator_triangulation.hpp"
 #include "line.hpp"
 #include "luamod/lua_vm.hpp"
 #include "board.hpp"
@@ -101,7 +102,9 @@ int board::winding_number(ymse::vec2f p) const {
 }
 
 void board::calculate_floor_poly() {
-	complex_polygon_triangulator triangulator;
+	complex_polygon_triangulator_gpc triangulator_impl;
+
+	complex_polygon_triangulator& triangulator = triangulator_impl;
 
 	typedef boost::ptr_vector<segment>::const_iterator seg_it;
 	for (seg_it it = d->b.begin(); it != d->b.end(); ++it) {

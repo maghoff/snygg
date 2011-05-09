@@ -8,6 +8,8 @@ def build(bld):
 		'board.cpp',
 		'complex_polygon.cpp',
 		'complex_polygon_triangulator.cpp',
+		'complex_polygon_triangulator_triangulation.cpp',
+		'complex_polygon_triangulator_gpc.cpp',
 		'contour_segment.cpp',
 		'digesting_growth_policy.cpp',
 		'direction_decider.cpp',
@@ -47,6 +49,8 @@ def build(bld):
 		'triangulation/misc.c',
 		'triangulation/monotone.c',
 		'triangulation/tri.c',
+
+		'gpc/gpc.c',
 
 		'../external/downloads/luabind-0.9.1/src/class.cpp',
 		'../external/downloads/luabind-0.9.1/src/class_info.cpp',

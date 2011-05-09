@@ -20,7 +20,7 @@ PACMAN_BOARD = {
 	"XXXXXXX.XX          XX.XXXXXXX",
 	"XXXXXXX.XX XXXXXXXX XX.XXXXXXX",
 	"XXXXXXX.XX XXXXXXXX XX.XXXXXXX",
-	"       .   XXXXXXXX   .       ",
+	"x      .   XXXXXXXX   .      x",
 	"XXXXXXX.XX XXXXXXXX XX.XXXXXXX",
 	"XXXXXXX.XX XXXXXXXX XX.XXXXXXX",
 	"XXXXXXX.XX          XX.XXXXXXX",
@@ -43,7 +43,7 @@ PACMAN_BOARD = {
 function is_open(x, y)
 	if y <= 0 or y > #PACMAN_BOARD then return false end
 	if x <= 0 or x > #PACMAN_BOARD[y] then return false end
-	return PACMAN_BOARD[y]:sub(x, x) ~= "X"
+	return (PACMAN_BOARD[y]:sub(x, x) ~= "X") and (PACMAN_BOARD[y]:sub(x, x) ~= "x")
 end
 
 function consider_square(heap, ox, oy, x, y)
@@ -115,10 +115,6 @@ function create_board()
 	ox = -0.5 * SZ * w
 	oy =  0.5 * SZ * h
 
-	s =	segment_sequence()
-	margin = 20
-	s:push_back(contour(box(rect(ox-margin, -oy-margin, -ox+margin, oy+margin), 10)))
-
 	heap = util_heap()
 
 	for y = 1, h do
@@ -127,9 +123,7 @@ function create_board()
 		end
 	end
 
-	s:push_back(heap:to_segment())
-
-	return s
+	return heap:to_segment()
 end
 
 function get_starting_position()
