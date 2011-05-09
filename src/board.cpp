@@ -11,7 +11,6 @@
 #include "arc.hpp"
 #include "complex_polygon.hpp"
 #include "complex_polygon_triangulator_gpc.hpp"
-#include "complex_polygon_triangulator_triangulation.hpp"
 #include "line.hpp"
 #include "luamod/lua_vm.hpp"
 #include "board.hpp"

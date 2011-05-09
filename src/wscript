@@ -8,7 +8,6 @@ def build(bld):
 		'board.cpp',
 		'complex_polygon.cpp',
 		'complex_polygon_triangulator.cpp',
-		'complex_polygon_triangulator_triangulation.cpp',
 		'complex_polygon_triangulator_gpc.cpp',
 		'contour_segment.cpp',
 		'digesting_growth_policy.cpp',
@@ -44,11 +43,6 @@ def build(bld):
 		'snake_direction_listener.cpp',
 		'snygg.cpp',
 		'textured_skin.cpp',
-
-		'triangulation/construct.c',
-		'triangulation/misc.c',
-		'triangulation/monotone.c',
-		'triangulation/tri.c',
 
 		'gpc/gpc.c',
 
