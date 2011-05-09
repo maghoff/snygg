@@ -26,6 +26,9 @@ function bent_line(A, B, corner_radius, pinch)
 end
 
 function util_heap()
+	local turtle, box, circle
+	local pi = math.pi
+
 	function turtle(heap, x, y, dx, dy)
 		forward = function(len)
 			local x2, y2 = x + dx*len, y + dy*len
@@ -58,11 +61,10 @@ function util_heap()
 	end
 
 	function box(heap, x1, y1, x2, y2, sr)
-		local w, h, pi
+		local w, h
 
 		w = (x2-x1) - 2 * sr
 		h = (y2-y1) - 2 * sr
-		pi = math.pi
 
 		heap:line(x1 + sr, y1     , x2 - sr, y1     )
 		heap:line(x1 + sr, y2     , x2 - sr, y2     )
@@ -75,10 +77,15 @@ function util_heap()
 		heap:arc(x2 - sr, y1 + sr, sr, pi * 1.5, pi * 2.0)
 	end
 
-	heap = segment_heap()
+	function circle(heap, x, y, r)
+		heap:arc(x, y, r, 0, pi * 2.0)
+	end
+
+	local heap = segment_heap()
 
 	heap.turtle = turtle
 	heap.box = box
+	heap.circle = circle
 
 	return heap
 end
