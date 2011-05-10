@@ -54,7 +54,6 @@ void register_modules(lua_State* L) {
 			.def("line", (void(segment_heap::*)(ymse::vec2f, ymse::vec2f))&segment_heap::line)
 			.def("arc", (void(segment_heap::*)(float, float, float, float, float))&segment_heap::arc)
 			.def("arc", (void(segment_heap::*)(ymse::vec2f, float, float, float))&segment_heap::arc)
-			.def("to_segment", &segment_heap::to_segment)
 	];
 }
 
