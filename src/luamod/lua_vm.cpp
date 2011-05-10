@@ -7,33 +7,12 @@
 #include <boost/filesystem/path.hpp>
 
 // For exposing to lua:
-#include <ymse/rect.hpp>
 #include <ymse/vec.hpp>
-#include "../segment.hpp"
-#include "../line.hpp"
-#include "../arc.hpp"
 #include "../segment_heap.hpp"
-#include "../segment_sequence.hpp"
-#include "../open_segment.hpp"
-#include "../contour_segment.hpp"
-#include "../reverse_contour_segment.hpp"
 
 namespace luamod {
 
 namespace {
-
-class rectw : public ymse::rectf {
-public:
-	rectw(float x1_, float y1_, float x2_, float y2_) {
-		x1 = x1_;
-		y1 = y1_;
-		x2 = x2_;
-		y2 = y2_;
-	}
-};
-
-float x(const ymse::vec2f& v) { return v[0]; }
-float y(const ymse::vec2f& v) { return v[1]; }
 
 void register_modules(lua_State* L) {
 	using namespace luabind;
