@@ -23,7 +23,7 @@ function bent_line(heap, A, B, corner_radius, pinch)
 	end
 
 	heap:arc(
-		C:x(), C:y(), pinch_radius,
+		C, pinch_radius,
 		base_angle + pinch, base_angle - pinch
 	)
 end
@@ -52,13 +52,13 @@ function create_board()
 	local C = vec(right, top)
 	local D = vec(left, top)
 
-	heap:arc(A:x(), A:y(), corner_radius, 2/2 * pi + pinch, 3/2 * pi + pinch)
+	heap:arc(A, corner_radius, 2/2 * pi + pinch, 3/2 * pi + pinch)
 	heap:bent_line(A, B, corner_radius, pinch)
-	heap:arc(B:x(), B:y(), corner_radius, 3/2 * pi - pinch, 4/2 * pi - pinch)
+	heap:arc(B, corner_radius, 3/2 * pi - pinch, 4/2 * pi - pinch)
 	heap:bent_line(B, C, corner_radius, -pinch)
-	heap:arc(C:x(), C:y(), corner_radius, 0/2 * pi + pinch, 1/2 * pi + pinch)
+	heap:arc(C, corner_radius, 0/2 * pi + pinch, 1/2 * pi + pinch)
 	heap:bent_line(C, D, corner_radius, pinch)
-	heap:arc(D:x(), D:y(), corner_radius, 1/2 * pi - pinch, 2/2 * pi - pinch)
+	heap:arc(D, corner_radius, 1/2 * pi - pinch, 2/2 * pi - pinch)
 	heap:bent_line(D, A, corner_radius, -pinch)
 
 	return heap
