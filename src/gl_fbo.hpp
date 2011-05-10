@@ -20,4 +20,22 @@ public:
 	void render_to(unsigned);
 };
 
+class gl_fbo_multisample : public boost::noncopyable {
+	unsigned id;
+	unsigned colorbuffer, depthbuffer;
+	unsigned width, height;
+
+	void init();
+
+public:
+	gl_fbo_multisample();
+	gl_fbo_multisample(int width, int height);
+	~gl_fbo_multisample();
+
+	void set_size(int width, int height);
+
+	unsigned get_id() const;
+	void blit_to(gl_fbo&);
+};
+
 #endif

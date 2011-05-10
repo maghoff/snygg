@@ -176,15 +176,11 @@ void snygg::screenshot_with_skin(const std::string& filename, scalable_skin* sel
 	glViewport(0, 0, screenshot_w, screenshot_h);
 	reshape(screenshot_w, screenshot_h);
 
-	ymse::gl::texture tx;
-	gl_fbo fbo;
+	gl_fbo_multisample m_fbo;
 
-	glBindTexture(GL_TEXTURE_2D, tx.get_id());
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, screenshot_w, screenshot_h, 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
-	fbo.set_size(screenshot_w, screenshot_h);
+	m_fbo.set_size(screenshot_w, screenshot_h);
 
-	fbo.render_to(tx.get_id());
-	scoped_bind_fbo binder(fbo);
+	scoped_bind_fbo binder(m_fbo.get_id());
 
 	scalable_skin* prev_skin = d->active_skin;
 	set_skin_key(selected_skin);
@@ -192,6 +188,15 @@ void snygg::screenshot_with_skin(const std::string& filename, scalable_skin* sel
 	set_skin_key(prev_skin);
 
 	binder.unbind();
+
+	ymse::gl::texture tx;
+	glBindTexture(GL_TEXTURE_2D, tx.get_id());
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, screenshot_w, screenshot_h, 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
+
+	gl_fbo fbo;
+	fbo.set_size(screenshot_w, screenshot_h);
+	fbo.render_to(tx.get_id());
+	m_fbo.blit_to(fbo);
 
 	take_screenshot(filename, tx.get_id(), screenshot_w, screenshot_h);
 
