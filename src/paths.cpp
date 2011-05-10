@@ -1,5 +1,5 @@
 #ifdef __MACH__
-#include <CFBundle.h>
+#include <CoreFoundation/CFBundle.h>
 #endif
 
 #include <iostream>
