@@ -53,7 +53,7 @@ textured_skin::textured_skin(const std::string& path) :
 textured_skin::~textured_skin() {
 }
 
-void textured_skin::load_opengl_resources() {
+void textured_skin::load_opengl_resources(int, int) {
 	glGetError();
 	d->texture_prog.reset();
 	d->color_prog.reset();

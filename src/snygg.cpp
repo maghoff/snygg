@@ -22,6 +22,7 @@
 #include "plain_skin.hpp"
 #include "player.hpp"
 #include "schematic_skin.hpp"
+#include "scoped_bind_fbo.hpp"
 #include "snygg.hpp"
 #include "textured_skin.hpp"
 
@@ -173,7 +174,7 @@ void snygg::screenshot_with_skin(const std::string& filename, scalable_skin* sel
 	const SDL_VideoInfo* vinf = SDL_GetVideoInfo();
 	const unsigned w = vinf->current_w, h = vinf->current_h;
 	glViewport(0, 0, screenshot_w, screenshot_h);
-	d->reshaper->reshape(screenshot_w, screenshot_h);
+	reshape(screenshot_w, screenshot_h);
 
 	ymse::gl::texture tx;
 	gl_fbo fbo;
@@ -183,19 +184,19 @@ void snygg::screenshot_with_skin(const std::string& filename, scalable_skin* sel
 	fbo.set_size(screenshot_w, screenshot_h);
 
 	fbo.render_to(tx.get_id());
-	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, fbo.get_id());
+	scoped_bind_fbo binder(fbo);
 
 	scalable_skin* prev_skin = d->active_skin;
 	set_skin_key(selected_skin);
 	render();
 	set_skin_key(prev_skin);
 
-	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
+	binder.unbind();
 
 	take_screenshot(filename, tx.get_id(), screenshot_w, screenshot_h);
 
 	glViewport(0, 0, w, h);
-	d->reshaper->reshape(w, h);
+	reshape(w, h);
 }
 
 void snygg::screenshot_key() {
@@ -206,7 +207,7 @@ void snygg::screenshot_key() {
 void snygg::reshape(int width, int height) {
 	d->reshaper->reshape(width, height);
 	for (size_t i=0; i<d->skins.size(); ++i) {
-		d->skins[i].load_opengl_resources();
+		d->skins[i].load_opengl_resources(width, height);
 	}
 }
 

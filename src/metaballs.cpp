@@ -8,8 +8,9 @@
 #include <ymse/rect.hpp>
 #include <ymse/vec.hpp>
 #include "complex_polygon.hpp"
-#include "metaballs.hpp"
 #include "gl_fbo.hpp"
+#include "metaballs.hpp"
+#include "scoped_bind_fbo.hpp"
 
 #include "ball_insert_iterator.ipp"
 
@@ -42,7 +43,7 @@ struct metaballs::impl {
 	} balls;
 };
 
-void metaballs::load_opengl_resources() {
+void metaballs::load_opengl_resources(int width, int height) {
 	glGetError();
 	d->metaballs.reset();
 	d->mapping.reset();
@@ -74,24 +75,21 @@ void metaballs::load_opengl_resources() {
 		d->mapping->link();
 	}
 
-	const SDL_VideoInfo* vinf = SDL_GetVideoInfo();
-	const unsigned w = vinf->current_w, h = vinf->current_h;
-
-	const size_t sz = w*h*4; // 4 == sizeof(GL_R32F);
+	const size_t sz = width*height*4; // 4 == sizeof(GL_R32F);
 	std::vector<char> buf(sz, 0);
 	for (int i=0; i<2; ++i) {
 		glBindTexture(GL_TEXTURE_2D, d->balls.stored_value[i].get_id());
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_R32F, w, h, 0, GL_RED, GL_FLOAT, buf.data());
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_R32F, width, height, 0, GL_RED, GL_FLOAT, buf.data());
 		assert(glGetError() == GL_NONE);
 
 		d->balls.gen[i].clear();
 	}
 
-	d->fbo.set_size(w, h);
+	d->fbo.set_size(width, height);
 
-	//d->target->load_opengl_resources();
+	//d->target->load_opengl_resources(width, height);
 }
 
 metaballs::metaballs(scalable_skin* s, const std::string& path) :
@@ -114,7 +112,9 @@ void metaballs::update_metaballs(const complex_polygon& floor_poly, const std::v
 	d->fbo.render_to(d->balls.next_tex().get_id());
 
 	glDisable(GL_BLEND);
-	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, d->fbo.get_id());
+
+	scoped_bind_fbo binder(d->fbo);
+
 	glUseProgram(d->metaballs->get_id());
 
 	glActiveTexture(GL_TEXTURE0);
@@ -134,7 +134,7 @@ void metaballs::update_metaballs(const complex_polygon& floor_poly, const std::v
 	floor_poly.draw();
 
 	glUseProgram(0);
-	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
+	binder.unbind();
 	glEnable(GL_BLEND);
 
 	d->balls.step_tex();

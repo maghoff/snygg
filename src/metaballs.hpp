@@ -22,7 +22,7 @@ public:
 	metaballs(scalable_skin*, const std::string& path);
 	~metaballs();
 
-	void load_opengl_resources();
+	void load_opengl_resources(int width, int height);
 
 	void blood(ymse::vec2f p, float r);
 

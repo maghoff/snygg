@@ -1,5 +1,6 @@
 #include <cassert>
 #include <ymse/gl.h>
+#include "scoped_bind_fbo.hpp"
 #include "gl_fbo.hpp"
 
 void gl_fbo::init() {
@@ -40,13 +41,11 @@ GLuint gl_fbo::get_id() const {
 }
 
 void gl_fbo::render_to(unsigned tex_id) {
-	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, id);
+	scoped_bind_fbo binder(id);
 
 	glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT, GL_COLOR_ATTACHMENT0_EXT, GL_TEXTURE_2D, tex_id, 0);
 	glBindTexture(GL_TEXTURE_2D, tex_id);
 
 	GLenum status = glCheckFramebufferStatusEXT(GL_FRAMEBUFFER_EXT);
 	assert(status == GL_FRAMEBUFFER_COMPLETE_EXT);
-
-	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
 }

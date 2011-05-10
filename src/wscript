@@ -32,6 +32,7 @@ def build(bld):
 		'renderable.cpp',
 		'scalable_skin.cpp',
 		'schematic_skin.cpp',
+		'scoped_bind_fbo.cpp',
 		'scored_point.cpp',
 		'segment_filter.cpp',
 		'segment_heap.cpp',
