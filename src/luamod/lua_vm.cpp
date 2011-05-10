@@ -54,6 +54,8 @@ void register_modules(lua_State* L) {
 
 		class_<ymse::vec2f>("vec")
 			.def(constructor<float, float>())
+			.def("x", (float(ymse::vec2f::*)() const)&ymse::vec2f::x)
+			.def("y", (float(ymse::vec2f::*)() const)&ymse::vec2f::y)
 			.def("length", &ymse::vec2f::length)
 			.def(const_self + const_self)
 			.def(const_self * float())

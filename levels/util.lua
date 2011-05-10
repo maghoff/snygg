@@ -1,35 +1,7 @@
-function bent_line(A, B, corner_radius, pinch)
-	local AB, lr, e, f, ang, C, base_angle, pinch_radius
-
-	AB = B + -1 * A
-
-	lr = AB:length() / (2 * math.sin(pinch))
-	pinch_radius = lr - corner_radius
-
-	f = AB * (1 / AB:length())
-	e = vec(y(f), -x(f))
-	ang = math.cos(pinch) * e + math.sin(pinch) * f
-	C = A + lr * ang
-
-	base_angle = math.atan2(-y(e), -x(e))
-
-	if pinch_radius < 0 then
-		pinch_radius = -pinch_radius
-		base_angle = math.pi + base_angle
-	end
-
-	return arc(
-		C, pinch_radius,
-		base_angle + pinch, base_angle - pinch,
-		1
-	)
-end
-
 function util_heap()
-	local turtle, box, circle
 	local pi = math.pi
 
-	function turtle(heap, x, y, dx, dy)
+	local function turtle(heap, x, y, dx, dy)
 		forward = function(len)
 			local x2, y2 = x + dx*len, y + dy*len
 			heap:line(x, y, x2, y2)
@@ -60,7 +32,7 @@ function util_heap()
 		}
 	end
 
-	function box(heap, x1, y1, x2, y2, sr)
+	local function box(heap, x1, y1, x2, y2, sr)
 		local w, h
 
 		w = (x2-x1) - 2 * sr
@@ -77,7 +49,7 @@ function util_heap()
 		heap:arc(x2 - sr, y1 + sr, sr, pi * 1.5, pi * 2.0)
 	end
 
-	function circle(heap, x, y, r)
+	local function circle(heap, x, y, r)
 		heap:arc(x, y, r, 0, pi * 2.0)
 	end
 
