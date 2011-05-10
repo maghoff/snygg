@@ -14,7 +14,7 @@ function create_board()
 	-- Right inner box:
 	heap:box(  40, -45, 100, 45, 10)
 
-	return heap:to_segment()
+	return heap
 end
 
 i = 0

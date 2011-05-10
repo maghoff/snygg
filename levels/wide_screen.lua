@@ -5,5 +5,5 @@ require "util"
 function create_board()
 	local heap = util_heap()
 	heap:box(-120, -65, 120, 65, 10)
-	return heap:to_segment()
+	return heap
 end

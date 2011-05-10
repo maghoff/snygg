@@ -15,6 +15,7 @@
 #include "luamod/lua_vm.hpp"
 #include "board.hpp"
 #include "segment_sequence.hpp"
+#include "segment_heap.hpp"
 
 
 struct board::impl {
@@ -28,11 +29,13 @@ struct board::impl {
 board::board(const boost::filesystem::path& filename) :
 	d(new impl)
 {
+	boost::scoped_ptr<segment_heap> heap;
+
 	try  {
 		d->lvm.dofile(filename.string());
 
-		d->b.push_back(
-			luabind::call_function<segment*>(d->lvm.get_L(), "create_board") [
+		heap.reset(
+			luabind::call_function<segment_heap*>(d->lvm.get_L(), "create_board") [
 				luabind::adopt(luabind::result)
 			]
 		);
@@ -45,6 +48,7 @@ board::board(const boost::filesystem::path& filename) :
 		exit(-1);
 	}
 
+	d->b.push_back(heap->to_segment());
 	calculate_floor_poly();
 }
 

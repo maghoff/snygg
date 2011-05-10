@@ -13,6 +13,6 @@ function create_board()
 	heap:arc(0, 0, 50, 1 * pi, 2 * pi)
 	heap:arc(0, 0, 35, 0 * pi, 1 * pi)
 
-	return heap:to_segment()
+	return heap
 end
 

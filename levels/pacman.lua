@@ -126,7 +126,7 @@ function create_board()
 		end
 	end
 
-	return heap:to_segment()
+	return heap
 end
 
 function get_starting_position()

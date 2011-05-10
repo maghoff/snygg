@@ -88,5 +88,5 @@ function create_board()
 	heap:arc(D:x(), D:y(), corner_radius, 1/2 * pi - pinch, 2/2 * pi - pinch)
 	heap:bent_line(D, A, corner_radius, -pinch)
 
-	return heap:to_segment()
+	return heap
 end
