@@ -2,7 +2,7 @@
 
 require "util"
 
-function bent_line(A, B, corner_radius, pinch)
+function bent_line(heap, A, B, corner_radius, pinch)
 	local AB, lr, e, f, ang, C, base_angle, pinch_radius
 
 	AB = B + -1 * A
@@ -11,38 +11,11 @@ function bent_line(A, B, corner_radius, pinch)
 	pinch_radius = lr - corner_radius
 
 	f = AB * (1 / AB:length())
-	e = vec(y(f), -x(f))
+	e = vec(f:y(), -f:x())
 	ang = math.cos(pinch) * e + math.sin(pinch) * f
 	C = A + lr * ang
 
-	base_angle = math.atan2(-y(e), -x(e))
-
-	if pinch_radius < 0 then
-		pinch_radius = -pinch_radius
-		base_angle = math.pi + base_angle
-	end
-
-	return arc(
-		C, pinch_radius,
-		base_angle + pinch, base_angle - pinch,
-		1
-	)
-end
-
-function heap_bent_line(heap, A, B, corner_radius, pinch)
-	local AB, lr, e, f, ang, C, base_angle, pinch_radius
-
-	AB = B + -1 * A
-
-	lr = AB:length() / (2 * math.sin(pinch))
-	pinch_radius = lr - corner_radius
-
-	f = AB * (1 / AB:length())
-	e = vec(y(f), -x(f))
-	ang = math.cos(pinch) * e + math.sin(pinch) * f
-	C = A + lr * ang
-
-	base_angle = math.atan2(-y(e), -x(e))
+	base_angle = math.atan2(-e:y(), -e:x())
 
 	if pinch_radius < 0 then
 		pinch_radius = -pinch_radius
@@ -59,7 +32,7 @@ function create_board()
 	local heap = util_heap()
 	local pi = math.pi
 
-	heap.bent_line = heap_bent_line
+	heap.bent_line = bent_line
 
 	local corner_radius = 10
 
