@@ -15,10 +15,6 @@ void complex_polygon_triangulator_gpc::start_contour() {
 	assert(current_contour.empty());
 }
 
-void complex_polygon_triangulator_gpc::start_reverse_contour() {
-	start_contour();
-}
-
 void complex_polygon_triangulator_gpc::end_contour() {
 	gpc_polygon current_polygon = {0, 0, 0};
 	gpc_polygon next_polygon = {0, 0, 0};

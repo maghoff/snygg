@@ -17,7 +17,6 @@ public:
 	~complex_polygon_triangulator_gpc();
 
 	void start_contour();
-	void start_reverse_contour();
 	void end_contour();
 
 	void point(ymse::vec2f);

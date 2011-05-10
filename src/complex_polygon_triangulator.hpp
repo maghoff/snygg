@@ -10,7 +10,6 @@ public:
 	virtual ~complex_polygon_triangulator();
 
 	virtual void start_contour() = 0;
-	virtual void start_reverse_contour() = 0;
 	virtual void end_contour() = 0;
 
 	virtual void point(ymse::vec2f) = 0;
