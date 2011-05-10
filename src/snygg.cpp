@@ -1,8 +1,10 @@
 #include <SDL.h>
 #include <cmath>
+#include <sstream>
 #include <vector>
 #include <ymse/gl.h>
 #include <boost/bind.hpp>
+#include <boost/filesystem/operations.hpp>
 #include <boost/ptr_container/ptr_list.hpp>
 #include <boost/ptr_container/ptr_vector.hpp>
 #include <ymse/bindable_keyboard_handler.hpp>
@@ -25,6 +27,7 @@
 #include "scoped_bind_fbo.hpp"
 #include "snygg.hpp"
 #include "textured_skin.hpp"
+
 
 #include "config.hpp"
 #ifdef HAVE_IMLIB
@@ -205,8 +208,26 @@ void snygg::screenshot_with_skin(const std::string& filename, scalable_skin* sel
 }
 
 void snygg::screenshot_key() {
-	screenshot_with_skin("schematic.png", &d->skins[0]);
-	screenshot_with_skin("snakeskin.png", &d->skins[4]);
+	using namespace boost::filesystem;
+
+	int id = 0;
+	std::string schematic_filename;
+	std::string snakeskin_filename;
+
+	do {
+		++id;
+
+		std::ostringstream schs;
+		schs << "schematic-" << id << ".png";
+		schematic_filename = schs.str();
+
+		std::ostringstream snas;
+		snas << "snakeskin-" << id << ".png";
+		snakeskin_filename = snas.str();
+	} while (exists(schematic_filename) || exists(snakeskin_filename));
+
+	screenshot_with_skin(schematic_filename, &d->skins[0]);
+	screenshot_with_skin(snakeskin_filename, &d->skins[4]);
 }
 
 void snygg::reshape(int width, int height) {
