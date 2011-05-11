@@ -6,6 +6,7 @@
 
 #include <cstdlib>
 #include <fstream>
+#include <ymse/lean_windows.h>
 #include "config.hpp"
 #include "paths.hpp"
 
@@ -16,11 +17,23 @@ namespace {
 std::string g_argv_zero;
 
 #ifdef __linux__
-std::string get_from_proc() {
+path get_executed_file_from_proc() {
 	char buffer[FILENAME_MAX + 1];
 	int len = readlink("/proc/self/exe", buffer, FILENAME_MAX);
-	if (len > 0) return std::string(buffer, buffer+len);
-	return std::string();
+	if (len > 0) return path(buffer, buffer+len);
+	return path();
+}
+#endif
+
+#if defined(_WIN32)
+path get_executed_file_from_win32_api() {
+	const size_t sz = MAX_PATH + 1;
+    std::vector<wchar_t> exepath(sz);
+    DWORD actual_len = GetModuleFileNameW(NULL, exepath.data(), sz);
+    if (actual_len == 0) return path();
+
+    path p(exepath.data(), exepath.data() + actual_len);
+	return p;
 }
 #endif
 
@@ -63,16 +76,20 @@ void set_argv_zero(const char* argv_zero) {
 }
 
 path executed_file() {
-	std::string p;
+	path p;
 
 #ifdef __linux__
-	if (p.empty()) p = get_from_proc();
+	if (p.empty()) p = get_executed_file_from_proc();
 #endif
 
-	if (p.empty()) p = g_argv_zero;
-	if (p.empty()) p = "snygg"; // Fail. Give a stupid default
+#ifdef _WIN32
+	if (p.empty()) p = get_executed_file_from_win32_api();
+#endif
 
-	return path(p);
+	if (p.empty()) p = path(g_argv_zero);
+	if (p.empty()) p = path("snygg"); // Fail. Give a stupid default
+
+	return p;
 }
 
 path executable_path() {
@@ -111,7 +128,13 @@ path data() {
 #endif
 
 	if (dir.empty()) {
-		if (is_installed()) dir = guess_prefix() / "share/games/snygg";
+		if (is_installed()) {
+#ifdef _WIN32
+			dir = executable_path();
+#else
+			dir = guess_prefix() / "share/games/snygg";
+#endif
+		}
 		else dir = guess_project_dir();
 	}
 
@@ -133,11 +156,11 @@ path open_absolute_or_in_path(
 ) {
 	if (!requested_path.is_complete()) {
 		path try_path = search_path / requested_path;
-		in.open(try_path.file_string().c_str());
+		in.open(try_path.string().c_str());
 		if (in.is_open()) return try_path;
 	}
 
-	in.open(requested_path.file_string().c_str());
+	in.open(requested_path.string().c_str());
 	if (in.is_open()) return requested_path;
 
 	return path();
