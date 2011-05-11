@@ -1,8 +1,10 @@
 #include <iostream>
+#include <sstream>
 
 #include <SDL.h>
 #include <cmath>
 #include <boost/ptr_container/ptr_vector.hpp>
+#include <ymse/lean_windows.h>
 #include <lua.hpp>
 #include <luabind/luabind.hpp>
 #include <luabind/adopt_policy.hpp>
@@ -42,7 +44,14 @@ board::board(const boost::filesystem::path& filename) :
 	}
 	catch (const luabind::error& e) {
 		luabind::object error_msg(luabind::from_stack(e.state(), -1));
-		std::cerr << "Lua error: " << error_msg << std::endl << std::endl;
+		std::stringstream ss;
+		ss << "Lua error: " << error_msg;
+
+		std::cerr << ss.str() << "\n\n" << std::flush;
+
+#ifdef _WIN32
+		MessageBox(0, ss.str().c_str(), "Lua error", MB_OK | MB_ICONERROR);
+#endif
 
 		// This is a bit drastic, but the luabind exception mechanism is cramping my style:
 		exit(-1);

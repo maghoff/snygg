@@ -1,5 +1,7 @@
 #include <SDL_main.h>
+#include <ymse/lean_windows.h>
 #include <iostream>
+#include <sstream>
 #include <string>
 #include <typeinfo>
 #include <ymse/sdl_core.hpp>
@@ -23,13 +25,24 @@ try {
 	return core.run();
 }
 catch (const std::exception& e) {
-	std::cerr <<
+	std::ostringstream ss;
+	ss <<
 		"Fatal error: " << e.what() << "\n"
-		"Typeid: " << typeid(e).name() << std::endl;
+		"Typeid: " << typeid(e).name();
+	std::cerr << ss.str();
+
+#ifdef _WIN32
+		MessageBox(0, ss.str().c_str(), "Fatal error", MB_OK | MB_ICONERROR);
+#endif
+
 	return -1;
 }
 catch (...) {
 	std::cerr << "Unknown fatal error" << std::endl;
+
+#ifdef _WIN32
+		MessageBox(0, "Unknown fatal error", "Fatal error", MB_OK | MB_ICONERROR);
+#endif
+
 	return -1;
 }; //< ; is a workaround for MSVC
-
