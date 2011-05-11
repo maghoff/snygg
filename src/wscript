@@ -2,6 +2,12 @@
 # -*- coding: utf-8 -*-
 
 def build(bld):
+	import platform
+
+	# waf names static libraries differently on windows
+	lib_name_pattern = '%s'
+	if platform.system() == 'Windows': lib_name_pattern = 'lib%s'
+
 	sources = [
 		'arc.cpp',
 		'blood_pool.cpp',
@@ -68,6 +74,6 @@ def build(bld):
 		source=sources,
 		target='snygg',
 		use=['ymse', 'GL', 'glew', 'SDL', 'SDLmain', 'SDL_image', 'boost', 'lua', 'luabind', 'imlib'],
-		lib=['boost_filesystem', 'boost_system'],
+		lib=[lib_name_pattern % 'boost_filesystem', lib_name_pattern % 'boost_system'],
 		includes=[],
 	)
