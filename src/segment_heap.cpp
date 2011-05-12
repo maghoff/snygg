@@ -2,6 +2,7 @@
 #include <list>
 #include <boost/ptr_container/ptr_list.hpp>
 #include <boost/shared_ptr.hpp>
+#include <ymse/rect.hpp>
 #include <ymse/vec.hpp>
 #include "arc.hpp"
 #include "contour_segment.hpp"
@@ -202,6 +203,8 @@ std::auto_ptr<segment> segment_heap::get_a_connected_sequence() {
 }
 
 std::auto_ptr<segment> segment_heap::to_segment() {
+	bool has_closed_segments = false;
+
 	std::auto_ptr<segment_sequence> s(new segment_sequence);
 
 	while (!d->segs.empty()) {
@@ -211,9 +214,36 @@ std::auto_ptr<segment> segment_heap::to_segment() {
 
 		if (is_closed) {
 			s->push_back(std::auto_ptr<segment>(new contour_segment(connected_sequence.release())));
+			has_closed_segments = true;
 		} else {
 			s->push_back(std::auto_ptr<segment>(new open_segment(connected_sequence.release())));
 		}
+	}
+
+	// The game will hang if there are no closed segments
+	if (!has_closed_segments) {
+		using ymse::vec2f;
+		const double tau = 2. * M_PI;
+		const double margin = 20.;
+		const double radius = 10.;
+
+		ymse::rectf b = s->bounding_box();
+		b.x1 -= margin;
+		b.y1 -= margin;
+		b.x2 += margin;
+		b.y2 += margin;
+
+		std::auto_ptr<segment_sequence> box(new segment_sequence);
+		box->push_back(new ::line(vec2f(b.x2, b.y1 + radius), vec2f(0.f, 1.f), b.y2 - b.y1 - 2.*radius));
+		box->push_back(new ::arc(vec2f(b.x2 - radius, b.y2 - radius), radius, tau * 0./4., tau * 1./4., 1.));
+		box->push_back(new ::line(vec2f(b.x2 - radius, b.y2), vec2f(-1.f, 0.f), b.x2 - b.x1 - 2.*radius));
+		box->push_back(new ::arc(vec2f(b.x1 + radius, b.y2 - radius), radius, tau * 1./4., tau * 2./4., 1.));
+		box->push_back(new ::line(vec2f(b.x1, b.y2 - radius), vec2f(0.f, -1.f), b.y2 - b.y1 - 2.*radius));
+		box->push_back(new ::arc(vec2f(b.x1 + radius, b.y1 + radius), radius, tau * 2./4., tau * 3./4., 1.));
+		box->push_back(new ::line(vec2f(b.x1 + radius, b.y1), vec2f(1.f, 0.f), b.x2 - b.x1 - 2.*radius));
+		box->push_back(new ::arc(vec2f(b.x2 - radius, b.y1 + radius), radius, tau * 3./4., tau * 4./4., 1.));
+
+		s->push_back(std::auto_ptr<segment>(new contour_segment(box.release())));
 	}
 
 	return std::auto_ptr<segment>(s.release());
