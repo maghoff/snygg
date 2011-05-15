@@ -12,16 +12,8 @@
 
 const int across = 5, along = 6, circle_coord = 7, b_attribute = 8;
 
-enum shader_state_t {
-	no_shader,
-	snakeskin_shader,
-	wall_shader,
-	food_shader,
-	floor_shader
-};
-
 struct textured_skin::impl {
-	shader_state_t shader_state;
+	const shader_configuration* shader_state;
 
 	boost::scoped_ptr<shader_program> texture_prog, color_prog, floor_prog;
 	boost::scoped_ptr<shader_configuration> snake_config, wall_config, food_config, floor_config;
@@ -68,7 +60,7 @@ textured_skin::textured_skin(const std::string& path) :
 		d->floor_prog.reset(new shader_program(sb));
 	}
 
-	d->shader_state = no_shader;
+	d->shader_state = 0;
 
 	d->snake_config.reset(new shader_configuration(d->texture_prog.get()));
 	d->snake_config->set_uniform("ambient", 0.4f, 0.4f, 0.4f, 1.0f);
@@ -104,12 +96,13 @@ void textured_skin::load_opengl_resources(int, int) {
 	d->floor_config->recreate_opengl_resources();
 }
 
-void textured_skin::to_no_shader() {
-	if (d->shader_state == no_shader) return;
+void textured_skin::to_shader(shader_configuration* c) {
+	if (d->shader_state == c) return;
 
-	glUseProgram(0);
+	if (c) c->use();
+	else glUseProgram(0);
 
-	d->shader_state = no_shader;
+	d->shader_state = c;
 }
 
 void textured_skin::to_texture_shader() {
@@ -117,37 +110,11 @@ void textured_skin::to_texture_shader() {
 	else to_snakeskin_shader();
 }
 
-void textured_skin::to_snakeskin_shader() {
-	if (d->shader_state == snakeskin_shader) return;
-
-	d->snake_config->use();
-
-	d->shader_state = snakeskin_shader;
-}
-
-void textured_skin::to_wall_shader() {
-	if (d->shader_state == wall_shader) return;
-
-	d->wall_config->use();
-
-	d->shader_state = wall_shader;
-}
-
-void textured_skin::to_food_shader() {
-	if (d->shader_state == food_shader) return;
-
-	d->food_config->use();
-
-	d->shader_state = food_shader;
-}
-
-void textured_skin::to_floor_shader() {
-	if (d->shader_state == floor_shader) return;
-
-	d->floor_config->use();
-
-	d->shader_state = floor_shader;
-}
+void textured_skin::to_no_shader() { to_shader(0); }
+void textured_skin::to_snakeskin_shader() { to_shader(d->snake_config.get()); }
+void textured_skin::to_wall_shader() { to_shader(d->wall_config.get()); }
+void textured_skin::to_food_shader() { to_shader(d->food_config.get()); }
+void textured_skin::to_floor_shader() { to_shader(d->floor_config.get()); }
 
 void textured_skin::circle_core(ymse::vec2f p, float r) {
 	float step_size = get_step_size(r);
@@ -296,8 +263,7 @@ void textured_skin::cap(ymse::vec2f p, float snake_direction_in, float cap_direc
 }
 
 void textured_skin::floor(const complex_polygon& floor_poly) {
-	glUseProgram(0);
-	d->shader_state = no_shader;
+	d->shader_state = 0;
 	to_floor_shader();
 	floor_poly.draw();
 
