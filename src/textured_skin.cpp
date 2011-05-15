@@ -13,11 +13,10 @@
 const int across = 5, along = 6, circle_coord = 7, b_attribute = 8;
 
 struct textured_skin::impl {
-	const shader_configuration* shader_state;
-
 	boost::scoped_ptr<shader_program> texture_prog, color_prog, floor_prog;
 	boost::scoped_ptr<shader_configuration> snake_config, wall_config, food_config, floor_config;
 
+	const shader_configuration* shader_state;
 	skin::state_t stored_state;
 };
 
@@ -60,8 +59,6 @@ textured_skin::textured_skin(const std::string& path) :
 		d->floor_prog.reset(new shader_program(sb));
 	}
 
-	d->shader_state = 0;
-
 	d->snake_config.reset(new shader_configuration(d->texture_prog.get()));
 	d->snake_config->set_uniform("ambient", 0.4f, 0.4f, 0.4f, 1.0f);
 	d->snake_config->add_texture("diffuse_map", path + "/diffuse.jpg");
@@ -79,6 +76,7 @@ textured_skin::textured_skin(const std::string& path) :
 	d->floor_config->set_uniform("ambient", 0.4f, 0.4f, 0.4f, 1.0f);
 	d->floor_config->set_uniform("diffuse", 0.5f, 0.5f, 0.5f, 1.0f);
 
+	d->shader_state = 0;
 	d->stored_state = other_state;
 }
 
