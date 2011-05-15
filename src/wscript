@@ -49,6 +49,7 @@ def build(bld):
 		'segment_heap.cpp',
 		'segment_sequence.cpp',
 		'shader_builder.cpp',
+		'shader_configuration.cpp',
 		'shader_program.cpp',
 		'skin.cpp',
 		'snake.cpp',

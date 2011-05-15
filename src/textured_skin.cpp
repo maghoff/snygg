@@ -13,6 +13,7 @@
 #include "textured_skin.hpp"
 #include "shader_program.hpp"
 #include "shader_builder.hpp"
+#include "shader_configuration.hpp"
 
 const int across = 5, along = 6, circle_coord = 7, b_attribute = 8;
 
@@ -30,6 +31,7 @@ struct textured_skin::impl {
 	ymse::sdl::surface diffuse_surface, normal_surface;
 	
 	boost::scoped_ptr<shader_program> texture_prog, color_prog, floor_prog;
+	boost::scoped_ptr<shader_configuration> snake_config, wall_config, food_config, floor_config;
 	ymse::gl::texture diffuse, normal;
 
 	skin::state_t stored_state;
@@ -79,6 +81,23 @@ textured_skin::textured_skin(const std::string& path) :
 	d->diffuse_surface = ymse::sdl::img_load(path + "/diffuse.jpg");
 	d->normal_surface = ymse::sdl::img_load(path + "/normal.jpg");
 
+	d->snake_config.reset(new shader_configuration(d->texture_prog.get()));
+	d->snake_config->set_uniform("ambient", 0.4f, 0.4f, 0.4f, 1.0f);
+	d->snake_config->set_uniform("diffuse_map", 0);
+	d->snake_config->set_uniform("normal_map", 1);
+
+	d->wall_config.reset(new shader_configuration(d->color_prog.get()));
+	d->wall_config->set_uniform("ambient", 0.4f, 0.4f, 0.4f, 1.0f);
+	d->wall_config->set_uniform("color", 0.1f, 0.1f, 0.1f, 1.0f);
+
+	d->food_config.reset(new shader_configuration(d->color_prog.get()));
+	d->food_config->set_uniform("ambient", 0.4f, 0.4f, 0.4f, 1.0f);
+	d->food_config->set_uniform("color", 0.6f, 0.4f, 0.2f, 1.0f);
+
+	d->floor_config.reset(new shader_configuration(d->floor_prog.get()));
+	d->floor_config->set_uniform("ambient", 0.4f, 0.4f, 0.4f, 1.0f);
+	d->floor_config->set_uniform("diffuse", 0.5f, 0.5f, 0.5f, 1.0f);
+
 	d->stored_state = other_state;
 }
 
@@ -89,6 +108,11 @@ void textured_skin::load_opengl_resources(int, int) {
 	d->texture_prog->recreate_opengl_resources();
 	d->color_prog->recreate_opengl_resources();
 	d->floor_prog->recreate_opengl_resources();
+
+	d->snake_config->recreate_opengl_resources();
+	d->wall_config->recreate_opengl_resources();
+	d->food_config->recreate_opengl_resources();
+	d->floor_config->recreate_opengl_resources();
 
 	d->diffuse_surface.copy_to(d->diffuse);
 	d->normal_surface.copy_to(d->normal);
@@ -119,15 +143,12 @@ void textured_skin::to_texture_shader() {
 void textured_skin::to_snakeskin_shader() {
 	if (d->shader_state == snakeskin_shader) return;
 
-	glUseProgram(d->texture_prog->get_program_id());
+	d->snake_config->use();
 
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, d->diffuse.get_id());
 	glActiveTexture(GL_TEXTURE1);
 	glBindTexture(GL_TEXTURE_2D, d->normal.get_id());
-	d->texture_prog->set_uniform("diffuse_map", 0);
-	d->texture_prog->set_uniform("normal_map", 1);
-	d->texture_prog->set_uniform("ambient", 0.4f, 0.4f, 0.4f, 1.0f);
 
 	d->shader_state = snakeskin_shader;
 }
@@ -135,10 +156,7 @@ void textured_skin::to_snakeskin_shader() {
 void textured_skin::to_wall_shader() {
 	if (d->shader_state == wall_shader) return;
 
-	glUseProgram(d->color_prog->get_program_id());
-
-	d->color_prog->set_uniform("ambient", 0.4f, 0.4f, 0.4f, 1.0f);
-	d->color_prog->set_uniform("color", 0.1f, 0.1f, 0.1f, 1.0f);
+	d->wall_config->use();
 
 	d->shader_state = wall_shader;
 }
@@ -146,10 +164,7 @@ void textured_skin::to_wall_shader() {
 void textured_skin::to_food_shader() {
 	if (d->shader_state == food_shader) return;
 
-	glUseProgram(d->color_prog->get_program_id());
-
-	d->color_prog->set_uniform("ambient", 0.4f, 0.4f, 0.4f, 1.0f);
-	d->color_prog->set_uniform("color", 0.6f, 0.4f, 0.2f, 1.0f);
+	d->food_config->use();
 
 	d->shader_state = food_shader;
 }
@@ -157,10 +172,7 @@ void textured_skin::to_food_shader() {
 void textured_skin::to_floor_shader() {
 	if (d->shader_state == floor_shader) return;
 
-	glUseProgram(d->floor_prog->get_program_id());
-
-	d->floor_prog->set_uniform("ambient", 0.4f, 0.4f, 0.4f, 1.0f);
-	d->floor_prog->set_uniform("diffuse", 0.5f, 0.5f, 0.5f, 1.0f);
+	d->floor_config->use();
 
 	d->shader_state = floor_shader;
 }
