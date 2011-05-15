@@ -94,7 +94,7 @@ void shader_configuration::add_texture(const std::string& name, const std::strin
 	d->textures.push_back(new ymse::gl::texture);
 }
 
-void shader_configuration::use() {
+void shader_configuration::use() const {
 	glUseProgram(d->program->get_program_id());
 
 	const size_t sz = d->names.size();

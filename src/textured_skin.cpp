@@ -94,7 +94,7 @@ void textured_skin::load_opengl_resources(int, int) {
 	d->floor_config->recreate_opengl_resources();
 }
 
-void textured_skin::to_shader(shader_configuration* c) {
+void textured_skin::to_shader(const shader_configuration* c) {
 	if (d->shader_state == c) return;
 
 	if (c) c->use();

@@ -22,7 +22,7 @@ public:
 
 	void add_texture(const std::string& sampler_name, const std::string& filename);
 
-	void use();
+	void use() const;
 };
 
 #endif // SHADER_CONFIGURATION_HPP
