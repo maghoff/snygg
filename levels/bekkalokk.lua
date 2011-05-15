@@ -10,7 +10,7 @@ function create_board()
 	local line_len = 10
 	local spacing = 50
 
-	local plain_circle = 0
+	local plain_circle = 1
 	if plain_circle == 1 then
 		heap:circle(0, 0, r)
 	else
