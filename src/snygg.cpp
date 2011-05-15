@@ -174,7 +174,7 @@ void snygg::take_screenshot(const std::string& filename, unsigned tex_id, unsign
 }
 
 void snygg::screenshot_with_skin(const std::string& filename, scalable_skin* selected_skin) {
-	const unsigned screenshot_w = 4096, screenshot_h = 2560;
+	const unsigned screenshot_w = 1920, screenshot_h = 1080;
 
 	const SDL_VideoInfo* vinf = SDL_GetVideoInfo();
 	const unsigned w = vinf->current_w, h = vinf->current_h;
