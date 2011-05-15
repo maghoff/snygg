@@ -11,6 +11,8 @@
 #include <ymse/sdl/surface.hpp>
 #include "complex_polygon.hpp"
 #include "textured_skin.hpp"
+#include "shader_program.hpp"
+#include "shader_builder.hpp"
 
 const int across = 5, along = 6, circle_coord = 7, b_attribute = 8;
 
@@ -29,7 +31,8 @@ struct textured_skin::impl {
 	
 	ymse::sdl::surface diffuse_surface, normal_surface;
 	
-	boost::scoped_ptr<ymse::gl::program> texture_prog, color_prog, floor_prog;
+	boost::scoped_ptr<shader_program> texture_prog;
+	boost::scoped_ptr<ymse::gl::program> color_prog, floor_prog;
 	ymse::gl::texture diffuse, normal;
 
 	skin::state_t stored_state;
@@ -41,6 +44,19 @@ textured_skin::textured_skin(const std::string& path) :
 	assert(glGetError() == GL_NO_ERROR);
 
 	d->path = path; //< This is the wrong thing to store.
+
+
+	shader_builder sb;
+	sb.add_shader_from_file(GL_VERTEX_SHADER, path + "/vertex.glsl");
+	sb.add_shader_from_file(GL_FRAGMENT_SHADER, path + "/fragment.glsl");
+	sb.add_shader_from_file(GL_FRAGMENT_SHADER, path + "/light.glsl");
+	sb.add_shader_from_file(GL_FRAGMENT_SHADER, path + "/texture_mapping.glsl");
+	sb.bind_attrib_location(circle_coord, "circle_coord_in");
+	sb.bind_attrib_location(across, "across_in");
+	sb.bind_attrib_location(along, "along_in");
+	sb.bind_attrib_location(b_attribute, "b_in");
+	d->texture_prog.reset(new shader_program(sb));
+
 	
 	d->shader_state = no_shader;
 
@@ -55,36 +71,14 @@ textured_skin::~textured_skin() {
 
 void textured_skin::load_opengl_resources(int, int) {
 	glGetError();
-	d->texture_prog.reset();
 	d->color_prog.reset();
 	d->floor_prog.reset();
 	glGetError();
-	d->texture_prog.reset(new ymse::gl::program);
 	d->color_prog.reset(new ymse::gl::program);
 	d->floor_prog.reset(new ymse::gl::program);
 	glGetError();
 
-	{
-		ymse::gl::shader vertex(GL_VERTEX_SHADER);
-		ymse::gl::shader fragment(GL_FRAGMENT_SHADER), light(GL_FRAGMENT_SHADER), texture_mapping(GL_FRAGMENT_SHADER);
-
-		vertex.source_file(d->path + "/vertex.glsl");
-		fragment.source_file(d->path + "/fragment.glsl");
-		light.source_file(d->path + "/light.glsl");
-		texture_mapping.source_file(d->path + "/texture_mapping.glsl");
-
-		d->texture_prog->attach(vertex);
-		d->texture_prog->attach(fragment);
-		d->texture_prog->attach(light);
-		d->texture_prog->attach(texture_mapping);
-
-		d->texture_prog->bind_attrib_location(circle_coord, "circle_coord_in");
-		d->texture_prog->bind_attrib_location(across, "across_in");
-		d->texture_prog->bind_attrib_location(along, "along_in");
-		d->texture_prog->bind_attrib_location(b_attribute, "b_in");
-
-		d->texture_prog->link();
-	}
+	d->texture_prog->recreate_opengl_resources();
 
 	{
 		ymse::gl::shader vertex(GL_VERTEX_SHADER);
@@ -154,7 +148,7 @@ void textured_skin::to_texture_shader() {
 void textured_skin::to_snakeskin_shader() {
 	if (d->shader_state == snakeskin_shader) return;
 
-	glUseProgram(d->texture_prog->get_id());
+	glUseProgram(d->texture_prog->get_program_id());
 
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, d->diffuse.get_id());
