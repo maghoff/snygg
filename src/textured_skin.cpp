@@ -27,12 +27,9 @@ enum shader_state_t {
 struct textured_skin::impl {
 	shader_state_t shader_state;
 
-	std::string path;
-	
 	ymse::sdl::surface diffuse_surface, normal_surface;
 	
-	boost::scoped_ptr<shader_program> texture_prog;
-	boost::scoped_ptr<ymse::gl::program> color_prog, floor_prog;
+	boost::scoped_ptr<shader_program> texture_prog, color_prog, floor_prog;
 	ymse::gl::texture diffuse, normal;
 
 	skin::state_t stored_state;
@@ -43,21 +40,40 @@ textured_skin::textured_skin(const std::string& path) :
 {
 	assert(glGetError() == GL_NO_ERROR);
 
-	d->path = path; //< This is the wrong thing to store.
+	{
+		shader_builder sb;
+		sb.add_shader_from_file(GL_VERTEX_SHADER, path + "/vertex.glsl");
+		sb.add_shader_from_file(GL_FRAGMENT_SHADER, path + "/fragment.glsl");
+		sb.add_shader_from_file(GL_FRAGMENT_SHADER, path + "/light.glsl");
+		sb.add_shader_from_file(GL_FRAGMENT_SHADER, path + "/texture_mapping.glsl");
+		sb.bind_attrib_location(circle_coord, "circle_coord_in");
+		sb.bind_attrib_location(across, "across_in");
+		sb.bind_attrib_location(along, "along_in");
+		sb.bind_attrib_location(b_attribute, "b_in");
+		d->texture_prog.reset(new shader_program(sb));
+	}
 
+	{
+		shader_builder sb;
+		sb.add_shader_from_file(GL_VERTEX_SHADER, path + "/vertex.glsl");
+		sb.add_shader_from_file(GL_FRAGMENT_SHADER, path + "/fragment.glsl");
+		sb.add_shader_from_file(GL_FRAGMENT_SHADER, path + "/light.glsl");
+		sb.add_shader_from_file(GL_FRAGMENT_SHADER, path + "/color_mapping.glsl");
+		sb.bind_attrib_location(circle_coord, "circle_coord_in");
+		sb.bind_attrib_location(across, "across_in");
+		sb.bind_attrib_location(along, "along_in");
+		sb.bind_attrib_location(b_attribute, "b_in");
+		d->color_prog.reset(new shader_program(sb));
+	}
 
-	shader_builder sb;
-	sb.add_shader_from_file(GL_VERTEX_SHADER, path + "/vertex.glsl");
-	sb.add_shader_from_file(GL_FRAGMENT_SHADER, path + "/fragment.glsl");
-	sb.add_shader_from_file(GL_FRAGMENT_SHADER, path + "/light.glsl");
-	sb.add_shader_from_file(GL_FRAGMENT_SHADER, path + "/texture_mapping.glsl");
-	sb.bind_attrib_location(circle_coord, "circle_coord_in");
-	sb.bind_attrib_location(across, "across_in");
-	sb.bind_attrib_location(along, "along_in");
-	sb.bind_attrib_location(b_attribute, "b_in");
-	d->texture_prog.reset(new shader_program(sb));
+	{
+		shader_builder sb;
+		sb.add_shader_from_file(GL_VERTEX_SHADER, path + "/mb_vertex.glsl");
+		sb.add_shader_from_file(GL_FRAGMENT_SHADER, path + "/flat_fragment.glsl");
+		sb.add_shader_from_file(GL_FRAGMENT_SHADER, path + "/light.glsl");
+		d->floor_prog.reset(new shader_program(sb));
+	}
 
-	
 	d->shader_state = no_shader;
 
 	d->diffuse_surface = ymse::sdl::img_load(path + "/diffuse.jpg");
@@ -70,55 +86,10 @@ textured_skin::~textured_skin() {
 }
 
 void textured_skin::load_opengl_resources(int, int) {
-	glGetError();
-	d->color_prog.reset();
-	d->floor_prog.reset();
-	glGetError();
-	d->color_prog.reset(new ymse::gl::program);
-	d->floor_prog.reset(new ymse::gl::program);
-	glGetError();
-
 	d->texture_prog->recreate_opengl_resources();
+	d->color_prog->recreate_opengl_resources();
+	d->floor_prog->recreate_opengl_resources();
 
-	{
-		ymse::gl::shader vertex(GL_VERTEX_SHADER);
-		ymse::gl::shader fragment(GL_FRAGMENT_SHADER), light(GL_FRAGMENT_SHADER), mapping(GL_FRAGMENT_SHADER);
-
-		vertex.source_file(d->path + "/vertex.glsl");
-		fragment.source_file(d->path + "/fragment.glsl");
-		light.source_file(d->path + "/light.glsl");
-		mapping.source_file(d->path + "/color_mapping.glsl");
-
-		d->color_prog->attach(vertex);
-		d->color_prog->attach(fragment);
-		d->color_prog->attach(light);
-		d->color_prog->attach(mapping);
-
-		d->color_prog->bind_attrib_location(circle_coord, "circle_coord_in");
-		d->color_prog->bind_attrib_location(across, "across_in");
-		d->color_prog->bind_attrib_location(along, "along_in");
-		d->color_prog->bind_attrib_location(b_attribute, "b_in");
-
-		d->color_prog->link();
-	}
-
-	{
-		ymse::gl::shader vertex(GL_VERTEX_SHADER);
-		ymse::gl::shader fragment(GL_FRAGMENT_SHADER), light(GL_FRAGMENT_SHADER);
-
-		vertex.source_file(d->path + "/mb_vertex.glsl");
-		fragment.source_file(d->path + "/flat_fragment.glsl");
-		light.source_file(d->path + "/light.glsl");
-
-		d->floor_prog->attach(vertex);
-		d->floor_prog->attach(fragment);
-		d->floor_prog->attach(light);
-
-		d->floor_prog->link();
-	}
-
-	// shaders go out of scope, but are kept alive by OpenGL because of d->prog
-	
 	d->diffuse_surface.copy_to(d->diffuse);
 	d->normal_surface.copy_to(d->normal);
 	
@@ -164,7 +135,7 @@ void textured_skin::to_snakeskin_shader() {
 void textured_skin::to_wall_shader() {
 	if (d->shader_state == wall_shader) return;
 
-	glUseProgram(d->color_prog->get_id());
+	glUseProgram(d->color_prog->get_program_id());
 
 	d->color_prog->set_uniform("ambient", 0.4f, 0.4f, 0.4f, 1.0f);
 	d->color_prog->set_uniform("color", 0.1f, 0.1f, 0.1f, 1.0f);
@@ -175,7 +146,7 @@ void textured_skin::to_wall_shader() {
 void textured_skin::to_food_shader() {
 	if (d->shader_state == food_shader) return;
 
-	glUseProgram(d->color_prog->get_id());
+	glUseProgram(d->color_prog->get_program_id());
 
 	d->color_prog->set_uniform("ambient", 0.4f, 0.4f, 0.4f, 1.0f);
 	d->color_prog->set_uniform("color", 0.6f, 0.4f, 0.2f, 1.0f);
@@ -186,7 +157,7 @@ void textured_skin::to_food_shader() {
 void textured_skin::to_floor_shader() {
 	if (d->shader_state == floor_shader) return;
 
-	glUseProgram(d->floor_prog->get_id());
+	glUseProgram(d->floor_prog->get_program_id());
 
 	d->floor_prog->set_uniform("ambient", 0.4f, 0.4f, 0.4f, 1.0f);
 	d->floor_prog->set_uniform("diffuse", 0.5f, 0.5f, 0.5f, 1.0f);

@@ -11,18 +11,18 @@
 #include "gl_fbo.hpp"
 #include "metaballs.hpp"
 #include "scoped_bind_fbo.hpp"
+#include "shader_program.hpp"
+#include "shader_builder.hpp"
 
 #include "ball_insert_iterator.ipp"
 
 struct metaballs::impl {
 	scalable_skin* target;
 
-	std::string path; //< This is sooo the wrong thing to store;
-
-	boost::scoped_ptr<ymse::gl::program> metaballs;
+	boost::scoped_ptr<shader_program> metaballs;
 	ymse::gl::texture metaballs_coordinates;
 
-	boost::scoped_ptr<ymse::gl::program> mapping;
+	boost::scoped_ptr<shader_program> mapping;
 
 	gl_fbo fbo;
 
@@ -43,37 +43,35 @@ struct metaballs::impl {
 	} balls;
 };
 
+metaballs::metaballs(scalable_skin* s, const std::string& path) :
+	d(new impl)
+{
+	d->target = s;
+	d->balls.next_tex_index = 0;
+	d->balls.next_gen_index = 0;
+
+	{
+		shader_builder sb;
+		sb.add_shader_from_file(GL_VERTEX_SHADER, path + "/mb_vertex.glsl");
+		sb.add_shader_from_file(GL_FRAGMENT_SHADER, path + "/mb_function.glsl");
+		d->metaballs.reset(new shader_program(sb));
+	}
+
+	{
+		shader_builder sb;
+		sb.add_shader_from_file(GL_VERTEX_SHADER, path + "/mb_vertex.glsl");
+		sb.add_shader_from_file(GL_FRAGMENT_SHADER, path + "/mb_mapping.glsl");
+		sb.add_shader_from_file(GL_FRAGMENT_SHADER, path + "/light.glsl");
+		d->mapping.reset(new shader_program(sb));
+	}
+}
+
+metaballs::~metaballs() {
+}
+
 void metaballs::load_opengl_resources(int width, int height) {
-	glGetError();
-	d->metaballs.reset();
-	d->mapping.reset();
-	glGetError();
-	d->metaballs.reset(new ymse::gl::program);
-	d->mapping.reset(new ymse::gl::program);
-
-	{
-		ymse::gl::shader mb_vertex(GL_VERTEX_SHADER), mb_fragment(GL_FRAGMENT_SHADER);
-
-		mb_vertex.source_file(d->path + "/mb_vertex.glsl");
-		mb_fragment.source_file(d->path + "/mb_function.glsl");
-
-		d->metaballs->attach(mb_vertex);
-		d->metaballs->attach(mb_fragment);
-		d->metaballs->link();
-	}
-
-	{
-		ymse::gl::shader mb_vertex(GL_VERTEX_SHADER), mb_mapping(GL_FRAGMENT_SHADER), light(GL_FRAGMENT_SHADER);
-
-		mb_vertex.source_file(d->path + "/mb_vertex.glsl");
-		mb_mapping.source_file(d->path + "/mb_mapping.glsl");
-		light.source_file(d->path + "/light.glsl");
-
-		d->mapping->attach(mb_vertex);
-		d->mapping->attach(mb_mapping);
-		d->mapping->attach(light);
-		d->mapping->link();
-	}
+	d->metaballs->recreate_opengl_resources();
+	d->mapping->recreate_opengl_resources();
 
 	const size_t sz = width*height*4; // 4 == sizeof(GL_R32F);
 	std::vector<char> buf(sz, 0);
@@ -92,18 +90,6 @@ void metaballs::load_opengl_resources(int width, int height) {
 	//d->target->load_opengl_resources(width, height);
 }
 
-metaballs::metaballs(scalable_skin* s, const std::string& path) :
-	d(new impl)
-{
-	d->target = s;
-	d->path = path;
-	d->balls.next_tex_index = 0;
-	d->balls.next_gen_index = 0;
-}
-
-metaballs::~metaballs() {
-}
-
 void metaballs::blood(ymse::vec2f p, float r) {
 	d->balls.next_gen().insert(ymse::vec3f(p[0], p[1], r));
 }
@@ -115,7 +101,7 @@ void metaballs::update_metaballs(const complex_polygon& floor_poly, const std::v
 
 	scoped_bind_fbo binder(d->fbo);
 
-	glUseProgram(d->metaballs->get_id());
+	glUseProgram(d->metaballs->get_program_id());
 
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_1D, d->metaballs_coordinates.get_id());
@@ -141,7 +127,7 @@ void metaballs::update_metaballs(const complex_polygon& floor_poly, const std::v
 }
 
 void metaballs::draw_metaballs(const complex_polygon& floor_poly) {
-	glUseProgram(d->mapping->get_id());
+	glUseProgram(d->mapping->get_program_id());
 
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, d->balls.prev_tex().get_id());
