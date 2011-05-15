@@ -123,6 +123,8 @@ void snygg::attach_to_core(ymse::sdl_core& core) {
 
 	d->kbd->bind_pressed(ymse::KEY_Q, boost::bind(&ymse::sdl_core::stop, &core, 0));
 	d->kbd->bind_pressed(ymse::KEY_F, boost::bind(&ymse::sdl_core::toggle_fullscreen, &core));
+	d->kbd->bind_pressed(ymse::KEY_H, boost::bind(&ymse::sdl_core::set_video_mode, &core, 1920, 1080, false));
+	d->kbd->bind_pressed(ymse::KEY_N, boost::bind(&ymse::sdl_core::set_video_mode, &core, 1280, 720, false));
 }
 
 static void save_screenshot(std::string filename, std::auto_ptr<std::vector<unsigned char> > pixels, unsigned w, unsigned h) {
