@@ -4,11 +4,6 @@
 #include <boost/scoped_ptr.hpp>
 #include <ymse/rect.hpp>
 #include <ymse/vec.hpp>
-#include <ymse/gl/program.hpp>
-#include <ymse/gl/shader.hpp>
-#include <ymse/gl/texture.hpp>
-#include <ymse/sdl/img_load.hpp>
-#include <ymse/sdl/surface.hpp>
 #include "complex_polygon.hpp"
 #include "textured_skin.hpp"
 #include "shader_program.hpp"
@@ -28,11 +23,8 @@ enum shader_state_t {
 struct textured_skin::impl {
 	shader_state_t shader_state;
 
-	ymse::sdl::surface diffuse_surface, normal_surface;
-	
 	boost::scoped_ptr<shader_program> texture_prog, color_prog, floor_prog;
 	boost::scoped_ptr<shader_configuration> snake_config, wall_config, food_config, floor_config;
-	ymse::gl::texture diffuse, normal;
 
 	skin::state_t stored_state;
 };
@@ -78,13 +70,10 @@ textured_skin::textured_skin(const std::string& path) :
 
 	d->shader_state = no_shader;
 
-	d->diffuse_surface = ymse::sdl::img_load(path + "/diffuse.jpg");
-	d->normal_surface = ymse::sdl::img_load(path + "/normal.jpg");
-
 	d->snake_config.reset(new shader_configuration(d->texture_prog.get()));
 	d->snake_config->set_uniform("ambient", 0.4f, 0.4f, 0.4f, 1.0f);
-	d->snake_config->set_uniform("diffuse_map", 0);
-	d->snake_config->set_uniform("normal_map", 1);
+	d->snake_config->add_texture("diffuse_map", path + "/diffuse.jpg");
+	d->snake_config->add_texture("normal_map", path + "/normal.jpg");
 
 	d->wall_config.reset(new shader_configuration(d->color_prog.get()));
 	d->wall_config->set_uniform("ambient", 0.4f, 0.4f, 0.4f, 1.0f);
@@ -113,18 +102,6 @@ void textured_skin::load_opengl_resources(int, int) {
 	d->wall_config->recreate_opengl_resources();
 	d->food_config->recreate_opengl_resources();
 	d->floor_config->recreate_opengl_resources();
-
-	d->diffuse_surface.copy_to(d->diffuse);
-	d->normal_surface.copy_to(d->normal);
-	
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, d->diffuse.get_id());
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-	glActiveTexture(GL_TEXTURE1);
-	glBindTexture(GL_TEXTURE_2D, d->normal.get_id());
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 }
 
 void textured_skin::to_no_shader() {
@@ -144,11 +121,6 @@ void textured_skin::to_snakeskin_shader() {
 	if (d->shader_state == snakeskin_shader) return;
 
 	d->snake_config->use();
-
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, d->diffuse.get_id());
-	glActiveTexture(GL_TEXTURE1);
-	glBindTexture(GL_TEXTURE_2D, d->normal.get_id());
 
 	d->shader_state = snakeskin_shader;
 }

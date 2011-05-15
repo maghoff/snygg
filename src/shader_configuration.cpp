@@ -1,10 +1,14 @@
+#include <boost/ptr_container/ptr_vector.hpp>
 #include <ymse/gl.h>
+#include <ymse/gl/texture.hpp>
+#include <ymse/sdl/img_load.hpp>
+#include <ymse/sdl/surface.hpp>
 #include "shader_configuration.hpp"
 #include "shader_program.hpp"
 
+
 struct uniform_setter {
 	// All the subclasses have trivial destructors
-	//virtual ~uniform_setter();
 
 	virtual void set_to(GLuint index) const = 0;
 };
@@ -47,28 +51,62 @@ void uniform_setter_4f::set_to(GLuint index) const {
 }
 
 
-shader_configuration::shader_configuration(const shader_program* program_) : program(program_) { }
+struct shader_configuration::impl {
+	const shader_program* program;
+
+	std::vector<std::string> names;
+	boost::ptr_vector<uniform_setter> setters;
+
+	std::vector<ymse::sdl::surface> surfaces;
+	boost::ptr_vector<ymse::gl::texture> textures;
+};
+
+
+shader_configuration::shader_configuration(const shader_program* program) :
+	d(new impl)
+{
+	d->program = program;
+}
+
 shader_configuration::~shader_configuration() { }
 
 void shader_configuration::recreate_opengl_resources() {
+	for (unsigned i = 0; i < d->surfaces.size(); ++i) {
+		d->surfaces[i].copy_to(d->textures[i]);
+	}
 }
 
 void shader_configuration::set_uniform(const std::string& name, int v) {
-	names.push_back(name);
-	setters.push_back(new uniform_setter_1i(v));
+	d->names.push_back(name);
+	d->setters.push_back(new uniform_setter_1i(v));
 }
 
 void shader_configuration::set_uniform(const std::string& name, float v0, float v1, float v2, float v3) {
-	names.push_back(name);
-	setters.push_back(new uniform_setter_4f(v0, v1, v2, v3));
+	d->names.push_back(name);
+	d->setters.push_back(new uniform_setter_4f(v0, v1, v2, v3));
+}
+
+void shader_configuration::add_texture(const std::string& name, const std::string& filename) {
+	set_uniform(name, d->surfaces.size());
+
+	ymse::sdl::surface surface = ymse::sdl::img_load(filename);
+	d->surfaces.push_back(surface);
+	d->textures.push_back(new ymse::gl::texture);
 }
 
 void shader_configuration::use() {
-	glUseProgram(program->get_program_id());
+	glUseProgram(d->program->get_program_id());
 
-	const size_t sz = names.size();
+	const size_t sz = d->names.size();
 	for (size_t i=0; i<sz; ++i) {
-		GLuint location = glGetUniformLocation(program->get_program_id(), names[i].c_str());
-		setters[i].set_to(location);
+		GLuint location = glGetUniformLocation(d->program->get_program_id(), d->names[i].c_str());
+		d->setters[i].set_to(location);
+	}
+
+	for (unsigned i = 0; i < d->surfaces.size(); ++i) {
+		glActiveTexture(GL_TEXTURE0 + i);
+		glBindTexture(GL_TEXTURE_2D, d->textures[i].get_id());
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 	}
 }
