@@ -10,16 +10,17 @@ function create_board()
 	local line_len = 10
 	local spacing = 50
 
-	local bump_angular_size = tau/42
+	local bump_angular_size = tau/30
 	local n_bumps = 3
 	local thickness = 2.5
-	local l = 7
+	local l = 10
+	local start_ang = 0 + bump_angular_size/2
 
 	local bigarc_size = tau/n_bumps - bump_angular_size
 	local phi = tau/4 + bump_angular_size/2
 	local bump_linear_size = 2*r*math.sin(bump_angular_size/2)
 
-	local t = heap:turtle(0, -r, 1, 0)
+	local t = heap:turtle(r*math.cos(start_ang), r*math.sin(start_ang), -math.sin(start_ang), math.cos(start_ang))
 	for i = 1, n_bumps do
 		t.left(r, bigarc_size)
 		t.left(thickness, phi)
