@@ -10,29 +10,23 @@ function create_board()
 	local line_len = 10
 	local spacing = 50
 
-	local plain_circle = 1
-	if plain_circle == 1 then
-		heap:circle(0, 0, r)
-	else
-		local bump_size = tau/42
-		local n_bumps = 3
+	local bump_angular_size = tau/42
+	local n_bumps = 3
+	local thickness = 2.5
+	local l = 7
 
-		local thickness = 2.5
-		local l = 7
-		local bigarc_size = tau/n_bumps - bump_size
-		local inner_r = r - thickness - l
-		local inner_turn_angle = bump_size - 2 * thickness / (r - thickness)
-		local inner_turn_r = 0
+	local bigarc_size = tau/n_bumps - bump_angular_size
+	local phi = tau/4 + bump_angular_size/2
+	local bump_linear_size = 2*r*math.sin(bump_angular_size/2)
 
-		local t = heap:turtle(0, -r, 1, 0)
-		for i = 1, n_bumps do
-			t.left(r, bigarc_size)
-			t.left(thickness, tau/4)
-			t.forward(l)
-			t.right(7, tau/2-0.15)
-			t.forward(l)
-			t.left(thickness, tau/4)
-		end
+	local t = heap:turtle(0, -r, 1, 0)
+	for i = 1, n_bumps do
+		t.left(r, bigarc_size)
+		t.left(thickness, phi)
+		t.forward(l)
+		t.right((bump_linear_size - 2*thickness)/2, tau/2)
+		t.forward(l)
+		t.left(thickness, phi)
 	end
 
 	heap.inside_line = function(heap, x1, y1, x2, y2)
