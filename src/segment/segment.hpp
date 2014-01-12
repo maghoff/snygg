@@ -2,8 +2,8 @@
 #define SNYGG_SEGMENT_HPP
 
 #include <memory>
-#include "../intersectable_with_circle.hpp"
-#include "../renderable.hpp"
+#include "../core/intersectable_with_circle.hpp"
+#include "../core/renderable.hpp"
 
 namespace ymse {
 	template <typename T>

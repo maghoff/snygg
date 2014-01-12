@@ -1,15 +1,15 @@
 #include <cmath>
 #include <ymse/geometry_intersection.hpp>
 #include <ymse/vec.hpp>
-#include "segment/arc.hpp"
-#include "segment/blood_pool.hpp"
-#include "segment/line.hpp"
-#include "segment/segment_sequence.hpp"
-#include "skin/skin.hpp"
-#include "growth_policy/digesting_growth_policy.hpp"
-#include "growth_policy/immediate_growth_policy.hpp"
+#include "../segment/arc.hpp"
+#include "../segment/blood_pool.hpp"
+#include "../segment/line.hpp"
+#include "../segment/segment_sequence.hpp"
+#include "../skin/skin.hpp"
+#include "../growth_policy/digesting_growth_policy.hpp"
+#include "../growth_policy/immediate_growth_policy.hpp"
 #include "item_container.hpp"
-#include "player.hpp"
+#include "../player.hpp"
 #include "snake.hpp"
 
 

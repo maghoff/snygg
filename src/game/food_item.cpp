@@ -1,6 +1,6 @@
 #include <ymse/vec.hpp>
-#include "skin/skin.hpp"
-#include "player.hpp"
+#include "../skin/skin.hpp"
+#include "../player.hpp"
 #include "food_generator.hpp"
 #include "food_item.hpp"
 

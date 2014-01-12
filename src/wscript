@@ -13,19 +13,21 @@ def build(bld):
 		platform_libs.append('User32')
 
 	sources = [
-		'food_generator.cpp',
-		'food_item.cpp',
-		'intersectable_with_circle.cpp',
-		'item.cpp',
-		'item_container.cpp',
-		'item_with_life.cpp',
 		'main.cpp',
 		'paths.cpp',
 		'player.cpp',
-		'renderable.cpp',
-		'snake.cpp',
 		'snake_direction_listener.cpp',
 		'snygg.cpp',
+
+		'core/intersectable_with_circle.cpp',
+		'core/renderable.cpp',
+
+		'game/food_generator.cpp',
+		'game/food_item.cpp',
+		'game/item.cpp',
+		'game/item_container.cpp',
+		'game/item_with_life.cpp',
+		'game/snake.cpp',
 
 		'growth_policy/digesting_growth_policy.cpp',
 		'growth_policy/growth_policy.cpp',

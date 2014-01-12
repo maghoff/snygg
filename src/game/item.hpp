@@ -1,8 +1,8 @@
 #ifndef SNYGG_ITEM_HPP
 #define SNYGG_ITEM_HPP
 
-#include "intersectable_with_circle.hpp"
-#include "renderable.hpp"
+#include "../core/intersectable_with_circle.hpp"
+#include "../core/renderable.hpp"
 
 class player;
 

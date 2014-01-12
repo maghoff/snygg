@@ -4,9 +4,9 @@
 #include <ymse/opposite_keys_listener.hpp>
 #include <ymse/signaling_opposite_keys.hpp>
 #include "board/board.hpp"
-#include "item_container.hpp"
+#include "game/item_container.hpp"
+#include "game/snake.hpp"
 #include "player.hpp"
-#include "snake.hpp"
 #include "snake_direction_listener.hpp"
 
 struct player::impl {
