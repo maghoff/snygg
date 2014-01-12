@@ -4,7 +4,7 @@
 #include <ymse/geometry_intersection.hpp>
 #include <ymse/rect.hpp>
 #include <ymse/vec.hpp>
-#include "../skin/skin.hpp"
+#include "skin.hpp"
 #include "scored_point.hpp"
 
 using ymse::vec2f;

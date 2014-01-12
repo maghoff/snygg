@@ -1,0 +1,19 @@
+#!/bin/env python
+# -*- coding: utf-8 -*-
+
+def build(bld):
+	sources = [
+		'intersectable_with_circle.cpp',
+		'renderable.cpp',
+	]
+
+	obj = bld.stlib(
+		source=sources,
+		target='core',
+		use=[
+			'ymse',
+		],
+		lib=[],
+		includes=["."],
+		export_includes=["."],
+	)

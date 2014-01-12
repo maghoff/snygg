@@ -3,7 +3,7 @@
 #include <cmath>
 #include <ymse/rect.hpp>
 #include <ymse/vec.hpp>
-#include "../skin/skin.hpp"
+#include "skin.hpp"
 #include "../board/complex_polygon_triangulator.hpp"
 #include "arc.hpp"
 

@@ -12,6 +12,12 @@ def build(bld):
 		lib_name_pattern = 'lib%s'
 		platform_libs.append('User32')
 
+	bld.add_subdirs([
+		'skin',
+		'segment',
+		'core',
+	])
+
 	sources = [
 		'player.cpp',
 		'snake_direction_listener.cpp',
@@ -19,9 +25,6 @@ def build(bld):
 		'platform-desktop-sdl/main.cpp',
 		'platform-desktop-sdl/paths.cpp',
 		'platform-desktop-sdl/snygg.cpp',
-
-		'core/intersectable_with_circle.cpp',
-		'core/renderable.cpp',
 
 		'game/food_generator.cpp',
 		'game/food_item.cpp',
@@ -32,31 +35,6 @@ def build(bld):
 		'game/digesting_growth_policy.cpp',
 		'game/growth_policy.cpp',
 		'game/immediate_growth_policy.cpp',
-
-		'skin/complex_polygon.cpp',
-		'skin/metaballs.cpp',
-		'skin/plain_skin.cpp',
-		'skin/scalable_skin.cpp',
-		'skin/schematic_skin.cpp',
-		'skin/skin.cpp',
-		'skin/textured_skin.cpp',
-
-		'skin/gl/gl_fbo.cpp',
-		'skin/gl/opengl_resource.cpp',
-		'skin/gl/scoped_bind_fbo.cpp',
-		'skin/gl/shader_builder.cpp',
-		'skin/gl/shader_configuration.cpp',
-		'skin/gl/shader_program.cpp',
-
-		'segment/arc.cpp',
-		'segment/blood_pool.cpp',
-		'segment/contour_segment.cpp',
-		'segment/extender.cpp',
-		'segment/line.cpp',
-		'segment/open_segment.cpp',
-		'segment/scored_point.cpp',
-		'segment/segment_filter.cpp',
-		'segment/segment_sequence.cpp',
 
 		'board/board.cpp',
 		'board/complex_polygon_triangulator.cpp',
@@ -87,7 +65,22 @@ def build(bld):
 	obj = bld.program(
 		source=sources,
 		target='snygg',
-		use=['ymse', 'GL', 'glew', 'SDL', 'SDLmain', 'SDL_image', 'boost', 'lua', 'luabind', 'imlib'],
+		use=[
+			'ymse',
+			'GL',
+			'glew',
+			'SDL',
+			'SDLmain',
+			'SDL_image',
+			'boost',
+			'lua',
+			'luabind',
+			'imlib',
+
+			'skin',
+			'segment',
+			'core',
+		],
 		lib=[lib_name_pattern % 'boost_filesystem', lib_name_pattern % 'boost_system'] + platform_libs,
 		includes=[],
 	)

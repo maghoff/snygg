@@ -1,0 +1,28 @@
+#!/bin/env python
+# -*- coding: utf-8 -*-
+
+def build(bld):
+	sources = [
+		'arc.cpp',
+		'blood_pool.cpp',
+		'contour_segment.cpp',
+		'extender.cpp',
+		'line.cpp',
+		'open_segment.cpp',
+		'scored_point.cpp',
+		'segment_filter.cpp',
+		'segment_sequence.cpp',
+	]
+
+	obj = bld.stlib(
+		source=sources,
+		target='segment',
+		use=[
+			'ymse',
+			'skin',
+			'core',
+		],
+		lib=[],
+		includes=[],
+		export_includes=["."],
+	)

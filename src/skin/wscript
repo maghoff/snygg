@@ -1,0 +1,31 @@
+#!/bin/env python
+# -*- coding: utf-8 -*-
+
+def build(bld):
+	sources = [
+		'complex_polygon.cpp',
+		'metaballs.cpp',
+		'plain_skin.cpp',
+		'scalable_skin.cpp',
+		'schematic_skin.cpp',
+		'skin.cpp',
+		'textured_skin.cpp',
+
+		'gl/gl_fbo.cpp',
+		'gl/opengl_resource.cpp',
+		'gl/scoped_bind_fbo.cpp',
+		'gl/shader_builder.cpp',
+		'gl/shader_configuration.cpp',
+		'gl/shader_program.cpp',
+	]
+
+	obj = bld.stlib(
+		source=sources,
+		target='skin',
+		use=[
+			'ymse',
+		],
+		lib=[],
+		includes=[],
+		export_includes=["."],
+	)
