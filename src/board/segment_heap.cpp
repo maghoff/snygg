@@ -4,11 +4,11 @@
 #include <boost/shared_ptr.hpp>
 #include <ymse/rect.hpp>
 #include <ymse/vec.hpp>
-#include "../segment/arc.hpp"
-#include "../segment/contour_segment.hpp"
-#include "../segment/line.hpp"
-#include "../segment/open_segment.hpp"
-#include "../segment/segment_sequence.hpp"
+#include "arc.hpp"
+#include "contour_segment.hpp"
+#include "line.hpp"
+#include "open_segment.hpp"
+#include "segment_sequence.hpp"
 #include "segment_heap.hpp"
 
 using ymse::vec2f;

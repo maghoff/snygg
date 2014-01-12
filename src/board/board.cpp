@@ -1,7 +1,6 @@
 #include <iostream>
 #include <sstream>
 
-#include <SDL.h>
 #include <cmath>
 #include <boost/ptr_container/ptr_vector.hpp>
 #include <ymse/lean_windows.h>
@@ -10,10 +9,10 @@
 #include <luabind/adopt_policy.hpp>
 #include <ymse/rect.hpp>
 #include <ymse/vec.hpp>
-#include "../segment/arc.hpp"
-#include "../segment/line.hpp"
-#include "../segment/segment_sequence.hpp"
-#include "../skin/complex_polygon.hpp"
+#include "arc.hpp"
+#include "line.hpp"
+#include "segment_sequence.hpp"
+#include "complex_polygon.hpp"
 #include "segment_heap.hpp"
 #include "complex_polygon_triangulator_gpc.hpp"
 #include "lua_vm.hpp"
@@ -77,7 +76,7 @@ ymse::vec2f board::get_starting_position()
 }
 
 void board::render(skin& s) const {
-	render_sequence(d->b, s, SDL_GetTicks() * 0.0002);
+	render_sequence(d->b, s, 0);
 }
 
 bool board::intersect_with_circle(const ymse::vec2f& p, float r) const {

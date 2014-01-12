@@ -1,0 +1,48 @@
+#!/bin/env python
+# -*- coding: utf-8 -*-
+
+def build(bld):
+	sources = [
+		'board.cpp',
+		'complex_polygon_triangulator.cpp',
+		'complex_polygon_triangulator_gpc.cpp',
+		'lua_vm.cpp',
+		'segment_heap.cpp',
+		'gpc/gpc.c',
+
+		'../../external/downloads/luabind-0.9.1/src/class.cpp',
+		'../../external/downloads/luabind-0.9.1/src/class_info.cpp',
+		'../../external/downloads/luabind-0.9.1/src/class_registry.cpp',
+		'../../external/downloads/luabind-0.9.1/src/class_rep.cpp',
+		'../../external/downloads/luabind-0.9.1/src/create_class.cpp',
+		'../../external/downloads/luabind-0.9.1/src/error.cpp',
+		'../../external/downloads/luabind-0.9.1/src/exception_handler.cpp',
+		'../../external/downloads/luabind-0.9.1/src/function.cpp',
+		'../../external/downloads/luabind-0.9.1/src/inheritance.cpp',
+		'../../external/downloads/luabind-0.9.1/src/link_compatibility.cpp',
+		'../../external/downloads/luabind-0.9.1/src/object_rep.cpp',
+		'../../external/downloads/luabind-0.9.1/src/open.cpp',
+		'../../external/downloads/luabind-0.9.1/src/pcall.cpp',
+		'../../external/downloads/luabind-0.9.1/src/scope.cpp',
+		'../../external/downloads/luabind-0.9.1/src/stack_content_by_name.cpp',
+		'../../external/downloads/luabind-0.9.1/src/weak_ref.cpp',
+		'../../external/downloads/luabind-0.9.1/src/wrapper_base.cpp',
+	]
+
+	obj = bld.stlib(
+		source=sources,
+		target='board',
+		use=[
+			'ymse',
+			'boost',
+			'lua',
+			'luabind',
+
+			'skin',
+			'core',
+			'segment',
+		],
+		lib=[],
+		includes=[],
+		export_includes=["."],
+	)

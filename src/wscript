@@ -16,6 +16,7 @@ def build(bld):
 		'skin',
 		'segment',
 		'core',
+		'board',
 	])
 
 	sources = [
@@ -35,31 +36,6 @@ def build(bld):
 		'game/digesting_growth_policy.cpp',
 		'game/growth_policy.cpp',
 		'game/immediate_growth_policy.cpp',
-
-		'board/board.cpp',
-		'board/complex_polygon_triangulator.cpp',
-		'board/complex_polygon_triangulator_gpc.cpp',
-		'board/lua_vm.cpp',
-		'board/segment_heap.cpp',
-		'board/gpc/gpc.c',
-
-		'../external/downloads/luabind-0.9.1/src/class.cpp',
-		'../external/downloads/luabind-0.9.1/src/class_info.cpp',
-		'../external/downloads/luabind-0.9.1/src/class_registry.cpp',
-		'../external/downloads/luabind-0.9.1/src/class_rep.cpp',
-		'../external/downloads/luabind-0.9.1/src/create_class.cpp',
-		'../external/downloads/luabind-0.9.1/src/error.cpp',
-		'../external/downloads/luabind-0.9.1/src/exception_handler.cpp',
-		'../external/downloads/luabind-0.9.1/src/function.cpp',
-		'../external/downloads/luabind-0.9.1/src/inheritance.cpp',
-		'../external/downloads/luabind-0.9.1/src/link_compatibility.cpp',
-		'../external/downloads/luabind-0.9.1/src/object_rep.cpp',
-		'../external/downloads/luabind-0.9.1/src/open.cpp',
-		'../external/downloads/luabind-0.9.1/src/pcall.cpp',
-		'../external/downloads/luabind-0.9.1/src/scope.cpp',
-		'../external/downloads/luabind-0.9.1/src/stack_content_by_name.cpp',
-		'../external/downloads/luabind-0.9.1/src/weak_ref.cpp',
-		'../external/downloads/luabind-0.9.1/src/wrapper_base.cpp',
 	]
 
 	obj = bld.program(
@@ -73,10 +49,9 @@ def build(bld):
 			'SDLmain',
 			'SDL_image',
 			'boost',
-			'lua',
-			'luabind',
 			'imlib',
 
+			'board',
 			'skin',
 			'segment',
 			'core',
