@@ -4,7 +4,7 @@
 #include <ymse/rect.hpp>
 #include <ymse/vec.hpp>
 #include "../skin/skin.hpp"
-#include "../complex_polygon_triangulator.hpp"
+#include "../board/complex_polygon_triangulator.hpp"
 #include "arc.hpp"
 
 using ymse::vec2f;

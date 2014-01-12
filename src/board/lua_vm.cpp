@@ -8,7 +8,7 @@
 
 // For exposing to lua:
 #include <ymse/vec.hpp>
-#include "../segment_heap.hpp"
+#include "segment_heap.hpp"
 
 namespace luamod {
 

@@ -5,8 +5,8 @@
 #include <boost/filesystem/path.hpp>
 #include <boost/scoped_ptr.hpp>
 #include <ymse/vec.hpp>
-#include "intersectable_with_circle.hpp"
-#include "renderable.hpp"
+#include "../intersectable_with_circle.hpp"
+#include "../renderable.hpp"
 
 namespace ymse {
 	template <typename T>

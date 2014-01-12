@@ -3,10 +3,10 @@
 #include <ymse/keycodes.hpp>
 #include <ymse/opposite_keys_listener.hpp>
 #include <ymse/signaling_opposite_keys.hpp>
+#include "board/board.hpp"
 #include "item_container.hpp"
 #include "player.hpp"
 #include "snake.hpp"
-#include "board.hpp"
 #include "snake_direction_listener.hpp"
 
 struct player::impl {

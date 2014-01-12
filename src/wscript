@@ -13,9 +13,6 @@ def build(bld):
 		platform_libs.append('User32')
 
 	sources = [
-		'board.cpp',
-		'complex_polygon_triangulator.cpp',
-		'complex_polygon_triangulator_gpc.cpp',
 		'digesting_growth_policy.cpp',
 		'food_generator.cpp',
 		'food_item.cpp',
@@ -25,12 +22,10 @@ def build(bld):
 		'item.cpp',
 		'item_container.cpp',
 		'item_with_life.cpp',
-		'luamod/lua_vm.cpp',
 		'main.cpp',
 		'paths.cpp',
 		'player.cpp',
 		'renderable.cpp',
-		'segment_heap.cpp',
 		'snake.cpp',
 		'snake_direction_listener.cpp',
 		'snygg.cpp',
@@ -60,7 +55,12 @@ def build(bld):
 		'segment/segment_filter.cpp',
 		'segment/segment_sequence.cpp',
 
-		'gpc/gpc.c',
+		'board/board.cpp',
+		'board/complex_polygon_triangulator.cpp',
+		'board/complex_polygon_triangulator_gpc.cpp',
+		'board/lua_vm.cpp',
+		'board/segment_heap.cpp',
+		'board/gpc/gpc.c',
 
 		'../external/downloads/luabind-0.9.1/src/class.cpp',
 		'../external/downloads/luabind-0.9.1/src/class_info.cpp',

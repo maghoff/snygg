@@ -10,13 +10,13 @@
 #include <luabind/adopt_policy.hpp>
 #include <ymse/rect.hpp>
 #include <ymse/vec.hpp>
-#include "segment/arc.hpp"
-#include "segment/line.hpp"
-#include "segment/segment_sequence.hpp"
+#include "../segment/arc.hpp"
+#include "../segment/line.hpp"
+#include "../segment/segment_sequence.hpp"
+#include "../skin/complex_polygon.hpp"
 #include "segment_heap.hpp"
-#include "skin/complex_polygon.hpp"
 #include "complex_polygon_triangulator_gpc.hpp"
-#include "luamod/lua_vm.hpp"
+#include "lua_vm.hpp"
 #include "board.hpp"
 
 

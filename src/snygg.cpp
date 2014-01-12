@@ -21,7 +21,7 @@
 #include "skin/schematic_skin.hpp"
 #include "skin/textured_skin.hpp"
 #include "skin/complex_polygon.hpp"
-#include "board.hpp"
+#include "board/board.hpp"
 #include "food_generator.hpp"
 #include "item.hpp"
 #include "paths.hpp"
