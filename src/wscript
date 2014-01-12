@@ -17,6 +17,7 @@ def build(bld):
 		'segment',
 		'core',
 		'board',
+		'game',
 	])
 
 	sources = [
@@ -26,16 +27,6 @@ def build(bld):
 		'platform-desktop-sdl/main.cpp',
 		'platform-desktop-sdl/paths.cpp',
 		'platform-desktop-sdl/snygg.cpp',
-
-		'game/food_generator.cpp',
-		'game/food_item.cpp',
-		'game/item.cpp',
-		'game/item_container.cpp',
-		'game/item_with_life.cpp',
-		'game/snake.cpp',
-		'game/digesting_growth_policy.cpp',
-		'game/growth_policy.cpp',
-		'game/immediate_growth_policy.cpp',
 	]
 
 	obj = bld.program(
@@ -51,6 +42,7 @@ def build(bld):
 			'boost',
 			'imlib',
 
+			'game',
 			'board',
 			'skin',
 			'segment',

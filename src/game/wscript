@@ -1,0 +1,29 @@
+#!/bin/env python
+# -*- coding: utf-8 -*-
+
+def build(bld):
+	sources = [
+		'food_generator.cpp',
+		'food_item.cpp',
+		'item.cpp',
+		'item_container.cpp',
+		'item_with_life.cpp',
+		'snake.cpp',
+		'digesting_growth_policy.cpp',
+		'growth_policy.cpp',
+		'immediate_growth_policy.cpp',
+	]
+
+	obj = bld.stlib(
+		source=sources,
+		target='game',
+		use=[
+			'ymse',
+
+			'core',
+			'board',
+		],
+		lib=[],
+		includes=[],
+		export_includes=["."],
+	)

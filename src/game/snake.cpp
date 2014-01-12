@@ -1,11 +1,11 @@
 #include <cmath>
 #include <ymse/geometry_intersection.hpp>
 #include <ymse/vec.hpp>
-#include "../segment/arc.hpp"
-#include "../segment/blood_pool.hpp"
-#include "../segment/line.hpp"
-#include "../segment/segment_sequence.hpp"
-#include "../skin/skin.hpp"
+#include "arc.hpp"
+#include "blood_pool.hpp"
+#include "line.hpp"
+#include "segment_sequence.hpp"
+#include "skin.hpp"
 #include "digesting_growth_policy.hpp"
 #include "immediate_growth_policy.hpp"
 #include "item_container.hpp"

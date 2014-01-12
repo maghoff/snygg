@@ -4,7 +4,7 @@
 #include <boost/random/variate_generator.hpp>
 #include <ymse/rect.hpp>
 #include <ymse/vec.hpp>
-#include "../board/board.hpp"
+#include "board.hpp"
 #include "item_container.hpp"
 #include "food_item.hpp"
 #include "food_generator.hpp"
