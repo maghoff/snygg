@@ -14,7 +14,7 @@
 #include "segment/line.hpp"
 #include "segment/segment_sequence.hpp"
 #include "segment_heap.hpp"
-#include "complex_polygon.hpp"
+#include "skin/complex_polygon.hpp"
 #include "complex_polygon_triangulator_gpc.hpp"
 #include "luamod/lua_vm.hpp"
 #include "board.hpp"

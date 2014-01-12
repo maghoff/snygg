@@ -1,6 +1,6 @@
 #include <cassert>
 #include <ymse/vec.hpp>
-#include "complex_polygon.hpp"
+#include "skin/complex_polygon.hpp"
 #include "complex_polygon_triangulator_gpc.hpp"
 
 complex_polygon_triangulator_gpc::complex_polygon_triangulator_gpc() {

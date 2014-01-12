@@ -14,18 +14,18 @@
 #include <ymse/sdl_core.hpp>
 #include <ymse/keycodes.hpp>
 #include <ymse/vec.hpp>
-#include "gl/gl_fbo.hpp"
-#include "gl/scoped_bind_fbo.hpp"
+#include "skin/gl/gl_fbo.hpp"
+#include "skin/gl/scoped_bind_fbo.hpp"
+#include "skin/metaballs.hpp"
+#include "skin/plain_skin.hpp"
+#include "skin/schematic_skin.hpp"
+#include "skin/textured_skin.hpp"
+#include "skin/complex_polygon.hpp"
 #include "board.hpp"
-#include "complex_polygon.hpp"
 #include "food_generator.hpp"
 #include "item.hpp"
-#include "metaballs.hpp"
 #include "paths.hpp"
-#include "plain_skin.hpp"
 #include "player.hpp"
-#include "schematic_skin.hpp"
-#include "textured_skin.hpp"
 #include "snygg.hpp"
 
 

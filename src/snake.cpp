@@ -5,11 +5,11 @@
 #include "segment/blood_pool.hpp"
 #include "segment/line.hpp"
 #include "segment/segment_sequence.hpp"
+#include "skin/skin.hpp"
 #include "digesting_growth_policy.hpp"
 #include "immediate_growth_policy.hpp"
 #include "item_container.hpp"
 #include "player.hpp"
-#include "skin.hpp"
 #include "snake.hpp"
 
 

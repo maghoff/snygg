@@ -4,7 +4,7 @@
 #include <ymse/gl.h>
 #include <ymse/rect.hpp>
 #include <ymse/vec.hpp>
-#include "../skin.hpp"
+#include "../skin/skin.hpp"
 #include "blood_pool.hpp"
 
 using ymse::vec2f;
