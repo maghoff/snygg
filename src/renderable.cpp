@@ -1,6 +1,6 @@
 #include <boost/ptr_container/ptr_vector.hpp>
 #include <boost/ptr_container/ptr_list.hpp>
-#include "segment.hpp"
+#include "segment/segment.hpp"
 #include "renderable.hpp"
 
 renderable::~renderable() {

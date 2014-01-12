@@ -1,4 +1,4 @@
-#include "complex_polygon_triangulator.hpp"
+#include "../complex_polygon_triangulator.hpp"
 #include "contour_segment.hpp"
 
 contour_segment::contour_segment(segment_ptr s) :

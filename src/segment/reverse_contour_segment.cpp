@@ -1,4 +1,4 @@
-#include "complex_polygon_triangulator.hpp"
+#include "../complex_polygon_triangulator.hpp"
 #include "reverse_contour_segment.hpp"
 
 reverse_contour_segment::reverse_contour_segment(segment_ptr s) :

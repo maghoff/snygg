@@ -10,14 +10,14 @@
 #include <luabind/adopt_policy.hpp>
 #include <ymse/rect.hpp>
 #include <ymse/vec.hpp>
-#include "arc.hpp"
+#include "segment/arc.hpp"
+#include "segment/line.hpp"
+#include "segment/segment_sequence.hpp"
+#include "segment_heap.hpp"
 #include "complex_polygon.hpp"
 #include "complex_polygon_triangulator_gpc.hpp"
-#include "line.hpp"
 #include "luamod/lua_vm.hpp"
 #include "board.hpp"
-#include "segment_sequence.hpp"
-#include "segment_heap.hpp"
 
 
 struct board::impl {

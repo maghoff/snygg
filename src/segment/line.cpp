@@ -4,7 +4,7 @@
 #include <algorithm>
 #include <ymse/rect.hpp>
 #include <ymse/vec.hpp>
-#include "skin.hpp"
+#include "../skin.hpp"
 #include "line.hpp"
 
 using ymse::vec2f;

@@ -2,7 +2,7 @@
 #include <ymse/geometry_intersection.hpp>
 #include <ymse/rect.hpp>
 #include <ymse/vec.hpp>
-#include "skin.hpp"
+#include "../skin.hpp"
 #include "open_segment.hpp"
 
 open_segment::open_segment(segment_ptr s_) :

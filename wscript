@@ -50,6 +50,7 @@ def configure(conf):
 	#cc.warnings_as_errors(conf.env)
 
 	core_env = conf.env
+	core_env.append_unique('CXXFLAGS', '-Wno-unused-local-typedefs')
 
 	from Options import options as opt
 
