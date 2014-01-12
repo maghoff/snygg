@@ -7,12 +7,12 @@
 #include <ymse/gl/texture.hpp>
 #include <ymse/rect.hpp>
 #include <ymse/vec.hpp>
+#include "gl/gl_fbo.hpp"
+#include "gl/scoped_bind_fbo.hpp"
+#include "gl/shader_program.hpp"
+#include "gl/shader_builder.hpp"
 #include "complex_polygon.hpp"
-#include "gl_fbo.hpp"
 #include "metaballs.hpp"
-#include "scoped_bind_fbo.hpp"
-#include "shader_program.hpp"
-#include "shader_builder.hpp"
 
 #include "ball_insert_iterator.ipp"
 

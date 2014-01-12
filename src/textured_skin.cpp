@@ -4,11 +4,11 @@
 #include <boost/scoped_ptr.hpp>
 #include <ymse/rect.hpp>
 #include <ymse/vec.hpp>
+#include "gl/shader_program.hpp"
+#include "gl/shader_builder.hpp"
+#include "gl/shader_configuration.hpp"
 #include "complex_polygon.hpp"
 #include "textured_skin.hpp"
-#include "shader_program.hpp"
-#include "shader_builder.hpp"
-#include "shader_configuration.hpp"
 
 const int across = 5, along = 6, circle_coord = 7, b_attribute = 8;
 
