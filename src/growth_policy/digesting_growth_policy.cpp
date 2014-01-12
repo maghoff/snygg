@@ -1,7 +1,7 @@
 #include <cmath>
 #include <ymse/vec.hpp>
-#include "segment/scored_point.hpp"
-#include "segment/segment_sequence.hpp"
+#include "../segment/scored_point.hpp"
+#include "../segment/segment_sequence.hpp"
 #include "digesting_growth_policy.hpp"
 
 digesting_growth_policy::digesting_growth_policy() { }

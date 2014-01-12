@@ -13,11 +13,8 @@ def build(bld):
 		platform_libs.append('User32')
 
 	sources = [
-		'digesting_growth_policy.cpp',
 		'food_generator.cpp',
 		'food_item.cpp',
-		'growth_policy.cpp',
-		'immediate_growth_policy.cpp',
 		'intersectable_with_circle.cpp',
 		'item.cpp',
 		'item_container.cpp',
@@ -29,6 +26,10 @@ def build(bld):
 		'snake.cpp',
 		'snake_direction_listener.cpp',
 		'snygg.cpp',
+
+		'growth_policy/digesting_growth_policy.cpp',
+		'growth_policy/growth_policy.cpp',
+		'growth_policy/immediate_growth_policy.cpp',
 
 		'skin/complex_polygon.cpp',
 		'skin/metaballs.cpp',

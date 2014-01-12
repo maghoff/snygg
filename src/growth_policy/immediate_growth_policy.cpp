@@ -1,6 +1,6 @@
 #include <ymse/vec.hpp>
-#include "segment/extender.hpp"
-#include "segment/segment_sequence.hpp"
+#include "../segment/extender.hpp"
+#include "../segment/segment_sequence.hpp"
 #include "immediate_growth_policy.hpp"
 
 immediate_growth_policy::immediate_growth_policy() { }
