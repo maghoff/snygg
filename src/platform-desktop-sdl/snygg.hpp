@@ -5,7 +5,7 @@
 #include <boost/scoped_ptr.hpp>
 #include <ymse/game.hpp>
 #include <ymse/reshaper.hpp>
-#include "game/item_container.hpp"
+#include "../game/item_container.hpp"
 
 namespace ymse {
 	class sdl_core;

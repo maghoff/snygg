@@ -7,7 +7,7 @@
 #include <cstdlib>
 #include <fstream>
 #include <ymse/lean_windows.h>
-#include "config.hpp"
+#include "../config.hpp"
 #include "paths.hpp"
 
 using boost::filesystem::path;

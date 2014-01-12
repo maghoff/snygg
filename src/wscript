@@ -13,11 +13,12 @@ def build(bld):
 		platform_libs.append('User32')
 
 	sources = [
-		'main.cpp',
-		'paths.cpp',
 		'player.cpp',
 		'snake_direction_listener.cpp',
-		'snygg.cpp',
+
+		'platform-desktop-sdl/main.cpp',
+		'platform-desktop-sdl/paths.cpp',
+		'platform-desktop-sdl/snygg.cpp',
 
 		'core/intersectable_with_circle.cpp',
 		'core/renderable.cpp',

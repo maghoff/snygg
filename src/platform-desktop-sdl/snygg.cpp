@@ -14,22 +14,22 @@
 #include <ymse/sdl_core.hpp>
 #include <ymse/keycodes.hpp>
 #include <ymse/vec.hpp>
-#include "skin/gl/gl_fbo.hpp"
-#include "skin/gl/scoped_bind_fbo.hpp"
-#include "skin/metaballs.hpp"
-#include "skin/plain_skin.hpp"
-#include "skin/schematic_skin.hpp"
-#include "skin/textured_skin.hpp"
-#include "skin/complex_polygon.hpp"
-#include "board/board.hpp"
-#include "game/food_generator.hpp"
-#include "game/item.hpp"
+#include "../skin/gl/gl_fbo.hpp"
+#include "../skin/gl/scoped_bind_fbo.hpp"
+#include "../skin/metaballs.hpp"
+#include "../skin/plain_skin.hpp"
+#include "../skin/schematic_skin.hpp"
+#include "../skin/textured_skin.hpp"
+#include "../skin/complex_polygon.hpp"
+#include "../board/board.hpp"
+#include "../game/food_generator.hpp"
+#include "../game/item.hpp"
+#include "../player.hpp"
 #include "paths.hpp"
-#include "player.hpp"
 #include "snygg.hpp"
 
 
-#include "config.hpp"
+#include "../config.hpp"
 #ifdef HAVE_IMLIB
 #include <Imlib2.h>
 #endif
