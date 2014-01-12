@@ -29,10 +29,9 @@ def build(bld):
 		'game/item_container.cpp',
 		'game/item_with_life.cpp',
 		'game/snake.cpp',
-
-		'growth_policy/digesting_growth_policy.cpp',
-		'growth_policy/growth_policy.cpp',
-		'growth_policy/immediate_growth_policy.cpp',
+		'game/digesting_growth_policy.cpp',
+		'game/growth_policy.cpp',
+		'game/immediate_growth_policy.cpp',
 
 		'skin/complex_polygon.cpp',
 		'skin/metaballs.cpp',
