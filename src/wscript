@@ -2,52 +2,11 @@
 # -*- coding: utf-8 -*-
 
 def build(bld):
-	import platform
-
-	lib_name_pattern = '%s'
-	platform_libs = []
-
-	if platform.system() == 'Windows':
-		# waf names static libraries differently on windows for a misguided reason
-		lib_name_pattern = 'lib%s'
-		platform_libs.append('User32')
-
 	bld.add_subdirs([
 		'skin',
 		'segment',
 		'core',
 		'board',
 		'game',
+		'platform-desktop-sdl',
 	])
-
-	sources = [
-		'player.cpp',
-		'snake_direction_listener.cpp',
-
-		'platform-desktop-sdl/main.cpp',
-		'platform-desktop-sdl/paths.cpp',
-		'platform-desktop-sdl/snygg.cpp',
-	]
-
-	obj = bld.program(
-		source=sources,
-		target='snygg',
-		use=[
-			'ymse',
-			'GL',
-			'glew',
-			'SDL',
-			'SDLmain',
-			'SDL_image',
-			'boost',
-			'imlib',
-
-			'game',
-			'board',
-			'skin',
-			'segment',
-			'core',
-		],
-		lib=[lib_name_pattern % 'boost_filesystem', lib_name_pattern % 'boost_system'] + platform_libs,
-		includes=[],
-	)

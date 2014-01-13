@@ -9,7 +9,7 @@
 #include "digesting_growth_policy.hpp"
 #include "immediate_growth_policy.hpp"
 #include "item_container.hpp"
-#include "../player.hpp"
+#include "player.hpp"
 #include "snake.hpp"
 
 

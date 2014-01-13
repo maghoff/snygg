@@ -1,4 +1,4 @@
-#include "game/snake.hpp"
+#include "snake.hpp"
 #include "snake_direction_listener.hpp"
 
 snake_direction_listener::snake_direction_listener() : s(0) { }

@@ -99,7 +99,7 @@ path executable_path() {
 bool is_installed() {
 	path p(executable_path());
 
-	if (p.filename() == "src") return false;
+	if (p.filename() == "platform-desktop-sdl") return false;
 
 	return true;
 }
@@ -114,6 +114,7 @@ path guess_prefix() {
 
 path guess_project_dir() {
 	path p(executable_path());
+	if (p.filename() == "platform-desktop-sdl") p = p.branch_path();
 	if (p.filename() == "src") p = p.branch_path();
 	if (p.filename() == "debug" || p.filename() == "release") p = p.branch_path();
 	if (p.filename() == "build") p = p.branch_path();

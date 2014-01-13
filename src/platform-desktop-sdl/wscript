@@ -1,0 +1,45 @@
+#!/bin/env python
+# -*- coding: utf-8 -*-
+
+def build(bld):
+	import platform
+
+	lib_name_pattern = '%s'
+	platform_libs = []
+
+	if platform.system() == 'Windows':
+		# waf names static libraries differently on windows for a misguided reason
+		lib_name_pattern = 'lib%s'
+		platform_libs.append('User32')
+
+	platform_libs.extend([lib_name_pattern % 'boost_filesystem', lib_name_pattern % 'boost_system'])
+
+
+	sources = [
+		'main.cpp',
+		'paths.cpp',
+		'snygg.cpp',
+	]
+
+	obj = bld.program(
+		source=sources,
+		target='snygg',
+		use=[
+			'ymse',
+			'GL',
+			'glew',
+			'SDL',
+			'SDLmain',
+			'SDL_image',
+			'imlib',
+			'boost',
+
+			'game',
+			'board',
+			'segment',
+			'core',
+			'skin',
+		],
+		lib=platform_libs,
+		includes=[],
+	)
