@@ -40,6 +40,8 @@ namespace {
 		".line>.arrow {"
 			"stroke-width: 0.25;"
 			"stroke: #b3b3ff;"
+			"stroke-linecap: round;"
+			"fill: none;"
 		"}"
 		"path.arc {"
 			"stroke-width: 0.25;"
@@ -49,6 +51,8 @@ namespace {
 		".arc>.arrow {"
 			"stroke-width: 0.25;"
 			"stroke: #b3ffb3;"
+			"stroke-linecap: round;"
+			"fill: none;"
 		"}"
 		"path.cap {"
 			"stroke-width: 0.25;"
@@ -139,9 +143,8 @@ void schematic_svg_skin::fat_arc(ymse::vec2f p, float r, float t, float begin_in
 				r << ',' << r << ' ' <<
 				"0 0 " << sweep_flag << " " <<
 				x + r * cos(arrow_end) << "," << y + r * sin(arrow_end) << " "
-			"M" << x + r * cos(arrow_end) << "," << y + r * sin(arrow_end) << " "
-			"L" << x + (r - ARROW_WIDTH) * cos(arrowhead_end) << "," << y + (r - ARROW_WIDTH) * sin(arrowhead_end) << " "
-			"M" << x + r * cos(arrow_end) << "," << y + r * sin(arrow_end) << " "
+			"M" << x + (r - ARROW_WIDTH) * cos(arrowhead_end) << "," << y + (r - ARROW_WIDTH) * sin(arrowhead_end) << " "
+			"L" << x + r * cos(arrow_end) << "," << y + r * sin(arrow_end) << " "
 			"L" << x + (r + ARROW_WIDTH) * cos(arrowhead_end) << "," << y + (r + ARROW_WIDTH) * sin(arrowhead_end) << " "
 			"'/>";
 	}
@@ -175,9 +178,8 @@ void schematic_svg_skin::fat_line(ymse::vec2f p, ymse::vec2f d, float len, float
 		ss << "<path class='arrow' d='"
 			"M" << center - hll * d << " "
 			"L" << center + hll * d << " "
-			"M" << center + hll * d << " "
-			"L" << center + (hll - ARROW_WIDTH) * d + ARROW_WIDTH * normal << " "
-			"M" << center + hll * d << " "
+			"M" << center + (hll - ARROW_WIDTH) * d + ARROW_WIDTH * normal << " "
+			"L" << center + hll * d << " "
 			"L" << center + (hll - ARROW_WIDTH) * d - ARROW_WIDTH * normal <<
 			"'/>"
 		;
