@@ -117,16 +117,27 @@ void schematic_svg_skin::fat_arc(ymse::vec2f p, float r, float t, float begin_in
 
 	float &x(p[0]), &y(p[1]);
 
-	int large_arc_flag = (end - begin) > M_PI ? 1 : 0;
-
 	std::stringstream ss;
 	ss << "<g class='arc'>";
-	ss << "<path class='arc' d='"
-		"M" << x + r1 * cos(begin) << "," << y + r1 * sin(begin) << " "
-		"A" << r1 << "," << r1 << " 0 " << large_arc_flag << ",1 " << x + r1 * cos(end) << "," << y + r1 * sin(end) << " "
-		"L" << x + r2 * cos(end) << "," << y + r2 * sin(end) << " "
-		"A" << r2 << "," << r2 << " 0 " << large_arc_flag << ",0 " << x + r2 * cos(begin) << "," << y + r2 * sin(begin) << " "
-		"Z'/>";
+
+	if (end - begin < M_PI) {
+		ss << "<path class='arc' d='"
+			"M" << x + r1 * cos(begin) << "," << y + r1 * sin(begin) << " "
+			"A" << r1 << "," << r1 << " 0 0,1 " << x + r1 * cos(end) << "," << y + r1 * sin(end) << " "
+			"L" << x + r2 * cos(end) << "," << y + r2 * sin(end) << " "
+			"A" << r2 << "," << r2 << " 0 0,0 " << x + r2 * cos(begin) << "," << y + r2 * sin(begin) << " "
+			"Z'/>";
+	} else {
+		float half = (begin + end) / 2.;
+		ss << "<path class='arc' d='"
+			"M" << x + r1 * cos(begin) << "," << y + r1 * sin(begin) << " "
+			"A" << r1 << "," << r1 << " 0 0,1 " << x + r1 * cos(half) << "," << y + r1 * sin(half) << " "
+			"A" << r1 << "," << r1 << " 0 0,1 " << x + r1 * cos(end) << "," << y + r1 * sin(end) << " "
+			"L" << x + r2 * cos(end) << "," << y + r2 * sin(end) << " "
+			"A" << r2 << "," << r2 << " 0 0,0 " << x + r2 * cos(half) << "," << y + r2 * sin(half) << " "
+			"A" << r2 << "," << r2 << " 0 0,0 " << x + r2 * cos(begin) << "," << y + r2 * sin(begin) << " "
+			"Z'/>";
+	}
 
 	if ((end - begin) * r > ARROW_LENGTH * 1.25) {
 		const float dir = begin_in < end_in ? 1. : -1.;
