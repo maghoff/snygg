@@ -19,6 +19,7 @@
 #include "metaballs.hpp"
 #include "plain_skin.hpp"
 #include "schematic_skin.hpp"
+#include "schematic_svg_skin.hpp"
 #include "textured_skin.hpp"
 #include "complex_polygon.hpp"
 #include "board.hpp"
@@ -40,6 +41,7 @@ struct snygg::impl {
 	boost::scoped_ptr<ymse::gl_box_reshaper> reshaper;
 	boost::ptr_vector<scalable_skin> skins;
 	scalable_skin* active_skin;
+	boost::scoped_ptr<schematic_svg_skin> svg_skin;
 	boost::scoped_ptr<board> active_board;
 	boost::ptr_list<item> items;
 	boost::ptr_list<renderable> renderables;
@@ -215,6 +217,7 @@ void snygg::screenshot_key() {
 	int id = 0;
 	std::string schematic_filename;
 	std::string snakeskin_filename;
+	std::string schematic_svg_filename;
 
 	do {
 		++id;
@@ -226,10 +229,23 @@ void snygg::screenshot_key() {
 		std::ostringstream snas;
 		snas << "snakeskin-" << id << ".png";
 		snakeskin_filename = snas.str();
-	} while (exists(schematic_filename) || exists(snakeskin_filename));
+
+		std::ostringstream svgs;
+		svgs << "schematic-" << id << ".svg";
+		schematic_svg_filename = svgs.str();
+	} while (exists(schematic_filename) || exists(snakeskin_filename) || exists(schematic_svg_filename));
 
 	screenshot_with_skin(schematic_filename, &d->skins[0]);
 	screenshot_with_skin(snakeskin_filename, &d->skins[4]);
+
+	// SVG screenshot:
+	std::ofstream outf(schematic_svg_filename.c_str());
+	schematic_svg_skin svg_skin(outf, d->active_board->bounding_box());
+
+	scalable_skin* prev_skin = d->active_skin;
+	set_skin_key(&svg_skin);
+	render();
+	set_skin_key(prev_skin);
 }
 
 void snygg::reshape(int width, int height) {

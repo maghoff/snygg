@@ -5,10 +5,10 @@
 #include <ymse/vec_fwd.hpp>
 
 class complex_polygon {
+public:
 	std::vector<ymse::vec2f> points;
 	std::vector<int> triangles;
 
-public:
 	complex_polygon();
 	complex_polygon(
 		std::vector<ymse::vec2f> points,

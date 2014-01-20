@@ -8,6 +8,7 @@ def build(bld):
 		'plain_skin.cpp',
 		'scalable_skin.cpp',
 		'schematic_skin.cpp',
+		'schematic_svg_skin.cpp',
 		'skin.cpp',
 		'textured_skin.cpp',
 
