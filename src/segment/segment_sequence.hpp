@@ -33,11 +33,8 @@ public:
 
 	void add_to_triangulator(complex_polygon_triangulator*) const;
 
-	// This segment_sequence assumes ownership
-	void push_back(std::auto_ptr<segment>);
-
-	// This segment_sequence assumes ownership
-	void push_front(std::auto_ptr<segment>);
+	void push_back(std::unique_ptr<segment>&&);
+	void push_front(std::unique_ptr<segment>&&);
 
 	// Added for convenience for luabind
 	void push_back(segment*);

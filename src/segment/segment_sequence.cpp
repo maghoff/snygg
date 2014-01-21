@@ -94,12 +94,12 @@ void segment_sequence::render(skin& s, float head_b) const {
 	render_sequence(d->body, s, head_b);
 }
 
-void segment_sequence::push_back(std::auto_ptr<segment> s) {
-	d->body.push_back(s);
+void segment_sequence::push_back(std::unique_ptr<segment>&& s) {
+	d->body.push_back(s.release());
 }
 
-void segment_sequence::push_front(std::auto_ptr<segment> s) {
-	d->body.push_front(s);
+void segment_sequence::push_front(std::unique_ptr<segment>&& s) {
+	d->body.push_front(s.release());
 }
 
 void segment_sequence::push_back(segment* s) {

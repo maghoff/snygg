@@ -56,7 +56,7 @@ board::board(const boost::filesystem::path& filename) :
 		exit(-1);
 	}
 
-	d->b.push_back(heap->to_segment());
+	d->b.push_back(heap->to_segment().release());
 	calculate_floor_poly();
 }
 

@@ -195,13 +195,13 @@ std::auto_ptr<segment> segment_heap::get_a_connected_sequence() {
 
 	std::unique_ptr<segment_sequence> ss(new segment_sequence);
 	for (auto& x : s) {
-		ss->push_back(std::auto_ptr<segment>(x.first->to_segment(x.second).release()));
+		ss->push_back(x.first->to_segment(x.second));
 	}
 
 	return std::auto_ptr<segment>(ss.release());
 }
 
-std::auto_ptr<segment> segment_heap::to_segment() {
+std::unique_ptr<segment> segment_heap::to_segment() {
 	bool has_closed_segments = false;
 
 	std::unique_ptr<segment_sequence> s(new segment_sequence);
@@ -212,10 +212,10 @@ std::auto_ptr<segment> segment_heap::to_segment() {
 		bool is_closed = are_close(connected_sequence->get_head_pos(), connected_sequence->get_tail_pos());
 
 		if (is_closed) {
-			s->push_back(std::auto_ptr<segment>(new contour_segment(connected_sequence.release())));
+			s->push_back(std::unique_ptr<segment>(new contour_segment(connected_sequence.release())));
 			has_closed_segments = true;
 		} else {
-			s->push_back(std::auto_ptr<segment>(new open_segment(connected_sequence.release())));
+			s->push_back(std::unique_ptr<segment>(new open_segment(connected_sequence.release())));
 		}
 	}
 
@@ -242,8 +242,8 @@ std::auto_ptr<segment> segment_heap::to_segment() {
 		box->push_back(new ::line(vec2f(b.x1 + radius, b.y1), vec2f(1.f, 0.f), b.x2 - b.x1 - 2.*radius));
 		box->push_back(new ::arc(vec2f(b.x2 - radius, b.y1 + radius), radius, tau * 3./4., tau * 4./4., 1.));
 
-		s->push_back(std::auto_ptr<segment>(new contour_segment(box.release())));
+		s->push_back(std::unique_ptr<segment>(new contour_segment(box.release())));
 	}
 
-	return std::auto_ptr<segment>(s.release());
+	return std::move(s);
 }

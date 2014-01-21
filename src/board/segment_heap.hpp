@@ -25,7 +25,7 @@ public:
 	void arc(ymse::vec2f p, float r, float begin, float end);
 	void arc(float x, float y, float r, float begin, float end);
 
-	std::auto_ptr<segment> to_segment();
+	std::unique_ptr<segment> to_segment();
 };
 
 #endif // SEGMENT_HEAP_HPP
