@@ -1,6 +1,5 @@
 #include <cmath>
 #include <list>
-#include <boost/ptr_container/ptr_list.hpp>
 #include <boost/shared_ptr.hpp>
 #include <ymse/rect.hpp>
 #include <ymse/vec.hpp>

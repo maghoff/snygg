@@ -1,5 +1,6 @@
 #include <set>
-#include <boost/ptr_container/ptr_list.hpp>
+#include <boost/ptr_container/ptr_deque.hpp>
+#include <boost/range/adaptor/reversed.hpp>
 #include <ymse/geometry_intersection.hpp>
 #include <ymse/rect.hpp>
 #include <ymse/vec.hpp>
@@ -10,7 +11,7 @@ using ymse::vec2f;
 
 
 struct segment_sequence::impl {
-	boost::ptr_list<segment> body;
+	boost::ptr_deque<segment> body;
 
 	segment& head();
 	segment const & head() const;
@@ -46,28 +47,22 @@ float segment_sequence::tail_forward(float length) {
 }
 
 bool segment_sequence::intersect_with_circle(const ymse::vec2f& p, float r) const {
-	typedef boost::ptr_list<segment>::iterator iter;
-	iter end = d->body.end();
-	for (iter i = d->body.begin(); i !=  end; ++i) {
-		if (i->intersect_with_circle(p, r)) return true;
+	for (auto& s : d->body) {
+		if (s.intersect_with_circle(p, r)) return true;
 	}
 	return false;
 }
 
 bool segment_sequence::intersect_with_self(const ymse::vec2f& p, float r) const {
-	typedef boost::ptr_list<segment>::reverse_iterator iter;
-	iter end = d->body.rend();
-
 	float skiplength = r*2.f + 10.f;
 
-	for (iter i = d->body.rbegin(); i != end; ++i) {
-		if (i->intersect_with_circle(p, r, skiplength)) return true;
+	for (auto& s : boost::adaptors::reverse(d->body)) {
+		if (s.intersect_with_circle(p, r, skiplength)) return true;
 	}
 
 	if (skiplength <= 0) {
-		namespace i = ymse::intersect;
 		vec2f tail(get_tail_pos());
-		if (i::circle_with_circle(p, r, tail, 2.5f)) return true;
+		if (ymse::intersect::circle_with_circle(p, r, tail, 2.5f)) return true;
 	}
 
 	return false;
@@ -91,13 +86,7 @@ vec2f segment_sequence::get_tail_direction() const {
 
 float segment_sequence::length() const {
 	double len = 0;
-
-	typedef boost::ptr_list<segment>::const_iterator iter;
-	iter end = d->body.end();
-	for (iter i = d->body.begin(); i != end; ++i) {
-		len += i->length();
-	}
-
+	for (auto& s : d->body) len += s.length();
 	return len;
 }
 
@@ -121,32 +110,17 @@ ymse::rectf segment_sequence::bounding_box() const {
 	assert(d->body.size() > 0);
 
 	ymse::rectf bb = d->body.front().bounding_box();
-
-	typedef boost::ptr_list<segment>::const_iterator iter;
-	iter end = d->body.end();
-	for (iter i = d->body.begin(); i != end; ++i) {
-		bb = ymse::bounding_box(bb, i->bounding_box());
-	}
+	for (auto& s : d->body) bb = ymse::bounding_box(bb, s.bounding_box());
 
 	return bb;
 }
 
 int segment_sequence::left_hline_intersections(ymse::vec2f p) const {
 	int n = 0;
-
-	typedef boost::ptr_list<segment>::const_iterator iter;
-	iter end = d->body.end();
-	for (iter i = d->body.begin(); i != end; ++i) {
-		n += i->left_hline_intersections(p);
-	}
-
+	for (auto& s : d->body) n += s.left_hline_intersections(p);
 	return n;
 }
 
 void segment_sequence::add_to_triangulator(complex_polygon_triangulator* triangulator) const {
-	typedef boost::ptr_list<segment>::const_iterator iter;
-	iter end = d->body.end();
-	for (iter i = d->body.begin(); i != end; ++i) {
-		i->add_to_triangulator(triangulator);
-	}
+	for (auto& s : d->body) s.add_to_triangulator(triangulator);
 }

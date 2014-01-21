@@ -1,5 +1,5 @@
 #include <boost/ptr_container/ptr_vector.hpp>
-#include <boost/ptr_container/ptr_list.hpp>
+#include <boost/ptr_container/ptr_deque.hpp>
 #include "../segment/segment.hpp"
 #include "renderable.hpp"
 
@@ -17,4 +17,4 @@ void render_sequence(const T& seq, skin& s, float head_b) {
 }
 
 template void render_sequence(const boost::ptr_vector<segment>&, skin&, float);
-template void render_sequence(const boost::ptr_list<segment>&, skin&, float);
+template void render_sequence(const boost::ptr_deque<segment>&, skin&, float);
