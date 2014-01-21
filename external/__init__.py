@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-import os
+import os, patch
 
 
 class Exists:
@@ -17,14 +17,17 @@ LUABIND = {
 	"target_path": "",
 	"is_installed": Exists("luabind-0.9.1"),
 	"includes": "luabind-0.9.1",
+	"patches": [
+		"luabind-gcc-bug.patch",
+	],
 }
 
 BOOST = {
 	"name": "boost",
-	"uri": "http://downloads.sourceforge.net/project/boost/boost/1.46.1/boost_1_46_1.zip",
+	"uri": "http://downloads.sourceforge.net/project/boost/boost/1.55.0/boost_1_55_0.zip",
 	"target_path": "",
-	"is_installed": Exists("boost_1_46_1"),
-	"includes": "boost_1_46_1",
+	"is_installed": Exists("boost_1_55_0"),
+	"includes": "boost_1_55_0",
 }
 
 GLEW = {
@@ -65,6 +68,12 @@ def do_import(verbosity=1):
 			if verbosity >= 1: print "%s already installed" % p["name"]
 		else:
 			extract_uri(p["uri"], installpath, verbosity)
+			for patchFile in (p["patches"] or []):
+				if verbosity >= 1: print "Applying patch %s" % patchFile
+				x = patch.fromfile(os.path.join(os.path.abspath(os.path.dirname(__file__)), patchFile))
+				good = x.apply(1, os.path.join(os.path.abspath(os.path.dirname(__file__)), "downloads"))
+				if not good:
+					raise Error("Failed to apply patch %s" % patchFile)
 
 
 def configure(debug_env, release_env):

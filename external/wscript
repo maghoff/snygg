@@ -22,9 +22,9 @@ def build(bld):
 	stlib_from_dir(
 		bld,
 		'boost_filesystem',
-		'downloads/boost_1_46_1/libs/filesystem/v3/src',
-		includes='downloads/boost_1_46_1',
-		export_includes='downloads/boost_1_46_1',
+		'downloads/boost_1_55_0/libs/filesystem/src',
+		includes='downloads/boost_1_55_0',
+		export_includes='downloads/boost_1_55_0',
 	)
 
 	stlib_from_dir(
