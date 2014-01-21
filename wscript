@@ -26,6 +26,8 @@ def options(opt):
 	opt.add_option('--sdl-image', dest='sdl_image_root', default=None, action='store', help='The path that contains include/SDL_image.h')
 	opt.add_option('--lua', dest='lua_root', default=None, action='store', help='The path that contains include/lua.h')
 
+	opt.add_option('--disallow-long-playing', dest='disallow_long_playing', default=False, action='store_true', help='If specified, the game will terminate when you score 3 points. Use this to focus on programming.')
+
 
 def configure(conf):
 	import os, sys, external, wafutil
@@ -81,6 +83,9 @@ def configure(conf):
 		core_env.LIB_lua = [ 'lua5.1' ]
 
 	conf.check_cfg(package='imlib2', uselib_store='imlib', args=['--cflags', '--libs'], mandatory=False)
+
+	if opt.disallow_long_playing:
+		conf.define('DISALLOW_LONG_PLAYING', 1)
 
 	conf.write_config_header('../src/config.hpp', top=True)
 

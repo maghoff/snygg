@@ -9,6 +9,8 @@
 #include "food_item.hpp"
 #include "food_generator.hpp"
 
+#include "../config.hpp"
+
 struct food_generator::impl {
 	item_container& ic;
 	board& b;
