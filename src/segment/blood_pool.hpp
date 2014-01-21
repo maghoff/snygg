@@ -9,24 +9,24 @@ public:
 	blood_pool(ymse::vec2f pos, float r);
 	~blood_pool();
 
-	void head_forward(float);
-	float tail_forward(float);
+	void head_forward(float) override;
+	float tail_forward(float) override;
 
-	bool intersect_with_circle(const ymse::vec2f&, float r) const;
+	bool intersect_with_circle(const ymse::vec2f&, float r) const override;
 
-	ymse::vec2f get_head_pos() const;
-	ymse::vec2f get_head_direction() const;
-	ymse::vec2f get_tail_pos() const;
-	ymse::vec2f get_tail_direction() const;
+	ymse::vec2f get_head_pos() const override;
+	ymse::vec2f get_head_direction() const override;
+	ymse::vec2f get_tail_pos() const override;
+	ymse::vec2f get_tail_direction() const override;
 
-	float length() const;
-	void render(skin&, float head_b) const;
+	float length() const override;
+	void render(skin&, float head_b) const override;
 
-	void render(skin&) const;
+	void render(skin&) const override;
 
-	ymse::rectf bounding_box() const;
+	ymse::rectf bounding_box() const override;
 
-	int left_hline_intersections(ymse::vec2f) const;
+	int left_hline_intersections(ymse::vec2f) const override;
 };
 
 

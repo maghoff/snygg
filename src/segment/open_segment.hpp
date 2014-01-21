@@ -9,17 +9,17 @@ public:
 	open_segment(segment*); //< For luabind... hmm...
 	~open_segment();
 
-	void render(skin&, float head_b) const;
+	void render(skin&, float head_b) const override;
 
-	ymse::rectf bounding_box() const;
+	ymse::rectf bounding_box() const override;
 
 	// Always returns 0, since this segment is open (it has only one side)
-	int left_hline_intersections(ymse::vec2f p) const;
+	int left_hline_intersections(ymse::vec2f p) const override;
 
-	bool intersect_with_circle(const ymse::vec2f&, float r) const;
+	bool intersect_with_circle(const ymse::vec2f&, float r) const override;
 
 	// Never adds anything
-	void add_to_triangulator(complex_polygon_triangulator*) const;
+	void add_to_triangulator(complex_polygon_triangulator*) const override;
 };
 
 #endif
