@@ -5,7 +5,7 @@
 
 class contour_segment : public segment_filter {
 public:
-	contour_segment(segment_ptr);
+	using segment_filter::segment_filter;
 	contour_segment(segment*); //< For luabind... hmm...
 	~contour_segment();
 

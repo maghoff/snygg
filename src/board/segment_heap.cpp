@@ -145,7 +145,7 @@ void segment_heap::arc(float x, float y, float r, float begin, float end) {
 	arc(ymse::vec2f(x, y), r, begin, end);
 }
 
-std::auto_ptr<segment> segment_heap::get_a_connected_sequence() {
+std::unique_ptr<segment> segment_heap::get_a_connected_sequence() {
 	std::list< std::pair<seg_ptr, int> > s;
 
 	s.push_back(std::make_pair(d->segs.front(), 0));
@@ -198,7 +198,7 @@ std::auto_ptr<segment> segment_heap::get_a_connected_sequence() {
 		ss->push_back(x.first->to_segment(x.second));
 	}
 
-	return std::auto_ptr<segment>(ss.release());
+	return std::move(ss);
 }
 
 std::unique_ptr<segment> segment_heap::to_segment() {

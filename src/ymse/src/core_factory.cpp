@@ -3,8 +3,8 @@
 
 namespace ymse {
 
-std::auto_ptr<core> core_factory() {
-	return std::auto_ptr<core>(new sdl_core);
+std::unique_ptr<core> core_factory() {
+	return std::unique_ptr<core>(new sdl_core);
 }
 
 }

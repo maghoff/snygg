@@ -140,9 +140,9 @@ bool snake::intersect_with_circle(const ymse::vec2f& p, float r) const {
 }
 
 void snake::crack_head() {
-	std::auto_ptr<blood_pool> p(new blood_pool(d->head->get_head_pos(), 2.5f));
+	std::unique_ptr<blood_pool> p(new blood_pool(d->head->get_head_pos(), 2.5f));
 	d->head = p.get();
-	d->ic.add_renderable(renderable_ptr(p));
+	d->ic.add_renderable(std::move(p));
 }
 
 void snake::hit_by(player& p) {

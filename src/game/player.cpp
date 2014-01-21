@@ -43,7 +43,7 @@ void player::spawn_key(bool do_spawn) {
 
 void player::spawn() {
 	if (!d->s) {
-		d->ic.add_item(item_ptr(d->s = new snake(d->ic, d->speed, d->game_board.get_starting_position())));
+		d->ic.add_item(std::unique_ptr<item>(d->s = new snake(d->ic, d->speed, d->game_board.get_starting_position())));
 		d->s->set_turn(d->dir->val());
 		d->del->set_target(d->s);
 	}

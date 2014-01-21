@@ -13,7 +13,7 @@ class segment_heap : public boost::noncopyable
 	struct impl;
 	boost::scoped_ptr<impl> d;
 
-	std::auto_ptr<segment> get_a_connected_sequence();
+	std::unique_ptr<segment> get_a_connected_sequence();
 
 public:
 	segment_heap();

@@ -299,10 +299,10 @@ void snygg::tick() {
 	d->items.erase_if([](item& i) { return i.is_dead(); });
 }
 
-void snygg::add_item(std::auto_ptr<item> i) {
-	d->items.push_back(i);
+void snygg::add_item(std::unique_ptr<item>&& i) {
+	d->items.push_back(i.release());
 }
 
-void snygg::add_renderable(std::auto_ptr<renderable> r) {
-	d->renderables.push_back(r);
+void snygg::add_renderable(std::unique_ptr<renderable>&& r) {
+	d->renderables.push_back(r.release());
 }

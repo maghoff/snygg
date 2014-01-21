@@ -41,6 +41,6 @@ public:
 	virtual void add_to_triangulator(complex_polygon_triangulator*) const { }
 };
 
-typedef std::auto_ptr<segment> segment_ptr;
+typedef std::unique_ptr<segment> segment_ptr;
 
 #endif

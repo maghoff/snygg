@@ -34,8 +34,8 @@ public:
 	void render();
 	void tick();
 
-	void add_item(std::auto_ptr<item>);
-	void add_renderable(std::auto_ptr<renderable>);
+	void add_item(std::unique_ptr<item>&&);
+	void add_renderable(std::unique_ptr<renderable>&&);
 };
 
 #endif

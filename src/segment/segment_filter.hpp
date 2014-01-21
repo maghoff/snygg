@@ -1,14 +1,14 @@
 #ifndef SEGMENT_FILTER_HPP
 #define SEGMENT_FILTER_HPP
 
-#include <boost/scoped_ptr.hpp>
+#include <memory>
 #include "segment.hpp"
 
 class segment_filter : public segment {
-	boost::scoped_ptr<segment> s;
+	segment_ptr s;
 
 public:
-	segment_filter(segment_ptr);
+	segment_filter(segment_ptr&&);
 	~segment_filter();
 
 	void head_forward(float);

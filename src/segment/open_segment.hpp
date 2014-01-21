@@ -5,7 +5,7 @@
 
 class open_segment : public segment_filter {
 public:
-	open_segment(segment_ptr);
+	using segment_filter::segment_filter;
 	open_segment(segment*); //< For luabind... hmm...
 	~open_segment();
 

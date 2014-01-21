@@ -2,8 +2,8 @@
 #include <ymse/vec.hpp>
 #include "segment_filter.hpp"
 
-segment_filter::segment_filter(segment_ptr s_) :
-	s(s_)
+segment_filter::segment_filter(segment_ptr&& s_) :
+	s(std::move(s_))
 {
 }
 

@@ -5,11 +5,6 @@
 #include "skin.hpp"
 #include "open_segment.hpp"
 
-open_segment::open_segment(segment_ptr s_) :
-	segment_filter(s_)
-{
-}
-
 open_segment::open_segment(segment* s_) :
 	segment_filter(segment_ptr(s_))
 {
