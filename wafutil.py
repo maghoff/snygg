@@ -106,6 +106,10 @@ class gcc_configurator:
 			# alternative, but it optimizes less. From GCC 4.6, WHOPR is the
 			# default when specifying LTO like this.
 
+	@staticmethod
+	def enable_cpp11(env):
+		env.append_unique('CXXFLAGS', '--std=c++11')
+
 
 class msvc_configurator:
 	@staticmethod
@@ -159,6 +163,11 @@ class msvc_configurator:
 		env.append_unique('CXXFLAGS', '/GL')
 		env.append_unique('CCFLAGS', '/GL')
 		env.append_unique('LINKFLAGS', '/LTCG')
+
+	@staticmethod
+	def enable_cpp11(env):
+		# This is supposed to be enabled by default
+		pass
 
 
 def get_compiler_configurator(conf):

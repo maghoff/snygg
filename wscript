@@ -40,15 +40,18 @@ def configure(conf):
 	cc = wafutil.get_compiler_configurator(conf)
 
 	cc.sane_default(conf.env)
+	cc.enable_cpp11(conf.env)
 	cc.many_warnings(conf.env)
 	cc.warnings_as_errors(conf.env)
 
 	core_env = conf.env
-	core_env.append_unique('CXXFLAGS', '-Wno-unused-local-typedefs')
 
 	if conf.env['CXX_NAME'] == 'gcc':
-		# luabind triggers the following warning. It should not break the build:
+		# luabind triggers the following warnings. It should not break the build:
 		core_env.append_unique('CXXFLAGS', '-Wno-error=unused-variable')
+		core_env.append_unique('CXXFLAGS', '-Wno-error=deprecated-declarations')
+		# Completely silence this one, since it is super noisy:
+		core_env.append_unique('CXXFLAGS', '-Wno-unused-local-typedefs')
 
 	from waflib.Options import options as opt
 
