@@ -32,8 +32,6 @@ def build(bld):
 		'sdl_core.cpp',
 		'signaling_opposite_keys.cpp',
 		'vec.cpp',
-
-		'../../../external/downloads/glew-1.5.8/src/glew.c',
 	]
 
 	obj = bld.stlib(
