@@ -29,7 +29,7 @@ struct seg {
 	virtual ~seg() {}
 
 	virtual vec2f pos(int) = 0;
-	virtual std::auto_ptr<segment> to_segment(int) = 0;
+	virtual std::unique_ptr<segment> to_segment(int) = 0;
 
 	virtual bool consolidate_dispatcher(int j, seg*, int i) = 0;
 	virtual bool consolidate(int i, line*, int j) = 0;
@@ -46,10 +46,10 @@ struct line : seg {
 
 	vec2f pos(int i) { return p[i]; }
 
-	std::auto_ptr<segment> to_segment(int i) {
+	std::unique_ptr<segment> to_segment(int i) {
 		vec2f d = p[1-i] - p[i];
 		float len = d.length();
-		return std::auto_ptr<segment>(new ::line(p[i], d*(1.f/len), len));
+		return std::unique_ptr<segment>(new ::line(p[i], d*(1.f/len), len));
 	}
 
 	bool consolidate_dispatcher(int j, seg* first, int i) {
@@ -84,9 +84,9 @@ struct arc : seg {
 		return p + rad * vec2f(cos(ang[i]), sin(ang[i]));
 	}
 
-	std::auto_ptr<segment> to_segment(int i) {
+	std::unique_ptr<segment> to_segment(int i) {
 		float dir = ang[1-i] >= ang[i] ? 1 : -1;
-		return std::auto_ptr<segment>(new ::arc(p, rad, ang[i], ang[1-i], dir));
+		return std::unique_ptr<segment>(new ::arc(p, rad, ang[i], ang[1-i], dir));
 	}
 
 	bool consolidate_dispatcher(int j, seg* first, int i) {
@@ -193,9 +193,9 @@ std::auto_ptr<segment> segment_heap::get_a_connected_sequence() {
 		}
 	}
 
-	std::auto_ptr<segment_sequence> ss(new segment_sequence);
-	for (std::list< std::pair<seg_ptr, int> >::iterator i = s.begin(); i != s.end(); ++i) {
-		ss->push_back(i->first->to_segment(i->second));
+	std::unique_ptr<segment_sequence> ss(new segment_sequence);
+	for (auto& x : s) {
+		ss->push_back(std::auto_ptr<segment>(x.first->to_segment(x.second).release()));
 	}
 
 	return std::auto_ptr<segment>(ss.release());
@@ -204,10 +204,10 @@ std::auto_ptr<segment> segment_heap::get_a_connected_sequence() {
 std::auto_ptr<segment> segment_heap::to_segment() {
 	bool has_closed_segments = false;
 
-	std::auto_ptr<segment_sequence> s(new segment_sequence);
+	std::unique_ptr<segment_sequence> s(new segment_sequence);
 
 	while (!d->segs.empty()) {
-		std::auto_ptr<segment> connected_sequence = get_a_connected_sequence();
+		std::unique_ptr<segment> connected_sequence = get_a_connected_sequence();
 
 		bool is_closed = are_close(connected_sequence->get_head_pos(), connected_sequence->get_tail_pos());
 
@@ -232,7 +232,7 @@ std::auto_ptr<segment> segment_heap::to_segment() {
 		b.x2 += margin;
 		b.y2 += margin;
 
-		std::auto_ptr<segment_sequence> box(new segment_sequence);
+		std::unique_ptr<segment_sequence> box(new segment_sequence);
 		box->push_back(new ::line(vec2f(b.x2, b.y1 + radius), vec2f(0.f, 1.f), b.y2 - b.y1 - 2.*radius));
 		box->push_back(new ::arc(vec2f(b.x2 - radius, b.y2 - radius), radius, tau * 0./4., tau * 1./4., 1.));
 		box->push_back(new ::line(vec2f(b.x2 - radius, b.y2), vec2f(-1.f, 0.f), b.x2 - b.x1 - 2.*radius));
