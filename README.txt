@@ -11,9 +11,8 @@ You need to supply the following libraries:
  * imlib2 (Optional, required for screenshots)
  * OpenGL
  * GLUT
- * lua
 
-On Ubuntu, most of these can be resolved automatically by running ./prepare.sh
+On Ubuntu, these should be resolved automatically by running ./prepare.sh
 
 
 Configure

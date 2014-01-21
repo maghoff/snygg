@@ -24,7 +24,6 @@ def options(opt):
 
 	opt.add_option('--sdl', dest='sdl_root', default=None, action='store', help='The path that contains include/SDL.h')
 	opt.add_option('--sdl-image', dest='sdl_image_root', default=None, action='store', help='The path that contains include/SDL_image.h')
-	opt.add_option('--lua', dest='lua_root', default=None, action='store', help='The path that contains include/lua.h')
 
 	opt.add_option('--disallow-long-playing', dest='disallow_long_playing', default=False, action='store_true', help='If specified, the game will terminate when you score 3 points. Use this to focus on programming.')
 
@@ -72,15 +71,6 @@ def configure(conf):
 		core_env.INCLUDES_SDL_image = [ os.path.join(opt.sdl_image_root, 'include') ]
 		core_env.LIBPATH_SDL_image = [ os.path.join(opt.sdl_image_root, 'lib') ]
 		core_env.LIB_SDL_image = [ 'SDL_image' ]
-
-	if opt.lua_root == None:
-		conf.check_cfg(package='lua5.1', uselib_store='lua', args=['--cflags', '--libs'], mandatory=False)
-		if 'HAVE_LUA' not in conf.env['define_key']:
-			conf.check_cfg(package='lua', uselib_store='lua', args=['--cflags', '--libs'])
-	else:
-		core_env.INCLUDES_lua = [ os.path.join(opt.lua_root, 'include') ]
-		core_env.LIBPATH_lua = [ opt.lua_root ]
-		core_env.LIB_lua = [ 'lua5.1' ]
 
 	conf.check_cfg(package='imlib2', uselib_store='imlib', args=['--cflags', '--libs'], mandatory=False)
 
