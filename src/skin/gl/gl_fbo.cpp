@@ -68,7 +68,8 @@ gl_fbo_multisample::gl_fbo_multisample(int width, int height) {
 }
 
 void gl_fbo_multisample::set_size(int width_, int height_) {
-	const int samples = 16;
+	GLint samples;
+	glGetIntegerv(GL_MAX_INTEGER_SAMPLES, &samples);
 
 	width = width_;
 	height = height_;
