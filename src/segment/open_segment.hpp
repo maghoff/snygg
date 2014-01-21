@@ -19,7 +19,7 @@ public:
 	bool intersect_with_circle(const ymse::vec2f&, float r) const override;
 
 	// Never adds anything
-	void add_to_triangulator(complex_polygon_triangulator*) const override;
+	void add_to_triangulator(complex_polygon_triangulator&) const override;
 };
 
 #endif

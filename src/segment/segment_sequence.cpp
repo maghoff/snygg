@@ -121,6 +121,6 @@ int segment_sequence::left_hline_intersections(ymse::vec2f p) const {
 	return n;
 }
 
-void segment_sequence::add_to_triangulator(complex_polygon_triangulator* triangulator) const {
+void segment_sequence::add_to_triangulator(complex_polygon_triangulator& triangulator) const {
 	for (auto& s : d->body) s.add_to_triangulator(triangulator);
 }

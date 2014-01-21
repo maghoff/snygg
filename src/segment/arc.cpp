@@ -221,7 +221,7 @@ int arc::left_hline_intersections(ymse::vec2f p) const {
 	return n;
 }
 
-void arc::add_to_triangulator(complex_polygon_triangulator* triangulator) const {
+void arc::add_to_triangulator(complex_polygon_triangulator& triangulator) const {
 	double inner = r - thickness, outer = r + thickness;
 	double sigma = M_PI - 2. * asin(inner / outer);
 
@@ -229,7 +229,7 @@ void arc::add_to_triangulator(complex_polygon_triangulator* triangulator) const 
 	double delta = (end - begin) / n;
 	for (int i=0; i<=n; ++i) {
 		double ang = begin + delta * i;
-		triangulator->point(ymse::vec2f(
+		triangulator.point(ymse::vec2f(
 			x + outer * cos(ang),
 			y + outer * sin(ang)
 		));

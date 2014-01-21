@@ -25,6 +25,6 @@ ymse::rectf segment_filter::bounding_box() const { return s->bounding_box(); }
 
 int segment_filter::left_hline_intersections(ymse::vec2f p) const { return s->left_hline_intersections(p); }
 
-void segment_filter::add_to_triangulator(complex_polygon_triangulator* t) const { s->add_to_triangulator(t); }
+void segment_filter::add_to_triangulator(complex_polygon_triangulator& t) const { s->add_to_triangulator(t); }
 
 bool segment_filter::intersect_with_circle(const ymse::vec2f& p, float r) const { return s->intersect_with_circle(p, r); }

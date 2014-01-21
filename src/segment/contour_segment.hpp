@@ -9,7 +9,7 @@ public:
 	contour_segment(segment*); //< For luabind... hmm...
 	~contour_segment();
 
-	void add_to_triangulator(complex_polygon_triangulator*) const override;
+	void add_to_triangulator(complex_polygon_triangulator&) const override;
 };
 
 #endif // CONTOUR_SEGMENT_HPP

@@ -8,8 +8,8 @@ contour_segment::contour_segment(segment* s) :
 
 contour_segment::~contour_segment() { }
 
-void contour_segment::add_to_triangulator(complex_polygon_triangulator* triangulator) const {
-	triangulator->start_contour();
+void contour_segment::add_to_triangulator(complex_polygon_triangulator& triangulator) const {
+	triangulator.start_contour();
 	segment_filter::add_to_triangulator(triangulator);
-	triangulator->end_contour();
+	triangulator.end_contour();
 }

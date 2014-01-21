@@ -38,7 +38,7 @@ public:
 	// This is used to determine the winding number of a new food item.
 	virtual int left_hline_intersections(ymse::vec2f p) const = 0;
 
-	virtual void add_to_triangulator(complex_polygon_triangulator*) const { }
+	virtual void add_to_triangulator(complex_polygon_triangulator&) const { }
 };
 
 typedef std::unique_ptr<segment> segment_ptr;

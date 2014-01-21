@@ -26,7 +26,7 @@ public:
 
 	int left_hline_intersections(ymse::vec2f p) const override;
 
-	void add_to_triangulator(complex_polygon_triangulator*) const override;
+	void add_to_triangulator(complex_polygon_triangulator&) const override;
 
 	bool intersect_with_circle(const ymse::vec2f&, float r) const override;
 };

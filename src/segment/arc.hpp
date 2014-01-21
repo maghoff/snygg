@@ -42,7 +42,7 @@ public:
 
 	int left_hline_intersections(ymse::vec2f) const override;
 
-	void add_to_triangulator(complex_polygon_triangulator*) const override;
+	void add_to_triangulator(complex_polygon_triangulator&) const override;
 };
 
 #endif

@@ -113,15 +113,8 @@ int board::winding_number(ymse::vec2f p) const {
 }
 
 void board::calculate_floor_poly() {
-	complex_polygon_triangulator_gpc triangulator_impl;
-
-	complex_polygon_triangulator& triangulator = triangulator_impl;
-
-	typedef boost::ptr_vector<segment>::const_iterator seg_it;
-	for (seg_it it = d->b.begin(); it != d->b.end(); ++it) {
-		it->add_to_triangulator(&triangulator);
-	}
-
+	complex_polygon_triangulator_gpc triangulator;
+	for (auto& seg : d->b) seg.add_to_triangulator(triangulator);
 	d->floor_poly = triangulator.get_complex_polygon();
 }
 
