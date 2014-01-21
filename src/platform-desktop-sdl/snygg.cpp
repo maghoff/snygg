@@ -1,6 +1,7 @@
 #include <SDL.h>
 #include <cmath>
 #include <sstream>
+#include <iomanip>
 #include <vector>
 #include <ymse/gl.h>
 #include <boost/bind.hpp>
@@ -211,35 +212,35 @@ void snygg::screenshot_with_skin(const std::string& filename, scalable_skin* sel
 	reshape(w, h);
 }
 
+static std::string format(int id, const std::string& suffix) {
+	auto prefix = "screenshot-";
+
+	std::stringstream ss;
+	ss << prefix << std::setw(3) << std::setfill('0') << id << suffix;
+	return ss.str();
+}
+
 void snygg::screenshot_key() {
 	using namespace boost::filesystem;
 
+	const char* suffixes[] = {
+		"-schematic.png",
+		"-snakeskin.png",
+		"-schematic.svg"
+	};
+
 	int id = 0;
-	std::string schematic_filename;
-	std::string snakeskin_filename;
-	std::string schematic_svg_filename;
+next_id:
+	++id;
+	for (auto& suffix : suffixes) {
+		if (exists(format(id, suffix))) goto next_id;
+	}
 
-	do {
-		++id;
-
-		std::ostringstream schs;
-		schs << "schematic-" << id << ".png";
-		schematic_filename = schs.str();
-
-		std::ostringstream snas;
-		snas << "snakeskin-" << id << ".png";
-		snakeskin_filename = snas.str();
-
-		std::ostringstream svgs;
-		svgs << "schematic-" << id << ".svg";
-		schematic_svg_filename = svgs.str();
-	} while (exists(schematic_filename) || exists(snakeskin_filename) || exists(schematic_svg_filename));
-
-	screenshot_with_skin(schematic_filename, &d->skins[0]);
-	screenshot_with_skin(snakeskin_filename, &d->skins[4]);
+	screenshot_with_skin(format(id, suffixes[0]), &d->skins[0]);
+	screenshot_with_skin(format(id, suffixes[1]), &d->skins[4]);
 
 	// SVG screenshot:
-	std::ofstream outf(schematic_svg_filename.c_str());
+	std::ofstream outf(format(id, suffixes[2]));
 	schematic_svg_skin svg_skin(outf, d->active_board->bounding_box());
 
 	scalable_skin* prev_skin = d->active_skin;
