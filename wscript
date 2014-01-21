@@ -41,10 +41,14 @@ def configure(conf):
 
 	cc.sane_default(conf.env)
 	cc.many_warnings(conf.env)
-	#cc.warnings_as_errors(conf.env)
+	cc.warnings_as_errors(conf.env)
 
 	core_env = conf.env
 	core_env.append_unique('CXXFLAGS', '-Wno-unused-local-typedefs')
+
+	if conf.env['CXX_NAME'] == 'gcc':
+		# luabind triggers the following warning. It should not break the build:
+		core_env.append_unique('CXXFLAGS', '-Wno-error=unused-variable')
 
 	from waflib.Options import options as opt
 

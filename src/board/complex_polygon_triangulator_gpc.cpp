@@ -1,4 +1,6 @@
 #include <cassert>
+#include <stdexcept>
+#include <limits>
 #include <ymse/vec.hpp>
 #include "complex_polygon.hpp"
 #include "complex_polygon_triangulator_gpc.hpp"
@@ -18,7 +20,9 @@ void complex_polygon_triangulator_gpc::start_contour() {
 void complex_polygon_triangulator_gpc::end_contour() {
 	gpc_polygon current_polygon = {0, 0, 0};
 	gpc_polygon next_polygon = {0, 0, 0};
-	gpc_vertex_list contour = {current_contour.size(), current_contour.data()};
+
+	if (current_contour.size() > static_cast<std::size_t>(std::numeric_limits<int>::max())) throw std::runtime_error("Contour too large");
+	gpc_vertex_list contour = {static_cast<int>(current_contour.size()), current_contour.data()};
 
 	gpc_add_contour(&current_polygon, &contour, 0);
 

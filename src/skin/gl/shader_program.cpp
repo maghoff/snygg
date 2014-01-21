@@ -1,3 +1,5 @@
+#include <limits>
+#include <stdexcept>
 #include "shader_program.hpp"
 #include "shader_builder.hpp"
 
@@ -21,7 +23,10 @@ void shader_program::recreate_opengl_resources() {
 	for (shader_it i = shaders.begin(); i != shaders.end(); ++i) {
 		GLuint shader = glCreateShader(i->type);
 		const GLchar* sources[] = { i->source.data() };
-		GLint lengths[] = { i->source.size() };
+
+		if (i->source.size() > static_cast<std::size_t>(std::numeric_limits<GLint>::max())) throw std::runtime_error("Soruce code too large");
+		GLint lengths[] = { static_cast<GLint>(i->source.size()) };
+
 		glShaderSource(shader, 1, sources, lengths);
 		glCompileShader(shader);
 		glAttachShader(program, shader);
