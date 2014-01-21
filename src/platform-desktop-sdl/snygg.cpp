@@ -3,10 +3,10 @@
 #include <sstream>
 #include <iomanip>
 #include <vector>
+#include <algorithm>
 #include <ymse/gl.h>
 #include <boost/bind.hpp>
 #include <boost/filesystem/operations.hpp>
-#include <boost/ptr_container/ptr_list.hpp>
 #include <boost/ptr_container/ptr_vector.hpp>
 #include <ymse/bindable_keyboard_handler.hpp>
 #include <ymse/gl/texture.hpp>
@@ -44,8 +44,8 @@ struct snygg::impl {
 	scalable_skin* active_skin;
 	boost::scoped_ptr<schematic_svg_skin> svg_skin;
 	boost::scoped_ptr<board> active_board;
-	boost::ptr_list<item> items;
-	boost::ptr_list<renderable> renderables;
+	boost::ptr_vector<item> items;
+	boost::ptr_vector<renderable> renderables;
 	boost::ptr_vector<player> players;
 	boost::scoped_ptr<food_generator> fg;
 
@@ -262,10 +262,6 @@ void snygg::set_skin_key(scalable_skin* skin) {
 }
 
 void snygg::render() {
-	typedef boost::ptr_vector<player>::iterator piter;
-	typedef boost::ptr_list<item>::iterator iiter;
-	typedef boost::ptr_list<renderable>::iterator riter;
-
 	init_gl();
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -277,52 +273,30 @@ void snygg::render() {
 
 	d->active_skin->enter_state(skin::other_state);
 
-	iiter iend = d->items.end();
-	for (iiter i = d->items.begin(); i != iend; ++i) {
-		i->render(*d->active_skin);
-	}
-
-	riter rend = d->renderables.end();
-	for (riter i = d->renderables.begin(); i != rend; ++i) {
-		i->render(*d->active_skin);
-	}
+	for (auto& item : d->items) item.render(*d->active_skin);
+	for (auto& renderable : d->renderables) renderable.render(*d->active_skin);
 
 	d->active_skin->floor(d->active_board->floor_polygon());
 }
 
 void snygg::tick() {
-	typedef boost::ptr_vector<player>::iterator piter;
-	typedef boost::ptr_list<item>::iterator iiter;
-	typedef std::vector<player*> dead_players_c;
-	typedef std::vector<player*>::iterator iter_d;
-
-	const iiter iend = d->items.end();
-	const piter pend = d->players.end();
-
-	for (iiter i = d->items.begin(); i != iend; ++i) {
-		if (!i->is_dead()) i->move();
+	for (auto& item : d->items) {
+		if (!item.is_dead()) item.move();
 	}
 
-	dead_players_c dead_players;
-	for (piter i = d->players.begin(); i != pend; ++i) {
-		for (iiter j = d->items.begin(); j != iend; ++j) {
-			if (!j->is_dead() && i->crashes_with(*j)) j->hit_by(*i);
+	std::vector<player*> dead_players;
+	for (auto& player : d->players) {
+		for (auto& item : d->items) {
+			if (!item.is_dead() && player.crashes_with(item)) item.hit_by(player);
 		}
-		if (i->crashes_with(*d->active_board)) {
-			dead_players.push_back(&*i);
+		if (player.crashes_with(*d->active_board)) {
+			dead_players.push_back(&player);
 		}
 	}
 
-	iter_d end_d = dead_players.end();
-	for (iter_d i = dead_players.begin(); i != end_d; ++i) {
-		(*i)->die();
-	}
+	for (auto& dead_player : dead_players) dead_player->die();
 
-	for (iiter i = d->items.begin(), j; i != iend; i = j) {
-		j = i;
-		++j;
-		if (i->is_dead()) d->items.erase(i);
-	}
+	d->items.erase_if([](item& i) { return i.is_dead(); });
 }
 
 void snygg::add_item(std::auto_ptr<item> i) {
