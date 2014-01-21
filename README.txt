@@ -1,42 +1,43 @@
-Notes on how to build easily
-============================
+Build instructions
+==================
 
-Preparation
------------
+Dependencies
+------------
 
-Run ./prepare.sh to resolve most dependencies (on Ubuntu 10.04 at least)
-and do the necessary build initialization (See CMake below)
+You need to supply the following libraries:
 
+ * SDL
+ * SDL_image
+ * imlib2 (Optional, required for screenshots)
+ * OpenGL
+ * GLUT
+ * lua
 
-Ymse
-----
-
-You need a checkout of ymse. From some proper directory, do this:
-
-    hg clone http://bitbucket.org/maghoff/ymse/
-    cd ymse
-    cmake .
-    make -j3
+On Ubuntu, most of these can be resolved automatically by running ./prepare.sh
 
 
-To let snygg locate ymse, please set the YMSE_PATH:
+Configure
+---------
 
-    export YMSE_PATH=`pwd`
+	./waf configure
+
+The configure step will let `waf` inspect the system and create the necessary
+build configuration. It will also cause downloading of some additional
+dependencies.
+
+`waf` is a python script, so you can alternatively invoke it by calling the
+interpreter explicitly. This is probably a good idea on Windows.
 
 
-Snygg
+Build
 -----
 
-Then build and run snygg (again, from the proper directory):
-
-    make -Cdebug -j
-    debug/src/snygg
+	./waf build_debug # and/or build_release
 
 
-CMake
------
+Run
+---
 
-This project uses CMake. Prepare will do the necessary initial invocations of
-CMake. After that, it is sufficient to run just make in the debug or release
-directory.
+	./build/debug/src/platform-desktop-sdl/snygg
 
+Substitute `release` for `debug` in the above to use an optimized build.

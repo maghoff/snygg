@@ -1,0 +1,45 @@
+#!/bin/env python
+# -*- coding: utf-8 -*-
+
+def build(bld):
+	sources = [
+		'gl/program.cpp',
+		'gl/shader.cpp',
+		'gl/texture.cpp',
+		'sdl/img_load.cpp',
+		'sdl/surface.cpp',
+		'bindable_keyboard_handler.cpp',
+		'box_reshaper.cpp',
+		'core.cpp',
+		'core_factory.cpp',
+		'fileutil.cpp',
+		'fixed_aspect_reshaper.cpp',
+		'game.cpp',
+		'geometry_intersection.cpp',
+		'gl_box_reshaper.cpp',
+		'key.cpp',
+		'keyboard_handler.cpp',
+		'load_image.cpp',
+		'matrix.cpp',
+		'matrix2d_homogenous.cpp',
+		'matrix3d.cpp',
+		'mouse_handler.cpp',
+		'opposite_keys.cpp',
+		'opposite_keys_listener.cpp',
+		'pixels_per_unit_listener.cpp',
+		'rect.cpp',
+		'reshaper.cpp',
+		'sdl_core.cpp',
+		'signaling_opposite_keys.cpp',
+		'vec.cpp',
+
+		'../../../external/downloads/glew-1.5.8/src/glew.c',
+	]
+
+	obj = bld.stlib(
+		source=sources,
+		target='ymse',
+		use=['gl', 'glew', 'SDL_image', 'SDL'],
+		includes=['../ymse'],
+		export_includes=['..'],
+	)

@@ -12,6 +12,7 @@ def download(files):
 	import urllib2, os
 	for local, remote in files.iteritems():
 		if os.path.isfile(local): continue
+		print("Downloading %s -> %s" % (remote, local))
 		r = urllib2.urlopen(remote)
 		data = r.read()
 		with open(local, 'wb') as l: l.write(data)
@@ -27,14 +28,7 @@ def options(opt):
 
 
 def configure(conf):
-	import os, sys, external
-	try:
-		sys.path.append(os.environ['YMSE_PATH'])
-		import pymse.wafutil as wafutil
-	except Exception, e:
-		print "Failed to load pymse.wafutil. Bailing out"
-		print e
-		sys.exit(1)
+	import os, sys, external, wafutil
 
 	wafutil.msvc_initial_setup(conf.env, msvc_versions=[(10, 0)])
 
@@ -52,7 +46,7 @@ def configure(conf):
 	core_env = conf.env
 	core_env.append_unique('CXXFLAGS', '-Wno-unused-local-typedefs')
 
-	from Options import options as opt
+	from waflib.Options import options as opt
 
 	if opt.sdl_root == None:
 		conf.check_cfg(package='sdl', uselib_store='SDL', args=['--cflags', '--libs'])
@@ -93,7 +87,7 @@ def configure(conf):
 	cc.link_time_code_generation(release_env)
 	conf.setenv('release', env = release_env)
 
-	wafutil.configure_ymse(debug_env, release_env)
+	wafutil.configure_gl(debug_env, release_env)
 
 	download(DOWNLOAD_FILES)
 
@@ -102,7 +96,10 @@ def configure(conf):
 
 
 def core_build(bld):
-	bld.add_subdirs('src')
+	bld.recurse([
+		'external',
+		'src',
+	])
 
 
 # All of the following boiler plate is recommended (demanded) by the waf book for enabling build variants:

@@ -2,7 +2,8 @@
 # -*- coding: utf-8 -*-
 
 def build(bld):
-	bld.add_subdirs([
+	bld.recurse([
+		'ymse',
 		'skin',
 		'segment',
 		'core',

@@ -1,0 +1,24 @@
+#!/bin/env python
+# -*- coding: utf-8 -*-
+
+import os
+from glob import glob
+
+def stlib_from_dir(bld, target, sourcedir):
+	files = os.listdir(os.path.join('external', sourcedir))
+
+	sources = [os.path.join(sourcedir, f) for f in files if f.endswith('.cpp')]
+
+	if len(sources) == 0:
+		print "WARNING: No sources for %s found in %s" % (target, sourcedir)
+
+	obj = bld.stlib(
+		source=sources,
+		target=target,
+		includes='downloads/boost_1_46_1',
+		export_includes='downloads/boost_1_46_1',
+	)
+
+def build(bld):
+	stlib_from_dir(bld, 'boost_filesystem', 'downloads/boost_1_46_1/libs/filesystem/v3/src')
+	stlib_from_dir(bld, 'boost_system', 'downloads/boost_1_46_1/libs/system/src')

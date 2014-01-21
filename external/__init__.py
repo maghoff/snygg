@@ -19,8 +19,26 @@ LUABIND = {
 	"includes": "luabind-0.9.1",
 }
 
+BOOST = {
+	"name": "boost",
+	"uri": "http://downloads.sourceforge.net/project/boost/boost/1.46.1/boost_1_46_1.zip",
+	"target_path": "",
+	"is_installed": Exists("boost_1_46_1"),
+	"includes": "boost_1_46_1",
+}
+
+GLEW = {
+	"name": "glew",
+	"uri": "https://sourceforge.net/projects/glew/files/glew/1.5.8/glew-1.5.8.zip/download",
+	"target_path": "",
+	"is_installed": Exists("glew-1.5.8"),
+	"includes": "glew-1.5.8/include",
+}
+
 PACKAGES = [
 	LUABIND,
+	BOOST,
+	GLEW,
 ]
 
 

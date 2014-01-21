@@ -14,7 +14,7 @@ xcode
 import/luabind-*
 waf-*
 .waf-*
-.lock-wafbuild
+.lock-waf*
 build
 external/downloads
 src/config.hpp
