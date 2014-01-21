@@ -130,11 +130,11 @@ void snygg::attach_to_core(ymse::sdl_core& core) {
 	d->kbd->bind_pressed(ymse::KEY_N, boost::bind(&ymse::sdl_core::set_video_mode, &core, 1280, 720, false));
 }
 
-static void save_screenshot(std::string filename, std::auto_ptr<std::vector<unsigned char> > pixels, unsigned w, unsigned h) {
+static void save_screenshot(const std::string& filename, unsigned char* pixels, unsigned w, unsigned h) {
 #ifdef HAVE_IMLIB
 	Imlib_Image img;
 
-	img = imlib_create_image_using_data(w, h, reinterpret_cast<unsigned int*>(pixels->data()));
+	img = imlib_create_image_using_data(w, h, reinterpret_cast<unsigned int*>(pixels));
 
 	imlib_context_set_image(img);
 	imlib_image_set_has_alpha(1);
@@ -147,8 +147,8 @@ static void save_screenshot(std::string filename, std::auto_ptr<std::vector<unsi
 }
 
 void snygg::take_screenshot(const std::string& filename, unsigned tex_id, unsigned w, unsigned h) {
-	std::auto_ptr<std::vector<unsigned char> > px_buf(new std::vector<unsigned char>(4*w*h));
-	unsigned char* pixels = px_buf->data();
+	std::vector<unsigned char> px_buf(4*w*h);
+	unsigned char* pixels = px_buf.data();
 
 	glGetError();
 	glBindTexture(GL_TEXTURE_2D, tex_id);
@@ -173,7 +173,7 @@ void snygg::take_screenshot(const std::string& filename, unsigned tex_id, unsign
 		std::swap_ranges(a, a+pitch, b);
 	}
 
-	save_screenshot(filename, px_buf, w, h);
+	save_screenshot(filename, px_buf.data(), w, h);
 }
 
 void snygg::screenshot_with_skin(const std::string& filename, scalable_skin* selected_skin) {
