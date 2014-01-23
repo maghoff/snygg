@@ -30,9 +30,9 @@ def build(bld):
 	stlib_from_dir(
 		bld,
 		'boost_system',
-		'downloads/boost_1_46_1/libs/system/src',
-		includes='downloads/boost_1_46_1',
-		export_includes='downloads/boost_1_46_1',
+		'downloads/boost_1_55_0/libs/system/src',
+		includes='downloads/boost_1_55_0',
+		export_includes='downloads/boost_1_55_0',
 	)
 
 	stlib_from_dir(
