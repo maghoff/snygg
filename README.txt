@@ -10,7 +10,6 @@ You need to supply the following libraries:
  * SDL_image
  * imlib2 (Optional, required for screenshots)
  * OpenGL
- * GLUT
 
 On Ubuntu, these should be resolved automatically by running ./prepare.sh
 

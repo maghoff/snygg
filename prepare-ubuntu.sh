@@ -1,6 +1,6 @@
 #!/bin/bash
 
-PACKAGES="build-essential freeglut3-dev libsdl-dev libsdl-image1.2-dev lintian desktop-file-utils libimlib2-dev"
+PACKAGES="build-essential libsdl-dev libsdl-image1.2-dev lintian desktop-file-utils libimlib2-dev"
 
 if ! dpkg -l $PACKAGES >/dev/null
 then
