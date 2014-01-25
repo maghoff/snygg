@@ -18,6 +18,68 @@ def stlib_from_dir(bld, target, sourcedir, **kwargs):
 		**kwargs
 	)
 
+def libjpeg(bld):
+	sources = map(lambda x: os.path.join('downloads', 'jpeg-6b', x), [
+		"jcapimin.c",
+		"jcapistd.c",
+		"jdapimin.c",
+		"jdapistd.c",
+		"jcomapi.c",
+		"jcparam.c",
+		"jctrans.c",
+		"jdtrans.c",
+
+		# Compression side of the library:
+		"jcinit.c",
+		"jcmaster.c",
+		"jcmainct.c",
+		"jcprepct.c",
+		"jccoefct.c",
+		"jccolor.c",
+		"jcsample.c",
+		"jcdctmgr.c",
+		"jfdctint.c",
+		"jfdctfst.c",
+		"jfdctflt.c",
+		"jchuff.c",
+		"jcphuff.c",
+		"jcmarker.c",
+		"jdatadst.c",
+
+		# Decompression side of the library:
+		"jdmaster.c",
+		"jdinput.c",
+		"jdmainct.c",
+		"jdcoefct.c",
+		"jdpostct.c",
+		"jdmarker.c",
+		"jdhuff.c",
+		"jdphuff.c",
+		"jddctmgr.c",
+		"jidctint.c",
+		"jidctfst.c",
+		"jidctflt.c",
+		"jidctred.c",
+		"jdsample.c",
+		"jdcolor.c",
+		"jdmerge.c",
+		"jquant1.c",
+		"jquant2.c",
+		"jdatasrc.c",
+
+		# Support files for both compression and decompression:
+		"jerror.c",
+		"jmemmgr.c",
+		"jutils.c",
+		"jmemmgr.c",
+		"jmemnobs.c",
+	])
+
+	obj = bld.stlib(
+		source=sources,
+		target="jpeg",
+	)
+
 def build(bld):
 	stlib_from_dir(
 		bld,
@@ -62,3 +124,5 @@ def build(bld):
 		includes='downloads/glew-1.5.8/include',
 		export_includes='downloads/glew-1.5.8/include',
 	)
+
+	libjpeg(bld)

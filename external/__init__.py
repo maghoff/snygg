@@ -52,11 +52,23 @@ GLEW = {
 	"includes": "glew-1.5.8/include",
 }
 
+LIBJPEG = {
+	"name": "libjpeg",
+	"uri": "http://downloads.sourceforge.net/project/libjpeg/libjpeg/6b/jpegsr6.zip",
+	"compression": zip,
+	"is_installed": Exists("jpeg-6b"),
+	"includes": "jpeg-6b",
+	"patches": [
+		"jpeg6b.patch",
+	],
+}
+
 PACKAGES = [
 	LUA,
 	LUABIND,
 	BOOST,
 	GLEW,
+	LIBJPEG,
 ]
 
 
