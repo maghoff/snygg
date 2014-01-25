@@ -88,7 +88,7 @@ def do_import(verbosity=1):
 				x = patch.fromfile(os.path.join(os.path.abspath(os.path.dirname(__file__)), patchFile))
 				good = x.apply(1, os.path.join(os.path.abspath(os.path.dirname(__file__)), "downloads"))
 				if not good:
-					raise Error("Failed to apply patch %s" % patchFile)
+					raise Exception("Failed to apply patch %s" % patchFile)
 
 
 def configure(debug_env, release_env):
