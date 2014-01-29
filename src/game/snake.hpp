@@ -2,14 +2,13 @@
 #define SNYGG_SNAKE_HPP
 
 #include <memory>
-#include <boost/noncopyable.hpp>
 #include <ymse/vec.hpp>
 #include "item_with_life.hpp"
 
 class blood_pool;
 class item_container;
 
-class snake : public boost::noncopyable, public item_with_life {
+class snake : public item_with_life {
 	struct impl;
 	std::unique_ptr<impl> d;
 
@@ -18,6 +17,9 @@ class snake : public boost::noncopyable, public item_with_life {
 public:
 	snake(item_container&, float speed, ymse::vec2f pos);
 	~snake();
+
+	snake(const snake&) = delete;
+	snake& operator = (const snake&) = delete;
 
 	void score(float amount);
 

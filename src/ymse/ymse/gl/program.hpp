@@ -2,19 +2,21 @@
 #define YMSE_GL_PROGRAM_HPP
 
 #include <string>
-#include <boost/noncopyable.hpp>
 
 namespace ymse {
 namespace gl {
 
 class shader;
 
-class program : public boost::noncopyable {
+class program {
 	unsigned id;
 
 public:
 	program();
 	~program();
+
+	program(const program&) = delete;
+	program& operator = (const program&) = delete;
 
 	void attach(const shader&);
 

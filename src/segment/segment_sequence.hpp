@@ -2,10 +2,9 @@
 #define SNYGG_SEGMENT_SEQUENCE_HPP
 
 #include <memory>
-#include <boost/noncopyable.hpp>
 #include "segment.hpp"
 
-class segment_sequence : public boost::noncopyable, public segment {
+class segment_sequence : public segment {
 	struct impl;
 	std::unique_ptr<impl> d;
 

@@ -2,7 +2,6 @@
 #define SNYGG_PLAYER_HPP
 
 #include <memory>
-#include <boost/noncopyable.hpp>
 
 namespace ymse {
 	class bindable_keyboard_handler;
@@ -12,7 +11,7 @@ class intersectable_with_circle;
 class item_container;
 class board;
 
-class player : public boost::noncopyable {
+class player {
 	struct impl;
 	std::unique_ptr<impl> d;
 

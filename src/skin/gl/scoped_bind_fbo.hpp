@@ -1,11 +1,9 @@
 #ifndef SCOPED_BIND_FBO_HPP
 #define SCOPED_BIND_FBO_HPP
 
-#include <boost/noncopyable.hpp>
-
 class gl_fbo;
 
-struct scoped_bind_fbo : boost::noncopyable {
+struct scoped_bind_fbo {
 	bool is_bound;
 	int prev_read_buffer, prev_draw_buffer;
 
@@ -15,6 +13,9 @@ public:
 	explicit scoped_bind_fbo(const gl_fbo&);
 	explicit scoped_bind_fbo(int);
 	~scoped_bind_fbo();
+
+	scoped_bind_fbo(const scoped_bind_fbo&) = delete;
+	scoped_bind_fbo& operator = (const scoped_bind_fbo&) = delete;
 
 	void unbind();
 };
