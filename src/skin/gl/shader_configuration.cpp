@@ -1,8 +1,8 @@
 #include <boost/ptr_container/ptr_vector.hpp>
 #include <ymse/gl.h>
 #include <ymse/gl/texture.hpp>
-#include <ymse/sdl/img_load.hpp>
-#include <ymse/sdl/surface.hpp>
+#include <ymse/img_load.hpp>
+#include <ymse/surface.hpp>
 #include "shader_configuration.hpp"
 #include "shader_program.hpp"
 
@@ -57,7 +57,7 @@ struct shader_configuration::impl {
 	std::vector<std::string> names;
 	boost::ptr_vector<uniform_setter> setters;
 
-	std::vector<ymse::sdl::surface> surfaces;
+	std::vector<ymse::surface> surfaces;
 	boost::ptr_vector<ymse::gl::texture> textures;
 };
 
@@ -87,10 +87,8 @@ void shader_configuration::set_uniform(const std::string& name, float v0, float 
 }
 
 void shader_configuration::add_texture(const std::string& name, const std::string& filename) {
-	set_uniform(name, d->surfaces.size());
-
-	ymse::sdl::surface surface = ymse::sdl::img_load(filename);
-	d->surfaces.push_back(surface);
+	set_uniform(name, d->textures.size());
+	d->surfaces.emplace_back(ymse::img_load(filename));
 	d->textures.push_back(new ymse::gl::texture);
 }
 
@@ -103,7 +101,7 @@ void shader_configuration::use() const {
 		d->setters[i].set_to(location);
 	}
 
-	for (unsigned i = 0; i < d->surfaces.size(); ++i) {
+	for (unsigned i = 0; i < d->textures.size(); ++i) {
 		glActiveTexture(GL_TEXTURE0 + i);
 		glBindTexture(GL_TEXTURE_2D, d->textures[i].get_id());
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);

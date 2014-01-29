@@ -6,8 +6,8 @@ def build(bld):
 		'gl/program.cpp',
 		'gl/shader.cpp',
 		'gl/texture.cpp',
-		'sdl/img_load.cpp',
-		'sdl/surface.cpp',
+		'img_load.cpp',
+		'surface.cpp',
 		'bindable_keyboard_handler.cpp',
 		'box_reshaper.cpp',
 		'core.cpp',
@@ -19,7 +19,6 @@ def build(bld):
 		'gl_box_reshaper.cpp',
 		'key.cpp',
 		'keyboard_handler.cpp',
-		'load_image.cpp',
 		'matrix.cpp',
 		'matrix2d_homogenous.cpp',
 		'matrix3d.cpp',
@@ -37,7 +36,7 @@ def build(bld):
 	obj = bld.stlib(
 		source=sources,
 		target='ymse',
-		use=['gl', 'glew', 'SDL_image', 'SDL'],
+		use=['gl', 'glew', 'SDL', 'jpeg'],
 		includes=['../ymse'],
 		export_includes=['..'],
 	)

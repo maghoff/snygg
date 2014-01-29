@@ -78,6 +78,7 @@ def libjpeg(bld):
 	obj = bld.stlib(
 		source=sources,
 		target="jpeg",
+		export_includes='downloads/jpeg-6b',
 	)
 
 def build(bld):

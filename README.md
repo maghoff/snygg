@@ -7,7 +7,6 @@ Dependencies
 You need to supply the following libraries:
 
  * SDL
- * SDL_image
  * imlib2 (Optional, required for screenshots)
  * OpenGL
 
