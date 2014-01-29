@@ -72,6 +72,7 @@ class gcc_configurator:
 		env.append_unique('CXXDEFINES', 'DEBUG')
 		env.append_unique('CCFLAGS', '-ggdb')
 		env.append_unique('CCDEFINES', 'DEBUG')
+		env.append_unique('LINKFLAGS', '-rdynamic')
 
 	@staticmethod
 	def release_mode(env):
