@@ -6,9 +6,9 @@ Dependencies
 
 You need to supply the following libraries:
 
+ * OpenGL
  * SDL
  * imlib2 (Optional, required for screenshots)
- * OpenGL
 
 On Ubuntu, these should be resolved automatically by running ./prepare.sh
 
