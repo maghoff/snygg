@@ -18,6 +18,7 @@ def build(bld):
 		source=sources,
 		target='segment',
 		use=[
+			'boost',
 			'ymse',
 			'skin',
 			'core',
