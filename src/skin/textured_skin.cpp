@@ -1,7 +1,8 @@
 #include <ymse/gl.h>
 #include <algorithm>
+#include <cassert>
 #include <cmath>
-#include <boost/scoped_ptr.hpp>
+#include <memory>
 #include <ymse/rect.hpp>
 #include <ymse/vec.hpp>
 #include "gl/shader_program.hpp"
@@ -13,8 +14,8 @@
 const int across = 5, along = 6, circle_coord = 7, b_attribute = 8;
 
 struct textured_skin::impl {
-	boost::scoped_ptr<shader_program> texture_prog, color_prog, floor_prog;
-	boost::scoped_ptr<shader_configuration> snake_config, wall_config, food_config, floor_config;
+	std::unique_ptr<shader_program> texture_prog, color_prog, floor_prog;
+	std::unique_ptr<shader_configuration> snake_config, wall_config, food_config, floor_config;
 
 	const shader_configuration* shader_state;
 	skin::state_t stored_state;

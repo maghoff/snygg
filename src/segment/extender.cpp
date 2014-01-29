@@ -1,3 +1,4 @@
+#include <cassert>
 #include <ymse/rect.hpp>
 #include <ymse/vec.hpp>
 #include "extender.hpp"

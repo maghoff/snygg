@@ -30,7 +30,7 @@ struct board::impl {
 board::board(const boost::filesystem::path& filename) :
 	d(new impl)
 {
-	boost::scoped_ptr<segment_heap> heap;
+	std::unique_ptr<segment_heap> heap;
 
 	try  {
 		d->lvm.dofile(filename.string());

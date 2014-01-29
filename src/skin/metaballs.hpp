@@ -1,7 +1,7 @@
 #ifndef METABALLS_HPP
 #define METABALLS_HPP
 
-#include <boost/scoped_ptr.hpp>
+#include <memory>
 #include <vector>
 #include <ymse/vec_fwd.hpp>
 #include "scalable_skin.hpp"
@@ -10,7 +10,7 @@ class complex_polygon;
 
 class metaballs : public scalable_skin {
 	struct impl;
-	boost::scoped_ptr<impl> d;
+	std::unique_ptr<impl> d;
 
 	void init(const std::string& path);
 

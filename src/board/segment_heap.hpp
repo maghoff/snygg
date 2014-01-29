@@ -2,7 +2,6 @@
 #define SNYGG_SEGMENT_HEAP_HPP
 
 #include <memory>
-#include <boost/scoped_ptr.hpp>
 #include <boost/noncopyable.hpp>
 #include <ymse/vec_fwd.hpp>
 
@@ -11,7 +10,7 @@ class segment;
 class segment_heap : public boost::noncopyable
 {
 	struct impl;
-	boost::scoped_ptr<impl> d;
+	std::unique_ptr<impl> d;
 
 	std::unique_ptr<segment> get_a_connected_sequence();
 

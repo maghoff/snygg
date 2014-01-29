@@ -1,7 +1,7 @@
 #ifndef SNYGG_SNAKE_HPP
 #define SNYGG_SNAKE_HPP
 
-#include <boost/scoped_ptr.hpp>
+#include <memory>
 #include <boost/noncopyable.hpp>
 #include <ymse/vec.hpp>
 #include "item_with_life.hpp"
@@ -11,7 +11,7 @@ class item_container;
 
 class snake : public boost::noncopyable, public item_with_life {
 	struct impl;
-	boost::scoped_ptr<impl> d;
+	std::unique_ptr<impl> d;
 
 	void forward(float);
 

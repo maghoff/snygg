@@ -1,17 +1,21 @@
 #ifndef YMSE_GL_TEXTURE_HPP
 #define YMSE_GL_TEXTURE_HPP
 
-#include <boost/noncopyable.hpp>
-
 namespace ymse {
 namespace gl {
 
-class texture : public boost::noncopyable {
+class texture {
 	unsigned id;
 
 public:
 	texture();
 	~texture();
+
+	texture(const texture&) = delete;
+	texture& operator = (const texture&) = delete;
+
+	texture(texture&&);
+	texture& operator = (texture&&);
 
 	unsigned get_id() const;
 };

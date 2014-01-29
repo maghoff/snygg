@@ -1,4 +1,4 @@
-#include <boost/ptr_container/ptr_vector.hpp>
+#include <vector>
 #include <ymse/gl.h>
 #include <ymse/gl/texture.hpp>
 #include <ymse/img_load.hpp>
@@ -55,10 +55,10 @@ struct shader_configuration::impl {
 	const shader_program* program;
 
 	std::vector<std::string> names;
-	boost::ptr_vector<uniform_setter> setters;
+	std::vector<std::unique_ptr<uniform_setter>> setters;
 
 	std::vector<ymse::surface> surfaces;
-	boost::ptr_vector<ymse::gl::texture> textures;
+	std::vector<ymse::gl::texture> textures;
 };
 
 
@@ -78,18 +78,18 @@ void shader_configuration::recreate_opengl_resources() {
 
 void shader_configuration::set_uniform(const std::string& name, int v) {
 	d->names.push_back(name);
-	d->setters.push_back(new uniform_setter_1i(v));
+	d->setters.emplace_back(new uniform_setter_1i(v));
 }
 
 void shader_configuration::set_uniform(const std::string& name, float v0, float v1, float v2, float v3) {
 	d->names.push_back(name);
-	d->setters.push_back(new uniform_setter_4f(v0, v1, v2, v3));
+	d->setters.emplace_back(new uniform_setter_4f(v0, v1, v2, v3));
 }
 
 void shader_configuration::add_texture(const std::string& name, const std::string& filename) {
 	set_uniform(name, d->textures.size());
 	d->surfaces.emplace_back(ymse::img_load(filename));
-	d->textures.push_back(new ymse::gl::texture);
+	d->textures.resize(d->textures.size() + 1);
 }
 
 void shader_configuration::use() const {
@@ -98,7 +98,7 @@ void shader_configuration::use() const {
 	const size_t sz = d->names.size();
 	for (size_t i=0; i<sz; ++i) {
 		GLuint location = glGetUniformLocation(d->program->get_program_id(), d->names[i].c_str());
-		d->setters[i].set_to(location);
+		d->setters[i]->set_to(location);
 	}
 
 	for (unsigned i = 0; i < d->textures.size(); ++i) {

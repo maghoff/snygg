@@ -1,14 +1,14 @@
 #ifndef FOOD_GENERATOR_HPP
 #define FOOD_GENERATOR_HPP
 
-#include <boost/scoped_ptr.hpp>
+#include <memory>
 
 class item_container;
 class board;
 
 class food_generator {
 	struct impl;
-	boost::scoped_ptr<impl> d;
+	std::unique_ptr<impl> d;
 
 public:
 	food_generator(item_container&, board&);

@@ -19,7 +19,7 @@ using ymse::vec2f;
 struct snake::impl {
 	item_container& ic;
 
-	boost::scoped_ptr<growth_policy> grow;
+	std::unique_ptr<growth_policy> grow;
 
 	segment_sequence body;
 

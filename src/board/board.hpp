@@ -1,9 +1,9 @@
 #ifndef SNYGG_BOARD_HPP
 #define SNYGG_BOARD_HPP
 
+#include <memory>
 #include <string>
 #include <boost/filesystem/path.hpp>
-#include <boost/scoped_ptr.hpp>
 #include <ymse/vec.hpp>
 #include "intersectable_with_circle.hpp"
 #include "renderable.hpp"
@@ -19,7 +19,7 @@ class complex_polygon;
 
 class board : public renderable, public intersectable_with_circle {
 	struct impl;
-	boost::scoped_ptr<impl> d;
+	std::unique_ptr<impl> d;
 
 	void calculate_floor_poly();
 

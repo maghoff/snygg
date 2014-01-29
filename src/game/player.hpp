@@ -3,7 +3,6 @@
 
 #include <memory>
 #include <boost/noncopyable.hpp>
-#include <boost/scoped_ptr.hpp>
 
 namespace ymse {
 	class bindable_keyboard_handler;
@@ -15,7 +14,7 @@ class board;
 
 class player : public boost::noncopyable {
 	struct impl;
-	boost::scoped_ptr<impl> d;
+	std::unique_ptr<impl> d;
 
 	void spawn_key(bool);
 

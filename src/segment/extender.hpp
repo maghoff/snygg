@@ -1,12 +1,12 @@
 #ifndef SNYGG_EXTENDER_HPP
 #define SNYGG_EXTENDER_HPP
 
-#include <boost/scoped_ptr.hpp>
+#include <memory>
 #include "segment.hpp"
 
 class extender : public segment {
 	struct impl;
-	boost::scoped_ptr<impl> d;
+	std::unique_ptr<impl> d;
 
 public:
 	extender(

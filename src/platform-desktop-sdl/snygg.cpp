@@ -38,16 +38,16 @@
 
 
 struct snygg::impl {
-	boost::scoped_ptr<ymse::bindable_keyboard_handler> kbd;
-	boost::scoped_ptr<ymse::gl_box_reshaper> reshaper;
+	std::unique_ptr<ymse::bindable_keyboard_handler> kbd;
+	std::unique_ptr<ymse::gl_box_reshaper> reshaper;
 	boost::ptr_vector<scalable_skin> skins;
 	scalable_skin* active_skin;
-	boost::scoped_ptr<schematic_svg_skin> svg_skin;
-	boost::scoped_ptr<board> active_board;
+	std::unique_ptr<schematic_svg_skin> svg_skin;
+	std::unique_ptr<board> active_board;
 	boost::ptr_vector<item> items;
 	boost::ptr_vector<renderable> renderables;
 	boost::ptr_vector<player> players;
-	boost::scoped_ptr<food_generator> fg;
+	std::unique_ptr<food_generator> fg;
 
 	ymse::rectf metaballs_rect;
 };

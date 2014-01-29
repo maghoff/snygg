@@ -2,7 +2,6 @@
 #define SNYGG_SNYGG_HPP
 
 #include <memory>
-#include <boost/scoped_ptr.hpp>
 #include <ymse/game.hpp>
 #include <ymse/reshaper.hpp>
 #include "../game/item_container.hpp"
@@ -15,7 +14,7 @@ class scalable_skin;
 
 class snygg : public ymse::game, ymse::reshaper, public item_container {
 	struct impl;
-	boost::scoped_ptr<impl> d;
+	std::unique_ptr<impl> d;
 
 	void set_skin_key(scalable_skin*);
 

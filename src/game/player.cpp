@@ -12,8 +12,8 @@
 struct player::impl {
 	item_container& ic;
 	snake* s;
-	boost::scoped_ptr<snake_direction_listener> del;
-	boost::scoped_ptr<ymse::signaling_opposite_keys> dir;
+	std::unique_ptr<snake_direction_listener> del;
+	std::unique_ptr<ymse::signaling_opposite_keys> dir;
 	float speed;
 	board& game_board;
 

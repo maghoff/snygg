@@ -1,13 +1,13 @@
 #ifndef SNYGG_SEGMENT_SEQUENCE_HPP
 #define SNYGG_SEGMENT_SEQUENCE_HPP
 
-#include <boost/scoped_ptr.hpp>
+#include <memory>
 #include <boost/noncopyable.hpp>
 #include "segment.hpp"
 
 class segment_sequence : public boost::noncopyable, public segment {
 	struct impl;
-	boost::scoped_ptr<impl> d;
+	std::unique_ptr<impl> d;
 
 public:
 	segment_sequence();

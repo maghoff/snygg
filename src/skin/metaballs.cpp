@@ -1,6 +1,7 @@
 #include <ymse/gl.h>
 #include <algorithm>
 #include <set>
+#include <cassert>
 #include <ymse/gl/program.hpp>
 #include <ymse/gl/shader.hpp>
 #include <ymse/gl/texture.hpp>
@@ -18,10 +19,10 @@
 struct metaballs::impl {
 	scalable_skin* target;
 
-	boost::scoped_ptr<shader_program> metaballs;
+	std::unique_ptr<shader_program> metaballs;
 	ymse::gl::texture metaballs_coordinates;
 
-	boost::scoped_ptr<shader_program> mapping;
+	std::unique_ptr<shader_program> mapping;
 
 	gl_fbo fbo;
 

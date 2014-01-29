@@ -16,7 +16,6 @@ def build(bld):
 		target='board',
 		use=[
 			'ymse',
-			'boost',
 			'lua',
 			'luabind',
 

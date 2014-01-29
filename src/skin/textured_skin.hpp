@@ -1,15 +1,15 @@
 #ifndef TEXTURED_SKIN_HPP
 #define TEXTURED_SKIN_HPP
 
+#include <memory>
 #include <string>
-#include <boost/scoped_ptr.hpp>
 #include "scalable_skin.hpp"
 
 class shader_configuration;
 
 class textured_skin : public scalable_skin {
 	struct impl;
-	boost::scoped_ptr<impl> d;
+	std::unique_ptr<impl> d;
 
 	void to_shader(const shader_configuration*);
 

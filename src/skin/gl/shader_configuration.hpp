@@ -1,7 +1,7 @@
 #ifndef SHADER_CONFIGURATION_HPP
 #define SHADER_CONFIGURATION_HPP
 
-#include <boost/scoped_ptr.hpp>
+#include <memory>
 #include "opengl_resource.hpp"
 
 struct uniform_setter;
@@ -9,7 +9,7 @@ class shader_program;
 
 class shader_configuration : public opengl_resource {
 	struct impl;
-	boost::scoped_ptr<impl> d;
+	std::unique_ptr<impl> d;
 
 public:
 	shader_configuration(const shader_program*);
