@@ -15,8 +15,6 @@ class player {
 	struct impl;
 	std::unique_ptr<impl> d;
 
-	void spawn_key(bool);
-
 public:
 	player(ymse::bindable_keyboard_handler&, item_container&, board&, int left, int right, int spawn);
 	virtual ~player();

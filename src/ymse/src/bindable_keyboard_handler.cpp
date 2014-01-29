@@ -1,11 +1,6 @@
-#include <boost/bind.hpp>
 #include "bindable_keyboard_handler.hpp"
 
 namespace ymse {
-
-static void pressed_filter(boost::function<void()> scb, bool pressed) {
-	if (pressed) scb();
-}
 
 bindable_keyboard_handler::bindable_keyboard_handler() {
 }
@@ -24,7 +19,7 @@ void bindable_keyboard_handler::bind(int key, callback cb) {
 }
 
 void bindable_keyboard_handler::bind_pressed(int key, simple_callback scb) {
-	callback cb = boost::bind(&pressed_filter, scb, _1);
+	callback cb = [=](bool pressed){ if (pressed) scb(); };
 	m.insert(std::make_pair(key, cb));
 }
 

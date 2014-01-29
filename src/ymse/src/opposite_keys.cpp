@@ -1,5 +1,4 @@
 #include <iostream>
-#include <boost/bind.hpp>
 #include "bindable_keyboard_handler.hpp"
 #include "opposite_keys.hpp"
 
@@ -13,8 +12,8 @@ opposite_keys::opposite_keys(
 	neg_key(neg_key_), pos_key(pos_key_),
 	neg(false), pos(false)
 {
-	kbd.bind(neg_key, boost::bind(&opposite_keys::set, this, &neg, _1));
-	kbd.bind(pos_key, boost::bind(&opposite_keys::set, this, &pos, _1));
+	kbd.bind(neg_key, [=](bool pressed){ set(&neg, pressed); });
+	kbd.bind(pos_key, [=](bool pressed){ set(&pos, pressed); });
 }
 
 opposite_keys::~opposite_keys() {

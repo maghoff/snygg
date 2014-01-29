@@ -5,7 +5,6 @@
 #include <vector>
 #include <algorithm>
 #include <ymse/gl.h>
-#include <boost/bind.hpp>
 #include <boost/filesystem/operations.hpp>
 #include <boost/ptr_container/ptr_vector.hpp>
 #include <ymse/bindable_keyboard_handler.hpp>
@@ -102,7 +101,7 @@ snygg::snygg(const std::string& board_filename) :
 	d->active_skin = &d->skins.back();
 
 	for (size_t i=0; i<d->skins.size(); ++i) {
-		d->kbd->bind_pressed(ymse::KEY_F1 + i, boost::bind(&snygg::set_skin_key, this, &d->skins[i]));
+		d->kbd->bind_pressed(ymse::KEY_F1 + i, [=]{ set_skin_key(&d->skins[i]); });
 	}
 
 	d->reshaper->set_pixels_per_unit_listener(d->active_skin);
@@ -113,7 +112,7 @@ snygg::snygg(const std::string& board_filename) :
 	d->players.push_back(new player(*d->kbd, *this, *d->active_board, ymse::KEY_LEFT, ymse::KEY_RIGHT, ymse::KEY_SPACE));
 	d->players.push_back(new player(*d->kbd, *this, *d->active_board, ymse::KEY_A, ymse::KEY_D, ymse::KEY_W));
 
-	d->kbd->bind_pressed(ymse::KEY_P, boost::bind(&snygg::screenshot_key, this));
+	d->kbd->bind_pressed(ymse::KEY_P, [=]{ screenshot_key(); });
 }
 
 snygg::~snygg() {
@@ -124,10 +123,12 @@ void snygg::attach_to_core(ymse::sdl_core& core) {
 	core.set_reshaper_object(this);
 	core.set_keyboard_handler(d->kbd.get());
 
-	d->kbd->bind_pressed(ymse::KEY_Q, boost::bind(&ymse::sdl_core::stop, &core, 0));
-	d->kbd->bind_pressed(ymse::KEY_F, boost::bind(&ymse::sdl_core::toggle_fullscreen, &core));
-	d->kbd->bind_pressed(ymse::KEY_H, boost::bind(&ymse::sdl_core::set_video_mode, &core, 1920, 1080, false));
-	d->kbd->bind_pressed(ymse::KEY_N, boost::bind(&ymse::sdl_core::set_video_mode, &core, 1280, 720, false));
+	// Is capturing a reference by reference actually safe?
+	// See http://stackoverflow.com/questions/21443023/capturing-a-reference-by-reference-in-a-c11-lambda
+	d->kbd->bind_pressed(ymse::KEY_Q, [&]{ core.stop(0); });
+	d->kbd->bind_pressed(ymse::KEY_F, [&]{ core.toggle_fullscreen(); });
+	d->kbd->bind_pressed(ymse::KEY_H, [&]{ core.set_video_mode(1920, 1080, false); });
+	d->kbd->bind_pressed(ymse::KEY_N, [&]{ core.set_video_mode(1280, 720, false); });
 }
 
 static void save_screenshot(const std::string& filename, unsigned char* pixels, unsigned w, unsigned h) {

@@ -1,4 +1,3 @@
-#include <boost/bind.hpp>
 #include <ymse/bindable_keyboard_handler.hpp>
 #include <ymse/keycodes.hpp>
 #include <ymse/opposite_keys_listener.hpp>
@@ -23,7 +22,7 @@ struct player::impl {
 player::player(
 	ymse::bindable_keyboard_handler& kbd,
 	item_container& ic, board& _board,
-	int left, int right, int spawn
+	int left, int right, int spawnkey
 ) :
 	d(new impl(ic, _board))
 {
@@ -31,14 +30,10 @@ player::player(
 	d->speed = 0.4f;
 	d->del.reset(new snake_direction_listener);
 	d->dir.reset(new ymse::signaling_opposite_keys(kbd, right, left, *d->del));
-	kbd.bind(spawn, boost::bind(&player::spawn_key, this, _1));
+	kbd.bind_pressed(spawnkey, [=]{ spawn(); });
 }
 
 player::~player() {
-}
-
-void player::spawn_key(bool do_spawn) {
-	if (do_spawn) spawn();
 }
 
 void player::spawn() {

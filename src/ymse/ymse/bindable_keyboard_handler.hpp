@@ -2,14 +2,14 @@
 #define YMSE_BINDABLE_KEYBOARD_HANDLER_HPP
 
 #include <map>
-#include <boost/function.hpp>
+#include <functional>
 #include "keyboard_handler.hpp"
 
 namespace ymse {
 
 class bindable_keyboard_handler : public keyboard_handler {
-	typedef boost::function<void(bool)> callback;
-	typedef boost::function<void()> simple_callback;
+	typedef std::function<void(bool)> callback;
+	typedef std::function<void()> simple_callback;
 
 private:
 	std::map<int, callback> m;
