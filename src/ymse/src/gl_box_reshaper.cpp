@@ -6,7 +6,13 @@
 
 namespace ymse {
 
+// FIXME This implementation relies on the initial values being sane, so it
+// can produce a non-crashing, even if whacky, projection matrix initially.
+
 gl_box_reshaper::gl_box_reshaper() :
+	width(1), height(1),
+	x1(0), y1(0),
+	x2(1), y2(1),
 	ppu_listener(0)
 {
 }
