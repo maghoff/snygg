@@ -167,7 +167,7 @@ class msvc_configurator:
 
 	@staticmethod
 	def enable_cpp11(env):
-		# This is supposed to be enabled by default
+		# This is supposedly enabled by default
 		pass
 
 
