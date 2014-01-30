@@ -125,10 +125,11 @@ void snygg::attach_to_core(ymse::sdl_core& core) {
 
 	// Is capturing a reference by reference actually safe?
 	// See http://stackoverflow.com/questions/21443023/capturing-a-reference-by-reference-in-a-c11-lambda
-	d->kbd->bind_pressed(ymse::KEY_Q, [&]{ core.stop(0); });
-	d->kbd->bind_pressed(ymse::KEY_F, [&]{ core.toggle_fullscreen(); });
-	d->kbd->bind_pressed(ymse::KEY_H, [&]{ core.set_video_mode(1920, 1080, false); });
-	d->kbd->bind_pressed(ymse::KEY_N, [&]{ core.set_video_mode(1280, 720, false); });
+	auto c = &core;
+	d->kbd->bind_pressed(ymse::KEY_Q, [=]{ c->stop(0); });
+	d->kbd->bind_pressed(ymse::KEY_F, [=]{ c->toggle_fullscreen(); });
+	d->kbd->bind_pressed(ymse::KEY_H, [=]{ c->set_video_mode(1920, 1080, false); });
+	d->kbd->bind_pressed(ymse::KEY_N, [=]{ c->set_video_mode(1280, 720, false); });
 }
 
 static void save_screenshot(const std::string& filename, unsigned char* pixels, unsigned w, unsigned h) {
