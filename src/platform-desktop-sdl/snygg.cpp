@@ -125,7 +125,7 @@ void snygg::attach_to_core(ymse::sdl_core& core) {
 
 	// Is capturing a reference by reference actually safe?
 	// See http://stackoverflow.com/questions/21443023/capturing-a-reference-by-reference-in-a-c11-lambda
-	auto c = &core;
+	const auto c = &core;
 	d->kbd->bind_pressed(ymse::KEY_Q, [=]{ c->stop(0); });
 	d->kbd->bind_pressed(ymse::KEY_F, [=]{ c->toggle_fullscreen(); });
 	d->kbd->bind_pressed(ymse::KEY_H, [=]{ c->set_video_mode(1920, 1080, false); });
