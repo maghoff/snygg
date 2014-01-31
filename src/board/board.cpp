@@ -1,8 +1,7 @@
-#include <iostream>
-#include <sstream>
-
 #include <cmath>
-#include <boost/ptr_container/ptr_vector.hpp>
+#include <memory>
+#include <sstream>
+#include <vector>
 #include <ymse/lean_windows.h>
 #include <lua.hpp>
 #include <luabind/luabind.hpp>
@@ -20,7 +19,7 @@
 
 
 struct board::impl {
-	boost::ptr_vector<segment> b;
+	std::vector<std::unique_ptr<segment>> b;
 	complex_polygon floor_poly;
 
 	luamod::lua_vm lvm;
@@ -56,7 +55,7 @@ board::board(const boost::filesystem::path& filename) :
 		exit(-1);
 	}
 
-	d->b.push_back(heap->to_segment().release());
+	d->b.push_back(heap->to_segment());
 	calculate_floor_poly();
 }
 
@@ -80,21 +79,17 @@ void board::render(skin& s) const {
 }
 
 bool board::intersect_with_circle(const ymse::vec2f& p, float r) const {
-	typedef boost::ptr_vector<segment>::const_iterator iter;
-	iter end = d->b.end();
-	for (iter i = d->b.begin(); i != end; ++i) {
-		if (i->intersect_with_circle(p, r)) return true;
+	for (auto& seg : d->b) {
+		if (seg->intersect_with_circle(p, r)) return true;
 	}
 	return false;
 }
 
 ymse::rectf board::bounding_box() const {
-	ymse::rectf bb = d->b[0].bounding_box();
+	ymse::rectf bb = d->b.front()->bounding_box();
 
-	typedef boost::ptr_vector<segment>::const_iterator iter;
-	iter end = d->b.end();
-	for (iter i = d->b.begin(); i != end; ++i) {
-		bb = ymse::bounding_box(bb, i->bounding_box());
+	for (auto& seg : d->b) {
+		bb = ymse::bounding_box(bb, seg->bounding_box());
 	}
 
 	return bb;
@@ -103,10 +98,8 @@ ymse::rectf board::bounding_box() const {
 int board::winding_number(ymse::vec2f p) const {
 	int n = 0;
 
-	typedef boost::ptr_vector<segment>::const_iterator iter;
-	iter end = d->b.end();
-	for (iter i = d->b.begin(); i != end; ++i) {
-		n += i->left_hline_intersections(p);
+	for (auto& seg : d->b) {
+		n += seg->left_hline_intersections(p);
 	}
 
 	return n;
@@ -114,7 +107,7 @@ int board::winding_number(ymse::vec2f p) const {
 
 void board::calculate_floor_poly() {
 	complex_polygon_triangulator_gpc triangulator;
-	for (auto& seg : d->b) seg.add_to_triangulator(triangulator);
+	for (auto& seg : d->b) seg->add_to_triangulator(triangulator);
 	d->floor_poly = triangulator.get_complex_polygon();
 }
 

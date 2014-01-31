@@ -44,7 +44,7 @@ void player::spawn() {
 	}
 }
 
-bool player::crashes_with(intersectable_with_circle& i) const {
+bool player::crashes_with(const intersectable_with_circle& i) const {
 	if (d->s) return d->s->crashes_with(i);
 	else return false;
 }

@@ -117,7 +117,7 @@ void snake::render(skin& s) const {
 	s.cap(tail, atan2(tail_dir[1], tail_dir[0]), M_PI * 1.5, d->front_b + d->body.length());
 }
 
-bool snake::crashes_with(intersectable_with_circle& object) const {
+bool snake::crashes_with(const intersectable_with_circle& object) const {
 	vec2f head(d->body.get_head_pos());
 
 	if (&object == this) {

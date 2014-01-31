@@ -1,5 +1,5 @@
-#include <boost/ptr_container/ptr_vector.hpp>
-#include <boost/ptr_container/ptr_deque.hpp>
+#include <vector>
+#include <deque>
 #include "../segment/segment.hpp"
 #include "renderable.hpp"
 
@@ -8,13 +8,11 @@ renderable::~renderable() {
 
 template <class T>
 void render_sequence(const T& seq, skin& s, float head_b) {
-	typedef typename T::const_reverse_iterator it;
-	it end = seq.rend();
-	for (it i = seq.rbegin(); i != end; ++i) {
-		i->render(s, head_b);
-		head_b += i->length();
+	for (auto i = seq.rbegin(), end = seq.rend(); i != end; ++i) {
+		(*i)->render(s, head_b);
+		head_b += (*i)->length();
 	}
 }
 
-template void render_sequence(const boost::ptr_vector<segment>&, skin&, float);
-template void render_sequence(const boost::ptr_deque<segment>&, skin&, float);
+template void render_sequence(const std::vector<std::unique_ptr<segment>>&, skin&, float);
+template void render_sequence(const std::deque<std::unique_ptr<segment>>&, skin&, float);

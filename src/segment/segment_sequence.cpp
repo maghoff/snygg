@@ -1,5 +1,5 @@
 #include <set>
-#include <boost/ptr_container/ptr_deque.hpp>
+#include <deque>
 #include <boost/range/adaptor/reversed.hpp>
 #include <ymse/geometry_intersection.hpp>
 #include <ymse/rect.hpp>
@@ -11,7 +11,7 @@ using ymse::vec2f;
 
 
 struct segment_sequence::impl {
-	boost::ptr_deque<segment> body;
+	std::deque<std::unique_ptr<segment>> body;
 
 	segment& head();
 	segment const & head() const;
@@ -19,10 +19,10 @@ struct segment_sequence::impl {
 	segment const & tail() const;
 };
 
-segment& segment_sequence::impl::head() { return body.back(); }
-segment const & segment_sequence::impl::head() const { return body.back(); }
-segment& segment_sequence::impl::tail() { return body.front(); }
-segment const & segment_sequence::impl::tail() const { return body.front(); }
+segment& segment_sequence::impl::head() { return *body.back(); }
+segment const & segment_sequence::impl::head() const { return *body.back(); }
+segment& segment_sequence::impl::tail() { return *body.front(); }
+segment const & segment_sequence::impl::tail() const { return *body.front(); }
 
 
 segment_sequence::segment_sequence() :
@@ -48,7 +48,7 @@ float segment_sequence::tail_forward(float length) {
 
 bool segment_sequence::intersect_with_circle(const ymse::vec2f& p, float r) const {
 	for (auto& s : d->body) {
-		if (s.intersect_with_circle(p, r)) return true;
+		if (s->intersect_with_circle(p, r)) return true;
 	}
 	return false;
 }
@@ -57,7 +57,7 @@ bool segment_sequence::intersect_with_self(const ymse::vec2f& p, float r) const 
 	float skiplength = r*2.f + 10.f;
 
 	for (auto& s : boost::adaptors::reverse(d->body)) {
-		if (s.intersect_with_circle(p, r, skiplength)) return true;
+		if (s->intersect_with_circle(p, r, skiplength)) return true;
 	}
 
 	if (skiplength <= 0) {
@@ -86,7 +86,7 @@ vec2f segment_sequence::get_tail_direction() const {
 
 float segment_sequence::length() const {
 	double len = 0;
-	for (auto& s : d->body) len += s.length();
+	for (auto& s : d->body) len += s->length();
 	return len;
 }
 
@@ -95,32 +95,32 @@ void segment_sequence::render(skin& s, float head_b) const {
 }
 
 void segment_sequence::push_back(std::unique_ptr<segment>&& s) {
-	d->body.push_back(s.release());
+	d->body.emplace_back(std::move(s));
 }
 
 void segment_sequence::push_front(std::unique_ptr<segment>&& s) {
-	d->body.push_front(s.release());
+	d->body.emplace_front(std::move(s));
 }
 
 void segment_sequence::push_back(segment* s) {
-	d->body.push_back(s);
+	d->body.emplace_back(std::unique_ptr<segment>(s));
 }
 
 ymse::rectf segment_sequence::bounding_box() const {
 	assert(d->body.size() > 0);
 
-	ymse::rectf bb = d->body.front().bounding_box();
-	for (auto& s : d->body) bb = ymse::bounding_box(bb, s.bounding_box());
+	ymse::rectf bb = d->head().bounding_box();
+	for (auto& s : d->body) bb = ymse::bounding_box(bb, s->bounding_box());
 
 	return bb;
 }
 
 int segment_sequence::left_hline_intersections(ymse::vec2f p) const {
 	int n = 0;
-	for (auto& s : d->body) n += s.left_hline_intersections(p);
+	for (auto& s : d->body) n += s->left_hline_intersections(p);
 	return n;
 }
 
 void segment_sequence::add_to_triangulator(complex_polygon_triangulator& triangulator) const {
-	for (auto& s : d->body) s.add_to_triangulator(triangulator);
+	for (auto& s : d->body) s->add_to_triangulator(triangulator);
 }

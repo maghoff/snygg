@@ -21,7 +21,7 @@ public:
 
 	void spawn();
 
-	bool crashes_with(intersectable_with_circle&) const;
+	bool crashes_with(const intersectable_with_circle&) const;
 	void die();
 	void score();
 };

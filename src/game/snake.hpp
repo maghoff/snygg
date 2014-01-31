@@ -29,7 +29,7 @@ public:
 
 	void render(skin&) const;
 
-	bool crashes_with(intersectable_with_circle&) const;
+	bool crashes_with(const intersectable_with_circle&) const;
 
 	bool intersect_with_circle(const ymse::vec2f&, float r) const;
 

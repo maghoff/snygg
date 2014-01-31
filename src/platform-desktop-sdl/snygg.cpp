@@ -6,7 +6,6 @@
 #include <algorithm>
 #include <ymse/gl.h>
 #include <boost/filesystem/operations.hpp>
-#include <boost/ptr_container/ptr_vector.hpp>
 #include <ymse/bindable_keyboard_handler.hpp>
 #include <ymse/gl/texture.hpp>
 #include <ymse/gl_box_reshaper.hpp>
@@ -38,14 +37,17 @@
 
 struct snygg::impl {
 	std::unique_ptr<ymse::bindable_keyboard_handler> kbd;
+
 	std::unique_ptr<ymse::gl_box_reshaper> reshaper;
-	boost::ptr_vector<scalable_skin> skins;
+	std::vector<std::unique_ptr<scalable_skin>> skins;
 	scalable_skin* active_skin;
 	std::unique_ptr<schematic_svg_skin> svg_skin;
+
 	std::unique_ptr<board> active_board;
-	boost::ptr_vector<item> items;
-	boost::ptr_vector<renderable> renderables;
-	boost::ptr_vector<player> players;
+	std::list<std::unique_ptr<item>> items; // std::list, to allow insertion while iterating over it
+	std::vector<std::unique_ptr<renderable>> renderables;
+	std::vector<std::unique_ptr<player>> players;
+
 	std::unique_ptr<food_generator> fg;
 
 	ymse::rectf metaballs_rect;
@@ -93,15 +95,15 @@ snygg::snygg(const std::string& board_filename) :
 	d->metaballs_rect.y2 = bb.y2 + margin;
 
 	std::string snakeskin = (paths::skins() / "snakeskin").string();
-	d->skins.push_back(new schematic_skin);
-	d->skins.push_back(new plain_skin);
-	d->skins.push_back(new metaballs(&d->skins.back(), snakeskin));
-	d->skins.push_back(new textured_skin(snakeskin));
-	d->skins.push_back(new metaballs(&d->skins.back(), snakeskin));
-	d->active_skin = &d->skins.back();
+	d->skins.emplace_back(new schematic_skin);
+	d->skins.emplace_back(new plain_skin);
+	d->skins.emplace_back(new metaballs(d->skins.back().get(), snakeskin));
+	d->skins.emplace_back(new textured_skin(snakeskin));
+	d->skins.emplace_back(new metaballs(d->skins.back().get(), snakeskin));
+	d->active_skin = d->skins.back().get();
 
 	for (size_t i=0; i<d->skins.size(); ++i) {
-		d->kbd->bind_pressed(ymse::KEY_F1 + i, [=]{ set_skin_key(&d->skins[i]); });
+		d->kbd->bind_pressed(ymse::KEY_F1 + i, [=]{ set_skin_key(d->skins[i].get()); });
 	}
 
 	d->reshaper->set_pixels_per_unit_listener(d->active_skin);
@@ -109,8 +111,8 @@ snygg::snygg(const std::string& board_filename) :
 	d->fg.reset(new food_generator(*this, *d->active_board));
 	d->fg->generate();
 
-	d->players.push_back(new player(*d->kbd, *this, *d->active_board, ymse::KEY_LEFT, ymse::KEY_RIGHT, ymse::KEY_SPACE));
-	d->players.push_back(new player(*d->kbd, *this, *d->active_board, ymse::KEY_A, ymse::KEY_D, ymse::KEY_W));
+	d->players.emplace_back(new player(*d->kbd, *this, *d->active_board, ymse::KEY_LEFT, ymse::KEY_RIGHT, ymse::KEY_SPACE));
+	d->players.emplace_back(new player(*d->kbd, *this, *d->active_board, ymse::KEY_A, ymse::KEY_D, ymse::KEY_W));
 
 	d->kbd->bind_pressed(ymse::KEY_P, [=]{ screenshot_key(); });
 }
@@ -238,8 +240,8 @@ next_id:
 		if (exists(format(id, suffix))) goto next_id;
 	}
 
-	screenshot_with_skin(format(id, suffixes[0]), &d->skins[0]);
-	screenshot_with_skin(format(id, suffixes[1]), &d->skins[4]);
+	screenshot_with_skin(format(id, suffixes[0]), &*d->skins[0]);
+	screenshot_with_skin(format(id, suffixes[1]), &*d->skins[4]);
 
 	// SVG screenshot:
 	std::ofstream outf(format(id, suffixes[2]));
@@ -254,7 +256,7 @@ next_id:
 void snygg::reshape(int width, int height) {
 	d->reshaper->reshape(width, height);
 	for (size_t i=0; i<d->skins.size(); ++i) {
-		d->skins[i].load_opengl_resources(width, height);
+		d->skins[i]->load_opengl_resources(width, height);
 	}
 }
 
@@ -275,36 +277,38 @@ void snygg::render() {
 
 	d->active_skin->enter_state(skin::other_state);
 
-	for (auto& item : d->items) item.render(*d->active_skin);
-	for (auto& renderable : d->renderables) renderable.render(*d->active_skin);
+	for (auto& item : d->items) item->render(*d->active_skin);
+	for (auto& renderable : d->renderables) renderable->render(*d->active_skin);
 
 	d->active_skin->floor(d->active_board->floor_polygon());
 }
 
 void snygg::tick() {
 	for (auto& item : d->items) {
-		if (!item.is_dead()) item.move();
+		if (!item->is_dead()) item->move();
 	}
 
 	std::vector<player*> dead_players;
 	for (auto& player : d->players) {
 		for (auto& item : d->items) {
-			if (!item.is_dead() && player.crashes_with(item)) item.hit_by(player);
+			// NOTE item->hit_by(...) will sometimes (indirectly) call this->add_item,
+			// mutating d->items while we are iterating over it.
+			if (!item->is_dead() && player->crashes_with(*item)) item->hit_by(*player);
 		}
-		if (player.crashes_with(*d->active_board)) {
-			dead_players.push_back(&player);
+		if (player->crashes_with(*d->active_board)) {
+			dead_players.push_back(&*player);
 		}
 	}
 
 	for (auto& dead_player : dead_players) dead_player->die();
 
-	d->items.erase_if([](item& i) { return i.is_dead(); });
+	d->items.remove_if([](const std::unique_ptr<item>& i) { return i->is_dead(); });
 }
 
 void snygg::add_item(std::unique_ptr<item>&& i) {
-	d->items.push_back(i.release());
+	d->items.emplace_back(std::move(i));
 }
 
 void snygg::add_renderable(std::unique_ptr<renderable>&& r) {
-	d->renderables.push_back(r.release());
+	d->renderables.emplace_back(std::move(r));
 }
