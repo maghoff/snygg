@@ -1,6 +1,6 @@
+#include <cassert>
 #include <set>
 #include <deque>
-#include <boost/range/adaptor/reversed.hpp>
 #include <ymse/geometry_intersection.hpp>
 #include <ymse/rect.hpp>
 #include <ymse/vec.hpp>
@@ -56,8 +56,8 @@ bool segment_sequence::intersect_with_circle(const ymse::vec2f& p, float r) cons
 bool segment_sequence::intersect_with_self(const ymse::vec2f& p, float r) const {
 	float skiplength = r*2.f + 10.f;
 
-	for (auto& s : boost::adaptors::reverse(d->body)) {
-		if (s->intersect_with_circle(p, r, skiplength)) return true;
+	for (auto i = d->body.rbegin(), end = d->body.rend(); i != end; ++i) {
+		if ((*i)->intersect_with_circle(p, r, skiplength)) return true;
 	}
 
 	if (skiplength <= 0) {
