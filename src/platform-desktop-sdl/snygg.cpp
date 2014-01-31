@@ -44,7 +44,8 @@ struct snygg::impl {
 	std::unique_ptr<schematic_svg_skin> svg_skin;
 
 	std::unique_ptr<board> active_board;
-	std::list<std::unique_ptr<item>> items; // std::list, to allow insertion while iterating over it
+	std::vector<std::unique_ptr<item>> items;
+	std::vector<std::unique_ptr<item>> new_items;
 	std::vector<std::unique_ptr<renderable>> renderables;
 	std::vector<std::unique_ptr<player>> players;
 
@@ -284,6 +285,11 @@ void snygg::render() {
 }
 
 void snygg::tick() {
+	for (auto& item : d->new_items) {
+		d->items.emplace_back(std::move(item));
+	}
+	d->new_items.clear();
+
 	for (auto& item : d->items) {
 		if (!item->is_dead()) item->move();
 	}
@@ -291,8 +297,6 @@ void snygg::tick() {
 	std::vector<player*> dead_players;
 	for (auto& player : d->players) {
 		for (auto& item : d->items) {
-			// NOTE item->hit_by(...) will sometimes (indirectly) call this->add_item,
-			// mutating d->items while we are iterating over it.
 			if (!item->is_dead() && player->crashes_with(*item)) item->hit_by(*player);
 		}
 		if (player->crashes_with(*d->active_board)) {
@@ -302,11 +306,12 @@ void snygg::tick() {
 
 	for (auto& dead_player : dead_players) dead_player->die();
 
-	d->items.remove_if([](const std::unique_ptr<item>& i) { return i->is_dead(); });
+	auto new_end = std::remove_if(d->items.begin(), d->items.end(), [](const std::unique_ptr<item>& i) { return i->is_dead(); });
+	d->items.erase(new_end, d->items.end());
 }
 
 void snygg::add_item(std::unique_ptr<item>&& i) {
-	d->items.emplace_back(std::move(i));
+	d->new_items.emplace_back(std::move(i));
 }
 
 void snygg::add_renderable(std::unique_ptr<renderable>&& r) {
