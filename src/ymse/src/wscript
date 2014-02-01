@@ -3,7 +3,6 @@
 
 def build(bld):
 	sources = [
-		'core_factory.cpp',
 		'fileutil.cpp',
 		'geometry_intersection.cpp',
 		'gl_box_reshaper.cpp',
