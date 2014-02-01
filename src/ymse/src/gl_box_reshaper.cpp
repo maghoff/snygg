@@ -1,6 +1,6 @@
 #include <algorithm>
 #include <cassert>
-#include "gl.h"
+#include <GL/glew.h>
 #include "pixels_per_unit_listener.hpp"
 #include "gl_box_reshaper.hpp"
 

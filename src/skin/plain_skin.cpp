@@ -1,6 +1,7 @@
 #include <algorithm>
 #include <cmath>
-#include <ymse/gl.h>
+#include <GL/glew.h>
+
 #include <ymse/rect.hpp>
 #include <vec.hpp>
 #include "complex_polygon.hpp"

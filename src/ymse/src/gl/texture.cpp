@@ -1,5 +1,5 @@
 #include <algorithm>
-#include "gl.h"
+#include <GL/glew.h>
 #include "gl/texture.hpp"
 
 namespace ymse {

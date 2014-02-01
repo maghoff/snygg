@@ -3,7 +3,8 @@
 
 #include <string>
 #include <vector>
-#include <ymse/gl.h>
+#include <GL/glew.h>
+
 #include "opengl_resource.hpp"
 
 struct shader_spec {

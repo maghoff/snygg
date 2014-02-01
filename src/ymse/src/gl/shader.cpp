@@ -1,4 +1,4 @@
-#include "gl.h"
+#include <GL/glew.h>
 #include <fstream>
 #include <limits>
 #include <stdexcept>

@@ -1,5 +1,6 @@
 #include <cassert>
-#include <ymse/gl.h>
+#include <GL/glew.h>
+
 #include "scoped_bind_fbo.hpp"
 #include "gl_fbo.hpp"
 

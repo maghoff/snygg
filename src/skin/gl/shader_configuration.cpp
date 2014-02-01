@@ -1,5 +1,6 @@
 #include <vector>
-#include <ymse/gl.h>
+#include <GL/glew.h>
+
 #include <ymse/gl/texture.hpp>
 #include <load_jpeg.hpp>
 #include <surface.hpp>

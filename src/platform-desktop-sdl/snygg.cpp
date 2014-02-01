@@ -4,7 +4,8 @@
 #include <iomanip>
 #include <vector>
 #include <algorithm>
-#include <ymse/gl.h>
+#include <GL/glew.h>
+
 #include <boost/filesystem/operations.hpp>
 #include <ymse/bindable_keyboard_handler.hpp>
 #include <ymse/gl/texture.hpp>

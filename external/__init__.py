@@ -106,6 +106,11 @@ def do_import(verbosity=1):
 def configure(debug_env, release_env):
 	basepath = os.path.join(os.path.abspath(os.path.dirname(__file__)), "downloads")
 
+	debug_env.append_unique('CXXDEFINES', 'GLEW_STATIC')
+	debug_env.append_unique('CCDEFINES', 'GLEW_STATIC')
+	release_env.append_unique('CXXDEFINES', 'GLEW_STATIC')
+	release_env.append_unique('CCDEFINES', 'GLEW_STATIC')
+
 	for package in PACKAGES:
 		includes_property_name = 'INCLUDES_%s' % package['name']
 		includepath = os.path.join(basepath, package['includes'])

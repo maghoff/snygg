@@ -1,4 +1,5 @@
-#include <ymse/gl.h>
+#include <GL/glew.h>
+
 #include <algorithm>
 #include <set>
 #include <cassert>

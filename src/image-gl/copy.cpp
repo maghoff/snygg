@@ -1,4 +1,4 @@
-#include <ymse/gl.h>
+#include <GL/glew.h>
 #include <surface.hpp>
 
 namespace image {

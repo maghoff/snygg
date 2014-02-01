@@ -1,4 +1,5 @@
-#include <ymse/gl.h>
+#include <GL/glew.h>
+
 #include <vec.hpp>
 #include "complex_polygon.hpp"
 

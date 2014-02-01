@@ -3,7 +3,7 @@
 #include <stdexcept>
 #include <sstream>
 #include <SDL.h>
-#include "gl.h"
+#include <GL/glew.h>
 #include "game.hpp"
 #include "keyboard_handler.hpp"
 #include "mouse_handler.hpp"
