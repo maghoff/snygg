@@ -2,7 +2,7 @@
 #define SNYGG_SNYGG_HPP
 
 #include <memory>
-#include <game.hpp>
+#include <tick_handler.hpp>
 #include <reshaper.hpp>
 #include "../game/item_container.hpp"
 
@@ -12,7 +12,7 @@ namespace ymse {
 
 class scalable_skin;
 
-class snygg : public game::game, game::reshaper, public item_container {
+class snygg : public game::tick_handler, game::reshaper, public item_container {
 	struct impl;
 	std::unique_ptr<impl> d;
 

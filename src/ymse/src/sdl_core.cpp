@@ -4,7 +4,7 @@
 #include <sstream>
 #include <SDL.h>
 #include <GL/glew.h>
-#include "game.hpp"
+#include "tick_handler.hpp"
 #include "keyboard_handler.hpp"
 #include "mouse_handler.hpp"
 #include "keycodes.hpp"
@@ -37,7 +37,7 @@ void check(bool ok, const std::string& f) {
 
 sdl_core::sdl_core() :
 	inited(false),
-	game_p(0),
+	tick_handler_p(0),
 	reshaper_p(0),
 	keyboard_handler_p(0),
 	mouse_handler_p(0),
@@ -133,8 +133,8 @@ bool sdl_core::get_cursor_visible() const {
 	return SDL_ShowCursor(SDL_QUERY) == SDL_ENABLE;
 }
 
-void sdl_core::set_game_object(game::game* game_p_) {
-	game_p = game_p_;
+void sdl_core::set_tick_handler(game::tick_handler* tick_handler_p_) {
+	tick_handler_p = tick_handler_p_;
 }
 
 void sdl_core::set_reshaper_object(game::reshaper* reshaper_p_) {
@@ -261,7 +261,7 @@ int sdl_core::run() {
 
 	return_value = 0;
 
-	assert(game_p);
+	assert(tick_handler_p);
 
 	if (reshaper_p) reshaper_p->reshape(screen->w, screen->h);
 
@@ -277,7 +277,7 @@ int sdl_core::run() {
 		while (ticks < SDL_GetTicks()) {
 			unsigned now = SDL_GetTicks();
 			assert(now > ticks);
-			game_p->tick(now - ticks);
+			tick_handler_p->tick(now - ticks);
 			ticks = now;
 		}
 
@@ -328,7 +328,7 @@ int sdl_core::run() {
             break;
 
 		case YSDL_RENDERFRAME:
-			game_p->render();
+			tick_handler_p->render();
 			SDL_GL_SwapBuffers();
 			sft.do_add = true;
 			break;

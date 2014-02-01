@@ -7,7 +7,6 @@ def build(bld):
 		'box_reshaper.cpp',
 		'core.cpp',
 		'fixed_aspect_reshaper.cpp',
-		'game.cpp',
 		'key.cpp',
 		'keyboard_handler.cpp',
 		'mouse_handler.cpp',
@@ -16,6 +15,7 @@ def build(bld):
 		'pixels_per_unit_listener.cpp',
 		'reshaper.cpp',
 		'signaling_opposite_keys.cpp',
+		'tick_handler.cpp',
 	]
 
 	obj = bld.stlib(

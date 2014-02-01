@@ -3,7 +3,7 @@
 
 namespace game {
 
-class game;
+class tick_handler;
 class reshaper;
 class keyboard_handler;
 class mouse_handler;
@@ -15,7 +15,7 @@ public:
 
 	virtual void init(int argc, char const * const argv[]) = 0;
 
-	virtual void set_game_object(game*) = 0;
+	virtual void set_tick_handler(tick_handler*) = 0;
 	virtual void set_reshaper_object(reshaper*) = 0;
 	virtual void set_keyboard_handler(keyboard_handler*) = 0;
 

@@ -1,16 +1,16 @@
-#include "game.hpp"
+#include "tick_handler.hpp"
 
 namespace game {
 
-game::game() :
+tick_handler::tick_handler() :
 	ticks(0)
 {
 }
 
-game::~game() {
+tick_handler::~tick_handler() {
 }
 
-void game::tick(unsigned msecs) {
+void tick_handler::tick(unsigned msecs) {
 	// If we are more than five seconds behind, something has happened.
 	// Examples are computer sleep and debugger break.
 	if (msecs > 5000) return;
@@ -22,9 +22,9 @@ void game::tick(unsigned msecs) {
 	ticks += msecs;
 }
 
-void game::tick_ms() { }
-void game::tick_10ms() { tick(); }
-void game::tick() { }
+void tick_handler::tick_ms() { }
+void tick_handler::tick_10ms() { tick(); }
+void tick_handler::tick() { }
 
 }
 

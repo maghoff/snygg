@@ -3,12 +3,12 @@
 
 namespace game {
 
-class game {
+class tick_handler {
 	unsigned ticks;
 
 public:
-	game();
-	virtual ~game();
+	tick_handler();
+	virtual ~tick_handler();
 
 	virtual void render() = 0;
 

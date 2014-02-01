@@ -12,7 +12,7 @@ class sdl_core : public game::core {
 	bool inited;
 	SDL_Surface* screen;
 
-	game::game* game_p;
+	game::tick_handler* tick_handler_p;
 	game::reshaper* reshaper_p;
 	game::keyboard_handler* keyboard_handler_p;
 	game::mouse_handler* mouse_handler_p;
@@ -31,9 +31,9 @@ public:
 	~sdl_core();
 
 	void init(int argc, char const * const argv[]);
-	void set_game_object(game::game*);
-	void set_reshaper_object(game::reshaper*);
-	void set_keyboard_handler(game::keyboard_handler*);
+	void set_tick_handler(game::tick_handler*) override;
+	void set_reshaper_object(game::reshaper*) override;
+	void set_keyboard_handler(game::keyboard_handler*) override;
 	void set_mouse_handler(game::mouse_handler*);
 	void set_video_mode(int w, int h, bool fullscreen);
 	void set_cursor_visible(bool);
