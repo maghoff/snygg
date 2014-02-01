@@ -1,8 +1,7 @@
 #include <GL/glew.h>
-#include "gl/shader.hpp"
-#include "gl/program.hpp"
+#include "shader.hpp"
+#include "program.hpp"
 
-namespace ymse {
 namespace gl {
 
 program::program() {
@@ -39,4 +38,4 @@ unsigned program::get_id() {
 	return id;
 }
 
-}}
+}

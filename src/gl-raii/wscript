@@ -1,0 +1,21 @@
+#!/bin/env python
+# -*- coding: utf-8 -*-
+
+def build(bld):
+	sources = [
+		'program.cpp',
+		'shader.cpp',
+		'texture.cpp',
+	]
+
+	obj = bld.stlib(
+		source=sources,
+		target='gl-raii',
+		use=[
+			'glew',
+			'ymse',
+		],
+		lib=[],
+		includes=[],
+		export_includes=["."],
+	)

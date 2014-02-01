@@ -2,10 +2,9 @@
 #include <fstream>
 #include <limits>
 #include <stdexcept>
-#include "fileutil.hpp"
-#include "gl/shader.hpp"
+#include <ymse/fileutil.hpp>
+#include "shader.hpp"
 
-namespace ymse {
 namespace gl {
 
 shader::shader(unsigned type) {
@@ -36,4 +35,4 @@ unsigned shader::get_id() const {
 	return id;
 }
 
-}}
+}

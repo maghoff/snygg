@@ -1,8 +1,7 @@
 #include <algorithm>
 #include <GL/glew.h>
-#include "gl/texture.hpp"
+#include "texture.hpp"
 
-namespace ymse {
 namespace gl {
 
 texture::texture() {
@@ -26,4 +25,4 @@ unsigned texture::get_id() const {
 	return id;
 }
 
-}}
+}

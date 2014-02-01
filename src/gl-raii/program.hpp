@@ -1,9 +1,8 @@
-#ifndef YMSE_GL_PROGRAM_HPP
-#define YMSE_GL_PROGRAM_HPP
+#ifndef GL_RAII_PROGRAM_HPP
+#define GL_RAII_PROGRAM_HPP
 
 #include <string>
 
-namespace ymse {
 namespace gl {
 
 class shader;
@@ -33,6 +32,6 @@ public:
 	unsigned get_id();
 };
 
-}}
+}
 
-#endif // YMSE_GL_PROGRAM_HPP
+#endif // GL_RAII_PROGRAM_HPP

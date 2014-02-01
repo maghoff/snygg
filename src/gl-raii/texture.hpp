@@ -1,7 +1,6 @@
-#ifndef YMSE_GL_TEXTURE_HPP
-#define YMSE_GL_TEXTURE_HPP
+#ifndef GL_RAII_TEXTURE_HPP
+#define GL_RAII_TEXTURE_HPP
 
-namespace ymse {
 namespace gl {
 
 class texture {
@@ -20,6 +19,6 @@ public:
 	unsigned get_id() const;
 };
 
-}}
+}
 
-#endif // YMSE_GL_TEXTURE_HPP
+#endif // GL_RAII_TEXTURE_HPP

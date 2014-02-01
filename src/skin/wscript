@@ -27,6 +27,7 @@ def build(bld):
 			'ymse',
 			'image',
 			'image-gl',
+			'gl-raii',
 		],
 		lib=[],
 		includes=[],

@@ -3,9 +3,6 @@
 
 def build(bld):
 	sources = [
-		'gl/program.cpp',
-		'gl/shader.cpp',
-		'gl/texture.cpp',
 		'bindable_keyboard_handler.cpp',
 		'box_reshaper.cpp',
 		'core.cpp',

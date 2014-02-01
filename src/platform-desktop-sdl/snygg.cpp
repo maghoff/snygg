@@ -8,7 +8,7 @@
 
 #include <boost/filesystem/operations.hpp>
 #include <ymse/bindable_keyboard_handler.hpp>
-#include <ymse/gl/texture.hpp>
+#include <texture.hpp>
 #include <ymse/gl_box_reshaper.hpp>
 #include <ymse/rect.hpp>
 #include <ymse/sdl_core.hpp>
@@ -203,7 +203,7 @@ void snygg::screenshot_with_skin(const std::string& filename, scalable_skin* sel
 
 	binder.unbind();
 
-	ymse::gl::texture tx;
+	gl::texture tx;
 	glBindTexture(GL_TEXTURE_2D, tx.get_id());
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, screenshot_w, screenshot_h, 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
 

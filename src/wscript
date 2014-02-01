@@ -6,6 +6,7 @@ def build(bld):
 		'linear_algebra',
 		'image',
 		'image-gl',
+		'gl-raii',
 		'ymse',
 		'skin',
 		'segment',

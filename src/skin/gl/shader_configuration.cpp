@@ -1,7 +1,7 @@
 #include <vector>
 #include <GL/glew.h>
 
-#include <ymse/gl/texture.hpp>
+#include <texture.hpp>
 #include <load_jpeg.hpp>
 #include <surface.hpp>
 #include <copy.hpp>
@@ -60,7 +60,7 @@ struct shader_configuration::impl {
 	std::vector<std::unique_ptr<uniform_setter>> setters;
 
 	std::vector<image::surface> surfaces;
-	std::vector<ymse::gl::texture> textures;
+	std::vector<gl::texture> textures;
 };
 
 

@@ -3,9 +3,9 @@
 #include <algorithm>
 #include <set>
 #include <cassert>
-#include <ymse/gl/program.hpp>
-#include <ymse/gl/shader.hpp>
-#include <ymse/gl/texture.hpp>
+#include <program.hpp>
+#include <shader.hpp>
+#include <texture.hpp>
 #include <ymse/rect.hpp>
 #include <vec.hpp>
 #include "gl/gl_fbo.hpp"
@@ -21,7 +21,7 @@ struct metaballs::impl {
 	scalable_skin* target;
 
 	std::unique_ptr<shader_program> metaballs;
-	ymse::gl::texture metaballs_coordinates;
+	gl::texture metaballs_coordinates;
 
 	std::unique_ptr<shader_program> mapping;
 
@@ -31,15 +31,15 @@ struct metaballs::impl {
 		std::multiset<la::vec3f> gen[2];
 		int next_gen_index;
 
-		ymse::gl::texture stored_value[2];
+		gl::texture stored_value[2];
 		int next_tex_index;
 
 		std::multiset<la::vec3f>& prev_gen() { return gen[next_gen_index ^ 1]; }
 		std::multiset<la::vec3f>& next_gen() { return gen[next_gen_index]; }
 		void step_generation() { next_gen_index ^= 1; }
 
-		ymse::gl::texture& prev_tex() { return stored_value[next_tex_index ^ 1]; }
-		ymse::gl::texture& next_tex() { return stored_value[next_tex_index]; }
+		gl::texture& prev_tex() { return stored_value[next_tex_index ^ 1]; }
+		gl::texture& next_tex() { return stored_value[next_tex_index]; }
 		void step_tex() { next_tex_index ^= 1; }
 	} balls;
 };
