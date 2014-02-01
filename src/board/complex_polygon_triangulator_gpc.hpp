@@ -19,7 +19,7 @@ public:
 	void start_contour();
 	void end_contour();
 
-	void point(ymse::vec2f);
+	void point(la::vec2f);
 
 	complex_polygon get_complex_polygon() const;
 };

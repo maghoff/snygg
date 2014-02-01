@@ -7,7 +7,7 @@
 #include <luabind/luabind.hpp>
 #include <luabind/adopt_policy.hpp>
 #include <ymse/rect.hpp>
-#include <ymse/vec.hpp>
+#include <vec.hpp>
 #include "arc.hpp"
 #include "line.hpp"
 #include "segment_sequence.hpp"
@@ -62,15 +62,15 @@ board::board(const boost::filesystem::path& filename) :
 board::~board() {
 }
 
-ymse::vec2f board::get_starting_position()
+la::vec2f board::get_starting_position()
 {
 	try  {
-		return ymse::vec2f(*luabind::call_function<ymse::vec2f*>(d->lvm.get_L(), "get_starting_position") [
+		return la::vec2f(*luabind::call_function<la::vec2f*>(d->lvm.get_L(), "get_starting_position") [
 			luabind::adopt(luabind::result)
         ]);
 	}
 	catch (const luabind::error& e) {
-		return ymse::vec2f(0, -40);
+		return la::vec2f(0, -40);
 	}
 }
 
@@ -78,7 +78,7 @@ void board::render(skin& s) const {
 	render_sequence(d->b, s, 0);
 }
 
-bool board::intersect_with_circle(const ymse::vec2f& p, float r) const {
+bool board::intersect_with_circle(const la::vec2f& p, float r) const {
 	for (auto& seg : d->b) {
 		if (seg->intersect_with_circle(p, r)) return true;
 	}
@@ -95,7 +95,7 @@ ymse::rectf board::bounding_box() const {
 	return bb;
 }
 
-int board::winding_number(ymse::vec2f p) const {
+int board::winding_number(la::vec2f p) const {
 	int n = 0;
 
 	for (auto& seg : d->b) {

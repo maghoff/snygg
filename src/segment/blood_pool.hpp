@@ -6,18 +6,18 @@
 class blood_pool : public segment, public renderable {
 	float x, y, r;
 public:
-	blood_pool(ymse::vec2f pos, float r);
+	blood_pool(la::vec2f pos, float r);
 	~blood_pool();
 
 	void head_forward(float) override;
 	float tail_forward(float) override;
 
-	bool intersect_with_circle(const ymse::vec2f&, float r) const override;
+	bool intersect_with_circle(const la::vec2f&, float r) const override;
 
-	ymse::vec2f get_head_pos() const override;
-	ymse::vec2f get_head_direction() const override;
-	ymse::vec2f get_tail_pos() const override;
-	ymse::vec2f get_tail_direction() const override;
+	la::vec2f get_head_pos() const override;
+	la::vec2f get_head_direction() const override;
+	la::vec2f get_tail_pos() const override;
+	la::vec2f get_tail_direction() const override;
 
 	float length() const override;
 	void render(skin&, float head_b) const override;
@@ -26,7 +26,7 @@ public:
 
 	ymse::rectf bounding_box() const override;
 
-	int left_hline_intersections(ymse::vec2f) const override;
+	int left_hline_intersections(la::vec2f) const override;
 };
 
 

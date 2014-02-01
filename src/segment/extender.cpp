@@ -1,16 +1,16 @@
 #include <cassert>
 #include <ymse/rect.hpp>
-#include <ymse/vec.hpp>
+#include <vec.hpp>
 #include "extender.hpp"
 
 struct extender::impl {
-	ymse::vec2f pos, dir;
+	la::vec2f pos, dir;
 	float length;
 };
 
 extender::extender(
-	ymse::vec2f pos,
-	ymse::vec2f dir,
+	la::vec2f pos,
+	la::vec2f dir,
 	float length
 ) :
 	d(new impl)
@@ -39,19 +39,19 @@ float extender::tail_forward(float l) {
 	}
 }
 
-ymse::vec2f extender::get_head_pos() const {
+la::vec2f extender::get_head_pos() const {
 	return d->pos;
 }
 
-ymse::vec2f extender::get_head_direction() const {
+la::vec2f extender::get_head_direction() const {
 	return d->dir;
 }
 
-ymse::vec2f extender::get_tail_pos() const {
+la::vec2f extender::get_tail_pos() const {
 	return get_head_pos();
 }
 
-ymse::vec2f extender::get_tail_direction() const {
+la::vec2f extender::get_tail_direction() const {
 	return get_head_direction();
 }
 
@@ -71,14 +71,14 @@ ymse::rectf extender::bounding_box() const {
 	return rc;
 }
 
-int extender::left_hline_intersections(ymse::vec2f p) const {
+int extender::left_hline_intersections(la::vec2f p) const {
 	return 0;
 }
 
-bool extender::intersect_with_circle(const ymse::vec2f&, float r) const {
+bool extender::intersect_with_circle(const la::vec2f&, float r) const {
 	return false;
 }
 
-bool extender::intersect_with_circle(const ymse::vec2f&, float r, float& skiplength) const {
+bool extender::intersect_with_circle(const la::vec2f&, float r, float& skiplength) const {
 	return false;
 }

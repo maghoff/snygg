@@ -3,7 +3,7 @@
 
 #include "matrix.hpp"
 
-namespace ymse {
+namespace la {
 namespace matrix2d {
 namespace homogenous {
 
@@ -14,6 +14,6 @@ matrix33f rotate(double ang);
 
 } // namespace homogenous
 } // namespace matrix2d
-} // namespace ymse
+} // namespace la
 
 #endif // MATRIX2D_HOMOGENOUS_HPP

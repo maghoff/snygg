@@ -1,6 +1,8 @@
 #ifndef YMSE_RECT_HPP
 #define YMSE_RECT_HPP
 
+#include <vec_fwd.hpp>
+
 namespace ymse {
 
 template <typename T>
@@ -24,11 +26,8 @@ typedef rect<float> rectf;
 template <typename T>
 rect<T> bounding_box(rect<T>, rect<T>);
 
-template <int Dim, typename T>
-class vec;
-
 template <typename T>
-rect<T> bounding_box(rect<T>, vec<2, T>);
+rect<T> bounding_box(rect<T>, la::vec<2, T>);
 
 }
 

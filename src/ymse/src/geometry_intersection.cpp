@@ -1,9 +1,11 @@
 #include "vec.hpp"
 //#include "geometry_intersection.hpp"
 
+using la::vec2f;
+
 namespace {
 
-float sqr(float x) { return x*x; }
+static float sqr(float x) { return x*x; }
 
 }
 

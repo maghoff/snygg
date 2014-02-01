@@ -1,7 +1,7 @@
 #include <cassert>
 #include <stdexcept>
 #include <limits>
-#include <ymse/vec.hpp>
+#include <vec.hpp>
 #include "complex_polygon.hpp"
 #include "complex_polygon_triangulator_gpc.hpp"
 
@@ -35,13 +35,13 @@ void complex_polygon_triangulator_gpc::end_contour() {
 	current_contour.clear();
 }
 
-void complex_polygon_triangulator_gpc::point(ymse::vec2f p) {
+void complex_polygon_triangulator_gpc::point(la::vec2f p) {
 	gpc_vertex v = {p.x(), p.y()};
 	current_contour.push_back(v);
 }
 
 complex_polygon complex_polygon_triangulator_gpc::get_complex_polygon() const {
-	std::vector<ymse::vec2f> v;
+	std::vector<la::vec2f> v;
 	std::vector<int> t;
 
 	gpc_tristrip tristrip = {0, 0};
@@ -53,7 +53,7 @@ complex_polygon complex_polygon_triangulator_gpc::get_complex_polygon() const {
 			gpc_vertex_list& l = tristrip.strip[i];
 			for (int j=0; j<l.num_vertices; ++j) {
 				gpc_vertex& p = l.vertex[j];
-				v.push_back(ymse::vec2f(p.x, p.y));
+				v.push_back(la::vec2f(p.x, p.y));
 				if (j >= 2) {
 					t.push_back(v.size()-3);
 					t.push_back(v.size()-2);

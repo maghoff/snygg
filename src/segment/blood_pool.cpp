@@ -3,11 +3,11 @@
 #include <stdexcept>
 #include <ymse/gl.h>
 #include <ymse/rect.hpp>
-#include <ymse/vec.hpp>
+#include <vec.hpp>
 #include "skin.hpp"
 #include "blood_pool.hpp"
 
-using ymse::vec2f;
+using la::vec2f;
 
 blood_pool::blood_pool(vec2f pos, float r_) : x(pos[0]), y(pos[1]), r(r_) {
 }
@@ -24,7 +24,7 @@ float blood_pool::tail_forward(float length) {
 	return -1;
 }
 
-bool blood_pool::intersect_with_circle(const ymse::vec2f&, float) const {
+bool blood_pool::intersect_with_circle(const la::vec2f&, float) const {
 	// This is just debris
 	return false;
 }
@@ -68,7 +68,7 @@ ymse::rectf blood_pool::bounding_box() const {
 	return bb;
 }
 
-int blood_pool::left_hline_intersections(ymse::vec2f) const {
+int blood_pool::left_hline_intersections(la::vec2f) const {
 	assert(!"Not implemented");
 	return 0;
 }

@@ -1,0 +1,19 @@
+#!/bin/env python
+# -*- coding: utf-8 -*-
+
+def build(bld):
+	sources = [
+		'matrix.cpp',
+		'matrix2d_homogenous.cpp',
+		'matrix3d.cpp',
+		'vec.cpp',
+	]
+
+	obj = bld.stlib(
+		source=sources,
+		target='linear_algebra',
+		use=[],
+		lib=[],
+		includes=[],
+		export_includes=["."],
+	)

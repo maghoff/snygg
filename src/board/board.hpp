@@ -4,7 +4,7 @@
 #include <memory>
 #include <string>
 #include <boost/filesystem/path.hpp>
-#include <ymse/vec.hpp>
+#include <vec.hpp>
 #include "intersectable_with_circle.hpp"
 #include "renderable.hpp"
 
@@ -29,11 +29,11 @@ public:
 
 	void render(skin&) const;
 
-	bool intersect_with_circle(const ymse::vec2f&, float r) const;
+	bool intersect_with_circle(const la::vec2f&, float r) const;
 
-	ymse::vec2f get_starting_position();
+	la::vec2f get_starting_position();
 	ymse::rectf bounding_box() const;
-	int winding_number(ymse::vec2f) const;
+	int winding_number(la::vec2f) const;
 
 	const complex_polygon& floor_polygon() const;
 };

@@ -1,7 +1,7 @@
 #include <cmath>
 #include <ymse/geometry_intersection.hpp>
 #include <ymse/rect.hpp>
-#include <ymse/vec.hpp>
+#include <vec.hpp>
 #include "skin.hpp"
 #include "open_segment.hpp"
 
@@ -14,7 +14,7 @@ open_segment::~open_segment() {
 }
 
 void open_segment::render(skin& sk, float head_b) const {
-	using ymse::vec2f;
+	using la::vec2f;
 
 	vec2f head(get_head_pos()), head_dir(get_head_direction());
 	sk.cap(head, atan2(head_dir[1], head_dir[0]), M_PI * 0.5, head_b);
@@ -30,13 +30,13 @@ ymse::rectf open_segment::bounding_box() const {
 	return segment_filter::bounding_box();
 }
 
-int open_segment::left_hline_intersections(ymse::vec2f p) const {
+int open_segment::left_hline_intersections(la::vec2f p) const {
 	return 0;
 }
 
-bool open_segment::intersect_with_circle(const ymse::vec2f& p, float r) const {
+bool open_segment::intersect_with_circle(const la::vec2f& p, float r) const {
 	namespace i = ymse::intersect;
-	using ymse::vec2f;
+	using la::vec2f;
 
 	vec2f head(get_head_pos());
 	vec2f tail(get_tail_pos());

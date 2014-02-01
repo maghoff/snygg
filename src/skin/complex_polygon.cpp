@@ -1,11 +1,11 @@
 #include <ymse/gl.h>
-#include <ymse/vec.hpp>
+#include <vec.hpp>
 #include "complex_polygon.hpp"
 
 complex_polygon::complex_polygon() { }
 
 complex_polygon::complex_polygon(
-	std::vector<ymse::vec2f> points_,
+	std::vector<la::vec2f> points_,
 	std::vector<int> triangles_
 ) :
 	points(points_),

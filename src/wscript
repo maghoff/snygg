@@ -3,6 +3,7 @@
 
 def build(bld):
 	bld.recurse([
+		'linear_algebra',
 		'ymse',
 		'skin',
 		'segment',

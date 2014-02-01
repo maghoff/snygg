@@ -17,7 +17,7 @@ public:
 	void move();
 	void hit_by(player&);
 	void render(skin&) const;
-	bool intersect_with_circle(const ymse::vec2f&, float r) const;
+	bool intersect_with_circle(const la::vec2f&, float r) const;
 };
 
 #endif // FOOD_ITEM_HPP

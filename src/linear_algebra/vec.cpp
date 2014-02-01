@@ -2,7 +2,7 @@
 #include <cmath>
 #include "vec.hpp"
 
-namespace ymse {
+namespace la {
 
 template <int Dim, typename T>
 vec<Dim, T>::vec() {
@@ -97,7 +97,7 @@ vec<Dim, T> operator - (const vec<Dim, T>& lhs, const vec<Dim, T>& rhs) {
 }
 
 template <int Dim, typename T>
-vec<Dim, T> operator / (const ymse::vec<Dim, T>& lhs, const ymse::vec<Dim, T>& rhs)
+vec<Dim, T> operator / (const la::vec<Dim, T>& lhs, const la::vec<Dim, T>& rhs)
 {
 	vec<Dim, T> r(lhs);
 	r /= rhs;
@@ -117,19 +117,19 @@ vec<Dim, T> operator * (T lhs, const vec<Dim, T>& rhs) {
 }
 
 template <int Dim, typename T>
-bool operator == (const ymse::vec<Dim, T>& lhs, const ymse::vec<Dim, T>& rhs) {
+bool operator == (const la::vec<Dim, T>& lhs, const la::vec<Dim, T>& rhs) {
 	bool equals = true;
 	for (int i=0; i<Dim; ++i) equals &= (lhs[i] == rhs[i]);
 	return equals;
 }
 
 template <int Dim, typename T>
-bool operator != (const ymse::vec<Dim, T>& lhs, const ymse::vec<Dim, T>& rhs) {
+bool operator != (const la::vec<Dim, T>& lhs, const la::vec<Dim, T>& rhs) {
 	return !(lhs == rhs);
 }
 
 template <int Dim, typename T>
-bool operator < (const ymse::vec<Dim, T>& lhs, const ymse::vec<Dim, T>& rhs) {
+bool operator < (const la::vec<Dim, T>& lhs, const la::vec<Dim, T>& rhs) {
 	for (int i=0; i<Dim; ++i) {
 		if (lhs[i] < rhs[i]) return true;
 		if (rhs[i] < lhs[i]) return false;

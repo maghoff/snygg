@@ -1,7 +1,7 @@
 #include <ctime>
 #include <random>
 #include <ymse/rect.hpp>
-#include <ymse/vec.hpp>
+#include <vec.hpp>
 #include "board.hpp"
 #include "item_container.hpp"
 #include "food_item.hpp"
@@ -31,8 +31,8 @@ struct food_generator::impl {
 namespace {
 
 template <class Rand>
-ymse::vec2f get_random_pos(Rand rand, ymse::rectf bb) {
-	return ymse::vec2f(
+la::vec2f get_random_pos(Rand rand, ymse::rectf bb) {
+	return la::vec2f(
 		bb.left() + rand() * bb.width(),
 		bb.top() + rand() * bb.height()
 	);
@@ -58,7 +58,7 @@ void food_generator::generate() {
 
 	ymse::rectf bb = d->b.bounding_box();
 
-	ymse::vec2f pos;
+	la::vec2f pos;
 	do {
 		pos = get_random_pos([&]{ return d->rand(); }, bb);
 	} while (

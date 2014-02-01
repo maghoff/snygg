@@ -2,12 +2,12 @@
 #include <algorithm>
 #include <cmath>
 #include <ymse/rect.hpp>
-#include <ymse/vec.hpp>
+#include <vec.hpp>
 #include "skin.hpp"
 #include "../board/complex_polygon_triangulator.hpp"
 #include "arc.hpp"
 
-using ymse::vec2f;
+using la::vec2f;
 
 arc::arc(
 	float x_, float y_,
@@ -114,11 +114,11 @@ static bool fat_arc_intersect_with_circle(
 	return false;
 }
 
-bool arc::intersect_with_circle(const ymse::vec2f& c_center, float c_r) const {
+bool arc::intersect_with_circle(const la::vec2f& c_center, float c_r) const {
 	return fat_arc_intersect_with_circle(vec2f(x, y), r, thickness, begin, end, c_center, c_r);
 }
 
-bool arc::intersect_with_circle(const ymse::vec2f& c_center, float c_r, float& skiplength) const {
+bool arc::intersect_with_circle(const la::vec2f& c_center, float c_r, float& skiplength) const {
 	if (skiplength <= 0.f) return intersect_with_circle(c_center, c_r);
 
 	float length = fabs(end - begin) * r;
@@ -138,7 +138,7 @@ float arc::length() const {
 }
 
 void arc::render(skin& s, float head_b) const {
-	s.fat_arc(ymse::vec2f(x, y), r, thickness, begin, end, head_b + length(), head_b);
+	s.fat_arc(la::vec2f(x, y), r, thickness, begin, end, head_b + length(), head_b);
 }
 
 ymse::rectf arc::bounding_box() const {
@@ -172,7 +172,7 @@ ymse::rectf arc::bounding_box() const {
 	return bb;
 }
 
-int arc::left_hline_intersections(ymse::vec2f p) const {
+int arc::left_hline_intersections(la::vec2f p) const {
 	if (p[1] < y - r) return 0;
 	if (p[1] > y + r) return 0;
 
@@ -229,7 +229,7 @@ void arc::add_to_triangulator(complex_polygon_triangulator& triangulator) const 
 	double delta = (end - begin) / n;
 	for (int i=0; i<=n; ++i) {
 		double ang = begin + delta * i;
-		triangulator.point(ymse::vec2f(
+		triangulator.point(la::vec2f(
 			x + outer * cos(ang),
 			y + outer * sin(ang)
 		));

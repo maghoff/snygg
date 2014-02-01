@@ -1,7 +1,7 @@
 #include <cassert>
 #include <algorithm>
+#include <matrix2d_homogenous.hpp>
 #include "box_reshaper.hpp"
-#include "matrix2d_homogenous.hpp"
 
 namespace ymse {
 
@@ -12,7 +12,7 @@ box_reshaper::box_reshaper() {
 box_reshaper::~box_reshaper() { }
 
 void box_reshaper::calculate_transformation() {
-	using namespace matrix2d::homogenous;
+	using namespace la::matrix2d::homogenous;
 
 	double w = 2.0*width/(double)height;
 	double h = 2.0;
@@ -73,11 +73,11 @@ double box_reshaper::get_pixels_per_unit() const {
 	return ppu;
 }
 
-const matrix33f& box_reshaper::get_transformation() const {
+const la::matrix33f& box_reshaper::get_transformation() const {
 	return t;
 }
 
-const matrix33f& box_reshaper::get_inverse_transformation() const {
+const la::matrix33f& box_reshaper::get_inverse_transformation() const {
 	return t_inv;
 }
 

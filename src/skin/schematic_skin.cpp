@@ -2,7 +2,7 @@
 #include <cmath>
 #include <ymse/gl.h>
 #include <ymse/rect.hpp>
-#include <ymse/vec.hpp>
+#include <vec.hpp>
 #include "complex_polygon.hpp"
 #include "schematic_skin.hpp"
 
@@ -14,7 +14,7 @@ namespace {
 schematic_skin::schematic_skin() { }
 schematic_skin::~schematic_skin() { }
 
-void schematic_skin::circle(ymse::vec2f p, float r) {
+void schematic_skin::circle(la::vec2f p, float r) {
 	float step_size = get_step_size(r);
 
 	glColor4f(1, 1, 1, 1);
@@ -29,7 +29,7 @@ void schematic_skin::circle(ymse::vec2f p, float r) {
 	plain_skin::circle(p, r);
 }
 
-void schematic_skin::blood(ymse::vec2f p, float r) {
+void schematic_skin::blood(la::vec2f p, float r) {
 	float step_size = get_step_size(r);
 
 	glColor4f(1, 0, 0, 1);
@@ -44,7 +44,7 @@ void schematic_skin::blood(ymse::vec2f p, float r) {
 	plain_skin::circle(p, r);
 }
 
-void schematic_skin::fat_arc(ymse::vec2f p, float r, float t, float begin_in, float end_in, float b_begin, float b_end) {
+void schematic_skin::fat_arc(la::vec2f p, float r, float t, float begin_in, float end_in, float b_begin, float b_end) {
 	float r1 = r-t, r2 = r+t;
 	float step_size = get_step_size(r2);
 
@@ -110,11 +110,11 @@ void schematic_skin::fat_arc(ymse::vec2f p, float r, float t, float begin_in, fl
 	plain_skin::fat_arc(p, r, t, begin, end, b_begin, b_end);
 }
 
-inline void glyVertex(const ymse::vec2f& v) {
+inline void glyVertex(const la::vec2f& v) {
 	glVertex2f(v.x(), v.y());
 }
 
-void schematic_skin::fat_line(ymse::vec2f p, ymse::vec2f d, float len, float t, float b_begin, float b_end) {
+void schematic_skin::fat_line(la::vec2f p, la::vec2f d, float len, float t, float b_begin, float b_end) {
 	float &x1(p[0]), &y1(p[1]), &dx(d[0]), &dy(d[1]);
 
 	// Calculate normal * thickness:
@@ -132,9 +132,9 @@ void schematic_skin::fat_line(ymse::vec2f p, ymse::vec2f d, float len, float t, 
 
 	if (len > ARROW_LENGTH * 1.25) {
 		const float hll = ARROW_LENGTH / 2.;
-		const ymse::vec2f center = p + d * (len / 2.f);
-		const ymse::vec2f long_normal = ymse::vec2f(nx, ny);
-		const ymse::vec2f normal = long_normal * (1.f / long_normal.length());
+		const la::vec2f center = p + d * (len / 2.f);
+		const la::vec2f long_normal = la::vec2f(nx, ny);
+		const la::vec2f normal = long_normal * (1.f / long_normal.length());
 
 		glBegin(GL_LINES);
 		glyVertex(center - hll * d);
@@ -152,7 +152,7 @@ void schematic_skin::fat_line(ymse::vec2f p, ymse::vec2f d, float len, float t, 
 	plain_skin::fat_line(p, d, len, t, b_begin, b_end);
 }
 
-static void cap_outline(ymse::vec2f p, float r, float snake_dir, float cap_dir, float step_size) {
+static void cap_outline(la::vec2f p, float r, float snake_dir, float cap_dir, float step_size) {
 	for (float d = cap_dir; d < cap_dir + M_PI; d += step_size) {
 		glVertex2f(p[0] + r * cos(snake_dir + d), p[1] + r * sin(snake_dir + d));
 	}
@@ -161,7 +161,7 @@ static void cap_outline(ymse::vec2f p, float r, float snake_dir, float cap_dir, 
 	glVertex2f(p[0] + r * cos(snake_dir + d), p[1] + r * sin(snake_dir + d));
 }
 
-void schematic_skin::cap(ymse::vec2f p, float snake_direction_in, float cap_direction_in, float) {
+void schematic_skin::cap(la::vec2f p, float snake_direction_in, float cap_direction_in, float) {
 	const float r = 2.5;
 	const float step_size = get_step_size(r);
 

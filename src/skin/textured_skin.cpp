@@ -4,7 +4,7 @@
 #include <cmath>
 #include <memory>
 #include <ymse/rect.hpp>
-#include <ymse/vec.hpp>
+#include <vec.hpp>
 #include "gl/shader_program.hpp"
 #include "gl/shader_builder.hpp"
 #include "gl/shader_configuration.hpp"
@@ -115,7 +115,7 @@ void textured_skin::to_wall_shader() { to_shader(d->wall_config.get()); }
 void textured_skin::to_food_shader() { to_shader(d->food_config.get()); }
 void textured_skin::to_floor_shader() { to_shader(d->floor_config.get()); }
 
-void textured_skin::circle_core(ymse::vec2f p, float r) {
+void textured_skin::circle_core(la::vec2f p, float r) {
 	float step_size = get_step_size(r);
 
 	glBegin(GL_TRIANGLE_FAN);
@@ -125,7 +125,7 @@ void textured_skin::circle_core(ymse::vec2f p, float r) {
 	glEnd();
 }
 
-void textured_skin::circle(ymse::vec2f p, float r) {
+void textured_skin::circle(la::vec2f p, float r) {
 	to_food_shader();
 
 	const float step_size = get_step_size(r);
@@ -147,7 +147,7 @@ void textured_skin::circle(ymse::vec2f p, float r) {
 	glEnd();
 }
 
-void textured_skin::blood(ymse::vec2f p, float r) {
+void textured_skin::blood(la::vec2f p, float r) {
 	to_no_shader();
 
 	glColor4f(0.7, 0, 0, 1);
@@ -155,7 +155,7 @@ void textured_skin::blood(ymse::vec2f p, float r) {
 	glColor4f(1, 1, 1, 1);
 }
 
-void textured_skin::fat_arc(ymse::vec2f p, float r, float t, float begin, float end, float b_begin, float b_end) {
+void textured_skin::fat_arc(la::vec2f p, float r, float t, float begin, float end, float b_begin, float b_end) {
 	to_texture_shader();
 
 	float r1 = r-t, r2 = r+t;
@@ -201,7 +201,7 @@ void textured_skin::fat_arc(ymse::vec2f p, float r, float t, float begin, float 
 	glEnd();
 }
 
-void textured_skin::fat_line(ymse::vec2f p, ymse::vec2f dir, float len, float t, float b_begin, float b_end) {
+void textured_skin::fat_line(la::vec2f p, la::vec2f dir, float len, float t, float b_begin, float b_end) {
 	to_texture_shader();
 
 	float &x1(p[0]), &y1(p[1]), &dx(dir[0]), &dy(dir[1]);
@@ -234,7 +234,7 @@ void textured_skin::fat_line(ymse::vec2f p, ymse::vec2f dir, float len, float t,
 	glEnd();
 }
 
-void textured_skin::cap(ymse::vec2f p, float snake_direction_in, float cap_direction_in, float b_coord) {
+void textured_skin::cap(la::vec2f p, float snake_direction_in, float cap_direction_in, float b_coord) {
 	to_texture_shader();
 
 	const float r = 2.5;

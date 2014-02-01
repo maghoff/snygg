@@ -2,14 +2,14 @@
 #include <cmath>
 #include <ymse/gl.h>
 #include <ymse/rect.hpp>
-#include <ymse/vec.hpp>
+#include <vec.hpp>
 #include "complex_polygon.hpp"
 #include "plain_skin.hpp"
 
 plain_skin::plain_skin() {
 }
 
-void plain_skin::circle(ymse::vec2f p, float r) {
+void plain_skin::circle(la::vec2f p, float r) {
 	float step_size = get_step_size(r);
 
 	glBegin(GL_TRIANGLE_FAN);
@@ -19,13 +19,13 @@ void plain_skin::circle(ymse::vec2f p, float r) {
 	glEnd();
 }
 
-void plain_skin::blood(ymse::vec2f p, float r) {
+void plain_skin::blood(la::vec2f p, float r) {
 	glColor4f(1, 0, 0, 1);
 	circle(p, r);
 	glColor4f(1, 1, 1, 1);
 }
 
-void plain_skin::fat_arc(ymse::vec2f p, float r, float t, float begin, float end, float b_begin, float b_end) {
+void plain_skin::fat_arc(la::vec2f p, float r, float t, float begin, float end, float b_begin, float b_end) {
 	float r1 = r-t, r2 = r+t;
 	float step_size = get_step_size(r2);
 	if (begin > end) std::swap(begin, end);
@@ -45,7 +45,7 @@ void plain_skin::fat_arc(ymse::vec2f p, float r, float t, float begin, float end
 	glEnd();
 }
 
-void plain_skin::fat_line(ymse::vec2f p, ymse::vec2f d, float len, float t, float b_begin, float b_end) {
+void plain_skin::fat_line(la::vec2f p, la::vec2f d, float len, float t, float b_begin, float b_end) {
 	float &x1(p[0]), &y1(p[1]), &dx(d[0]), &dy(d[1]);
 
 	// Calculate normal * thickness:
@@ -60,7 +60,7 @@ void plain_skin::fat_line(ymse::vec2f p, ymse::vec2f d, float len, float t, floa
 	glEnd();
 }
 
-void plain_skin::cap(ymse::vec2f p, float, float, float) {
+void plain_skin::cap(la::vec2f p, float, float, float) {
 	circle(p, 2.5);
 }
 

@@ -20,10 +20,10 @@ public:
 	virtual void head_forward(float) = 0;
 	virtual float tail_forward(float) = 0;
 
-	virtual ymse::vec2f get_head_pos() const = 0;
-	virtual ymse::vec2f get_head_direction() const = 0;
-	virtual ymse::vec2f get_tail_pos() const = 0;
-	virtual ymse::vec2f get_tail_direction() const = 0;
+	virtual la::vec2f get_head_pos() const = 0;
+	virtual la::vec2f get_head_direction() const = 0;
+	virtual la::vec2f get_tail_pos() const = 0;
+	virtual la::vec2f get_tail_direction() const = 0;
 
 	virtual float length() const = 0;
 	virtual void render(skin&, float head_b) const = 0;
@@ -36,7 +36,7 @@ public:
 	//    x < p[0]
 	//
 	// This is used to determine the winding number of a new food item.
-	virtual int left_hline_intersections(ymse::vec2f p) const = 0;
+	virtual int left_hline_intersections(la::vec2f p) const = 0;
 
 	virtual void add_to_triangulator(complex_polygon_triangulator&) const { }
 };

@@ -1,9 +1,9 @@
-#ifndef YMSE_MATRIX_HPP
-#define YMSE_MATRIX_HPP
+#ifndef LINEAR_ALGEBRA_MATRIX_HPP
+#define LINEAR_ALGEBRA_MATRIX_HPP
 
 #include "vec.hpp"
 
-namespace ymse {
+namespace la {
 
 template <int Size, typename T>
 struct sq_matrix {

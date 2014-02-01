@@ -3,11 +3,11 @@
 
 #include <algorithm>
 #include <ymse/rect.hpp>
-#include <ymse/vec.hpp>
+#include <vec.hpp>
 #include "skin.hpp"
 #include "line.hpp"
 
-using ymse::vec2f;
+using la::vec2f;
 
 line::line(
 	float x_, float y_,
@@ -22,8 +22,8 @@ line::line(
 }
 
 line::line(
-	ymse::vec2f pos,
-	ymse::vec2f dir,
+	la::vec2f pos,
+	la::vec2f dir,
 	float len_
 ) :
 	x(pos[0]), y(pos[1]),
@@ -72,11 +72,11 @@ static bool fat_line_intersect_with_circle(
 	return true;
 }
 
-bool line::intersect_with_circle(const ymse::vec2f& B, float r2) const {
+bool line::intersect_with_circle(const la::vec2f& B, float r2) const {
 	return fat_line_intersect_with_circle(vec2f(x, y), dx, dy, len, thickness, B, r2);
 }
 
-bool line::intersect_with_circle(const ymse::vec2f& B, float r2, float& skiplength) const {
+bool line::intersect_with_circle(const la::vec2f& B, float r2, float& skiplength) const {
 	if (skiplength <= 0.f) return intersect_with_circle(B, r2);
 
 	if (len <= skiplength) {
@@ -90,22 +90,22 @@ bool line::intersect_with_circle(const ymse::vec2f& B, float r2, float& skipleng
 	return fat_line_intersect_with_circle(vec2f(x, y), dx, dy, l2, thickness, B, r2);
 }
 
-ymse::vec2f line::get_head_pos() const {
+la::vec2f line::get_head_pos() const {
 	vec2f v(dx, dy);
 	v *= len;
 	v += vec2f(x, y);
 	return v;
 }
 
-ymse::vec2f line::get_head_direction() const {
+la::vec2f line::get_head_direction() const {
 	return vec2f(dx, dy);
 }
 
-ymse::vec2f line::get_tail_pos() const {
+la::vec2f line::get_tail_pos() const {
 	return vec2f(x, y);
 }
 
-ymse::vec2f line::get_tail_direction() const {
+la::vec2f line::get_tail_direction() const {
 	return get_head_direction();
 }
 
@@ -114,7 +114,7 @@ float line::length() const {
 }
 
 void line::render(skin& s, float head_b) const {
-	s.fat_line(ymse::vec2f(x, y), ymse::vec2f(dx, dy), len, thickness, head_b + len, head_b);
+	s.fat_line(la::vec2f(x, y), la::vec2f(dx, dy), len, thickness, head_b + len, head_b);
 }
 
 ymse::rectf line::bounding_box() const {
@@ -141,7 +141,7 @@ ymse::rectf line::bounding_box() const {
 	return bb;
 }
 
-int line::left_hline_intersections(ymse::vec2f p) const {
+int line::left_hline_intersections(la::vec2f p) const {
 	float y1 = y, y2 = y1 + dy * len;
 
 	if (p[1] < y1 && p[1] <= y2) return 0;

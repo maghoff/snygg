@@ -1,7 +1,7 @@
-#ifndef YMSE_MATRIX3D_HPP
-#define YMSE_MATRIX3D_HPP
+#ifndef LINEAR_ALGEBRA_MATRIX3D_HPP
+#define LINEAR_ALGEBRA_MATRIX3D_HPP
 
-namespace ymse {
+namespace la {
 
 template <int Size, typename T>
 struct sq_matrix;

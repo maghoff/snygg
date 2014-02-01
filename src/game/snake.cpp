@@ -1,6 +1,6 @@
 #include <cmath>
 #include <ymse/geometry_intersection.hpp>
-#include <ymse/vec.hpp>
+#include <vec.hpp>
 #include "arc.hpp"
 #include "blood_pool.hpp"
 #include "line.hpp"
@@ -13,7 +13,7 @@
 #include "snake.hpp"
 
 
-using ymse::vec2f;
+using la::vec2f;
 
 
 struct snake::impl {
@@ -126,7 +126,7 @@ bool snake::crashes_with(const intersectable_with_circle& object) const {
 	return object.intersect_with_circle(head, 2.5f);
 }
 
-bool snake::intersect_with_circle(const ymse::vec2f& p, float r) const {
+bool snake::intersect_with_circle(const la::vec2f& p, float r) const {
 	namespace i = ymse::intersect;
 
 	vec2f head(d->body.get_head_pos());

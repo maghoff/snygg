@@ -1,7 +1,7 @@
 #include "matrix3d.hpp"
 #include "matrix2d_homogenous.hpp"
 
-namespace ymse {
+namespace la {
 namespace matrix2d {
 namespace homogenous {
 
@@ -26,4 +26,4 @@ matrix33f rotate(double ang) {
 
 } // namespace homogenous
 } // namespace matrix2d
-} // namespace ymse
+} // namespace la

@@ -19,9 +19,6 @@ def build(bld):
 		'gl_box_reshaper.cpp',
 		'key.cpp',
 		'keyboard_handler.cpp',
-		'matrix.cpp',
-		'matrix2d_homogenous.cpp',
-		'matrix3d.cpp',
 		'mouse_handler.cpp',
 		'opposite_keys.cpp',
 		'opposite_keys_listener.cpp',
@@ -30,13 +27,13 @@ def build(bld):
 		'reshaper.cpp',
 		'sdl_core.cpp',
 		'signaling_opposite_keys.cpp',
-		'vec.cpp',
 	]
 
 	obj = bld.stlib(
 		source=sources,
 		target='ymse',
 		use=[
+			'linear_algebra',
 			'gl',
 			'glew',
 			'SDL',

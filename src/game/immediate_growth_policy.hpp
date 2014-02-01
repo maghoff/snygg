@@ -8,7 +8,7 @@ public:
 	immediate_growth_policy();
 	~immediate_growth_policy();
 
-	segment_ptr growth_segment(ymse::vec2f pos, ymse::vec2f dir, float length);
+	segment_ptr growth_segment(la::vec2f pos, la::vec2f dir, float length);
 	void grow(segment_sequence& body, float length);
 };
 

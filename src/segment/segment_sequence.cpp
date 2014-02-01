@@ -3,11 +3,11 @@
 #include <deque>
 #include <ymse/geometry_intersection.hpp>
 #include <ymse/rect.hpp>
-#include <ymse/vec.hpp>
+#include <vec.hpp>
 #include "segment_sequence.hpp"
 
 
-using ymse::vec2f;
+using la::vec2f;
 
 
 struct segment_sequence::impl {
@@ -46,14 +46,14 @@ float segment_sequence::tail_forward(float length) {
 	return length;
 }
 
-bool segment_sequence::intersect_with_circle(const ymse::vec2f& p, float r) const {
+bool segment_sequence::intersect_with_circle(const la::vec2f& p, float r) const {
 	for (auto& s : d->body) {
 		if (s->intersect_with_circle(p, r)) return true;
 	}
 	return false;
 }
 
-bool segment_sequence::intersect_with_self(const ymse::vec2f& p, float r) const {
+bool segment_sequence::intersect_with_self(const la::vec2f& p, float r) const {
 	float skiplength = r*2.f + 10.f;
 
 	for (auto i = d->body.rbegin(), end = d->body.rend(); i != end; ++i) {
@@ -115,7 +115,7 @@ ymse::rectf segment_sequence::bounding_box() const {
 	return bb;
 }
 
-int segment_sequence::left_hline_intersections(ymse::vec2f p) const {
+int segment_sequence::left_hline_intersections(la::vec2f p) const {
 	int n = 0;
 	for (auto& s : d->body) n += s->left_hline_intersections(p);
 	return n;

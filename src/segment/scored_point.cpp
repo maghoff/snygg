@@ -3,11 +3,11 @@
 #include <stdexcept>
 #include <ymse/geometry_intersection.hpp>
 #include <ymse/rect.hpp>
-#include <ymse/vec.hpp>
+#include <vec.hpp>
 #include "skin.hpp"
 #include "scored_point.hpp"
 
-using ymse::vec2f;
+using la::vec2f;
 
 scored_point::scored_point(
 	vec2f pos, float r_,
@@ -39,11 +39,11 @@ float scored_point::tail_forward(float length) {
 	}
 }
 
-bool scored_point::intersect_with_circle(const ymse::vec2f& p2, float r2) const {
-	return ymse::intersect::circle_with_circle(ymse::vec2f(x, y), r, p2, r2);
+bool scored_point::intersect_with_circle(const la::vec2f& p2, float r2) const {
+	return ymse::intersect::circle_with_circle(la::vec2f(x, y), r, p2, r2);
 }
 
-bool scored_point::intersect_with_circle(const ymse::vec2f& p2, float r2, float& skiplength) const {
+bool scored_point::intersect_with_circle(const la::vec2f& p2, float r2, float& skiplength) const {
 	return
 		skiplength <= 0.f &&
 		intersect_with_circle(p2, r2)
@@ -84,7 +84,7 @@ ymse::rectf scored_point::bounding_box() const {
 	return bb;
 }
 
-int scored_point::left_hline_intersections(ymse::vec2f) const {
+int scored_point::left_hline_intersections(la::vec2f) const {
 	assert(!"Not implemented");
 	return 0;
 }

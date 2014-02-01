@@ -1,6 +1,6 @@
 #include <algorithm>
+#include <vec.hpp>
 #include "rect.hpp"
-#include "vec.hpp"
 
 namespace ymse {
 
@@ -17,7 +17,7 @@ rectf bounding_box(rectf a, rectf b) {
 }
 
 template <typename T>
-rect<T> bounding_box(rect<T> r, vec<2, T> b) {
+rect<T> bounding_box(rect<T> r, la::vec<2, T> b) {
 	rect<T> bb;
 	bb.x1 = std::min(r.x1, b[0]);
 	bb.x2 = std::max(r.x2, b[0]);
@@ -27,6 +27,6 @@ rect<T> bounding_box(rect<T> r, vec<2, T> b) {
 }
 
 template
-rectf bounding_box(rectf, vec2f);
+rectf bounding_box(rectf, la::vec2f);
 
 }

@@ -2,7 +2,7 @@
 #define SNYGG_SNAKE_HPP
 
 #include <memory>
-#include <ymse/vec.hpp>
+#include <vec.hpp>
 #include "item_with_life.hpp"
 
 class blood_pool;
@@ -15,7 +15,7 @@ class snake : public item_with_life {
 	void forward(float);
 
 public:
-	snake(item_container&, float speed, ymse::vec2f pos);
+	snake(item_container&, float speed, la::vec2f pos);
 	~snake();
 
 	snake(const snake&) = delete;
@@ -31,7 +31,7 @@ public:
 
 	bool crashes_with(const intersectable_with_circle&) const;
 
-	bool intersect_with_circle(const ymse::vec2f&, float r) const;
+	bool intersect_with_circle(const la::vec2f&, float r) const;
 
 	// Start "moving" into a blood pool
 	void crack_head();

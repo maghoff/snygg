@@ -7,7 +7,7 @@
 #include <boost/filesystem/path.hpp>
 
 // For exposing to lua:
-#include <ymse/vec.hpp>
+#include <vec.hpp>
 #include "segment_heap.hpp"
 
 namespace luamod {
@@ -17,11 +17,11 @@ namespace {
 void register_modules(lua_State* L) {
 	using namespace luabind;
 	module(L) [
-		class_<ymse::vec2f>("vec")
+		class_<la::vec2f>("vec")
 			.def(constructor<float, float>())
-			.def("x", (float(ymse::vec2f::*)() const)&ymse::vec2f::x)
-			.def("y", (float(ymse::vec2f::*)() const)&ymse::vec2f::y)
-			.def("length", &ymse::vec2f::length)
+			.def("x", (float(la::vec2f::*)() const)&la::vec2f::x)
+			.def("y", (float(la::vec2f::*)() const)&la::vec2f::y)
+			.def("length", &la::vec2f::length)
 			.def(const_self + const_self)
 			.def(const_self * float())
 			.def(float() * const_self)
@@ -30,9 +30,9 @@ void register_modules(lua_State* L) {
 		class_<segment_heap>("segment_heap")
 			.def(constructor<>())
 			.def("line", (void(segment_heap::*)(float, float, float, float))&segment_heap::line)
-			.def("line", (void(segment_heap::*)(ymse::vec2f, ymse::vec2f))&segment_heap::line)
+			.def("line", (void(segment_heap::*)(la::vec2f, la::vec2f))&segment_heap::line)
 			.def("arc", (void(segment_heap::*)(float, float, float, float, float))&segment_heap::arc)
-			.def("arc", (void(segment_heap::*)(ymse::vec2f, float, float, float))&segment_heap::arc)
+			.def("arc", (void(segment_heap::*)(la::vec2f, float, float, float))&segment_heap::arc)
 	];
 }
 

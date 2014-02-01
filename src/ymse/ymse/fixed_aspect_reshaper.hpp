@@ -7,14 +7,14 @@
 namespace ymse {
 
 class fixed_aspect_reshaper : public ymse::reshaper {
-	matrix33f t;
+	la::matrix33f t;
 
 public:
 	fixed_aspect_reshaper();
 	~fixed_aspect_reshaper();
 
 	void reshape(int width, int height);
-	const matrix33f& get_transformation() const;
+	const la::matrix33f& get_transformation() const;
 };
 
 } // namespace ymse

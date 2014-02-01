@@ -12,7 +12,7 @@
 #include <ymse/rect.hpp>
 #include <ymse/sdl_core.hpp>
 #include <ymse/keycodes.hpp>
-#include <ymse/vec.hpp>
+#include <vec.hpp>
 #include "gl/gl_fbo.hpp"
 #include "gl/scoped_bind_fbo.hpp"
 #include "metaballs.hpp"

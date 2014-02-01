@@ -3,7 +3,7 @@
 #include "matrix3d.hpp"
 #include "vec.hpp"
 
-namespace ymse {
+namespace la {
 namespace matrix3d {
 
 matrix33f identity() {

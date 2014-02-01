@@ -2,7 +2,7 @@
 #define SNYGG_SEGMENT_HEAP_HPP
 
 #include <memory>
-#include <ymse/vec_fwd.hpp>
+#include <vec_fwd.hpp>
 
 class segment;
 
@@ -17,10 +17,10 @@ public:
 	segment_heap();
 	~segment_heap();
 
-	void line(ymse::vec2f a, ymse::vec2f b);
+	void line(la::vec2f a, la::vec2f b);
 	void line(float x1, float y1, float x2, float y2);
 
-	void arc(ymse::vec2f p, float r, float begin, float end);
+	void arc(la::vec2f p, float r, float begin, float end);
 	void arc(float x, float y, float r, float begin, float end);
 
 	std::unique_ptr<segment> to_segment();

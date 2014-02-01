@@ -1,10 +1,10 @@
-#ifndef YMSE_VEC_HPP
-#define YMSE_VEC_HPP
+#ifndef LINEAR_ALGEBRA_VEC_HPP
+#define LINEAR_ALGEBRA_VEC_HPP
 
 // For typedefs:
 #include "vec_fwd.hpp"
 
-namespace ymse {
+namespace la {
 
 template <int Dim, typename T>
 struct vec {
@@ -38,30 +38,30 @@ struct vec {
 };
 
 template <int Dim, typename T>
-ymse::vec<Dim, T> operator + (const ymse::vec<Dim, T>&, const ymse::vec<Dim, T>&);
+la::vec<Dim, T> operator + (const la::vec<Dim, T>&, const la::vec<Dim, T>&);
 
 template <int Dim, typename T>
-ymse::vec<Dim, T> operator - (const ymse::vec<Dim, T>&, const ymse::vec<Dim, T>&);
+la::vec<Dim, T> operator - (const la::vec<Dim, T>&, const la::vec<Dim, T>&);
 
 // element-wise division
 template <int Dim, typename T>
-ymse::vec<Dim, T> operator / (const ymse::vec<Dim, T>&, const ymse::vec<Dim, T>&);
+la::vec<Dim, T> operator / (const la::vec<Dim, T>&, const la::vec<Dim, T>&);
 
 template <int Dim, typename T>
-ymse::vec<Dim, T> operator * (const ymse::vec<Dim, T>&, T);
+la::vec<Dim, T> operator * (const la::vec<Dim, T>&, T);
 
 template <int Dim, typename T>
-ymse::vec<Dim, T> operator * (T, const ymse::vec<Dim, T>&);
+la::vec<Dim, T> operator * (T, const la::vec<Dim, T>&);
 
 template <int Dim, typename T>
-bool operator == (const ymse::vec<Dim, T>&, const ymse::vec<Dim, T>&);
+bool operator == (const la::vec<Dim, T>&, const la::vec<Dim, T>&);
 
 template <int Dim, typename T>
-bool operator != (const ymse::vec<Dim, T>&, const ymse::vec<Dim, T>&);
+bool operator != (const la::vec<Dim, T>&, const la::vec<Dim, T>&);
 
 // Lexicographic order
 template <int Dim, typename T>
-bool operator < (const ymse::vec<Dim, T>&, const ymse::vec<Dim, T>&);
+bool operator < (const la::vec<Dim, T>&, const la::vec<Dim, T>&);
 
 }
 

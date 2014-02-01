@@ -1,7 +1,7 @@
-#ifndef YMSE_VEC_FWD_HPP
-#define YMSE_VEC_FWD_HPP
+#ifndef LINEAR_ALGEBRA_VEC_FWD_HPP
+#define LINEAR_ALGEBRA_VEC_FWD_HPP
 
-namespace ymse {
+namespace la {
 
 template <int Dim, typename T>
 struct vec;
@@ -16,4 +16,4 @@ typedef vec<2, int> vec2i;
 
 }
 
-#endif // YMSE_VEC_FWD_HPP
+#endif // LINEAR_ALGEBRA_VEC_FWD_HPP

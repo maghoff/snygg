@@ -1,6 +1,6 @@
 #include "matrix.hpp"
 
-namespace ymse {
+namespace la {
 
 template <int Size, typename T>
 sq_matrix<Size, T>::sq_matrix() {

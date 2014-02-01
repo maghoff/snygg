@@ -6,7 +6,7 @@
 #include <ymse/gl/shader.hpp>
 #include <ymse/gl/texture.hpp>
 #include <ymse/rect.hpp>
-#include <ymse/vec.hpp>
+#include <vec.hpp>
 #include "gl/gl_fbo.hpp"
 #include "gl/scoped_bind_fbo.hpp"
 #include "gl/shader_program.hpp"
@@ -27,14 +27,14 @@ struct metaballs::impl {
 	gl_fbo fbo;
 
 	struct {
-		std::multiset<ymse::vec3f> gen[2];
+		std::multiset<la::vec3f> gen[2];
 		int next_gen_index;
 
 		ymse::gl::texture stored_value[2];
 		int next_tex_index;
 
-		std::multiset<ymse::vec3f>& prev_gen() { return gen[next_gen_index ^ 1]; }
-		std::multiset<ymse::vec3f>& next_gen() { return gen[next_gen_index]; }
+		std::multiset<la::vec3f>& prev_gen() { return gen[next_gen_index ^ 1]; }
+		std::multiset<la::vec3f>& next_gen() { return gen[next_gen_index]; }
 		void step_generation() { next_gen_index ^= 1; }
 
 		ymse::gl::texture& prev_tex() { return stored_value[next_tex_index ^ 1]; }
@@ -90,11 +90,11 @@ void metaballs::load_opengl_resources(int width, int height) {
 	//d->target->load_opengl_resources(width, height);
 }
 
-void metaballs::blood(ymse::vec2f p, float r) {
-	d->balls.next_gen().insert(ymse::vec3f(p[0], p[1], r));
+void metaballs::blood(la::vec2f p, float r) {
+	d->balls.next_gen().insert(la::vec3f(p[0], p[1], r));
 }
 
-void metaballs::update_metaballs(const complex_polygon& floor_poly, const std::vector<ymse::vec4f>& p) {
+void metaballs::update_metaballs(const complex_polygon& floor_poly, const std::vector<la::vec4f>& p) {
 	d->fbo.render_to(d->balls.next_tex().get_id());
 
 	glDisable(GL_BLEND);
@@ -139,7 +139,7 @@ void metaballs::draw_metaballs(const complex_polygon& floor_poly) {
 }
 
 void metaballs::floor(const complex_polygon& floor_poly) {
-	std::vector<ymse::vec4f> balls;
+	std::vector<la::vec4f> balls;
 
 	// Removed balls:
 	std::set_difference(
@@ -164,19 +164,19 @@ void metaballs::floor(const complex_polygon& floor_poly) {
 	d->target->floor(floor_poly);
 }
 
-void metaballs::circle(ymse::vec2f p, float r) {
+void metaballs::circle(la::vec2f p, float r) {
 	d->target->circle(p, r);
 }
 
-void metaballs::fat_arc(ymse::vec2f p, float r, float t, float begin, float end, float b_begin, float b_end) {
+void metaballs::fat_arc(la::vec2f p, float r, float t, float begin, float end, float b_begin, float b_end) {
 	d->target->fat_arc(p, r, t, begin, end, b_begin, b_end);
 }
 
-void metaballs::fat_line(ymse::vec2f p, ymse::vec2f dir, float len, float t, float b_begin, float b_end) {
+void metaballs::fat_line(la::vec2f p, la::vec2f dir, float len, float t, float b_begin, float b_end) {
 	d->target->fat_line(p, dir, len, t, b_begin, b_end);
 }
 
-void metaballs::cap(ymse::vec2f p, float snake_direction, float cap_direction, float b_coord) {
+void metaballs::cap(la::vec2f p, float snake_direction, float cap_direction, float b_coord) {
 	d->target->cap(p, snake_direction, cap_direction, b_coord);
 }
 

@@ -2,7 +2,7 @@
 #include <list>
 #include <memory>
 #include <ymse/rect.hpp>
-#include <ymse/vec.hpp>
+#include <vec.hpp>
 #include "arc.hpp"
 #include "contour_segment.hpp"
 #include "line.hpp"
@@ -10,7 +10,7 @@
 #include "segment_sequence.hpp"
 #include "segment_heap.hpp"
 
-using ymse::vec2f;
+using la::vec2f;
 
 
 static bool are_close(vec2f a, vec2f b) {
@@ -138,11 +138,11 @@ void segment_heap::arc(vec2f p, float r, float begin, float end) {
 }
 
 void segment_heap::line(float x1, float y1, float x2, float y2) {
-	line(ymse::vec2f(x1, y1), ymse::vec2f(x2, y2));
+	line(la::vec2f(x1, y1), la::vec2f(x2, y2));
 }
 
 void segment_heap::arc(float x, float y, float r, float begin, float end) {
-	arc(ymse::vec2f(x, y), r, begin, end);
+	arc(la::vec2f(x, y), r, begin, end);
 }
 
 std::unique_ptr<segment> segment_heap::get_a_connected_sequence() {
@@ -221,7 +221,7 @@ std::unique_ptr<segment> segment_heap::to_segment() {
 
 	// The game will hang if there are no closed segments
 	if (!has_closed_segments) {
-		using ymse::vec2f;
+		using la::vec2f;
 		const double tau = 2. * M_PI;
 		const double margin = 20.;
 		const double radius = 10.;
