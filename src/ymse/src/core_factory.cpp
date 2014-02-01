@@ -3,8 +3,8 @@
 
 namespace ymse {
 
-std::unique_ptr<core> core_factory() {
-	return std::unique_ptr<core>(new sdl_core);
+std::unique_ptr<game::core> core_factory() {
+	return std::unique_ptr<game::core>(new sdl_core);
 }
 
 }

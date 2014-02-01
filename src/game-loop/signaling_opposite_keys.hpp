@@ -3,11 +3,11 @@
 
 #include "opposite_keys.hpp"
 
-namespace ymse {
+namespace game {
 
 class opposite_keys_listener;
 
-class signaling_opposite_keys : public ymse::opposite_keys {
+class signaling_opposite_keys : public game::opposite_keys {
 	opposite_keys_listener& listener;
 
 protected:
@@ -18,6 +18,6 @@ public:
 	~signaling_opposite_keys();
 };
 
-} // namespace ymse
+} // namespace game
 
 #endif // YMSE_SIGNALING_OPPOSITE_KEYS_HPP

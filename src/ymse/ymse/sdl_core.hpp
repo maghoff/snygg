@@ -2,20 +2,20 @@
 #define YMSE_SDL_CORE_HPP
 
 #include "sdl_main.h"
-#include "core.hpp"
+#include <core.hpp>
 
 struct SDL_Surface;
 
 namespace ymse {
 
-class sdl_core : public core {
+class sdl_core : public game::core {
 	bool inited;
 	SDL_Surface* screen;
 
-	game* game_p;
-	reshaper* reshaper_p;
-	keyboard_handler* keyboard_handler_p;
-	mouse_handler* mouse_handler_p;
+	game::game* game_p;
+	game::reshaper* reshaper_p;
+	game::keyboard_handler* keyboard_handler_p;
+	game::mouse_handler* mouse_handler_p;
 
 	bool running;
 	int return_value;
@@ -31,10 +31,10 @@ public:
 	~sdl_core();
 
 	void init(int argc, char const * const argv[]);
-	void set_game_object(game*);
-	void set_reshaper_object(reshaper*);
-	void set_keyboard_handler(keyboard_handler*);
-	void set_mouse_handler(mouse_handler*);
+	void set_game_object(game::game*);
+	void set_reshaper_object(game::reshaper*);
+	void set_keyboard_handler(game::keyboard_handler*);
+	void set_mouse_handler(game::mouse_handler*);
 	void set_video_mode(int w, int h, bool fullscreen);
 	void set_cursor_visible(bool);
 	bool get_cursor_visible() const;

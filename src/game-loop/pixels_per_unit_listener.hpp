@@ -1,7 +1,7 @@
 #ifndef YMSE_PIXELS_PER_UNIT_LISTENER_HPP
 #define YMSE_PIXELS_PER_UNIT_LISTENER_HPP
 
-namespace ymse {
+namespace game {
 
 class pixels_per_unit_listener {
 public:

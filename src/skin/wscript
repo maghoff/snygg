@@ -24,7 +24,7 @@ def build(bld):
 		source=sources,
 		target='skin',
 		use=[
-			'ymse',
+			'game-loop',
 			'image',
 			'image-gl',
 			'gl-raii',

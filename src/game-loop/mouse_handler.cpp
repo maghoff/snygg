@@ -1,6 +1,6 @@
 #include "mouse_handler.hpp"
 
-namespace ymse {
+namespace game {
 
 mouse_handler::~mouse_handler() {
 }

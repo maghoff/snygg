@@ -4,7 +4,7 @@
 #include <matrix.hpp>
 #include "reshaper.hpp"
 
-namespace ymse {
+namespace game {
 
 class box_reshaper : public reshaper {
 	double width, height;
@@ -28,6 +28,6 @@ public:
 	const la::matrix33f& get_inverse_transformation() const;
 };
 
-} // namespace ymse
+} // namespace game
 
 #endif // BOX_RESHAPER_HPP

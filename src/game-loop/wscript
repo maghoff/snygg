@@ -1,0 +1,30 @@
+#!/bin/env python
+# -*- coding: utf-8 -*-
+
+def build(bld):
+	sources = [
+		'bindable_keyboard_handler.cpp',
+		'box_reshaper.cpp',
+		'core.cpp',
+		'fixed_aspect_reshaper.cpp',
+		'game.cpp',
+		'key.cpp',
+		'keyboard_handler.cpp',
+		'mouse_handler.cpp',
+		'opposite_keys.cpp',
+		'opposite_keys_listener.cpp',
+		'pixels_per_unit_listener.cpp',
+		'reshaper.cpp',
+		'signaling_opposite_keys.cpp',
+	]
+
+	obj = bld.stlib(
+		source=sources,
+		target='game-loop',
+		use=[
+			'linear_algebra',
+		],
+		lib=[],
+		includes=[],
+		export_includes=["."],
+	)

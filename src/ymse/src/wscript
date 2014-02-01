@@ -3,25 +3,12 @@
 
 def build(bld):
 	sources = [
-		'bindable_keyboard_handler.cpp',
-		'box_reshaper.cpp',
-		'core.cpp',
 		'core_factory.cpp',
 		'fileutil.cpp',
-		'fixed_aspect_reshaper.cpp',
-		'game.cpp',
 		'geometry_intersection.cpp',
 		'gl_box_reshaper.cpp',
-		'key.cpp',
-		'keyboard_handler.cpp',
-		'mouse_handler.cpp',
-		'opposite_keys.cpp',
-		'opposite_keys_listener.cpp',
-		'pixels_per_unit_listener.cpp',
 		'rect.cpp',
-		'reshaper.cpp',
 		'sdl_core.cpp',
-		'signaling_opposite_keys.cpp',
 	]
 
 	obj = bld.stlib(
@@ -29,6 +16,7 @@ def build(bld):
 		target='ymse',
 		use=[
 			'linear_algebra',
+			'game-loop',
 			'gl',
 			'glew',
 			'SDL',

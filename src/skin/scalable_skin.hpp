@@ -1,10 +1,10 @@
 #ifndef SCALABLE_SKIN_HPP
 #define SCALABLE_SKIN_HPP
 
-#include <ymse/pixels_per_unit_listener.hpp>
+#include <pixels_per_unit_listener.hpp>
 #include "skin.hpp"
 
-class scalable_skin : public skin, public ymse::pixels_per_unit_listener {
+class scalable_skin : public skin, public game::pixels_per_unit_listener {
 protected:
 	float detail_modifier;
 

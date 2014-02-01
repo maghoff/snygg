@@ -1,7 +1,7 @@
 #ifndef YMSE_KEYCODES_HPP
 #define YMSE_KEYCODES_HPP
 
-namespace ymse {
+namespace game {
 
 const int KEY_UP = 'H';
 const int KEY_DOWN = 'P';

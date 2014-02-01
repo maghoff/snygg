@@ -3,13 +3,15 @@
 
 #include <memory>
 
-namespace ymse {
-
+namespace game {
 class core;
+}
+
+namespace ymse {
 
 /// This function chooses a core to instantiate at run time, based on what is
 /// available. This is currently stubbed out to just make an SDL core.
-std::unique_ptr<core> core_factory();
+std::unique_ptr<game::core> core_factory();
 
 }
 

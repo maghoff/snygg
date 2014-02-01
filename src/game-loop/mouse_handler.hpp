@@ -1,7 +1,7 @@
 #ifndef YMSE_MOUSE_HANDLER_HPP
 #define YMSE_MOUSE_HANDLER_HPP
 
-namespace ymse {
+namespace game {
 
 class mouse_handler {
 public:

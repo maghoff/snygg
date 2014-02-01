@@ -1,6 +1,6 @@
 #include "keyboard_handler.hpp"
 
-namespace ymse {
+namespace game {
 
 keyboard_handler::~keyboard_handler() {
 }

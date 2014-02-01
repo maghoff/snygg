@@ -2,7 +2,7 @@
 #include "bindable_keyboard_handler.hpp"
 #include "opposite_keys.hpp"
 
-namespace ymse {
+namespace game {
 
 opposite_keys::opposite_keys(
 	bindable_keyboard_handler& kbd_,

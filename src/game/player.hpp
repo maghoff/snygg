@@ -3,7 +3,7 @@
 
 #include <memory>
 
-namespace ymse {
+namespace game {
 	class bindable_keyboard_handler;
 }
 
@@ -16,7 +16,7 @@ class player {
 	std::unique_ptr<impl> d;
 
 public:
-	player(ymse::bindable_keyboard_handler&, item_container&, board&, int left, int right, int spawn);
+	player(game::bindable_keyboard_handler&, item_container&, board&, int left, int right, int spawn);
 	virtual ~player();
 
 	void spawn();

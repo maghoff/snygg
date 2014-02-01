@@ -3,15 +3,16 @@
 
 def build(bld):
 	bld.recurse([
-		'linear-algebra',
+		'board',
+		'core',
+		'game',
+		'game-loop',
+		'gl-raii',
 		'image',
 		'image-gl',
-		'gl-raii',
-		'ymse',
-		'skin',
-		'segment',
-		'core',
-		'board',
-		'game',
+		'linear-algebra',
 		'platform-desktop-sdl',
+		'segment',
+		'skin',
+		'ymse',
 	])

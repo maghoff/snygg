@@ -4,9 +4,9 @@
 #include "reshaper.hpp"
 #include "matrix.hpp"
 
-namespace ymse {
+namespace game {
 
-class fixed_aspect_reshaper : public ymse::reshaper {
+class fixed_aspect_reshaper : public game::reshaper {
 	la::matrix33f t;
 
 public:
@@ -17,6 +17,6 @@ public:
 	const la::matrix33f& get_transformation() const;
 };
 
-} // namespace ymse
+} // namespace game
 
 #endif // FIXED_ASPECT_RESHAPER_HPP

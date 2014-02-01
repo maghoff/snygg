@@ -3,7 +3,7 @@
 #include <matrix2d_homogenous.hpp>
 #include "box_reshaper.hpp"
 
-namespace ymse {
+namespace game {
 
 box_reshaper::box_reshaper() {
 	set_box(-1, -1, 1, 1);
@@ -81,4 +81,4 @@ const la::matrix33f& box_reshaper::get_inverse_transformation() const {
 	return t_inv;
 }
 
-} // namespace ymse
+} // namespace game

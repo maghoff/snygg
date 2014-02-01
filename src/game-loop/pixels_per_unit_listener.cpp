@@ -1,6 +1,6 @@
 #include "pixels_per_unit_listener.hpp"
 
-namespace ymse {
+namespace game {
 
 pixels_per_unit_listener::~pixels_per_unit_listener() {
 }

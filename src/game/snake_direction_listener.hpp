@@ -1,11 +1,11 @@
 #ifndef SNAKE_DIRECTION_LISTENER_HPP
 #define SNAKE_DIRECTION_LISTENER_HPP
 
-#include <ymse/opposite_keys_listener.hpp>
+#include <opposite_keys_listener.hpp>
 
 class snake;
 
-class snake_direction_listener : public ymse::opposite_keys_listener {
+class snake_direction_listener : public game::opposite_keys_listener {
 	snake* s;
 
 public:

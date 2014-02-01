@@ -133,78 +133,78 @@ bool sdl_core::get_cursor_visible() const {
 	return SDL_ShowCursor(SDL_QUERY) == SDL_ENABLE;
 }
 
-void sdl_core::set_game_object(game* game_p_) {
+void sdl_core::set_game_object(game::game* game_p_) {
 	game_p = game_p_;
 }
 
-void sdl_core::set_reshaper_object(reshaper* reshaper_p_) {
+void sdl_core::set_reshaper_object(game::reshaper* reshaper_p_) {
 	reshaper_p = reshaper_p_;
 }
 
-void sdl_core::set_keyboard_handler(keyboard_handler* keyboard_handler_p_) {
+void sdl_core::set_keyboard_handler(game::keyboard_handler* keyboard_handler_p_) {
 	keyboard_handler_p = keyboard_handler_p_;
 }
 
-void sdl_core::set_mouse_handler(mouse_handler* mouse_handler_p_) {
+void sdl_core::set_mouse_handler(game::mouse_handler* mouse_handler_p_) {
 	mouse_handler_p = mouse_handler_p_;
 }
 
 std::map<int, int> key_map = {
-	{ SDLK_UP, ymse::KEY_UP },
-	{ SDLK_DOWN, ymse::KEY_DOWN },
-	{ SDLK_LEFT, ymse::KEY_LEFT },
-	{ SDLK_RIGHT, ymse::KEY_RIGHT },
-	{ SDLK_SPACE, ymse::KEY_SPACE },
-	{ SDLK_a, ymse::KEY_A },
-	{ SDLK_b, ymse::KEY_B },
-	{ SDLK_c, ymse::KEY_C },
-	{ SDLK_d, ymse::KEY_D },
-	{ SDLK_e, ymse::KEY_E },
-	{ SDLK_f, ymse::KEY_F },
-	{ SDLK_g, ymse::KEY_G },
-	{ SDLK_h, ymse::KEY_H },
-	{ SDLK_i, ymse::KEY_I },
-	{ SDLK_j, ymse::KEY_J },
-	{ SDLK_k, ymse::KEY_K },
-	{ SDLK_l, ymse::KEY_L },
-	{ SDLK_m, ymse::KEY_M },
-	{ SDLK_n, ymse::KEY_N },
-	{ SDLK_o, ymse::KEY_O },
-	{ SDLK_p, ymse::KEY_P },
-	{ SDLK_q, ymse::KEY_Q },
-	{ SDLK_r, ymse::KEY_R },
-	{ SDLK_s, ymse::KEY_S },
-	{ SDLK_t, ymse::KEY_T },
-	{ SDLK_u, ymse::KEY_U },
-	{ SDLK_v, ymse::KEY_V },
-	{ SDLK_w, ymse::KEY_W },
-	{ SDLK_x, ymse::KEY_X },
-	{ SDLK_y, ymse::KEY_Y },
-	{ SDLK_z, ymse::KEY_Z },
-	{ SDLK_0, ymse::KEY_0 },
-	{ SDLK_1, ymse::KEY_1 },
-	{ SDLK_2, ymse::KEY_2 },
-	{ SDLK_3, ymse::KEY_3 },
-	{ SDLK_4, ymse::KEY_4 },
-	{ SDLK_5, ymse::KEY_5 },
-	{ SDLK_6, ymse::KEY_6 },
-	{ SDLK_7, ymse::KEY_7 },
-	{ SDLK_8, ymse::KEY_8 },
-	{ SDLK_9, ymse::KEY_9 },
-	{ SDLK_LALT, ymse::KEY_LALT },
-	{ SDLK_RALT, ymse::KEY_RALT },
-	{ SDLK_F1, ymse::KEY_F1 },
-	{ SDLK_F2, ymse::KEY_F2 },
-	{ SDLK_F3, ymse::KEY_F3 },
-	{ SDLK_F4, ymse::KEY_F4 },
-	{ SDLK_F5, ymse::KEY_F5 },
-	{ SDLK_F6, ymse::KEY_F6 },
-	{ SDLK_F7, ymse::KEY_F7 },
-	{ SDLK_F8, ymse::KEY_F8 },
-	{ SDLK_F9, ymse::KEY_F9 },
-	{ SDLK_F10, ymse::KEY_F10 },
-	{ SDLK_F11, ymse::KEY_F11 },
-	{ SDLK_F12, ymse::KEY_F12 },
+	{ SDLK_UP, game::KEY_UP },
+	{ SDLK_DOWN, game::KEY_DOWN },
+	{ SDLK_LEFT, game::KEY_LEFT },
+	{ SDLK_RIGHT, game::KEY_RIGHT },
+	{ SDLK_SPACE, game::KEY_SPACE },
+	{ SDLK_a, game::KEY_A },
+	{ SDLK_b, game::KEY_B },
+	{ SDLK_c, game::KEY_C },
+	{ SDLK_d, game::KEY_D },
+	{ SDLK_e, game::KEY_E },
+	{ SDLK_f, game::KEY_F },
+	{ SDLK_g, game::KEY_G },
+	{ SDLK_h, game::KEY_H },
+	{ SDLK_i, game::KEY_I },
+	{ SDLK_j, game::KEY_J },
+	{ SDLK_k, game::KEY_K },
+	{ SDLK_l, game::KEY_L },
+	{ SDLK_m, game::KEY_M },
+	{ SDLK_n, game::KEY_N },
+	{ SDLK_o, game::KEY_O },
+	{ SDLK_p, game::KEY_P },
+	{ SDLK_q, game::KEY_Q },
+	{ SDLK_r, game::KEY_R },
+	{ SDLK_s, game::KEY_S },
+	{ SDLK_t, game::KEY_T },
+	{ SDLK_u, game::KEY_U },
+	{ SDLK_v, game::KEY_V },
+	{ SDLK_w, game::KEY_W },
+	{ SDLK_x, game::KEY_X },
+	{ SDLK_y, game::KEY_Y },
+	{ SDLK_z, game::KEY_Z },
+	{ SDLK_0, game::KEY_0 },
+	{ SDLK_1, game::KEY_1 },
+	{ SDLK_2, game::KEY_2 },
+	{ SDLK_3, game::KEY_3 },
+	{ SDLK_4, game::KEY_4 },
+	{ SDLK_5, game::KEY_5 },
+	{ SDLK_6, game::KEY_6 },
+	{ SDLK_7, game::KEY_7 },
+	{ SDLK_8, game::KEY_8 },
+	{ SDLK_9, game::KEY_9 },
+	{ SDLK_LALT, game::KEY_LALT },
+	{ SDLK_RALT, game::KEY_RALT },
+	{ SDLK_F1, game::KEY_F1 },
+	{ SDLK_F2, game::KEY_F2 },
+	{ SDLK_F3, game::KEY_F3 },
+	{ SDLK_F4, game::KEY_F4 },
+	{ SDLK_F5, game::KEY_F5 },
+	{ SDLK_F6, game::KEY_F6 },
+	{ SDLK_F7, game::KEY_F7 },
+	{ SDLK_F8, game::KEY_F8 },
+	{ SDLK_F9, game::KEY_F9 },
+	{ SDLK_F10, game::KEY_F10 },
+	{ SDLK_F11, game::KEY_F11 },
+	{ SDLK_F12, game::KEY_F12 },
 };
 
 class sdl_timer {

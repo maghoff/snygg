@@ -1,6 +1,6 @@
 #include "bindable_keyboard_handler.hpp"
 
-namespace ymse {
+namespace game {
 
 bindable_keyboard_handler::bindable_keyboard_handler() {
 }

@@ -1,7 +1,7 @@
 #ifndef YMSE_KEY_HPP
 #define YMSE_KEY_HPP
 
-namespace ymse {
+namespace game {
 
 class bindable_keyboard_handler;
 

@@ -81,7 +81,7 @@ void gl_box_reshaper::set_box(
 	set_projection_matrix();
 }
 
-void gl_box_reshaper::set_pixels_per_unit_listener(pixels_per_unit_listener* ppu_listener_) {
+void gl_box_reshaper::set_pixels_per_unit_listener(game::pixels_per_unit_listener* ppu_listener_) {
 	ppu_listener = ppu_listener_;
 	update_listener();
 }

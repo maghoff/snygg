@@ -1,7 +1,7 @@
-#include <ymse/bindable_keyboard_handler.hpp>
-#include <ymse/keycodes.hpp>
-#include <ymse/opposite_keys_listener.hpp>
-#include <ymse/signaling_opposite_keys.hpp>
+#include <bindable_keyboard_handler.hpp>
+#include <keycodes.hpp>
+#include <opposite_keys_listener.hpp>
+#include <signaling_opposite_keys.hpp>
 #include "board.hpp"
 #include "item_container.hpp"
 #include "snake.hpp"
@@ -12,7 +12,7 @@ struct player::impl {
 	item_container& ic;
 	snake* s;
 	std::unique_ptr<snake_direction_listener> del;
-	std::unique_ptr<ymse::signaling_opposite_keys> dir;
+	std::unique_ptr<game::signaling_opposite_keys> dir;
 	float speed;
 	board& game_board;
 
@@ -20,7 +20,7 @@ struct player::impl {
 };
 
 player::player(
-	ymse::bindable_keyboard_handler& kbd,
+	game::bindable_keyboard_handler& kbd,
 	item_container& ic, board& _board,
 	int left, int right, int spawnkey
 ) :
@@ -29,7 +29,7 @@ player::player(
 	d->s = 0;
 	d->speed = 0.4f;
 	d->del.reset(new snake_direction_listener);
-	d->dir.reset(new ymse::signaling_opposite_keys(kbd, right, left, *d->del));
+	d->dir.reset(new game::signaling_opposite_keys(kbd, right, left, *d->del));
 	kbd.bind_pressed(spawnkey, [=]{ spawn(); });
 }
 

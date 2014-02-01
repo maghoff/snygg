@@ -1,6 +1,6 @@
 #include "reshaper.hpp"
 
-namespace ymse {
+namespace game {
 
 reshaper::reshaper() {
 }

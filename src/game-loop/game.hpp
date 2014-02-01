@@ -1,7 +1,7 @@
 #ifndef YMSE_GAME_HPP
 #define YMSE_GAME_HPP
 
-namespace ymse {
+namespace game {
 
 class game {
 	unsigned ticks;

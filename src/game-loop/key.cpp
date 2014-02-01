@@ -1,7 +1,7 @@
 #include "bindable_keyboard_handler.hpp"
 #include "key.hpp"
 
-namespace ymse {
+namespace game {
 
 key::key(bindable_keyboard_handler& kbd_, int keysym_) :
 	kbd(kbd_),

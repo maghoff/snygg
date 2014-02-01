@@ -1,6 +1,6 @@
 #include "game.hpp"
 
-namespace ymse {
+namespace game {
 
 game::game() :
 	ticks(0)

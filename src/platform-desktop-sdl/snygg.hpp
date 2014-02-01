@@ -2,8 +2,8 @@
 #define SNYGG_SNYGG_HPP
 
 #include <memory>
-#include <ymse/game.hpp>
-#include <ymse/reshaper.hpp>
+#include <game.hpp>
+#include <reshaper.hpp>
 #include "../game/item_container.hpp"
 
 namespace ymse {
@@ -12,7 +12,7 @@ namespace ymse {
 
 class scalable_skin;
 
-class snygg : public ymse::game, ymse::reshaper, public item_container {
+class snygg : public game::game, game::reshaper, public item_container {
 	struct impl;
 	std::unique_ptr<impl> d;
 

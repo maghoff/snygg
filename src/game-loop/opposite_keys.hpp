@@ -1,7 +1,7 @@
 #ifndef YMSE_OPPOSITE_KEYS_HPP
 #define YMSE_OPPOSITE_KEYS_HPP
 
-namespace ymse {
+namespace game {
 
 class bindable_keyboard_handler;
 

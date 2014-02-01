@@ -7,12 +7,12 @@
 #include <GL/glew.h>
 
 #include <boost/filesystem/operations.hpp>
-#include <ymse/bindable_keyboard_handler.hpp>
+#include <keycodes.hpp>
+#include <bindable_keyboard_handler.hpp>
 #include <texture.hpp>
 #include <ymse/gl_box_reshaper.hpp>
 #include <ymse/rect.hpp>
 #include <ymse/sdl_core.hpp>
-#include <ymse/keycodes.hpp>
 #include <vec.hpp>
 #include "gl/gl_fbo.hpp"
 #include "gl/scoped_bind_fbo.hpp"
@@ -35,9 +35,11 @@
 #include <Imlib2.h>
 #endif
 
+namespace gameloop = game;
+
 
 struct snygg::impl {
-	std::unique_ptr<ymse::bindable_keyboard_handler> kbd;
+	std::unique_ptr<gameloop::bindable_keyboard_handler> kbd;
 
 	std::unique_ptr<ymse::gl_box_reshaper> reshaper;
 	std::vector<std::unique_ptr<scalable_skin>> skins;
@@ -79,7 +81,7 @@ snygg::snygg(const std::string& board_filename) :
 {
 	using boost::filesystem::path;
 
-	d->kbd.reset(new ymse::bindable_keyboard_handler);
+	d->kbd.reset(new gameloop::bindable_keyboard_handler);
 
 	init_gl();
 
@@ -105,7 +107,7 @@ snygg::snygg(const std::string& board_filename) :
 	d->active_skin = d->skins.back().get();
 
 	for (size_t i=0; i<d->skins.size(); ++i) {
-		d->kbd->bind_pressed(ymse::KEY_F1 + i, [=]{ set_skin_key(d->skins[i].get()); });
+		d->kbd->bind_pressed(gameloop::KEY_F1 + i, [=]{ set_skin_key(d->skins[i].get()); });
 	}
 
 	d->reshaper->set_pixels_per_unit_listener(d->active_skin);
@@ -113,10 +115,10 @@ snygg::snygg(const std::string& board_filename) :
 	d->fg.reset(new food_generator(*this, *d->active_board));
 	d->fg->generate();
 
-	d->players.emplace_back(new player(*d->kbd, *this, *d->active_board, ymse::KEY_LEFT, ymse::KEY_RIGHT, ymse::KEY_SPACE));
-	d->players.emplace_back(new player(*d->kbd, *this, *d->active_board, ymse::KEY_A, ymse::KEY_D, ymse::KEY_W));
+	d->players.emplace_back(new player(*d->kbd, *this, *d->active_board, gameloop::KEY_LEFT, gameloop::KEY_RIGHT, gameloop::KEY_SPACE));
+	d->players.emplace_back(new player(*d->kbd, *this, *d->active_board, gameloop::KEY_A, gameloop::KEY_D, gameloop::KEY_W));
 
-	d->kbd->bind_pressed(ymse::KEY_P, [=]{ screenshot_key(); });
+	d->kbd->bind_pressed(gameloop::KEY_P, [=]{ screenshot_key(); });
 }
 
 snygg::~snygg() {
@@ -130,10 +132,10 @@ void snygg::attach_to_core(ymse::sdl_core& core) {
 	// Is capturing a reference by reference actually safe?
 	// See http://stackoverflow.com/questions/21443023/capturing-a-reference-by-reference-in-a-c11-lambda
 	const auto c = &core;
-	d->kbd->bind_pressed(ymse::KEY_Q, [=]{ c->stop(0); });
-	d->kbd->bind_pressed(ymse::KEY_F, [=]{ c->toggle_fullscreen(); });
-	d->kbd->bind_pressed(ymse::KEY_H, [=]{ c->set_video_mode(1920, 1080, false); });
-	d->kbd->bind_pressed(ymse::KEY_N, [=]{ c->set_video_mode(1280, 720, false); });
+	d->kbd->bind_pressed(gameloop::KEY_Q, [=]{ c->stop(0); });
+	d->kbd->bind_pressed(gameloop::KEY_F, [=]{ c->toggle_fullscreen(); });
+	d->kbd->bind_pressed(gameloop::KEY_H, [=]{ c->set_video_mode(1920, 1080, false); });
+	d->kbd->bind_pressed(gameloop::KEY_N, [=]{ c->set_video_mode(1280, 720, false); });
 }
 
 static void save_screenshot(const std::string& filename, unsigned char* pixels, unsigned w, unsigned h) {

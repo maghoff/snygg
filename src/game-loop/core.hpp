@@ -1,7 +1,7 @@
 #ifndef CORE_HPP
 #define CORE_HPP
 
-namespace ymse {
+namespace game {
 
 class game;
 class reshaper;

@@ -1,7 +1,7 @@
 #include "opposite_keys_listener.hpp"
 #include "signaling_opposite_keys.hpp"
 
-namespace ymse {
+namespace game {
 
 signaling_opposite_keys::signaling_opposite_keys(
 	bindable_keyboard_handler& kbd,
@@ -20,4 +20,4 @@ void signaling_opposite_keys::set(bool* key, bool state) {
 	listener.set_val(val());
 }
 
-} // namespace ymse
+} // namespace game

@@ -1,7 +1,7 @@
 #ifndef YMSE_KEYBOARD_HANDLER_HPP
 #define YMSE_KEYBOARD_HANDLER_HPP
 
-namespace ymse {
+namespace game {
 
 class keyboard_handler {
 public:

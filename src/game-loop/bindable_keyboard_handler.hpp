@@ -5,7 +5,7 @@
 #include <functional>
 #include "keyboard_handler.hpp"
 
-namespace ymse {
+namespace game {
 
 class bindable_keyboard_handler : public keyboard_handler {
 	typedef std::function<void(bool)> callback;

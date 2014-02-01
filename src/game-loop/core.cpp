@@ -1,6 +1,6 @@
 #include "core.hpp"
 
-namespace ymse {
+namespace game {
 
 core::core() {
 }

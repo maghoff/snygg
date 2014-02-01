@@ -1,7 +1,7 @@
 #ifndef YMSE_RESHAPER_HPP
 #define YMSE_RESHAPER_HPP
 
-namespace ymse {
+namespace game {
 
 class reshaper {
 public:

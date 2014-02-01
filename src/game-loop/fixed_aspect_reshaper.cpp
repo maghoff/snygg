@@ -1,7 +1,7 @@
 #include "fixed_aspect_reshaper.hpp"
 #include "matrix3d.hpp"
 
-namespace ymse {
+namespace game {
 
 fixed_aspect_reshaper::fixed_aspect_reshaper() :
 	t(la::matrix3d::identity())
@@ -18,4 +18,4 @@ const la::matrix33f& fixed_aspect_reshaper::get_transformation() const {
 	return t;
 }
 
-} // namespace ymse
+} // namespace game

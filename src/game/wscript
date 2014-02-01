@@ -20,8 +20,7 @@ def build(bld):
 		source=sources,
 		target='game',
 		use=[
-			'ymse',
-
+			'game-loop',
 			'core',
 			'board',
 		],
