@@ -15,7 +15,7 @@ def build(bld):
 		source=sources,
 		target='ymse',
 		use=[
-			'linear_algebra',
+			'linear-algebra',
 			'game-loop',
 			'gl',
 			'glew',

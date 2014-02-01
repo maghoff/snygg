@@ -22,7 +22,7 @@ def build(bld):
 		source=sources,
 		target='game-loop',
 		use=[
-			'linear_algebra',
+			'linear-algebra',
 		],
 		lib=[],
 		includes=[],

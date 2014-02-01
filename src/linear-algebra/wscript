@@ -11,7 +11,7 @@ def build(bld):
 
 	obj = bld.stlib(
 		source=sources,
-		target='linear_algebra',
+		target='linear-algebra',
 		use=[],
 		lib=[],
 		includes=[],
