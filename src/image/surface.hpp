@@ -1,17 +1,13 @@
-#ifndef YMSE_SURFACE_HPP
-#define YMSE_SURFACE_HPP
+#ifndef IMAGE_SURFACE_HPP
+#define IMAGE_SURFACE_HPP
 
 #include <vector>
 
-namespace ymse {
-
-namespace gl {
-	class texture;
-}
+namespace image {
 
 class surface {
-	std::vector<unsigned char> data;
-	unsigned int width, height, components;
+	std::vector<unsigned char> mdata;
+	unsigned int mwidth, mheight, mcomponents;
 
 public:
 	surface(const std::vector<unsigned char>& data, unsigned int width, unsigned int height, unsigned int components);
@@ -23,9 +19,13 @@ public:
 	surface(surface&&) = default;
 	surface& operator = (surface&&) = default;
 
-	void copy_to(gl::texture&) const;
+	unsigned int width() const { return mwidth; }
+	unsigned int height() const { return mheight; }
+	unsigned int components() const { return mcomponents; }
+
+	const std::vector<unsigned char>& data() const { return mdata; }
 };
 
 }
 
-#endif // YMSE_SURFACE_HPP
+#endif // IMAGE_SURFACE_HPP

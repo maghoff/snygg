@@ -1,0 +1,19 @@
+#!/bin/env python
+# -*- coding: utf-8 -*-
+
+def build(bld):
+	sources = [
+		'load_jpeg.cpp',
+		'surface.cpp',
+	]
+
+	obj = bld.stlib(
+		source=sources,
+		target='image',
+		use=[
+			'jpeg',
+		],
+		lib=[],
+		includes=[],
+		export_includes=["."],
+	)

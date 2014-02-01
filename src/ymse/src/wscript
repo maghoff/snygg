@@ -6,8 +6,6 @@ def build(bld):
 		'gl/program.cpp',
 		'gl/shader.cpp',
 		'gl/texture.cpp',
-		'img_load.cpp',
-		'surface.cpp',
 		'bindable_keyboard_handler.cpp',
 		'box_reshaper.cpp',
 		'core.cpp',
@@ -37,7 +35,6 @@ def build(bld):
 			'gl',
 			'glew',
 			'SDL',
-			'jpeg'
 		],
 		includes=['../ymse'],
 		export_includes=['..'],

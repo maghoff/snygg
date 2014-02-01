@@ -1,8 +1,9 @@
 #include <vector>
 #include <ymse/gl.h>
 #include <ymse/gl/texture.hpp>
-#include <ymse/img_load.hpp>
-#include <ymse/surface.hpp>
+#include <load_jpeg.hpp>
+#include <surface.hpp>
+#include <copy.hpp>
 #include "shader_configuration.hpp"
 #include "shader_program.hpp"
 
@@ -57,7 +58,7 @@ struct shader_configuration::impl {
 	std::vector<std::string> names;
 	std::vector<std::unique_ptr<uniform_setter>> setters;
 
-	std::vector<ymse::surface> surfaces;
+	std::vector<image::surface> surfaces;
 	std::vector<ymse::gl::texture> textures;
 };
 
@@ -72,7 +73,7 @@ shader_configuration::~shader_configuration() { }
 
 void shader_configuration::recreate_opengl_resources() {
 	for (unsigned i = 0; i < d->surfaces.size(); ++i) {
-		d->surfaces[i].copy_to(d->textures[i]);
+		image::gl::copy_surface_to_texture(d->surfaces[i], d->textures[i].get_id());
 	}
 }
 
@@ -88,7 +89,7 @@ void shader_configuration::set_uniform(const std::string& name, float v0, float 
 
 void shader_configuration::add_texture(const std::string& name, const std::string& filename) {
 	set_uniform(name, d->textures.size());
-	d->surfaces.emplace_back(ymse::img_load(filename));
+	d->surfaces.emplace_back(image::load_jpeg(filename));
 	d->textures.resize(d->textures.size() + 1);
 }
 

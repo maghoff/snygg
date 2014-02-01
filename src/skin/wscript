@@ -25,6 +25,8 @@ def build(bld):
 		target='skin',
 		use=[
 			'ymse',
+			'image',
+			'image-gl',
 		],
 		lib=[],
 		includes=[],

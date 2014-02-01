@@ -2,15 +2,15 @@
 #include <stdexcept>
 #include <string>
 #include "surface.hpp"
-//#include "img_load.hpp"
+//#include "load_jpeg.hpp"
 
 extern "C" {
 #include "jpeglib.h"
 }
 
-namespace ymse {
+namespace image {
 
-surface img_load(const std::string& filename) {
+surface load_jpeg(const std::string& filename) {
 	jpeg_error_mgr jerr;
 	jpeg_decompress_struct cinfo;
 	FILE * infile;

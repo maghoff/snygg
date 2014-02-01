@@ -1,0 +1,19 @@
+#!/bin/env python
+# -*- coding: utf-8 -*-
+
+def build(bld):
+	sources = [
+		'copy.cpp',
+	]
+
+	obj = bld.stlib(
+		source=sources,
+		target='image-gl',
+		use=[
+			'image',
+			'ymse',
+		],
+		lib=[],
+		includes=[],
+		export_includes=["."],
+	)
