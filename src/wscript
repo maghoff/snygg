@@ -3,7 +3,7 @@
 
 def build(bld):
 	bld.recurse([
-		'linear_algebra',
+		'linear-algebra',
 		'image',
 		'image-gl',
 		'gl-raii',
