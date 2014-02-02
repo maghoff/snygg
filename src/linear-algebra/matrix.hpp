@@ -23,6 +23,8 @@ struct sq_matrix {
 
 	// Sets all values to value
 	explicit sq_matrix(T value);
+
+	sq_matrix<Size, T> transposed() const;
 };
 
 template <int Size, typename T>
@@ -32,6 +34,7 @@ template <int Size, typename T>
 vec<Size, T> operator * (const sq_matrix<Size, T>&, const vec<Size, T>&);
 
 typedef sq_matrix<3, float> matrix33f;
+typedef sq_matrix<4, float> matrix44f;
 
 }
 

@@ -10,10 +10,11 @@
 #include <keycodes.hpp>
 #include <bindable_keyboard_handler.hpp>
 #include <texture.hpp>
-#include <ymse/gl_box_reshaper.hpp>
+#include <box_reshaper.hpp>
 #include <ymse/rect.hpp>
 #include <ymse/sdl_core.hpp>
 #include <vec.hpp>
+#include <matrix2d_homogenous.hpp>
 #include "gl/gl_fbo.hpp"
 #include "gl/scoped_bind_fbo.hpp"
 #include "metaballs.hpp"
@@ -39,7 +40,7 @@
 struct snygg::impl {
 	std::unique_ptr<game::bindable_keyboard_handler> kbd;
 
-	std::unique_ptr<ymse::gl_box_reshaper> reshaper;
+	std::unique_ptr<game::box_reshaper> reshaper;
 	std::vector<std::unique_ptr<scalable_skin>> skins;
 	scalable_skin* active_skin;
 	std::unique_ptr<schematic_svg_skin> svg_skin;
@@ -86,7 +87,7 @@ snygg::snygg(const std::string& board_filename) :
 	path board_path(paths::find_absolute_or_in_path(board_filename, paths::levels()));
 	d->active_board.reset(new board(board_path));
 
-	d->reshaper.reset(new ymse::gl_box_reshaper);
+	d->reshaper.reset(new game::box_reshaper);
 	ymse::rectf bb = d->active_board->bounding_box();
 	const float margin = 5.f;
 	d->reshaper->set_box(bb.x1 - margin, bb.y1 - margin, bb.x2 + margin, bb.y2 + margin);
@@ -107,8 +108,6 @@ snygg::snygg(const std::string& board_filename) :
 	for (size_t i=0; i<d->skins.size(); ++i) {
 		d->kbd->bind_pressed(game::KEY_F1 + i, [=]{ set_skin_key(d->skins[i].get()); });
 	}
-
-	d->reshaper->set_pixels_per_unit_listener(d->active_skin);
 
 	d->fg.reset(new food_generator(*this, *d->active_board));
 	d->fg->generate();
@@ -256,6 +255,7 @@ next_id:
 }
 
 void snygg::reshape(int width, int height) {
+	glViewport(0, 0, width, height);
 	d->reshaper->reshape(width, height);
 	for (size_t i=0; i<d->skins.size(); ++i) {
 		d->skins[i]->load_opengl_resources(width, height);
@@ -264,11 +264,13 @@ void snygg::reshape(int width, int height) {
 
 void snygg::set_skin_key(scalable_skin* skin) {
 	d->active_skin = skin;
-	d->reshaper->set_pixels_per_unit_listener(d->active_skin);
 }
 
 void snygg::render() {
 	init_gl();
+
+	glLoadMatrixf(la::matrix2d::homogenous::as_3d_homogenous(d->reshaper->get_transformation().transposed()).v);
+	d->active_skin->set_pixels_per_unit(d->reshaper->get_pixels_per_unit());
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 

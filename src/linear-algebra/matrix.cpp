@@ -12,6 +12,17 @@ sq_matrix<Size, T>::sq_matrix(T initial) {
 }
 
 template <int Size, typename T>
+sq_matrix<Size, T> sq_matrix<Size, T>::transposed() const {
+	sq_matrix<Size, T> res;
+	for (int row = 0; row < Size; ++row) {
+		for (int col = 0; col < Size; ++col) {
+			res[col][row] = (*this)[row][col];
+		}
+	}
+	return res;
+}
+
+template <int Size, typename T>
 sq_matrix<Size, T> operator * (const sq_matrix<Size, T>& lhs, const sq_matrix<Size, T>& rhs) {
 	sq_matrix<Size, T> res;
 	for (int row = 0; row < Size; ++row) {
@@ -39,6 +50,10 @@ vec<Size, T> operator * (const sq_matrix<Size, T>& lhs, const vec<Size, T>& rhs)
 	return r;
 }
 
+
+template struct sq_matrix<4, float>;
+template sq_matrix<4, float> operator * (const sq_matrix<4, float>&, const sq_matrix<4, float>&);
+template vec<4, float> operator * (const sq_matrix<4, float>&, const vec<4, float>&);
 
 template struct sq_matrix<3, float>;
 template sq_matrix<3, float> operator * (const sq_matrix<3, float>&, const sq_matrix<3, float>&);

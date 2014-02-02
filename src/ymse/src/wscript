@@ -5,7 +5,6 @@ def build(bld):
 	sources = [
 		'fileutil.cpp',
 		'geometry_intersection.cpp',
-		'gl_box_reshaper.cpp',
 		'rect.cpp',
 		'sdl_core.cpp',
 	]

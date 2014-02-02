@@ -12,6 +12,8 @@ matrix33f scale(double sx, double sy);
 matrix33f translate(double dx, double dy);
 matrix33f rotate(double ang);
 
+matrix44f as_3d_homogenous(const la::matrix33f& m);
+
 } // namespace homogenous
 } // namespace matrix2d
 } // namespace la
