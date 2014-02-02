@@ -1,0 +1,20 @@
+#!/bin/env python
+# -*- coding: utf-8 -*-
+
+def build(bld):
+	sources = [
+		'sdl_core.cpp',
+	]
+
+	obj = bld.stlib(
+		source=sources,
+		target='sdl-game-core',
+		use=[
+			'game-loop',
+			'gl',
+			'glew',
+			'SDL',
+		],
+		includes=[],
+		export_includes=['.'],
+	)

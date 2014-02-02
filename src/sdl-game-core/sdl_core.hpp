@@ -6,7 +6,7 @@
 
 struct SDL_Surface;
 
-namespace ymse {
+namespace game {
 
 class sdl_core : public game::core {
 	bool inited;

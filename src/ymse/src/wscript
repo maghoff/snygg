@@ -6,7 +6,6 @@ def build(bld):
 		'fileutil.cpp',
 		'geometry_intersection.cpp',
 		'rect.cpp',
-		'sdl_core.cpp',
 	]
 
 	obj = bld.stlib(
@@ -14,10 +13,6 @@ def build(bld):
 		target='ymse',
 		use=[
 			'linear-algebra',
-			'game-loop',
-			'gl',
-			'glew',
-			'SDL',
 		],
 		includes=['../ymse'],
 		export_includes=['..'],

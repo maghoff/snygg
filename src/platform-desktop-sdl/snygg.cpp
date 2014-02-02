@@ -12,7 +12,7 @@
 #include <texture.hpp>
 #include <box_reshaper.hpp>
 #include <ymse/rect.hpp>
-#include <ymse/sdl_core.hpp>
+#include <sdl_core.hpp>
 #include <vec.hpp>
 #include <matrix2d_homogenous.hpp>
 #include "gl/gl_fbo.hpp"
@@ -121,7 +121,7 @@ snygg::snygg(const std::string& board_filename) :
 snygg::~snygg() {
 }
 
-void snygg::attach_to_core(ymse::sdl_core& core) {
+void snygg::attach_to_core(game::sdl_core& core) {
 	core.set_tick_handler(this);
 	core.set_reshaper_object(this);
 	core.set_keyboard_handler(d->kbd.get());
@@ -287,7 +287,7 @@ void snygg::render() {
 	d->active_skin->floor(d->active_board->floor_polygon());
 }
 
-void snygg::tick() {
+void snygg::tick_10ms() {
 	for (auto& item : d->new_items) {
 		d->items.emplace_back(std::move(item));
 	}

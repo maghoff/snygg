@@ -12,6 +12,7 @@ def build(bld):
 		'image-gl',
 		'linear-algebra',
 		'platform-desktop-sdl',
+		'sdl-game-core',
 		'segment',
 		'skin',
 		'ymse',

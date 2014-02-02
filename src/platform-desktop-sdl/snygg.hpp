@@ -6,7 +6,7 @@
 #include <reshaper.hpp>
 #include "../game/item_container.hpp"
 
-namespace ymse {
+namespace game {
 	class sdl_core;
 }
 
@@ -18,7 +18,7 @@ class snygg : public game::tick_handler, game::reshaper, public item_container {
 
 	void set_skin_key(scalable_skin*);
 
-	void reshape(int width, int height);
+	void reshape(int width, int height) override;
 
 	void take_screenshot(const std::string& filename, unsigned, unsigned w, unsigned h);
 	void screenshot_with_skin(const std::string& filename, scalable_skin*);
@@ -28,10 +28,10 @@ public:
 	snygg(const std::string& board_filename);
 	~snygg();
 
-	void attach_to_core(ymse::sdl_core&);
+	void attach_to_core(game::sdl_core&);
 
-	void render();
-	void tick();
+	void render() override;
+	void tick_10ms() override;
 
 	void add_item(std::unique_ptr<item>&&);
 	void add_renderable(std::unique_ptr<renderable>&&);

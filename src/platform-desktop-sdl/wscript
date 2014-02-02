@@ -26,6 +26,7 @@ def build(bld):
 			'core',
 			'skin',
 			'ymse',
+			'sdl-game-core',
 
 			'gl',
 			'glew',

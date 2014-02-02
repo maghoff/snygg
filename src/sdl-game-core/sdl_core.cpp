@@ -16,7 +16,7 @@ namespace {
 	const int default_height = 600;
 }
 
-namespace ymse {
+namespace game {
 
 const int YSDL_RENDERFRAME = SDL_USEREVENT;
 

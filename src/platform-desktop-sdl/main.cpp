@@ -4,7 +4,7 @@
 #include <sstream>
 #include <string>
 #include <typeinfo>
-#include <ymse/sdl_core.hpp>
+#include <sdl_core.hpp>
 #include "paths.hpp"
 #include "snygg.hpp"
 
@@ -12,7 +12,7 @@ int main(int argc, char *argv[])
 try {
 	paths::set_argv_zero(argv[0]);
 
-	ymse::sdl_core core;
+	game::sdl_core core;
 	core.init(argc, argv);
 	core.set_cursor_visible(false);
 
