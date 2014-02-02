@@ -1,7 +1,0 @@
-#!/bin/env python
-# -*- coding: utf-8 -*-
-
-def build(bld):
-	bld.recurse([
-		'src',
-	])

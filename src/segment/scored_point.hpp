@@ -28,7 +28,7 @@ public:
 	float length() const override;
 	void render(skin&, float head_b) const override;
 
-	ymse::rectf bounding_box() const override;
+	rectf bounding_box() const override;
 
 	int left_hline_intersections(la::vec2f) const override;
 };

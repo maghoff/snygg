@@ -8,12 +8,8 @@
 #include "intersectable_with_circle.hpp"
 #include "renderable.hpp"
 
-namespace ymse {
-	template <typename T>
-	struct rect;
-
-	typedef rect<float> rectf;
-}
+template <typename T> struct rect;
+typedef rect<float> rectf;
 
 class complex_polygon;
 
@@ -32,7 +28,7 @@ public:
 	bool intersect_with_circle(const la::vec2f&, float r) const;
 
 	la::vec2f get_starting_position();
-	ymse::rectf bounding_box() const;
+	rectf bounding_box() const;
 	int winding_number(la::vec2f) const;
 
 	const complex_polygon& floor_polygon() const;

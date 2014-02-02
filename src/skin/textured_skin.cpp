@@ -4,7 +4,7 @@
 #include <cassert>
 #include <cmath>
 #include <memory>
-#include <ymse/rect.hpp>
+#include <rect.hpp>
 #include <vec.hpp>
 #include "gl/shader_program.hpp"
 #include "gl/shader_builder.hpp"

@@ -2,7 +2,7 @@
 #include <cassert>
 
 #include <algorithm>
-#include <ymse/rect.hpp>
+#include <rect.hpp>
 #include <vec.hpp>
 #include "skin.hpp"
 #include "line.hpp"
@@ -117,7 +117,7 @@ void line::render(skin& s, float head_b) const {
 	s.fat_line(la::vec2f(x, y), la::vec2f(dx, dy), len, thickness, head_b + len, head_b);
 }
 
-ymse::rectf line::bounding_box() const {
+rectf line::bounding_box() const {
 	float nx = thickness * -dy, ny = thickness * dx;
 
 	float xs[4], ys[4];
@@ -126,7 +126,7 @@ ymse::rectf line::bounding_box() const {
 	xs[2] = xs[0] + dx * len; ys[2] = ys[0] + dy * len;
 	xs[3] = xs[1] + dx * len; ys[3] = ys[1] + dy * len;
 
-	ymse::rectf bb = {
+	rectf bb = {
 		xs[0], ys[0],
 		xs[0], ys[0]
 	};

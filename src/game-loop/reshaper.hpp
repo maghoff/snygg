@@ -1,5 +1,5 @@
-#ifndef YMSE_RESHAPER_HPP
-#define YMSE_RESHAPER_HPP
+#ifndef GAME_LOOP_RESHAPER_HPP
+#define GAME_LOOP_RESHAPER_HPP
 
 namespace game {
 

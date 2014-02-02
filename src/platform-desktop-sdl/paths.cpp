@@ -6,7 +6,7 @@
 
 #include <cstdlib>
 #include <fstream>
-#include <ymse/lean_windows.h>
+#include <lean_windows.h>
 #include "../config.hpp"
 #include "paths.hpp"
 

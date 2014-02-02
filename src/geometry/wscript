@@ -3,17 +3,17 @@
 
 def build(bld):
 	sources = [
-		'fileutil.cpp',
 		'geometry_intersection.cpp',
 		'rect.cpp',
 	]
 
 	obj = bld.stlib(
 		source=sources,
-		target='ymse',
+		target='geometry',
 		use=[
 			'linear-algebra',
 		],
-		includes=['../ymse'],
-		export_includes=['..'],
+		lib=[],
+		includes=[],
+		export_includes=["."],
 	)

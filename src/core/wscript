@@ -11,7 +11,7 @@ def build(bld):
 		source=sources,
 		target='core',
 		use=[
-			'ymse',
+			'linear-algebra',
 		],
 		lib=[],
 		includes=["."],

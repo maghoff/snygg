@@ -11,7 +11,7 @@
 #include <bindable_keyboard_handler.hpp>
 #include <texture.hpp>
 #include <box_reshaper.hpp>
-#include <ymse/rect.hpp>
+#include <rect.hpp>
 #include <sdl_core.hpp>
 #include <vec.hpp>
 #include <matrix2d_homogenous.hpp>
@@ -53,7 +53,7 @@ struct snygg::impl {
 
 	std::unique_ptr<food_generator> fg;
 
-	ymse::rectf metaballs_rect;
+	rectf metaballs_rect;
 };
 
 void init_gl() {
@@ -88,7 +88,7 @@ snygg::snygg(const std::string& board_filename) :
 	d->active_board.reset(new board(board_path));
 
 	d->reshaper.reset(new game::box_reshaper);
-	ymse::rectf bb = d->active_board->bounding_box();
+	rectf bb = d->active_board->bounding_box();
 	const float margin = 5.f;
 	d->reshaper->set_box(bb.x1 - margin, bb.y1 - margin, bb.x2 + margin, bb.y2 + margin);
 

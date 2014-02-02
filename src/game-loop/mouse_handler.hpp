@@ -1,5 +1,5 @@
-#ifndef YMSE_MOUSE_HANDLER_HPP
-#define YMSE_MOUSE_HANDLER_HPP
+#ifndef GAME_LOOP_MOUSE_HANDLER_HPP
+#define GAME_LOOP_MOUSE_HANDLER_HPP
 
 namespace game {
 

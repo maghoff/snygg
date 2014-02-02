@@ -1,8 +1,8 @@
 #include <cassert>
 #include <set>
 #include <deque>
-#include <ymse/geometry_intersection.hpp>
-#include <ymse/rect.hpp>
+#include <geometry_intersection.hpp>
+#include <rect.hpp>
 #include <vec.hpp>
 #include "segment_sequence.hpp"
 
@@ -62,7 +62,7 @@ bool segment_sequence::intersect_with_self(const la::vec2f& p, float r) const {
 
 	if (skiplength <= 0) {
 		vec2f tail(get_tail_pos());
-		if (ymse::intersect::circle_with_circle(p, r, tail, 2.5f)) return true;
+		if (circle_with_circle(p, r, tail, 2.5f)) return true;
 	}
 
 	return false;
@@ -106,11 +106,11 @@ void segment_sequence::push_back(segment* s) {
 	d->body.emplace_back(std::unique_ptr<segment>(s));
 }
 
-ymse::rectf segment_sequence::bounding_box() const {
+rectf segment_sequence::bounding_box() const {
 	assert(d->body.size() > 0);
 
-	ymse::rectf bb = d->head().bounding_box();
-	for (auto& s : d->body) bb = ymse::bounding_box(bb, s->bounding_box());
+	rectf bb = d->head().bounding_box();
+	for (auto& s : d->body) bb = ::bounding_box(bb, s->bounding_box());
 
 	return bb;
 }

@@ -28,6 +28,7 @@ def build(bld):
 			'image',
 			'image-gl',
 			'gl-raii',
+			'geometry',
 		],
 		lib=[],
 		includes=[],

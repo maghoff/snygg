@@ -2,10 +2,7 @@
 #include <vec.hpp>
 #include "rect.hpp"
 
-namespace ymse {
-
 template struct rect<float>;
-
 
 template<>
 rectf bounding_box(rectf a, rectf b) {
@@ -28,5 +25,3 @@ rect<T> bounding_box(rect<T> r, la::vec<2, T> b) {
 
 template
 rectf bounding_box(rectf, la::vec2f);
-
-}

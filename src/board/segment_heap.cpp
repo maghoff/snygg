@@ -1,7 +1,7 @@
 #include <cmath>
 #include <list>
 #include <memory>
-#include <ymse/rect.hpp>
+#include <rect.hpp>
 #include <vec.hpp>
 #include "arc.hpp"
 #include "contour_segment.hpp"
@@ -226,7 +226,7 @@ std::unique_ptr<segment> segment_heap::to_segment() {
 		const double margin = 20.;
 		const double radius = 10.;
 
-		ymse::rectf b = s->bounding_box();
+		rectf b = s->bounding_box();
 		b.x1 -= margin;
 		b.y1 -= margin;
 		b.x2 += margin;

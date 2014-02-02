@@ -1,5 +1,5 @@
 #include <cmath>
-#include <ymse/geometry_intersection.hpp>
+#include <geometry_intersection.hpp>
 #include <vec.hpp>
 #include "arc.hpp"
 #include "blood_pool.hpp"
@@ -127,14 +127,12 @@ bool snake::crashes_with(const intersectable_with_circle& object) const {
 }
 
 bool snake::intersect_with_circle(const la::vec2f& p, float r) const {
-	namespace i = ymse::intersect;
-
 	vec2f head(d->body.get_head_pos());
 	vec2f tail(d->body.get_tail_pos());
 
 	return
-		i::circle_with_circle(p, r, head, 2.5f) ||
-		i::circle_with_circle(p, r, tail, 2.5f) ||
+		circle_with_circle(p, r, head, 2.5f) ||
+		circle_with_circle(p, r, tail, 2.5f) ||
 		d->body.intersect_with_circle(p, r)
 	;
 }

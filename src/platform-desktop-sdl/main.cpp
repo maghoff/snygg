@@ -1,5 +1,5 @@
 #include <SDL_main.h>
-#include <ymse/lean_windows.h>
+#include <lean_windows.h>
 #include <iostream>
 #include <sstream>
 #include <string>

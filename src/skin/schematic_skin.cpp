@@ -2,7 +2,7 @@
 #include <cmath>
 #include <GL/glew.h>
 
-#include <ymse/rect.hpp>
+#include <rect.hpp>
 #include <vec.hpp>
 #include "complex_polygon.hpp"
 #include "schematic_skin.hpp"

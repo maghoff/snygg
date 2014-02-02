@@ -1,7 +1,7 @@
 #include <cassert>
 #include <algorithm>
 #include <cmath>
-#include <ymse/rect.hpp>
+#include <rect.hpp>
 #include <vec.hpp>
 #include "skin.hpp"
 #include "../board/complex_polygon_triangulator.hpp"
@@ -141,9 +141,7 @@ void arc::render(skin& s, float head_b) const {
 	s.fat_arc(la::vec2f(x, y), r, thickness, begin, end, head_b + length(), head_b);
 }
 
-ymse::rectf arc::bounding_box() const {
-	using namespace ymse;
-
+rectf arc::bounding_box() const {
 	const float r1 = r - thickness, r2 = r + thickness;
 	vec2f b1(x + cos(begin) * r1, y + sin(begin) * r1);
 	vec2f b2(x + cos(begin) * r2, y + sin(begin) * r2);
@@ -151,9 +149,9 @@ ymse::rectf arc::bounding_box() const {
 	vec2f e2(x + cos(end) * r2, y + sin(end) * r2);
 
 	rectf bb = { b1[0], b1[1], b1[0], b1[1] };
-	bb = ymse::bounding_box(bb, b2);
-	bb = ymse::bounding_box(bb, e1);
-	bb = ymse::bounding_box(bb, e2);
+	bb = ::bounding_box(bb, b2);
+	bb = ::bounding_box(bb, e1);
+	bb = ::bounding_box(bb, e2);
 
 	const float a1 = 0, a2 = M_PI * 1./2., a3 = M_PI * 2./2., a4 = M_PI * 3./2.;
 
@@ -161,13 +159,13 @@ ymse::rectf arc::bounding_box() const {
 	if (bg > en) std::swap(bg, en);
 	while (en > 2. * M_PI) { bg -= 2. * M_PI; en -= 2. * M_PI; }
 	while (en < 0) { bg += 2. * M_PI; en += 2. * M_PI; }
-	if (bg <= a1 && en >= a1) bb = ymse::bounding_box(bb, vec2f(x + r2, y));
+	if (bg <= a1 && en >= a1) bb = ::bounding_box(bb, vec2f(x + r2, y));
 	while (en < a2) { bg += 2. * M_PI; en += 2. * M_PI; }
-	if (bg <= a2 && en >= a2) bb = ymse::bounding_box(bb, vec2f(x, y + r2));
+	if (bg <= a2 && en >= a2) bb = ::bounding_box(bb, vec2f(x, y + r2));
 	while (en < a3) { bg += 2. * M_PI; en += 2. * M_PI; }
-	if (bg <= a3 && en >= a3) bb = ymse::bounding_box(bb, vec2f(x - r2, y));
+	if (bg <= a3 && en >= a3) bb = ::bounding_box(bb, vec2f(x - r2, y));
 	while (en < a4) { bg += 2. * M_PI; en += 2. * M_PI; }
-	if (bg <= a4 && en >= a4) bb = ymse::bounding_box(bb, vec2f(x, y - r2));
+	if (bg <= a4 && en >= a4) bb = ::bounding_box(bb, vec2f(x, y - r2));
 
 	return bb;
 }

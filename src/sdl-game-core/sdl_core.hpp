@@ -1,5 +1,5 @@
-#ifndef YMSE_SDL_CORE_HPP
-#define YMSE_SDL_CORE_HPP
+#ifndef SDL_CORE_HPP
+#define SDL_CORE_HPP
 
 #include "sdl_main.h"
 #include <core.hpp>

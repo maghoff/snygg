@@ -1,7 +1,7 @@
 #include <algorithm>
 #include <cmath>
 #include <sstream>
-#include <ymse/rect.hpp>
+#include <rect.hpp>
 #include <vec.hpp>
 #include "complex_polygon.hpp"
 #include "schematic_svg_skin.hpp"
@@ -66,7 +66,7 @@ namespace {
 	}
 }
 
-schematic_svg_skin::schematic_svg_skin(std::ostream& out_, const ymse::rectf& bounding_box) :
+schematic_svg_skin::schematic_svg_skin(std::ostream& out_, const rectf& bounding_box) :
 	out(out_)
 {
 	float zoom_factor = 4.;

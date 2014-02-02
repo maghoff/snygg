@@ -1,4 +1,4 @@
-#include <ymse/rect.hpp>
+#include <rect.hpp>
 #include <vec.hpp>
 #include "segment_filter.hpp"
 
@@ -21,7 +21,7 @@ float segment_filter::length() const { return s->length(); }
 
 void segment_filter::render(skin& sk, float head_b) const { s->render(sk, head_b); }
 
-ymse::rectf segment_filter::bounding_box() const { return s->bounding_box(); }
+rectf segment_filter::bounding_box() const { return s->bounding_box(); }
 
 int segment_filter::left_hline_intersections(la::vec2f p) const { return s->left_hline_intersections(p); }
 

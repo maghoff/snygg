@@ -6,7 +6,7 @@
 #include <program.hpp>
 #include <shader.hpp>
 #include <texture.hpp>
-#include <ymse/rect.hpp>
+#include <rect.hpp>
 #include <vec.hpp>
 #include "gl/gl_fbo.hpp"
 #include "gl/scoped_bind_fbo.hpp"

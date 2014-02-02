@@ -1,5 +1,5 @@
-#ifndef YMSE_OPPOSITE_KEYS_HPP
-#define YMSE_OPPOSITE_KEYS_HPP
+#ifndef GAME_LOOP_OPPOSITE_KEYS_HPP
+#define GAME_LOOP_OPPOSITE_KEYS_HPP
 
 namespace game {
 

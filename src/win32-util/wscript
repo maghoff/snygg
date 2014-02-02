@@ -3,18 +3,12 @@
 
 def build(bld):
 	sources = [
-		'program.cpp',
-		'shader.cpp',
-		'texture.cpp',
 	]
 
 	obj = bld.stlib(
 		source=sources,
-		target='gl-raii',
-		use=[
-			'glew',
-			'fileutil',
-		],
+		target='win32-util',
+		use=[],
 		lib=[],
 		includes=[],
 		export_includes=["."],

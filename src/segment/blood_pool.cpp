@@ -3,7 +3,7 @@
 #include <stdexcept>
 #include <GL/glew.h>
 
-#include <ymse/rect.hpp>
+#include <rect.hpp>
 #include <vec.hpp>
 #include "skin.hpp"
 #include "blood_pool.hpp"
@@ -60,8 +60,8 @@ void blood_pool::render(skin& s) const {
 	s.blood(vec2f(x, y), r);
 }
 
-ymse::rectf blood_pool::bounding_box() const {
-	ymse::rectf bb = {
+rectf blood_pool::bounding_box() const {
+	rectf bb = {
 		x, y,
 		x, y
 	};

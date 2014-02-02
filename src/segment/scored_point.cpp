@@ -1,8 +1,8 @@
 #include <cassert>
 #include <cmath>
 #include <stdexcept>
-#include <ymse/geometry_intersection.hpp>
-#include <ymse/rect.hpp>
+#include <geometry_intersection.hpp>
+#include <rect.hpp>
 #include <vec.hpp>
 #include "skin.hpp"
 #include "scored_point.hpp"
@@ -40,7 +40,7 @@ float scored_point::tail_forward(float length) {
 }
 
 bool scored_point::intersect_with_circle(const la::vec2f& p2, float r2) const {
-	return ymse::intersect::circle_with_circle(la::vec2f(x, y), r, p2, r2);
+	return circle_with_circle(la::vec2f(x, y), r, p2, r2);
 }
 
 bool scored_point::intersect_with_circle(const la::vec2f& p2, float r2, float& skiplength) const {
@@ -75,8 +75,8 @@ void scored_point::render(skin& s, float head_b) const {
 	s.circle(vec2f(x, y), r);
 }
 
-ymse::rectf scored_point::bounding_box() const {
-	ymse::rectf bb = {
+rectf scored_point::bounding_box() const {
+	rectf bb = {
 		x - r, y - r,
 		x + r, y + r
 	};

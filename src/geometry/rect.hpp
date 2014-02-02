@@ -1,9 +1,7 @@
-#ifndef YMSE_RECT_HPP
-#define YMSE_RECT_HPP
+#ifndef GEOMETRY_RECT_HPP
+#define GEOMETRY_RECT_HPP
 
 #include <vec_fwd.hpp>
-
-namespace ymse {
 
 template <typename T>
 struct rect {
@@ -29,6 +27,4 @@ rect<T> bounding_box(rect<T>, rect<T>);
 template <typename T>
 rect<T> bounding_box(rect<T>, la::vec<2, T>);
 
-}
-
-#endif // YMSE_RECT_HPP
+#endif // GEOMETRY_RECT_HPP

@@ -2,11 +2,11 @@
 #include <memory>
 #include <sstream>
 #include <vector>
-#include <ymse/lean_windows.h>
+#include <lean_windows.h>
 #include <lua.hpp>
 #include <luabind/luabind.hpp>
 #include <luabind/adopt_policy.hpp>
-#include <ymse/rect.hpp>
+#include <rect.hpp>
 #include <vec.hpp>
 #include "arc.hpp"
 #include "line.hpp"
@@ -85,11 +85,11 @@ bool board::intersect_with_circle(const la::vec2f& p, float r) const {
 	return false;
 }
 
-ymse::rectf board::bounding_box() const {
-	ymse::rectf bb = d->b.front()->bounding_box();
+rectf board::bounding_box() const {
+	rectf bb = d->b.front()->bounding_box();
 
 	for (auto& seg : d->b) {
-		bb = ymse::bounding_box(bb, seg->bounding_box());
+		bb = ::bounding_box(bb, seg->bounding_box());
 	}
 
 	return bb;

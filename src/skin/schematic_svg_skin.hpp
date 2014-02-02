@@ -6,19 +6,12 @@
 #include <string>
 #include "scalable_skin.hpp"
 
-namespace ymse {
-	template <typename T>
-	struct rect;
-
-	typedef rect<float> rectf;
-}
-
 class schematic_svg_skin : public scalable_skin {
 	std::ostream& out;
 	std::stack<std::string> output_stack;
 
 public:
-	schematic_svg_skin(std::ostream& out, const ymse::rectf& bounding_box);
+	schematic_svg_skin(std::ostream& out, const rectf& bounding_box);
 	~schematic_svg_skin();
 
 	void circle(la::vec2f p, float r);

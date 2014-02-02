@@ -1,5 +1,5 @@
-#ifndef YMSE_SDL_MAIN_H
-#define YMSE_SDL_MAIN_H
+#ifndef SDL_MAIN_H
+#define SDL_MAIN_H
 
 #if defined(__APPLE__)
 

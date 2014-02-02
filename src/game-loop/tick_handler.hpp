@@ -1,5 +1,5 @@
-#ifndef YMSE_GAME_HPP
-#define YMSE_GAME_HPP
+#ifndef GAME_LOOP_GAME_HPP
+#define GAME_LOOP_GAME_HPP
 
 namespace game {
 

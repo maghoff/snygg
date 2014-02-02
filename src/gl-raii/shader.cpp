@@ -2,7 +2,7 @@
 #include <fstream>
 #include <limits>
 #include <stdexcept>
-#include <ymse/fileutil.hpp>
+#include <fileutil.hpp>
 #include "shader.hpp"
 
 namespace gl {
@@ -17,7 +17,7 @@ shader::~shader() {
 
 void shader::source_file(const std::string& filename) {
 	std::vector<char> buffer;
-	ymse::read_entire_file(buffer, filename);
+	read_entire_file(buffer, filename);
 
 	const char* string[] = { buffer.data() };
 	std::size_t len = buffer.size();

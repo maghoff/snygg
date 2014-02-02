@@ -11,7 +11,7 @@ public:
 
 	void render(skin&, float head_b) const override;
 
-	ymse::rectf bounding_box() const override;
+	rectf bounding_box() const override;
 
 	// Always returns 0, since this segment is open (it has only one side)
 	int left_hline_intersections(la::vec2f p) const override;

@@ -1,4 +1,4 @@
-#include <ymse/fileutil.hpp>
+#include <fileutil.hpp>
 #include "shader_builder.hpp"
 
 shader_builder::shader_builder() { }
@@ -8,7 +8,7 @@ void shader_builder::add_shader_from_file(GLenum shader_type, const std::string&
 	shader_spec s;
 
 	s.type = shader_type;
-	ymse::read_entire_file(s.source, filename);
+	read_entire_file(s.source, filename);
 
 	shaders.push_back(s);
 }

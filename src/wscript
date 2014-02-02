@@ -5,8 +5,10 @@ def build(bld):
 	bld.recurse([
 		'board',
 		'core',
+		'fileutil',
 		'game',
 		'game-loop',
+		'geometry',
 		'gl-raii',
 		'image',
 		'image-gl',
@@ -15,5 +17,5 @@ def build(bld):
 		'sdl-game-core',
 		'segment',
 		'skin',
-		'ymse',
+		'win32-util',
 	])

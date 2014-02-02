@@ -5,12 +5,8 @@
 #include "intersectable_with_circle.hpp"
 #include "renderable.hpp"
 
-namespace ymse {
-	template <typename T>
-	struct rect;
-
-	typedef rect<float> rectf;
-}
+template <typename T> struct rect;
+typedef rect<float> rectf;
 
 class complex_polygon_triangulator;
 class skin;
@@ -28,7 +24,7 @@ public:
 	virtual float length() const = 0;
 	virtual void render(skin&, float head_b) const = 0;
 
-	virtual ymse::rectf bounding_box() const = 0;
+	virtual rectf bounding_box() const = 0;
 
 	// How many times does the line defined by
 	//    y = p[1]

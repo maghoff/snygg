@@ -1,5 +1,5 @@
-#ifndef YMSE_LEAN_WINDOWS_H
-#define YMSE_LEAN_WINDOWS_H
+#ifndef LEAN_WINDOWS_H
+#define LEAN_WINDOWS_H
 
 #ifdef _WIN32
 

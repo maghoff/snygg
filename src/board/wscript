@@ -15,9 +15,10 @@ def build(bld):
 		source=sources,
 		target='board',
 		use=[
-			'ymse',
 			'lua',
 			'luabind',
+			'geometry',
+			'win32-util',
 
 			'skin',
 			'core',

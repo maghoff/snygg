@@ -1,5 +1,5 @@
 #include <cassert>
-#include <ymse/rect.hpp>
+#include <rect.hpp>
 #include <vec.hpp>
 #include "extender.hpp"
 
@@ -63,8 +63,8 @@ float extender::length() const {
 void extender::render(skin&, float head_b) const {
 }
 
-ymse::rectf extender::bounding_box() const {
-	ymse::rectf rc = {
+rectf extender::bounding_box() const {
+	rectf rc = {
 		d->pos[0], d->pos[1],
 		d->pos[0], d->pos[1]
 	};
