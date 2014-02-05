@@ -47,11 +47,18 @@ def configure(conf):
 	core_env = conf.env
 
 	if conf.env['CXX_NAME'] == 'gcc':
-		# luabind triggers the following warnings. It should not break the build:
-		core_env.append_unique('CXXFLAGS', '-Wno-error=unused-variable')
-		core_env.append_unique('CXXFLAGS', '-Wno-error=deprecated-declarations')
-		# Completely silence this one, since it is super noisy:
-		core_env.append_unique('CXXFLAGS', '-Wno-unused-local-typedefs')
+		# Probably gcc or clang
+		if any('clang' in x for x in conf.env['CXX']):
+			# Probably clang
+			core_env.append_unique('CXXFLAGS', '-Wno-error=overloaded-virtual')
+			core_env.append_unique('CXXFLAGS', '-Wno-error=unused-function')
+		else:
+			# Probably gcc
+			# luabind triggers the following warnings. It should not break the build:
+			core_env.append_unique('CXXFLAGS', '-Wno-error=unused-variable')
+			core_env.append_unique('CXXFLAGS', '-Wno-error=deprecated-declarations')
+			# Completely silence this one, since it is super noisy:
+			core_env.append_unique('CXXFLAGS', '-Wno-unused-local-typedefs')
 
 	from waflib.Options import options as opt
 

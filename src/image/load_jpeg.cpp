@@ -4,6 +4,7 @@
 #include "surface.hpp"
 //#include "load_jpeg.hpp"
 
+#include <stdio.h>
 extern "C" {
 #include "jpeglib.h"
 }

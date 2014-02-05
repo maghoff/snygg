@@ -109,7 +109,7 @@ class gcc_configurator:
 
 	@staticmethod
 	def enable_cpp11(env):
-		env.append_unique('CXXFLAGS', '--std=c++11')
+		env.append_unique('CXXFLAGS', '-std=c++11')
 
 
 class msvc_configurator:
