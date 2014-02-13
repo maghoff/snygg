@@ -20,6 +20,7 @@ def build(bld):
 			'lua',
 			'geometry',
 			'win32-util',
+			'boost',
 
 			'skin',
 			'core',
