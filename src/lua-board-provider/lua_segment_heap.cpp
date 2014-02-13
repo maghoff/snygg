@@ -1,7 +1,7 @@
 #include <new>
 #include <lua.hpp>
 #include <vec.hpp>
-#include "../segment_heap.hpp"
+#include <segment_heap.hpp>
 
 static void l_set(lua_State* L, int table, const char* key) {
 	lua_pushstring(L, key);

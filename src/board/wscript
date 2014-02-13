@@ -5,24 +5,18 @@ def build(bld):
 	sources = [
 		'board.cpp',
 		'board_provider.cpp',
-		'lua_board_provider.cpp',
 		'complex_polygon_triangulator.cpp',
 		'complex_polygon_triangulator_gpc.cpp',
 		'segment_heap.cpp',
 		'gpc/gpc.c',
-		'lua-support/lua_vm.cpp',
-		'lua-support/vec2f.cpp',
-		'lua-support/segment_heap.cpp',
 	]
 
 	obj = bld.stlib(
 		source=sources,
 		target='board',
 		use=[
-			'lua',
 			'geometry',
 			'win32-util',
-			'boost',
 
 			'skin',
 			'core',

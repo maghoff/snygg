@@ -22,6 +22,7 @@ def build(bld):
 		use=[
 			'game',
 			'board',
+			'lua-board-provider',
 			'segment',
 			'core',
 			'skin',

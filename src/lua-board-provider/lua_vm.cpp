@@ -3,8 +3,8 @@
 
 #include <boost/filesystem/path.hpp>
 
-#include "vec2f.hpp"
-#include "segment_heap.hpp"
+#include "lua_vec.hpp"
+#include "lua_segment_heap.hpp"
 
 namespace luamod {
 

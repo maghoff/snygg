@@ -3,8 +3,8 @@
 #include <lua.hpp>
 #include <vec.hpp>
 #include <segment.hpp>
-#include "segment_heap.hpp"
-#include "lua-support/lua_vm.hpp"
+#include <segment_heap.hpp>
+#include "lua_vm.hpp"
 
 struct lua_board_provider::impl {
 	luamod::lua_vm lvm;

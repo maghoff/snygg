@@ -12,7 +12,6 @@
 #include "complex_polygon.hpp"
 #include "segment_heap.hpp"
 #include "complex_polygon_triangulator_gpc.hpp"
-#include "lua-support/lua_vm.hpp"
 #include "board_provider.hpp"
 
 
