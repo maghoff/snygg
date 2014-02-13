@@ -4,6 +4,8 @@
 def build(bld):
 	sources = [
 		'board.cpp',
+		'board_provider.cpp',
+		'lua_board_provider.cpp',
 		'complex_polygon_triangulator.cpp',
 		'complex_polygon_triangulator_gpc.cpp',
 		'segment_heap.cpp',

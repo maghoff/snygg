@@ -24,6 +24,7 @@
 #include "textured_skin.hpp"
 #include "complex_polygon.hpp"
 #include "board.hpp"
+#include "lua_board_provider.hpp"
 #include "food_generator.hpp"
 #include "item.hpp"
 #include "player.hpp"
@@ -45,6 +46,7 @@ struct snygg::impl {
 	scalable_skin* active_skin;
 	std::unique_ptr<schematic_svg_skin> svg_skin;
 
+	std::unique_ptr<board_provider> active_board_provider;
 	std::unique_ptr<board> active_board;
 	std::vector<std::unique_ptr<item>> items;
 	std::vector<std::unique_ptr<item>> new_items;
@@ -85,7 +87,8 @@ snygg::snygg(const std::string& board_filename) :
 	init_gl();
 
 	path board_path(paths::find_absolute_or_in_path(board_filename, paths::levels()));
-	d->active_board.reset(new board(board_path));
+	d->active_board_provider.reset(new lua_board_provider(board_path));
+	d->active_board.reset(new board(*d->active_board_provider));
 
 	d->reshaper.reset(new game::box_reshaper);
 	rectf bb = d->active_board->bounding_box();

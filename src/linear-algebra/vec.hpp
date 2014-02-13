@@ -22,7 +22,7 @@ struct vec {
 	T y() const;
 	T z() const;
 
-	vec();
+	vec() = default;
 	vec(T x, T y);
 	vec(T x, T y, T z);
 	vec(T x, T y, T z, T w);

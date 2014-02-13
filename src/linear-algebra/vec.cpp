@@ -5,11 +5,6 @@
 namespace la {
 
 template <int Dim, typename T>
-vec<Dim, T>::vec() {
-	assert(Dim >= 2);
-}
-
-template <int Dim, typename T>
 vec<Dim, T>::vec(T x_, T y_) {
 	assert(Dim == 2);
 	if (Dim > 0) v[0] = x_;
@@ -138,6 +133,7 @@ bool operator < (const la::vec<Dim, T>& lhs, const la::vec<Dim, T>& rhs) {
 }
 
 #define INSTANTIATE(name, dim, t) \
+	static_assert(dim >= 2, "Vec must have at least 2 dimensions"); \
 	template struct vec<dim, t>; \
 	template name operator + (const name&, const name&); \
 	template name operator * (const name&, t); \

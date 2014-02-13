@@ -3,7 +3,6 @@
 
 #include <memory>
 #include <string>
-#include <boost/filesystem/path.hpp>
 #include <vec.hpp>
 #include "intersectable_with_circle.hpp"
 #include "renderable.hpp"
@@ -12,6 +11,7 @@ template <typename T> struct rect;
 typedef rect<float> rectf;
 
 class complex_polygon;
+class board_provider;
 
 class board : public renderable, public intersectable_with_circle {
 	struct impl;
@@ -20,7 +20,7 @@ class board : public renderable, public intersectable_with_circle {
 	void calculate_floor_poly();
 
 public:
-	board(const boost::filesystem::path& filename);
+	board(board_provider&);
 	~board();
 
 	void render(skin&) const;
