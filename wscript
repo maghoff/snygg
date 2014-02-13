@@ -52,14 +52,6 @@ def configure(conf):
 			# Probably clang
 			core_env.append_unique('CXXFLAGS', '-Wno-error=overloaded-virtual')
 			core_env.append_unique('CXXFLAGS', '-Wno-error=unused-function')
-		else:
-			# Probably gcc
-			# luabind triggers the following warnings. It should not break the build:
-			#core_env.append_unique('CXXFLAGS', '-Wno-error=unused-variable')
-			#core_env.append_unique('CXXFLAGS', '-Wno-error=deprecated-declarations')
-			# Completely silence this one, since it is super noisy:
-			#core_env.append_unique('CXXFLAGS', '-Wno-unused-local-typedefs')
-			pass
 
 	from waflib.Options import options as opt
 

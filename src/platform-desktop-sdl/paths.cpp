@@ -117,7 +117,7 @@ path guess_project_dir() {
 	if (p.filename() == "platform-desktop-sdl") p = p.branch_path();
 	if (p.filename() == "src") p = p.branch_path();
 	if (p.filename() == "debug" || p.filename() == "release") p = p.branch_path();
-	if (p.filename() == "build") p = p.branch_path();
+	if (p.filename().string().substr(0, 5) == "build") p = p.branch_path();
 	return p;
 }
 
