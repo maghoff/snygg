@@ -102,10 +102,6 @@ void segment_sequence::push_front(std::unique_ptr<segment>&& s) {
 	d->body.emplace_front(std::move(s));
 }
 
-void segment_sequence::push_back(segment* s) {
-	d->body.emplace_back(std::unique_ptr<segment>(s));
-}
-
 rectf segment_sequence::bounding_box() const {
 	assert(d->body.size() > 0);
 

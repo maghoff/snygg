@@ -212,10 +212,10 @@ std::unique_ptr<segment> segment_heap::to_segment() {
 		bool is_closed = are_close(connected_sequence->get_head_pos(), connected_sequence->get_tail_pos());
 
 		if (is_closed) {
-			s->push_back(std::unique_ptr<segment>(new contour_segment(connected_sequence.release())));
+			s->push_back(std::unique_ptr<segment>(new contour_segment(std::move(connected_sequence))));
 			has_closed_segments = true;
 		} else {
-			s->push_back(std::unique_ptr<segment>(new open_segment(connected_sequence.release())));
+			s->push_back(std::unique_ptr<segment>(new open_segment(std::move(connected_sequence))));
 		}
 	}
 
@@ -233,16 +233,16 @@ std::unique_ptr<segment> segment_heap::to_segment() {
 		b.y2 += margin;
 
 		std::unique_ptr<segment_sequence> box(new segment_sequence);
-		box->push_back(new ::line(vec2f(b.x2, b.y1 + radius), vec2f(0.f, 1.f), b.y2 - b.y1 - 2.*radius));
-		box->push_back(new ::arc(vec2f(b.x2 - radius, b.y2 - radius), radius, tau * 0./4., tau * 1./4., 1.));
-		box->push_back(new ::line(vec2f(b.x2 - radius, b.y2), vec2f(-1.f, 0.f), b.x2 - b.x1 - 2.*radius));
-		box->push_back(new ::arc(vec2f(b.x1 + radius, b.y2 - radius), radius, tau * 1./4., tau * 2./4., 1.));
-		box->push_back(new ::line(vec2f(b.x1, b.y2 - radius), vec2f(0.f, -1.f), b.y2 - b.y1 - 2.*radius));
-		box->push_back(new ::arc(vec2f(b.x1 + radius, b.y1 + radius), radius, tau * 2./4., tau * 3./4., 1.));
-		box->push_back(new ::line(vec2f(b.x1 + radius, b.y1), vec2f(1.f, 0.f), b.x2 - b.x1 - 2.*radius));
-		box->push_back(new ::arc(vec2f(b.x2 - radius, b.y1 + radius), radius, tau * 3./4., tau * 4./4., 1.));
+		box->push_back(segment_ptr(new ::line(vec2f(b.x2, b.y1 + radius), vec2f(0.f, 1.f), b.y2 - b.y1 - 2.*radius)));
+		box->push_back(segment_ptr(new ::arc(vec2f(b.x2 - radius, b.y2 - radius), radius, tau * 0./4., tau * 1./4., 1.)));
+		box->push_back(segment_ptr(new ::line(vec2f(b.x2 - radius, b.y2), vec2f(-1.f, 0.f), b.x2 - b.x1 - 2.*radius)));
+		box->push_back(segment_ptr(new ::arc(vec2f(b.x1 + radius, b.y2 - radius), radius, tau * 1./4., tau * 2./4., 1.)));
+		box->push_back(segment_ptr(new ::line(vec2f(b.x1, b.y2 - radius), vec2f(0.f, -1.f), b.y2 - b.y1 - 2.*radius)));
+		box->push_back(segment_ptr(new ::arc(vec2f(b.x1 + radius, b.y1 + radius), radius, tau * 2./4., tau * 3./4., 1.)));
+		box->push_back(segment_ptr(new ::line(vec2f(b.x1 + radius, b.y1), vec2f(1.f, 0.f), b.x2 - b.x1 - 2.*radius)));
+		box->push_back(segment_ptr(new ::arc(vec2f(b.x2 - radius, b.y1 + radius), radius, tau * 3./4., tau * 4./4., 1.)));
 
-		s->push_back(std::unique_ptr<segment>(new contour_segment(box.release())));
+		s->push_back(segment_ptr(new contour_segment(std::move(box))));
 	}
 
 	return std::move(s);

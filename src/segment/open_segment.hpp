@@ -6,7 +6,6 @@
 class open_segment : public segment_filter {
 public:
 	using segment_filter::segment_filter;
-	open_segment(segment*); //< For luabind... hmm...
 	~open_segment();
 
 	void render(skin&, float head_b) const override;

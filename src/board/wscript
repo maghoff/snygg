@@ -6,9 +6,11 @@ def build(bld):
 		'board.cpp',
 		'complex_polygon_triangulator.cpp',
 		'complex_polygon_triangulator_gpc.cpp',
-		'lua_vm.cpp',
 		'segment_heap.cpp',
 		'gpc/gpc.c',
+		'lua-support/lua_vm.cpp',
+		'lua-support/vec2f.cpp',
+		'lua-support/segment_heap.cpp',
 	]
 
 	obj = bld.stlib(
@@ -16,7 +18,6 @@ def build(bld):
 		target='board',
 		use=[
 			'lua',
-			'luabind',
 			'geometry',
 			'win32-util',
 

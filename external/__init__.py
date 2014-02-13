@@ -25,17 +25,6 @@ LUA = {
 	"includes": "lua-5.1.5",
 }
 
-LUABIND = {
-	"name": "luabind",
-	"uri": "http://sourceforge.net/projects/luabind/files/luabind/0.9.1/luabind-0.9.1.zip/download",
-	"compression": zip,
-	"is_installed": Exists("luabind-0.9.1"),
-	"includes": "luabind-0.9.1",
-	"patches": [
-		"luabind-gcc-bug.patch",
-	],
-}
-
 BOOST = {
 	"name": "boost",
 	"uri": "http://downloads.sourceforge.net/project/boost/boost/1.55.0/boost_1_55_0.zip",
@@ -65,7 +54,6 @@ JPEG = {
 
 PACKAGES = [
 	LUA,
-	LUABIND,
 	BOOST,
 	GLEW,
 	JPEG,
@@ -110,6 +98,14 @@ def configure(debug_env, release_env):
 	debug_env.append_unique('CCDEFINES', 'GLEW_STATIC')
 	release_env.append_unique('CXXDEFINES', 'GLEW_STATIC')
 	release_env.append_unique('CCDEFINES', 'GLEW_STATIC')
+
+	debug_env.append_unique('CXXDEFINES', 'LUA_USE_APICHECK')
+	debug_env.append_unique('CCDEFINES', 'LUA_USE_APICHECK')
+
+	debug_env.append_unique('CXXDEFINES', 'LUA_COMPAT_ALL')
+	debug_env.append_unique('CCDEFINES', 'LUA_COMPAT_ALL')
+	release_env.append_unique('CXXDEFINES', 'LUA_COMPAT_ALL')
+	release_env.append_unique('CCDEFINES', 'LUA_COMPAT_ALL')
 
 	for package in PACKAGES:
 		includes_property_name = 'INCLUDES_%s' % package['name']

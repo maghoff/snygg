@@ -4,8 +4,6 @@
 #include <vector>
 #include <lean_windows.h>
 #include <lua.hpp>
-#include <luabind/luabind.hpp>
-#include <luabind/adopt_policy.hpp>
 #include <rect.hpp>
 #include <vec.hpp>
 #include "arc.hpp"
@@ -14,7 +12,7 @@
 #include "complex_polygon.hpp"
 #include "segment_heap.hpp"
 #include "complex_polygon_triangulator_gpc.hpp"
-#include "lua_vm.hpp"
+#include "lua-support/lua_vm.hpp"
 #include "board.hpp"
 
 
@@ -29,49 +27,49 @@ struct board::impl {
 board::board(const boost::filesystem::path& filename) :
 	d(new impl)
 {
-	std::unique_ptr<segment_heap> heap;
+	d->lvm.dofile(filename.string());
 
-	try  {
-		d->lvm.dofile(filename.string());
-
-		heap.reset(
-			luabind::call_function<segment_heap*>(d->lvm.get_L(), "create_board") [
-				luabind::adopt(luabind::result)
-			]
-		);
+	lua_State *L = d->lvm.get_L();
+	lua_getglobal(L, "create_board");
+	auto result = lua_pcall(L, 0, 1, 0);
+	const auto LUA_OK = 0;
+	if (result != LUA_OK) {
+		if (result == LUA_ERRRUN) {
+			std::cerr << "[calling create_board] Runtime error: " << lua_tostring(L, -1) << std::endl;
+		} else {
+			std::cerr << "[calling create_board]  result: " << result << std::endl;
+		}
+		throw new std::runtime_error("Stuff");
 	}
-	catch (const luabind::error& e) {
-		luabind::object error_msg(luabind::from_stack(e.state(), -1));
-		std::stringstream ss;
-		ss << "Lua error: " << error_msg;
-
-		std::cerr << ss.str() << "\n\n" << std::flush;
-
-#ifdef _WIN32
-		MessageBox(0, ss.str().c_str(), "Lua error", MB_OK | MB_ICONERROR);
-#endif
-
-		// This is a bit drastic, but the luabind exception mechanism is cramping my style:
-		exit(-1);
-	}
+	lua_getfield(L, -1, "segment_heap");
+	luaL_checkudata(L, -1, "segment_heap");
+	auto heap = static_cast<segment_heap*>(lua_touserdata(L, -1));
 
 	d->b.push_back(heap->to_segment());
+	lua_pop(L, 2);
 	calculate_floor_poly();
 }
 
 board::~board() {
 }
 
-la::vec2f board::get_starting_position()
-{
-	try  {
-		return la::vec2f(*luabind::call_function<la::vec2f*>(d->lvm.get_L(), "get_starting_position") [
-			luabind::adopt(luabind::result)
-        ]);
-	}
-	catch (const luabind::error& e) {
+la::vec2f board::get_starting_position() {
+	lua_State *L = d->lvm.get_L();
+	lua_getglobal(L, "get_starting_position");
+	int result = lua_pcall(L, 0, 1, 0);
+	const auto LUA_OK = 0;
+	if (result != LUA_OK) {
+		if (result == LUA_ERRRUN) {
+			std::cerr << "[calling get_starting_position] Runtime error: " << lua_tostring(L, -1) << std::endl;
+		} else {
+			std::cerr << "[calling get_starting_position]  result: " << result << std::endl;
+		}
 		return la::vec2f(0, -40);
 	}
+	luaL_checkudata(L, -1, "vec");
+	la::vec2f v = *static_cast<la::vec2f*>(lua_touserdata(L, -1));
+	lua_pop(L, 1);
+	return v;
 }
 
 void board::render(skin& s) const {

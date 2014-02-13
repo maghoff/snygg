@@ -110,15 +110,6 @@ def build(bld):
 
 	stlib_from_dir(
 		bld,
-		'luabind',
-		'downloads/luabind-0.9.1/src',
-		use=['boost', 'lua'],
-		includes='downloads/luabind-0.9.1',
-		export_includes='downloads/luabind-0.9.1',
-	)
-
-	stlib_from_dir(
-		bld,
 		'glew',
 		'downloads/glew-1.5.8/src',
 		use=['gl'],

@@ -1,5 +1,6 @@
 function util_heap()
 	local pi = math.pi
+	local segment_heap = segment_heap()
 
 	local function turtle(heap, x, y, dx, dy)
 		forward = function(len)
@@ -53,11 +54,22 @@ function util_heap()
 		heap:arc(x, y, r, 0, pi * 2.0)
 	end
 
-	local heap = segment_heap()
+	local function arc(heap, ...)
+		segment_heap:arc(...)
+	end
 
-	heap.turtle = turtle
-	heap.box = box
-	heap.circle = circle
+	local function line(heap, ...)
+		segment_heap:line(...)
+	end
+
+	local heap = {
+		turtle = turtle,
+		box = box,
+		circle = circle,
+		arc = arc,
+		line = line,
+		segment_heap = segment_heap
+	}
 
 	return heap
 end
