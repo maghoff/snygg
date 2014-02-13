@@ -32,7 +32,6 @@ board::board(const boost::filesystem::path& filename) :
 	lua_State *L = d->lvm.get_L();
 	lua_getglobal(L, "create_board");
 	auto result = lua_pcall(L, 0, 1, 0);
-	const auto LUA_OK = 0;
 	if (result != LUA_OK) {
 		if (result == LUA_ERRRUN) {
 			std::cerr << "[calling create_board] Runtime error: " << lua_tostring(L, -1) << std::endl;
@@ -57,7 +56,6 @@ la::vec2f board::get_starting_position() {
 	lua_State *L = d->lvm.get_L();
 	lua_getglobal(L, "get_starting_position");
 	int result = lua_pcall(L, 0, 1, 0);
-	const auto LUA_OK = 0;
 	if (result != LUA_OK) {
 		if (result == LUA_ERRRUN) {
 			std::cerr << "[calling get_starting_position] Runtime error: " << lua_tostring(L, -1) << std::endl;

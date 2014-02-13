@@ -19,10 +19,10 @@ def tar(fileobj):
 
 LUA = {
 	"name": "lua",
-	"uri": "http://www.lua.org/ftp/lua-5.1.5.tar.gz",
+	"uri": "http://www.lua.org/ftp/lua-5.2.3.tar.gz",
 	"compression": tar,
-	"is_installed": Exists("lua-5.1.5"),
-	"includes": "lua-5.1.5",
+	"is_installed": Exists("lua-5.2.3"),
+	"includes": "lua-5.2.3",
 }
 
 BOOST = {

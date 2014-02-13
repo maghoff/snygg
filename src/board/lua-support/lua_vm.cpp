@@ -14,7 +14,7 @@ static void register_modules(lua_State* L) {
 }
 
 lua_vm::lua_vm() {
-	L = lua_open();
+	L = luaL_newstate();
 	luaL_openlibs(L);
 
 	register_modules(L);
@@ -34,7 +34,6 @@ void lua_vm::dofile(const std::string& filename) {
 	lua_pop(L, 1);
 
 	int result = luaL_dofile(L, filename.c_str());
-	const auto LUA_OK = 0;
 	if (result != LUA_OK) {
 		if (result == LUA_ERRRUN) {
 			std::cerr << "[calling do_file] Runtime error: " << lua_tostring(L, -1) << std::endl;

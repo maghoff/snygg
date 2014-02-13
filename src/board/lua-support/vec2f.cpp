@@ -2,11 +2,6 @@
 #include <lua.hpp>
 #include <vec.hpp>
 
-static void luaL_setmetatable(lua_State* L, const char* table) {
-	luaL_getmetatable(L, table);
-	lua_setmetatable(L, -2);
-}
-
 static void l_set(lua_State* L, int table, const char* key) {
 	lua_pushstring(L, key);
 	lua_pushvalue(L, -2);

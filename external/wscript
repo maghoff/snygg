@@ -101,10 +101,9 @@ def build(bld):
 	stlib_from_dir(
 		bld,
 		'lua',
-		'downloads/lua-5.1.5/src',
+		'downloads/lua-5.2.3/src',
 		export_includes=[
-			'downloads/lua-5.1.5/src',
-			'downloads/lua-5.1.5/etc', # For lua.hpp
+			'downloads/lua-5.2.3/src',
 		],
 	)
 
