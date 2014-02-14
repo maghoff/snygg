@@ -36,11 +36,11 @@ void lua_vm::dofile(const std::string& filename) {
 	int result = luaL_dofile(L, filename.c_str());
 	if (result != LUA_OK) {
 		if (result == LUA_ERRRUN) {
-			std::cerr << "[calling do_file] Runtime error: " << lua_tostring(L, -1) << std::endl;
+			std::cerr << "[calling do_file] LUA_ERRRUN: " << lua_tostring(L, -1) << std::endl;
 		} else {
-			std::cerr << "[calling do_file]  result: " << result << std::endl;
+			std::cerr << "[calling do_file] Error(" << result << "): " << lua_tostring(L, -1) << std::endl;
 		}
-		throw new std::runtime_error("Stuff");
+		throw std::runtime_error(lua_tostring(L, -1));
 	}
 }
 
