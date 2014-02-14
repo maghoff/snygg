@@ -37,8 +37,6 @@ static int y(lua_State* L) {
 static int operator_add(lua_State* L) {
 	check_argcount(L, 2, "Signature: __add(vec, vec)");
 
-	//TODO Dynamically handle different argument types
-
 	luaL_checkudata(L, 1, "vec");
 	luaL_checkudata(L, 2, "vec");
 	la::vec2f* lhs = static_cast<la::vec2f*>(lua_touserdata(L, 1));

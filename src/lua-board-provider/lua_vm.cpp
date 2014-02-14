@@ -35,13 +35,18 @@ void lua_vm::dofile(const std::string& filename) {
 
 	int result = luaL_dofile(L, filename.c_str());
 	if (result != LUA_OK) {
+		std::string error = lua_tostring(L, -1);
+		lua_settop(L, 0);
+
 		if (result == LUA_ERRRUN) {
-			std::cerr << "[calling do_file] LUA_ERRRUN: " << lua_tostring(L, -1) << std::endl;
+			std::cerr << "[calling do_file] LUA_ERRRUN: " << error << std::endl;
 		} else {
-			std::cerr << "[calling do_file] Error(" << result << "): " << lua_tostring(L, -1) << std::endl;
+			std::cerr << "[calling do_file] Error(" << result << "): " << error << std::endl;
 		}
-		throw std::runtime_error(lua_tostring(L, -1));
+
+		throw std::runtime_error(error);
 	}
+	lua_settop(L, 0);
 }
 
 lua_State* lua_vm::get_L() {
