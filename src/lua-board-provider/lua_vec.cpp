@@ -1,4 +1,5 @@
 #include <new>
+#include <type_traits>
 #include <lua.hpp>
 #include <vec.hpp>
 
@@ -60,17 +61,6 @@ static int create(lua_State* L) {
 	return 1;
 }
 
-static int destruct(lua_State* L) {
-	// Assert argument count
-	luaL_checkudata(L, 1, "vec");
-	la::vec2f* v = static_cast<la::vec2f*>(lua_touserdata(L, 1));
-	// Assert !nullptr
-	using la::vec2f;
-	v->~vec2f(); //< NOOP for POD types, such as vec2f
-
-	return 0;
-}
-
 
 namespace luamod {
 
@@ -85,15 +75,12 @@ void load_vec2f(lua_State* L) {
 	lua_pushvalue(L, methods);  
 	l_set(L, metatable, "__metatable");
 
-	//set metatable __index
 	lua_pushvalue(L, methods);
 	l_set(L, metatable, "__index");
 
-	//set metatable __gc
-	lua_pushcfunction(L, &destruct);
-	l_set(L, metatable, "__gc");
+	//don't set metatable __gc, since we have a POD type
+	static_assert(std::is_pod<la::vec2f>::value, "vec2f needs its destructor called if it is not a POD type");
 
-	//set metatable __add
 	lua_pushcfunction(L, &operator_add);
 	l_set(L, metatable, "__add");
 
