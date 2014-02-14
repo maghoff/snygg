@@ -24,12 +24,14 @@ std::unique_ptr<segment> lua_board_provider::create_board() {
 	lua_getglobal(L, "create_board");
 	auto result = lua_pcall(L, 0, 1, 0);
 	if (result != LUA_OK) {
+		std::string error = lua_tostring(L, -1);
+		lua_settop(L, 0);
 		if (result == LUA_ERRRUN) {
-			std::cerr << "[calling create_board] Runtime error: " << lua_tostring(L, -1) << std::endl;
+			std::cerr << "[calling create_board] LUA_ERRUN: " << error << std::endl;
 		} else {
-			std::cerr << "[calling create_board]  result: " << result << std::endl;
+			std::cerr << "[calling create_board] Error(" << result << "): " << error << std::endl;
 		}
-		throw new std::runtime_error("Stuff");
+		throw std::runtime_error(error);
 	}
 	lua_getfield(L, -1, "segment_heap");
 	luaL_checkudata(L, -1, "segment_heap");
@@ -45,10 +47,12 @@ la::vec2f lua_board_provider::get_starting_position() {
 	lua_getglobal(L, "get_starting_position");
 	int result = lua_pcall(L, 0, 1, 0);
 	if (result != LUA_OK) {
+		std::string error = lua_tostring(L, -1);
+		lua_settop(L, 0);
 		if (result == LUA_ERRRUN) {
-			std::cerr << "[calling get_starting_position] Runtime error: " << lua_tostring(L, -1) << std::endl;
+			std::cerr << "[calling get_starting_position] LUA_ERRUN: " << error << std::endl;
 		} else {
-			std::cerr << "[calling get_starting_position]  result: " << result << std::endl;
+			std::cerr << "[calling get_starting_position] Error(" << result << "): " << error << std::endl;
 		}
 		return la::vec2f(0, -40);
 	}

@@ -34,6 +34,12 @@ static int y(lua_State* L) {
 	return 1;
 }
 
+static int length(lua_State* L) {
+	check_argcount(L, 1, "Signature: vec:length()");
+	lua_pushnumber(L, self(L)->length());
+	return 1;
+}
+
 static int operator_add(lua_State* L) {
 	check_argcount(L, 2, "Signature: __add(vec, vec)");
 
@@ -45,6 +51,29 @@ static int operator_add(lua_State* L) {
 	emplace(L, (*lhs) + (*rhs));
 
 	return 1;
+}
+
+static int operator_mul_num_vec(lua_State* L) {
+	auto lhs = static_cast<float>(lua_tonumber(L, 1));
+	auto rhs = static_cast<la::vec2f*>(lua_touserdata(L, 2));
+	emplace(L, lhs * (*rhs));
+	return 1;
+}
+
+static int operator_mul_vec_num(lua_State* L) {
+	auto lhs = static_cast<la::vec2f*>(lua_touserdata(L, 1));
+	auto rhs = static_cast<float>(lua_tonumber(L, 2));
+	emplace(L, (*lhs) * rhs);
+	return 1;
+}
+
+static int operator_mul(lua_State* L) {
+	check_argcount(L, 2, "Signature: __mul(vec|number, vec|number)");
+
+	if (lua_isnumber(L, 1) && luaL_testudata(L, 2, "vec")) return operator_mul_num_vec(L);
+	if (luaL_testudata(L, 1, "vec") && lua_isnumber(L, 2)) return operator_mul_vec_num(L);
+
+	return luaL_error(L, "No overload of __mul matching arguments");
 }
 
 static int create(lua_State* L) {
@@ -90,6 +119,9 @@ void load_vec2f(lua_State* L) {
 	lua_pushcfunction(L, &operator_add);
 	l_set(L, metatable, "__add");
 
+	lua_pushcfunction(L, &operator_mul);
+	l_set(L, metatable, "__mul");
+
 	//set method table
 	lua_newtable(L);
 	lua_pushcfunction(L, &create);
@@ -99,13 +131,15 @@ void load_vec2f(lua_State* L) {
 	lua_setmetatable(L, methods);
 
 	// set methods metatable
-	lua_pushstring(L, "x");
-	lua_pushcfunction(L, &x);
-	lua_settable(L, methods);
-
-	lua_pushstring(L, "y");
-	lua_pushcfunction(L, &y);
-	lua_settable(L, methods);
+	luaL_Reg funcs[] = {
+		{ "x", &x },
+		{ "y", &y },
+		{ "length", &length },
+		{ nullptr, nullptr }
+	};
+	lua_pushvalue(L, methods);
+	luaL_setfuncs(L, funcs, 0);
+	lua_pop(L, 1);
 
 	lua_pop(L, 2);
 }
