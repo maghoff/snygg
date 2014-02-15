@@ -69,15 +69,13 @@ class gcc_configurator:
 	@staticmethod
 	def debug_mode(env):
 		env.append_unique('CXXFLAGS', '-ggdb')
-		env.append_unique('CXXDEFINES', 'DEBUG')
 		env.append_unique('CCFLAGS', '-ggdb')
-		env.append_unique('CCDEFINES', 'DEBUG')
+		env.append_unique('DEFINES', 'DEBUG')
 		env.append_unique('LINKFLAGS', '-rdynamic')
 
 	@staticmethod
 	def release_mode(env):
-		env.append_unique('CXXDEFINES', 'NDEBUG')
-		env.append_unique('CCDEFINES', 'NDEBUG')
+		env.append_unique('DEFINES', 'NDEBUG')
 		env.append_unique('LINKFLAGS', '-s')
 
 	@staticmethod
@@ -119,7 +117,6 @@ class msvc_configurator:
 		env.append_unique('CXXFLAGS', '/EHsc') # Enable Exceptions
 		env.append_unique('CXXFLAGS', '/GR') # Enable RTTI
 		env.append_unique('CXXFLAGS', '/GS') # Buffer Security Check
-		env.append_unique('DEFINES', '_USE_MATH_DEFINES') # Enable standard behaviour for math.h (causes M_PI to be defined)
 		env.append_unique('DEFINES', '_SCL_SECURE_NO_WARNINGS') # Disable warnings for secure iterators, to avoid compiler specific code
 		env.append_unique('DEFINES', 'BOOST_ALL_NO_LIB')
 		env.append_unique('LINKFLAGS', '/SUBSYSTEM:WINDOWS')
@@ -133,16 +130,14 @@ class msvc_configurator:
 		env.append_unique('CXXFLAGS', '/Od')
 		env.append_unique('CXXFLAGS', '/RTC1')
 		env.append_unique('LINKFLAGS', '/DEBUG')
-		env.append_unique('CXXDEFINES', 'DEBUG')
 		env.append_unique('CCFLAGS', '/MDd')
-		env.append_unique('CCDEFINES', 'DEBUG')
+		env.append_unique('DEFINES', 'DEBUG')
 
 	@staticmethod
 	def release_mode(env):
 		env.append_unique('CXXFLAGS', '/MD')
-		env.append_unique('CXXDEFINES', 'NDEBUG')
 		env.append_unique('CCFLAGS', '/MD')
-		env.append_unique('CCDEFINES', 'NDEBUG')
+		env.append_unique('DEFINES', 'NDEBUG')
 
 	@staticmethod
 	def optimize(env):
