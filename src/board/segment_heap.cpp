@@ -1,6 +1,7 @@
 #include <cmath>
 #include <list>
 #include <memory>
+#include <boost/shared_ptr.hpp>
 #include <rect.hpp>
 #include <vec.hpp>
 #include "arc.hpp"
@@ -119,7 +120,7 @@ bool consolidate(seg* lhs, int i, seg* rhs, int j) {
 
 }
 
-typedef std::shared_ptr<heap::seg> seg_ptr;
+typedef boost::shared_ptr<heap::seg> seg_ptr;
 
 struct segment_heap::impl {
 	std::list<seg_ptr> segs;

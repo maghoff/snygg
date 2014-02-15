@@ -21,6 +21,7 @@ def build(bld):
 			'skin',
 			'core',
 			'segment',
+			'boost',
 		],
 		lib=[],
 		includes=[],
