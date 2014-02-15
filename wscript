@@ -45,6 +45,7 @@ def configure(conf):
 	cc.warnings_as_errors(conf.env)
 
 	core_env = conf.env
+	core_env.append_unique('DEFINES', 'M_PI=3.14159265358979323848')
 
 	if conf.env['CXX_NAME'] == 'gcc':
 		# Probably gcc or clang
