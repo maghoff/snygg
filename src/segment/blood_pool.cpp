@@ -1,7 +1,6 @@
 #include <cassert>
 #include <cmath>
 #include <stdexcept>
-#include <GL/glew.h>
 
 #include <rect.hpp>
 #include <vec.hpp>
