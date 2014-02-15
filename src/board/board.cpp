@@ -19,11 +19,13 @@ struct board::impl {
 	board_provider& provider;
 	std::vector<std::unique_ptr<segment>> b;
 	complex_polygon floor_poly;
+
+	impl(board_provider& provider_) : provider(provider_) {}
 };
 
 
 board::board(board_provider& provider) :
-	d(new impl{provider})
+	d(new impl(provider))
 {
 	d->b.push_back(std::move(d->provider.create_board()));
 	calculate_floor_poly();
