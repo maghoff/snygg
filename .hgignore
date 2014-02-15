@@ -16,6 +16,7 @@ waf-*
 .waf-*
 .lock-waf*
 build
+build-*
 external/downloads
 src/config.hpp
 *.pyc
