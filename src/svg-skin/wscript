@@ -3,16 +3,14 @@
 
 def build(bld):
 	sources = [
-		'complex_polygon.cpp',
-		'geometry_intersection.cpp',
-		'rect.cpp',
+		'schematic_svg_skin.cpp',
 	]
 
 	obj = bld.stlib(
 		source=sources,
-		target='geometry',
+		target='svg-skin',
 		use=[
-			'linear-algebra',
+			'skin',
 		],
 		lib=[],
 		includes=[],

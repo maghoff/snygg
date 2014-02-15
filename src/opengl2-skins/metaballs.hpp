@@ -6,7 +6,7 @@
 #include <vec_fwd.hpp>
 #include "scalable_skin.hpp"
 
-class complex_polygon;
+struct complex_polygon;
 
 class metaballs : public scalable_skin {
 	struct impl;

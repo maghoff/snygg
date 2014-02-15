@@ -3,31 +3,15 @@
 
 def build(bld):
 	sources = [
-		'complex_polygon.cpp',
-		'metaballs.cpp',
-		'plain_skin.cpp',
 		'scalable_skin.cpp',
-		'schematic_skin.cpp',
-		'schematic_svg_skin.cpp',
 		'skin.cpp',
-		'textured_skin.cpp',
-
-		'gl/gl_fbo.cpp',
-		'gl/opengl_resource.cpp',
-		'gl/scoped_bind_fbo.cpp',
-		'gl/shader_builder.cpp',
-		'gl/shader_configuration.cpp',
-		'gl/shader_program.cpp',
 	]
 
 	obj = bld.stlib(
 		source=sources,
 		target='skin',
 		use=[
-			'game-loop',
-			'image',
-			'image-gl',
-			'gl-raii',
+			'game-loop', # scalable_skin is a pixels_per_unit_listener
 			'geometry',
 		],
 		lib=[],

@@ -155,8 +155,8 @@ std::unique_ptr<segment> segment_heap::get_a_connected_sequence() {
 	do {
 		still_building = false;
 		for (std::list<seg_ptr>::iterator i = d->segs.begin(); i != d->segs.end(); ++i) {
-			std::pair<seg_ptr, int> front = s.front();
-			std::pair<seg_ptr, int> back = s.back();
+			const std::pair<seg_ptr, int>& front = s.front();
+			const std::pair<seg_ptr, int>& back = s.back();
 			vec2f front_pos = front.first->pos(front.second);
 			vec2f back_pos = back.first->pos(1 - back.second);
 			bool added = false;

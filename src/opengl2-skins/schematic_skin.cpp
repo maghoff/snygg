@@ -4,7 +4,7 @@
 
 #include <rect.hpp>
 #include <vec.hpp>
-#include "complex_polygon.hpp"
+#include "draw_complex_polygon.hpp"
 #include "schematic_skin.hpp"
 
 namespace {
@@ -182,7 +182,7 @@ void schematic_skin::cap(la::vec2f p, float snake_direction_in, float cap_direct
 
 void schematic_skin::floor(const complex_polygon& floor_poly) {
 	glColor4f(0.62, 0.62, 0.62, 1.0);
-	floor_poly.draw_outlines();
+	draw_outlines(floor_poly);
 	glColor4f(0.62, 0.62, 0.62, 0.3);
-	floor_poly.draw();
+	draw(floor_poly);
 }

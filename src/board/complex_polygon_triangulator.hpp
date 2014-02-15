@@ -3,7 +3,7 @@
 
 #include <vec_fwd.hpp>
 
-class complex_polygon;
+struct complex_polygon;
 
 class complex_polygon_triangulator {
 public:

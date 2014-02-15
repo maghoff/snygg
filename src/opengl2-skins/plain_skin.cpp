@@ -4,7 +4,7 @@
 
 #include <rect.hpp>
 #include <vec.hpp>
-#include "complex_polygon.hpp"
+#include "draw_complex_polygon.hpp"
 #include "plain_skin.hpp"
 
 plain_skin::plain_skin() {
@@ -67,7 +67,7 @@ void plain_skin::cap(la::vec2f p, float, float, float) {
 
 void plain_skin::floor(const complex_polygon& p) {
 	glColor4f(0, 0, 0, 1);
-	p.draw();
+	draw(p);
 
 	glColor4f(1, 1, 1, 1);
 	glBegin(GL_QUADS);

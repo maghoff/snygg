@@ -12,7 +12,7 @@
 #include "gl/scoped_bind_fbo.hpp"
 #include "gl/shader_program.hpp"
 #include "gl/shader_builder.hpp"
-#include "complex_polygon.hpp"
+#include "draw_complex_polygon.hpp"
 #include "metaballs.hpp"
 
 #include "ball_insert_iterator.ipp"
@@ -118,7 +118,7 @@ void metaballs::update_metaballs(const complex_polygon& floor_poly, const std::v
 	d->metaballs->set_uniform("storedValue", 1);
 
 	glClear(GL_COLOR_BUFFER_BIT);
-	floor_poly.draw();
+	draw(floor_poly);
 
 	glUseProgram(0);
 	binder.unbind();
@@ -135,7 +135,7 @@ void metaballs::draw_metaballs(const complex_polygon& floor_poly) {
 
 	d->mapping->set_uniform("ambient", 0.4f, 0.4f, 0.4f, 1.0f);
 
-	floor_poly.draw();
+	draw(floor_poly);
 	glUseProgram(0);
 }
 

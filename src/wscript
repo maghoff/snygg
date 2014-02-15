@@ -14,9 +14,11 @@ def build(bld):
 		'image-gl',
 		'linear-algebra',
 		'lua-board-provider',
+		'opengl2-skins',
 		'platform-desktop-sdl',
 		'sdl-game-core',
 		'segment',
 		'skin',
+		'svg-skin',
 		'win32-util',
 	])

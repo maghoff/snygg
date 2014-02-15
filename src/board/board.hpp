@@ -10,7 +10,7 @@
 template <typename T> struct rect;
 typedef rect<float> rectf;
 
-class complex_polygon;
+struct complex_polygon;
 class board_provider;
 
 class board : public renderable, public intersectable_with_circle {

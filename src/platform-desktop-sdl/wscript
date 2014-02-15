@@ -26,6 +26,8 @@ def build(bld):
 			'segment',
 			'core',
 			'skin',
+			'opengl2-skins',
+			'svg-skin',
 			'ymse',
 			'sdl-game-core',
 

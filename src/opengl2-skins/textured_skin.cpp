@@ -9,7 +9,7 @@
 #include "gl/shader_program.hpp"
 #include "gl/shader_builder.hpp"
 #include "gl/shader_configuration.hpp"
-#include "complex_polygon.hpp"
+#include "draw_complex_polygon.hpp"
 #include "textured_skin.hpp"
 
 const int across = 5, along = 6, circle_coord = 7, b_attribute = 8;
@@ -265,7 +265,7 @@ void textured_skin::cap(la::vec2f p, float snake_direction_in, float cap_directi
 void textured_skin::floor(const complex_polygon& floor_poly) {
 	d->shader_state = 0;
 	to_floor_shader();
-	floor_poly.draw();
+	draw(floor_poly);
 
 	to_no_shader();
 }

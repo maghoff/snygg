@@ -1,0 +1,32 @@
+#!/bin/env python
+# -*- coding: utf-8 -*-
+
+def build(bld):
+	sources = [
+		'draw_complex_polygon.cpp',
+		'metaballs.cpp',
+		'plain_skin.cpp',
+		'schematic_skin.cpp',
+		'textured_skin.cpp',
+
+		'gl/gl_fbo.cpp',
+		'gl/opengl_resource.cpp',
+		'gl/scoped_bind_fbo.cpp',
+		'gl/shader_builder.cpp',
+		'gl/shader_configuration.cpp',
+		'gl/shader_program.cpp',
+	]
+
+	obj = bld.stlib(
+		source=sources,
+		target='opengl2-skins',
+		use=[
+			'skin',
+			'image',
+			'image-gl',
+			'gl-raii',
+		],
+		lib=[],
+		includes=[],
+		export_includes=["."],
+	)

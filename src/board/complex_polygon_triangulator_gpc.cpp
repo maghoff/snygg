@@ -68,5 +68,5 @@ complex_polygon complex_polygon_triangulator_gpc::get_complex_polygon() const {
 		throw;
 	}
 
-	return complex_polygon(v, t);
+	return complex_polygon{v, t};
 }
