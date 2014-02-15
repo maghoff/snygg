@@ -148,7 +148,7 @@ void segment_heap::arc(float x, float y, float r, float begin, float end) {
 std::unique_ptr<segment> segment_heap::get_a_connected_sequence() {
 	std::list< std::pair<seg_ptr, int> > s;
 
-	s.push_back(std::make_pair(d->segs.front(), 0));
+	s.emplace_back(d->segs.front(), 0);
 	d->segs.pop_front();
 
 	bool still_building;
@@ -163,11 +163,11 @@ std::unique_ptr<segment> segment_heap::get_a_connected_sequence() {
 			for (int dir = 0; dir <= 1; ++dir) {
 				if (are_close(front_pos, (*i)->pos(dir))) {
 					added = true;
-					s.push_front(std::make_pair(*i, 1-dir));
+					s.emplace_front(*i, 1-dir);
 					break;
 				} else if (are_close(back_pos, (*i)->pos(dir))) {
 					added = true;
-					s.push_back(std::make_pair(*i, dir));
+					s.emplace_back(*i, dir);
 					break;
 				}
 			}
