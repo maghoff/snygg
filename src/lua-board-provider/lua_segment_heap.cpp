@@ -3,13 +3,24 @@
 #include <vec.hpp>
 #include <segment_heap.hpp>
 
-static void l_set(lua_State* L, int table, const char* key) {
-	lua_pushstring(L, key);
-	lua_pushvalue(L, -2);
-	if (table < 0) --table;
-	lua_settable(L, table);
-	lua_pop(L, 1);
+
+static void check_argcount(lua_State* L, int args, const char* msg) {
+	if (lua_gettop(L) != args) luaL_error(L, msg);
 }
+
+static segment_heap* self(lua_State* L) {
+	luaL_checkudata(L, 1, "segment_heap");
+	return static_cast<segment_heap*>(lua_touserdata(L, 1));
+}
+
+template <typename ... Args>
+static segment_heap* emplace(lua_State* L, Args&& ... args) {
+	void *userdata = lua_newuserdata(L, sizeof(segment_heap));
+	auto v = new (userdata) segment_heap{args...};
+	luaL_setmetatable(L, "segment_heap");
+	return v;
+}
+
 
 static int arc(lua_State* L) {
 	auto args = lua_gettop(L);
@@ -18,33 +29,30 @@ static int arc(lua_State* L) {
 		lua_error(L);
 	}
 
-	luaL_checkudata(L, 1, "segment_heap");
+	auto heap = self(L);
 
 	float x, y;
 	int restargs;
 	if (args == 5) {
 		luaL_checkudata(L, 2, "vec");
-		luaL_checknumber(L, 3);
-		luaL_checknumber(L, 4);
-		luaL_checknumber(L, 5);
+		restargs = 3;
 
 		auto v = static_cast<la::vec2f*>(lua_touserdata(L, 2));
 		x = v->x();
 		y = v->y();
-		restargs = 3;
 	} else {
 		luaL_checknumber(L, 2);
 		luaL_checknumber(L, 3);
-		luaL_checknumber(L, 4);
-		luaL_checknumber(L, 5);
-		luaL_checknumber(L, 6);
+		restargs = 4;
 
 		x = lua_tonumber(L, 2);
 		y = lua_tonumber(L, 3);
-		restargs = 4;
 	}
 
-	auto heap = static_cast<segment_heap*>(lua_touserdata(L, 1));
+	luaL_checknumber(L, restargs + 0);
+	luaL_checknumber(L, restargs + 1);
+	luaL_checknumber(L, restargs + 2);
+
 	heap->arc(
 		x, y,
 		lua_tonumber(L, restargs + 0),
@@ -62,7 +70,7 @@ static int line(lua_State* L) {
 		lua_error(L);
 	}
 
-	luaL_checkudata(L, 1, "segment_heap");
+	auto heap = self(L);
 
 	la::vec2f a, b;
 	if (args == 3) {
@@ -83,7 +91,6 @@ static int line(lua_State* L) {
 		b.y() = lua_tonumber(L, 5);
 	}
 
-	auto heap = static_cast<segment_heap*>(lua_touserdata(L, 1));
 	heap->line(a, b);
 
 	return 0;
@@ -92,26 +99,27 @@ static int line(lua_State* L) {
 static int create(lua_State* L) {
 	// arg 1 is a table. Which table is this?
 
-	// Assert argument count
+	check_argcount(L, 1, "Signature: segment_heap()");
 
-	void *userdata = lua_newuserdata(L, sizeof(segment_heap));
-	new (userdata) segment_heap;
-
-	luaL_setmetatable(L, "segment_heap");
+	emplace(L);
 
 	return 1;
 }
 
 static int destruct(lua_State* L) {
-	// Assert argument count
-	luaL_checkudata(L, 1, "segment_heap");
-	auto heap = static_cast<segment_heap*>(lua_touserdata(L, 1));
-
-	heap->~segment_heap();
-
+	check_argcount(L, 1, "Internal error. __gc was called without exactly one argument");
+	self(L)->~segment_heap();
 	return 0;
 }
 
+
+static void l_set(lua_State* L, int table, const char* key) {
+	lua_pushstring(L, key);
+	lua_pushvalue(L, -2);
+	if (table < 0) --table;
+	lua_settable(L, table);
+	lua_pop(L, 1);
+}
 
 namespace luamod {
 
@@ -126,30 +134,27 @@ void load_segment_heap(lua_State* L) {
 	lua_pushvalue(L, methods);  
 	l_set(L, metatable, "__metatable");
 
-	//set metatable __index
 	lua_pushvalue(L, methods);
 	l_set(L, metatable, "__index");
 
-	//set metatable __gc
 	lua_pushcfunction(L, &destruct);
 	l_set(L, metatable, "__gc");
 
-	//set method table
-	lua_newtable(L);                // mt for method table  
+	lua_newtable(L);
 	lua_pushcfunction(L, &create);
-	lua_pushvalue(L, -1);           // dup new_T function  
-	l_set(L, methods, "new");         // add new_T to method table  
-	l_set(L, -3, "__call");           // mt.__call = new_T  
-	lua_setmetatable(L, methods);  
+	lua_pushvalue(L, -1);
+	l_set(L, methods, "new");
+	l_set(L, -3, "__call");
+	lua_setmetatable(L, methods);
 
-	// set methods metatable   
-	lua_pushstring(L, "arc");
-	lua_pushcfunction(L, &arc);  
-	lua_settable(L, methods);
-
-	lua_pushstring(L, "line");
-	lua_pushcfunction(L, &line);
-	lua_settable(L, methods);
+	luaL_Reg funcs[] = {
+		{ "arc", &arc },
+		{ "line", &line },
+		{ nullptr, nullptr }
+	};
+	lua_pushvalue(L, methods);
+	luaL_setfuncs(L, funcs, 0);
+	lua_pop(L, 1);
 
 	lua_pop(L, 2);
 }
