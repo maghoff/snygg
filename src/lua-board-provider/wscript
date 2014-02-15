@@ -1,0 +1,23 @@
+#!/bin/env python
+# -*- coding: utf-8 -*-
+
+def build(bld):
+	sources = [
+		'lua_board_provider.cpp',
+		'lua_vm.cpp',
+		'lua_segment_heap.cpp',
+		'lua_vec.cpp',
+	]
+
+	obj = bld.stlib(
+		source=sources,
+		target='lua-board-provider',
+		use=[
+			'board',
+			'lua',
+			'boost',
+		],
+		lib=[],
+		includes=[],
+		export_includes=["."],
+	)
