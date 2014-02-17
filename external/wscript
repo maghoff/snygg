@@ -81,6 +81,53 @@ def libjpeg(bld):
 		export_includes='downloads/jpeg-6b',
 	)
 
+def liblua(bld):
+	core = [
+		'lapi.c',
+		'lcode.c',
+		'lctype.c',
+		'ldebug.c',
+		'ldo.c',
+		'ldump.c',
+		'lfunc.c',
+		'lgc.c',
+		'llex.c',
+		'lmem.c',
+		'lobject.c',
+		'lopcodes.c',
+		'lparser.c',
+		'lstate.c',
+		'lstring.c',
+		'ltable.c',
+		'ltm.c',
+		'lundump.c',
+		'lvm.c',
+		'lzio.c',
+	]
+
+	lib = [
+		'lauxlib.c',
+		'lbaselib.c',
+		'lbitlib.c',
+		'lcorolib.c',
+		'ldblib.c',
+		'liolib.c',
+		'lmathlib.c',
+		'loslib.c',
+		'lstrlib.c',
+		'ltablib.c',
+		'loadlib.c',
+		'linit.c',
+	]
+
+	sources = map(lambda x: os.path.join('downloads', 'lua-5.2.3', 'src', x), core + lib)
+
+	obj = bld.stlib(
+		source=sources,
+		target="lua",
+		export_includes='downloads/lua-5.2.3/src',
+	)
+
 def build(bld):
 	stlib_from_dir(
 		bld,
@@ -100,15 +147,6 @@ def build(bld):
 
 	stlib_from_dir(
 		bld,
-		'lua',
-		'downloads/lua-5.2.3/src',
-		export_includes=[
-			'downloads/lua-5.2.3/src',
-		],
-	)
-
-	stlib_from_dir(
-		bld,
 		'glew',
 		'downloads/glew-1.5.8/src',
 		use=['gl'],
@@ -117,3 +155,4 @@ def build(bld):
 	)
 
 	libjpeg(bld)
+	liblua(bld)
