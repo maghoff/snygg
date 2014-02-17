@@ -1,19 +1,23 @@
 #include "lua_board_provider.hpp"
+#include <stdexcept>
 #include <iostream>
 #include <lua.hpp>
 #include <vec.hpp>
 #include <segment.hpp>
 #include <segment_heap.hpp>
+#include "file_loader.hpp"
 #include "lua_vm.hpp"
 
 struct lua_board_provider::impl {
 	luamod::lua_vm lvm;
+
+	impl(file_loader& loader) : lvm(loader) {}
 };
 
-lua_board_provider::lua_board_provider(const boost::filesystem::path& filename) :
-	d(new impl)
+lua_board_provider::lua_board_provider(file_loader& loader, const std::string& name) :
+	d(new impl(loader))
 {
-	d->lvm.dofile(filename.string());
+	d->lvm.dofile(name);
 }
 
 lua_board_provider::~lua_board_provider() {
@@ -25,7 +29,7 @@ std::unique_ptr<segment> lua_board_provider::create_board() {
 	auto result = lua_pcall(L, 0, 1, 0);
 	if (result != LUA_OK) {
 		std::string error = lua_tostring(L, -1);
-		lua_settop(L, 0);
+		lua_pop(L, 1);
 		if (result == LUA_ERRRUN) {
 			std::cerr << "[calling create_board] LUA_ERRUN: " << error << std::endl;
 		} else {
@@ -48,7 +52,7 @@ la::vec2f lua_board_provider::get_starting_position() {
 	int result = lua_pcall(L, 0, 1, 0);
 	if (result != LUA_OK) {
 		std::string error = lua_tostring(L, -1);
-		lua_settop(L, 0);
+		lua_pop(L, 1);
 		if (result == LUA_ERRRUN) {
 			std::cerr << "[calling get_starting_position] LUA_ERRUN: " << error << std::endl;
 		} else {

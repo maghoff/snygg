@@ -3,6 +3,8 @@
 
 def build(bld):
 	sources = [
+		'file_loader.cpp',
+		'istream_lua_load.cpp',
 		'lua_board_provider.cpp',
 		'lua_vm.cpp',
 		'lua_segment_heap.cpp',
@@ -15,7 +17,6 @@ def build(bld):
 		use=[
 			'board',
 			'lua',
-			'boost',
 		],
 		lib=[],
 		includes=[],

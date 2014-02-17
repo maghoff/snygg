@@ -11,6 +11,7 @@ def build(bld):
 
 
 	sources = [
+		'filesystem_file_loader.cpp',
 		'main.cpp',
 		'paths.cpp',
 		'snygg.cpp',

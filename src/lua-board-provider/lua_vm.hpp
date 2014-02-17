@@ -4,16 +4,19 @@
 #include <string>
 
 struct lua_State;
+class file_loader;
 
 namespace luamod {
 
 class lua_vm {
+	file_loader& loader;
 	lua_State* L;
+
 public:
-	lua_vm();
+	lua_vm(file_loader&);
 	~lua_vm();
 
-	void dofile(const std::string& filename);
+	void dofile(const std::string&);
 
 	lua_State* get_L();
 };

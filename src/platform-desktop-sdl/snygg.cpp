@@ -25,6 +25,7 @@
 #include "complex_polygon.hpp"
 #include "board.hpp"
 #include "lua_board_provider.hpp"
+#include "filesystem_file_loader.hpp"
 #include "food_generator.hpp"
 #include "item.hpp"
 #include "player.hpp"
@@ -87,7 +88,10 @@ snygg::snygg(const std::string& board_filename) :
 	init_gl();
 
 	path board_path(paths::find_absolute_or_in_path(board_filename, paths::levels()));
-	d->active_board_provider.reset(new lua_board_provider(board_path));
+	filesystem_file_loader loader;
+	loader.add_search_path(board_path.branch_path().string());
+	loader.add_search_path(paths::levels().string());
+	d->active_board_provider.reset(new lua_board_provider(loader, board_path.string()));
 	d->active_board.reset(new board(*d->active_board_provider));
 
 	d->reshaper.reset(new game::box_reshaper);
