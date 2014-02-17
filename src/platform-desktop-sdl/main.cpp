@@ -29,7 +29,7 @@ catch (const std::exception& e) {
 	ss <<
 		"Fatal error: " << e.what() << "\n"
 		"Typeid: " << typeid(e).name();
-	std::cerr << ss.str();
+	std::cerr << ss.str() << std::endl;
 
 #ifdef _WIN32
 		MessageBox(0, ss.str().c_str(), "Fatal error", MB_OK | MB_ICONERROR);
