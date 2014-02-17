@@ -1,0 +1,10 @@
+{
+  "name": "nacl",
+  "version": "0.0.0",
+  "description": "Serves up the nacl module",
+  "main": "index.js",
+  "author": "Magnus Hoff <maghoff@gmail.com>",
+  "dependencies": {
+    "resource-tree": "0.0.0-13"
+  }
+}

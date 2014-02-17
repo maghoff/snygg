@@ -23,6 +23,7 @@ def options(opt):
 	opt.load('compiler_c')
 
 	opt.add_option('--sdl', dest='sdl_root', default=None, action='store', help='The path that contains include/SDL.h')
+	opt.add_option('--ppapi', dest='ppapi_root', default=None, action='store', help='The path named pepper_nn')
 
 	opt.add_option('--disallow-long-playing', dest='disallow_long_playing', default=False, action='store_true', help='If specified, the game will terminate when you score 3 points. Use this to focus on programming.')
 
@@ -53,6 +54,8 @@ def configure(conf):
 			# Probably clang
 			core_env.append_unique('CXXFLAGS', '-Wno-error=overloaded-virtual')
 			core_env.append_unique('CXXFLAGS', '-Wno-error=unused-function')
+			# Instantiation of vec2f::z() is out of bounds
+			core_env.append_unique('CXXFLAGS', '-Wno-error=array-bounds')
 
 	from waflib.Options import options as opt
 
@@ -81,6 +84,30 @@ def configure(conf):
 	cc.optimize(release_env)
 	cc.link_time_code_generation(release_env)
 	conf.setenv('release', env = release_env)
+
+	if opt.ppapi_root != None:
+		includedirs = [ os.path.join(opt.ppapi_root, 'include') ]
+		debuglibdirs = [ os.path.join(opt.ppapi_root, 'lib', 'pnacl', 'Debug') ]
+		releaselibdirs = [ os.path.join(opt.ppapi_root, 'lib', 'pnacl', 'Release') ]
+
+		def thing(name):
+			setattr(debug_env, "INCLUDES_" + name, includedirs)
+			setattr(release_env, "INCLUDES_" + name, includedirs)
+			setattr(debug_env, "LIBPATH_" + name, debuglibdirs)
+			setattr(release_env, "LIBPATH_" + name, releaselibdirs)
+			setattr(debug_env, "LIB_" + name, [ name ])
+			setattr(release_env, "LIB_" + name, [ name ])
+
+		thing('ppapi_simple')
+		thing('ppapi_gles2')
+		thing('ppapi_cpp')
+		thing('nacl_io')
+		thing('ppapi')
+
+		debug_env.CXXFLAGS_pthread = [ '-pthread' ]
+		release_env.CXXFLAGS_pthread = [ '-pthread' ]
+		debug_env.CCFLAGS_pthread = [ '-pthread' ]
+		release_env.CCFLAGS_pthread = [ '-pthread' ]
 
 	wafutil.configure_gl(debug_env, release_env)
 

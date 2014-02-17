@@ -16,6 +16,7 @@ def build(bld):
 		'lua-board-provider',
 		'opengl2-skins',
 		'platform-desktop-sdl',
+		'platform-pnacl',
 		'sdl-game-core',
 		'segment',
 		'skin',

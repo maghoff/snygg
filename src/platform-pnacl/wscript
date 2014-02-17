@@ -1,0 +1,42 @@
+#!/bin/env python
+# -*- coding: utf-8 -*-
+
+def build(bld):
+	sources = [
+		'main.cpp',
+		'memory_file_loader.cpp',
+	]
+
+	obj = bld.program(
+		source=sources,
+		target='platform-pnacl_unstripped.bc',
+		use=[
+			'board',
+			'core',
+			'fileutil',
+			'game',
+			'game-loop',
+			'geometry',
+			#'gl-raii',
+			'image',
+			#'image-gl',
+			'linear-algebra',
+			'lua-board-provider',
+			#'opengl2-skins',
+			#'platform-desktop-sdl',
+			#'sdl-game-core',
+			'segment',
+			'skin',
+			'svg-skin',
+			'win32-util',
+
+			'ppapi_simple',
+			'nacl_io',
+			'ppapi_cpp',
+			'ppapi',
+
+			'pthread',
+		],
+		lib=[],
+		includes=[]
+	)
