@@ -1,5 +1,3 @@
--- Obstacles inside the board
-
 require "util"
 
 function create_board()
@@ -17,12 +15,6 @@ function create_board()
 	return heap
 end
 
-i = 0
-
 function get_starting_position()
-	local pos = vec(-10 + i * 20, -40)
-
-	i = (i + 1) % 2
-
-	return pos
+	return vec(0, -40)
 end
