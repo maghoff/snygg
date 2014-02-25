@@ -1,0 +1,9 @@
+#!/bin/bash -e
+
+./waf-make build_debug --targets=platform-pnacl_unstripped.bc
+
+~/Downloads/nacl_sdk/pepper_32/toolchain/linux_pnacl/bin64/pnacl-finalize \
+	-o build-pnacl/debug/src/platform-pnacl/platform-pnacl.pexe \
+	build-pnacl/debug/src/platform-pnacl/platform-pnacl_unstripped.bc
+
+exit $?
