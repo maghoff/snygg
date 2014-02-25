@@ -4,7 +4,9 @@
 def build(bld):
 	sources = [
 		'main.cpp',
-		'memory_file_loader.cpp',
+		'urlloader_file_loader.cpp',
+		'urlbuf.cpp',
+		'iurlstream.cpp',
 	]
 
 	obj = bld.program(

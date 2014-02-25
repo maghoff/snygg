@@ -18,10 +18,10 @@ server = resource_tree.createServer(new resource_tree.SerialLookup([
 				"platform-pnacl.nmf": new resource_tree.FileResource(path.join(root, "nacl/src/manifest.json"), {'content-type': 'application/octet-stream'}),
 				"platform-pnacl.pexe": new resource_tree.FileResource(path.join(root, "build-pnacl/release/src/platform-pnacl/platform-pnacl.pexe"), {'content-type': 'application/octet-stream'}),
 			},
-		}
+		},
+		"levels": new resource_tree.FileLookup(path.join(root, "levels"))
 	},
 	new resource_tree.FileLookup(path.join(root, "nacl", "src")),
-	new resource_tree.FileLookup(path.join(root, "levels"))
 ]));
 
 server.on("listening", function () {

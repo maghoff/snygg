@@ -7,15 +7,15 @@
 #include <board.hpp>
 #include <schematic_svg_skin.hpp>
 #include <rect.hpp>
-#include "memory_file_loader.hpp"
+#include "urlloader_file_loader.hpp"
 
-#include "ppapi_simple/ps_main.h"
+#include <ppapi_simple/ps_main.h>
 
 int platform_nacl_main(int argc, char* argv[])
 try {
-	memory_file_loader loader;
+	urlloader_file_loader loader;
 
-	lua_board_provider board_provider(loader, "pacman");
+	lua_board_provider board_provider(loader, argc >= 1 ? argv[0] : "wide_screen");
 	board b(board_provider);
 
 	{
