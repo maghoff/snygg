@@ -5,11 +5,13 @@
 #include <string>
 #include "urlbuf.hpp"
 
+namespace pp { class InstanceHandle; }
+
 class iurlstream : public std::istream {
 	urlbuf buf;
 
 public:
-	explicit iurlstream(const std::string& url);
+	iurlstream(pp::InstanceHandle instanceHandle, const std::string& url);
 	~iurlstream() override;
 };
 

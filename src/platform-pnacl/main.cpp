@@ -9,11 +9,12 @@
 #include <rect.hpp>
 #include "urlloader_file_loader.hpp"
 
+#include <ppapi_simple/ps_instance.h>
 #include <ppapi_simple/ps_main.h>
 
 int platform_nacl_main(int argc, char* argv[])
 try {
-	urlloader_file_loader loader;
+	urlloader_file_loader loader{pp::InstanceHandle(PSInstance::GetInstance())};
 
 	lua_board_provider board_provider(loader, argc >= 1 ? argv[0] : "wide_screen");
 	board b(board_provider);

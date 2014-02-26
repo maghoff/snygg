@@ -6,16 +6,17 @@
 #include <vector>
 #include <ppapi/cpp/url_loader.h>
 
-class urlbuf : public std::streambuf {
-public:
-	explicit urlbuf(const std::string& url);
-	~urlbuf() override;
+namespace pp { class InstanceHandle; }
 
-private:
+class urlbuf : public std::streambuf {
 	int_type underflow() override;
 
 	std::vector<char> buffer;
 	pp::URLLoader urlLoader;
+
+public:
+	urlbuf(pp::InstanceHandle instanceHandle, const std::string& url);
+	~urlbuf() override;
 };
 
 #endif

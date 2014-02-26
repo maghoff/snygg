@@ -1,14 +1,11 @@
 #include "urlbuf.hpp"
 #include <stdexcept>
-#include <ppapi_simple/ps_instance.h>
-#include <ppapi/cpp/var.h>
 #include <ppapi/cpp/url_request_info.h>
+#include <ppapi/cpp/completion_callback.h>
 
-urlbuf::urlbuf(const std::string& url) :
+urlbuf::urlbuf(pp::InstanceHandle instanceHandle, const std::string& url) :
 	buffer(4096)
 {
-	auto instanceHandle = pp::InstanceHandle(PSInstance::GetInstance()); //< Should be injected dependency
-
 	urlLoader = pp::URLLoader(instanceHandle);
 
 	pp::URLRequestInfo urlRequestInfo(instanceHandle);
