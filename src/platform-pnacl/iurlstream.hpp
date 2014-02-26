@@ -9,7 +9,7 @@ class iurlstream : public std::istream {
 	urlbuf buf;
 
 public:
-	iurlstream(const std::string& url);
+	explicit iurlstream(const std::string& url);
 	~iurlstream() override;
 };
 

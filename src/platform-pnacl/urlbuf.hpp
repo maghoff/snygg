@@ -4,21 +4,18 @@
 #include <streambuf>
 #include <string>
 #include <vector>
-#include <ppapi/c/ppb_url_loader.h>
-#include <ppapi/c/pp_resource.h>
+#include <ppapi/cpp/url_loader.h>
 
 class urlbuf : public std::streambuf {
 public:
 	explicit urlbuf(const std::string& url);
-	~urlbuf();
+	~urlbuf() override;
 
 private:
 	int_type underflow() override;
 
 	std::vector<char> buffer;
-
-    const PPB_URLLoader* urlLoaderInterface;
-    PP_Resource urlLoader;
+	pp::URLLoader urlLoader;
 };
 
 #endif
