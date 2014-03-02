@@ -23,6 +23,13 @@ function installApp() {
 		document.getElementById('statusField').textContent = "running";
 	});
 
+	function displayLastError() {
+		document.getElementById('statusField').textContent = snygg.lastError;
+	}
+
+	snygg.addEventListener('error', displayLastError);
+	snygg.addEventListener('abort', displayLastError);
+
 	snygg.addEventListener('crash', function () {
 		var status;
 		if (snygg.exitStatus === 0) status = "finished";
