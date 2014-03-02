@@ -3,8 +3,6 @@
 <head>
 
 <title>Snygg</title>
-<script type="text/javascript" src="common.js"></script>
-<script type="text/javascript" src="example.js"></script>
 
 <style>
 #out .floor {
@@ -12,20 +10,55 @@
 }
 </style>
 
+<script>
+
+function installApp() {
+	var snygg = document.getElementById("snygg");
+
+	snygg.addEventListener('loadstart', function () {
+		document.getElementById('statusField').textContent = "loading...";
+	});
+
+	snygg.addEventListener('load', function () {
+		document.getElementById('statusField').textContent = "running";
+	});
+
+	snygg.addEventListener('crash', function () {
+		var status;
+		if (snygg.exitStatus === 0) status = "finished";
+		else status = "crashed with exit code " + snygg.exitStatus;
+		document.getElementById('statusField').textContent = status;
+	});
+
+	var buf = "";
+	snygg.addEventListener('message', function (ev) {
+		buf += ev.data;
+		document.getElementById('out').innerHTML = buf;
+	});
+}
+
+document.addEventListener("DOMContentLoaded", installApp);
+
+</script>
+
 </head>
-<body
-	data-name="platform-pnacl"
-	data-tools="pnacl"
-	data-configs="Debug"
-	data-path="{tc}/{config}"
-	data-attrs="ps_stdout=dev/tty ps_tty_prefix= arg0=pill"
->
+<body>
 
 <h1>Snygg</h1>
-<h2>Status: <code id="statusField">NO-STATUS</code></h2>
+
+<dl><dt>Status</dt><dd id="statusField"></dd></dl>
 
 <div id="out"></div>
-<div id="listener"></div>
+
+<embed
+	id="snygg"
+	width="200" height="200"
+	src="pnacl/Debug/platform-pnacl.nmf"
+	type="application/x-pnacl"
+	ps_stdout="dev/tty"
+	ps_tty_prefix=""
+	arg0="pill"
+></embed>
 
 </body>
 </html>
