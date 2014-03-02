@@ -5,6 +5,6 @@
   "main": "index.js",
   "author": "Magnus Hoff <maghoff@gmail.com>",
   "dependencies": {
-    "resource-tree": "0.0.0-13"
+    "resource-tree": "0.0.0-14"
   }
 }

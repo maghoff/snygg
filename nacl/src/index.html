@@ -5,9 +5,26 @@
 <title>Snygg</title>
 
 <style>
+
 #out .floor {
 	stroke: none;
 }
+
+.progressbar {
+	display: inline-block;
+	width: 50px;
+	height: 15px;
+	border-radius: 5px;
+	border: 1px solid #ccc;
+	overflow: hidden;
+	vertical-align: middle;
+}
+.progress {
+	display: block;
+	background: #4c66b2;
+	height: 100%;
+}
+
 </style>
 
 <script>
@@ -17,6 +34,15 @@ function installApp() {
 
 	snygg.addEventListener('loadstart', function () {
 		document.getElementById('statusField').textContent = "loading...";
+	});
+
+	snygg.addEventListener('progress', function (ev) {
+		var status = "loading...";
+		if (ev.lengthComputable) {
+			var progressPercentage = ev.loaded / ev.total * 100;
+			status = "loading <span class='progressbar'><span class='progress' style='width: " + progressPercentage + "%'></span></span>";
+		}
+		document.getElementById('statusField').innerHTML = status;
 	});
 
 	snygg.addEventListener('load', function () {
