@@ -30,7 +30,7 @@ public:
 	sdl_core();
 	~sdl_core();
 
-	void init(int argc, char const * const argv[]);
+	void init(int argc, char const * const argv[]) override;
 	void set_tick_handler(game::tick_handler*) override;
 	void set_reshaper_object(game::reshaper*) override;
 	void set_keyboard_handler(game::keyboard_handler*) override;
@@ -43,7 +43,7 @@ public:
 	void set_fullscreen(bool);
 	void toggle_fullscreen();
 
-	int run();
+	int run() override;
 	void stop(int);
 };
 
