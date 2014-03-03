@@ -4,6 +4,8 @@
 def build(bld):
 	sources = [
 		'main.cpp',
+		'snygg_instance.cpp',
+		'snygg_module.cpp',
 		'urlloader_file_loader.cpp',
 		'urlbuf.cpp',
 		'iurlstream.cpp',
@@ -32,10 +34,9 @@ def build(bld):
 			'svg-skin',
 			'win32-util',
 
-			'ppapi_simple',
-			'nacl_io',
 			'ppapi_cpp',
 			'ppapi',
+			'ppapi_gles2',
 
 			'pthread',
 		],
