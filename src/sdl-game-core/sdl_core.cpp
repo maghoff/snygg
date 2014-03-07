@@ -12,8 +12,8 @@
 #include "sdl_core.hpp"
 
 namespace {
-	const int default_width  = 800;
-	const int default_height = 600;
+	const int default_width  = 1280;
+	const int default_height = 720;
 }
 
 namespace game {
