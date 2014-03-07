@@ -256,11 +256,7 @@ next_id:
 	// SVG screenshot:
 	std::ofstream outf(format(id, suffixes[2]));
 	schematic_svg_skin svg_skin(outf, d->active_board->bounding_box());
-
-	scalable_skin* prev_skin = d->active_skin;
-	set_skin_key(&svg_skin);
-	render();
-	set_skin_key(prev_skin);
+	render_to(svg_skin);
 }
 
 void snygg::reshape(int width, int height) {
@@ -269,31 +265,36 @@ void snygg::reshape(int width, int height) {
 	for (size_t i=0; i<d->skins.size(); ++i) {
 		d->skins[i]->load_opengl_resources(width, height);
 	}
+
+	d->active_skin->set_transformation(d->reshaper->get_transformation());
+	d->active_skin->set_pixels_per_unit(d->reshaper->get_pixels_per_unit());
 }
 
 void snygg::set_skin_key(scalable_skin* skin) {
 	d->active_skin = skin;
+
+	skin->set_transformation(d->reshaper->get_transformation());
+	skin->set_pixels_per_unit(d->reshaper->get_pixels_per_unit());
+}
+
+void snygg::render_to(skin& s) {
+	s.enter_state(skin::board_state);
+	d->active_board->render(s);
+
+	s.enter_state(skin::other_state);
+
+	for (auto& item : d->items) item->render(s);
+	for (auto& renderable : d->renderables) renderable->render(s);
+
+	s.floor(d->active_board->floor_polygon());
 }
 
 void snygg::render() {
 	init_gl();
-
-	glLoadMatrixf(la::matrix2d::homogenous::as_3d_homogenous(d->reshaper->get_transformation().transposed()).v);
-	d->active_skin->set_pixels_per_unit(d->reshaper->get_pixels_per_unit());
-
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
 	glColor4f(1.0, 1.0, 1.0, 1.0);
 
-	d->active_skin->enter_state(skin::board_state);
-	d->active_board->render(*d->active_skin);
-
-	d->active_skin->enter_state(skin::other_state);
-
-	for (auto& item : d->items) item->render(*d->active_skin);
-	for (auto& renderable : d->renderables) renderable->render(*d->active_skin);
-
-	d->active_skin->floor(d->active_board->floor_polygon());
+	render_to(*d->active_skin);
 }
 
 void snygg::tick_10ms() {

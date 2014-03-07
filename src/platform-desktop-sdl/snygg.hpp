@@ -10,6 +10,7 @@ namespace game {
 	class sdl_core;
 }
 
+class skin;
 class scalable_skin;
 
 class snygg : public game::tick_handler, game::reshaper, public item_container {
@@ -23,6 +24,8 @@ class snygg : public game::tick_handler, game::reshaper, public item_container {
 	void take_screenshot(const std::string& filename, unsigned, unsigned w, unsigned h);
 	void screenshot_with_skin(const std::string& filename, scalable_skin*);
 	void screenshot_key();
+
+	void render_to(skin& s);
 
 public:
 	snygg(const std::string& board_filename);

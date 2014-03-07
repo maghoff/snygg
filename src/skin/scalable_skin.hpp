@@ -13,6 +13,8 @@ protected:
 public:
 	scalable_skin();
 
+	virtual void set_transformation(const la::matrix33f&) = 0;
+
 	void set_pixels_per_unit(float);
 };
 

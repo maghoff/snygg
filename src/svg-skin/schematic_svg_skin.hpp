@@ -6,7 +6,7 @@
 #include <string>
 #include "scalable_skin.hpp"
 
-class schematic_svg_skin : public scalable_skin {
+class schematic_svg_skin : public skin {
 	std::ostream& out;
 	std::stack<std::string> output_stack;
 
