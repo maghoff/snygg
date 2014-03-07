@@ -1,6 +1,5 @@
 #include "snygg_instance.hpp"
 
-#include <ppapi/cpp/var.h>
 #include <sstream>
 #include <fileutil.hpp>
 #include <lua_board_provider.hpp>
@@ -16,6 +15,7 @@
 #include <ppapi/lib/gl/gles2/gl2ext_ppapi.h>
 #include <ppapi/cpp/completion_callback.h>
 #include <ppapi/cpp/message_loop.h>
+#include <ppapi/cpp/var.h>
 
 #include <box_reshaper.hpp>
 #include <matrix3d.hpp>
@@ -138,22 +138,38 @@ void snygg_instance::render(void* userdata) {
 	context.SwapBuffers(pp::CompletionCallback(&renderLoopTrampoline, userdata));
 }
 
-GLuint compileShader(GLenum shaderType, const std::vector<char>& source, std::string& compileLog) {
-	if (source.size() > std::numeric_limits<GLint>::max()) throw std::runtime_error("Shader source way too big");
+std::pair<GLuint, std::string> compileShader(GLenum shaderType, const std::vector<std::vector<char>>& source) {
+	if (source.size() > std::numeric_limits<GLsizei>::max()) throw std::runtime_error("Shader source way too big");
 
 	auto shader = glCreateShader(shaderType);
-	const GLchar * sources[] = { source.data() };
-	GLint lengths[] = { static_cast<GLint>(source.size()) };
-	glShaderSource(shader, 1, sources, lengths);
+
+	std::vector<const GLchar*> sources;
+	std::vector<GLint> lengths;
+	for (auto& source_fragment : source) {
+		if (source_fragment.size() > std::numeric_limits<GLint>::max()) throw std::runtime_error("Shader source way too big");
+
+		sources.emplace_back(source_fragment.data());
+		lengths.emplace_back(source_fragment.size());
+	}
+
+	glShaderSource(shader, source.size(), sources.data(), lengths.data());
 	glCompileShader(shader);
 
 	GLint sz;
 	glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &sz);
-	compileLog.resize(sz);
+	std::string compileLog(sz, char{});
 	glGetShaderInfoLog(shader, compileLog.size(), nullptr, &compileLog[0]);
 	if (sz > 0) compileLog.resize(sz-1);
 
-	return shader;
+	GLint success;
+	glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
+
+	if (success == GL_FALSE) {
+		glDeleteShader(shader);
+		shader = -1;
+	}
+
+	return std::make_pair(shader, compileLog);
 }
 
 void snygg_instance::maybe_ready() {
@@ -166,19 +182,21 @@ void snygg_instance::maybe_ready() {
 
 
 	std::string compileLog;
-	auto vert = compileShader(GL_VERTEX_SHADER, resources["mb_vertex.glsl"], compileLog);
+	GLuint vert, frag;
+
+	std::tie(vert, compileLog) = compileShader(GL_VERTEX_SHADER, { resources["mb_vertex.glsl"] });
 	if (compileLog.length()) {
 		LogToConsole(PP_LOGLEVEL_LOG, pp::Var("vertex shader compile log:"));
 		LogToConsole(PP_LOGLEVEL_LOG, pp::Var(compileLog));
 	}
+	if (vert == -1) throw std::runtime_error("Shader compilation failed");
 
-	auto fragmentSource = resources["light.glsl"];
-	fragmentSource.insert(fragmentSource.end(), resources["flat_fragment.glsl"].begin(), resources["flat_fragment.glsl"].end());
-	auto frag = compileShader(GL_FRAGMENT_SHADER, fragmentSource, compileLog);
+	std::tie(frag, compileLog) = compileShader(GL_FRAGMENT_SHADER, { resources["light.glsl"], resources["flat_fragment.glsl"] });
 	if (compileLog.length()) {
 		LogToConsole(PP_LOGLEVEL_LOG, pp::Var("fragment shader compile log:"));
 		LogToConsole(PP_LOGLEVEL_LOG, pp::Var(compileLog));
 	}
+	if (frag == -1) throw std::runtime_error("Shader compilation failed");
 
 
 	auto program = glCreateProgram();
@@ -281,7 +299,6 @@ bool snygg_instance::Init(uint32_t argc, const char* argn[], const char* argv[])
 				{ "mb_function.glsl", "skins/snakeskin/mb_function.glsl" },
 				{ "mb_mapping.glsl", "skins/snakeskin/mb_mapping.glsl" },
 				{ "mb_vertex.glsl", "skins/snakeskin/mb_vertex.glsl" },
-				{ "flat_vertex.glsl", "skins/snakeskin/flat_vertex.glsl" },
 				{ "normal.jpg", "skins/snakeskin/normal.jpg" },
 				{ "texture_mapping.glsl", "skins/snakeskin/texture_mapping.glsl" },
 				{ "vertex.glsl", "skins/snakeskin/vertex.glsl" }
