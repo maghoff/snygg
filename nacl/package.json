@@ -5,6 +5,7 @@
   "main": "index.js",
   "author": "Magnus Hoff <maghoff@gmail.com>",
   "dependencies": {
-    "resource-tree": "0.0.0-14"
+    "resource-tree": "0.0.0-14",
+    "minimist": "0.0.8"
   }
 }
