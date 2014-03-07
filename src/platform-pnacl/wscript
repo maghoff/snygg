@@ -3,12 +3,14 @@
 
 def build(bld):
 	sources = [
+		'iurlstream.cpp',
+		'logbuf.cpp',
 		'main.cpp',
+		'ologstream.cpp',
 		'snygg_instance.cpp',
 		'snygg_module.cpp',
-		'urlloader_file_loader.cpp',
 		'urlbuf.cpp',
-		'iurlstream.cpp',
+		'urlloader_file_loader.cpp',
 	]
 
 	obj = bld.program(
