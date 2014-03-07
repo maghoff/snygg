@@ -2,6 +2,7 @@
 #define SHADER_CONFIGURATION_HPP
 
 #include <memory>
+#include <matrix.hpp>
 #include "opengl_resource.hpp"
 
 struct uniform_setter;
@@ -13,12 +14,15 @@ class shader_configuration : public opengl_resource {
 
 public:
 	shader_configuration(const shader_program*);
-	~shader_configuration();
+	~shader_configuration() override;
 
-	void recreate_opengl_resources();
+	void recreate_opengl_resources() override;
 
 	void set_uniform(const std::string& name, int);
+	void set_uniform(const std::string& name, float, float, float);
 	void set_uniform(const std::string& name, float, float, float, float);
+
+	void set_uniform(const std::string& name, la::matrix33f);
 
 	void add_texture(const std::string& sampler_name, const std::string& filename);
 

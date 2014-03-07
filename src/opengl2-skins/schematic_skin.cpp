@@ -4,6 +4,7 @@
 
 #include <rect.hpp>
 #include <vec.hpp>
+#include <matrix2d_homogenous.hpp>
 #include "draw_complex_polygon.hpp"
 #include "schematic_skin.hpp"
 
@@ -14,6 +15,10 @@ namespace {
 
 schematic_skin::schematic_skin() { }
 schematic_skin::~schematic_skin() { }
+
+void schematic_skin::set_transformation(const la::matrix33f& transform) {
+	glLoadMatrixf(la::matrix2d::homogenous::as_3d_homogenous(transform.transposed()).v);
+}
 
 void schematic_skin::circle(la::vec2f p, float r) {
 	float step_size = get_step_size(r);
@@ -184,5 +189,5 @@ void schematic_skin::floor(const complex_polygon& floor_poly) {
 	glColor4f(0.62, 0.62, 0.62, 1.0);
 	draw_outlines(floor_poly);
 	glColor4f(0.62, 0.62, 0.62, 0.3);
-	draw(floor_poly);
+	draw(0, floor_poly);
 }

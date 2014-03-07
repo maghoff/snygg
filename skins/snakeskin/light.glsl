@@ -1,4 +1,10 @@
+#ifdef GL_ES
+precision mediump float;
+#endif
+
+#ifndef GL_ES
 uniform vec4 ambient;
+#endif
 
 vec4 directional_light(
 	vec3 normal,

@@ -1,4 +1,6 @@
 #include <vector>
+#include <map>
+#include <algorithm>
 #include <GL/glew.h>
 
 #include <texture.hpp>
@@ -32,6 +34,25 @@ void uniform_setter_1i::set_to(GLuint index) const {
 	glUniform1i(index, v[0]);
 }
 
+class uniform_setter_3f : public uniform_setter {
+	float v[3];
+
+public:
+	uniform_setter_3f(float, float, float);
+
+	void set_to(GLuint index) const;
+};
+
+uniform_setter_3f::uniform_setter_3f(float v0, float v1, float v2) {
+	v[0] = v0;
+	v[1] = v1;
+	v[2] = v2;
+}
+
+void uniform_setter_3f::set_to(GLuint index) const {
+	glUniform3fv(index, 1, v);
+}
+
 class uniform_setter_4f : public uniform_setter {
 	float v[4];
 
@@ -53,11 +74,26 @@ void uniform_setter_4f::set_to(GLuint index) const {
 }
 
 
+class uniform_setter_mat3 : public uniform_setter {
+	la::matrix33f mat;
+
+public:
+	uniform_setter_mat3(const la::matrix33f&);
+
+	void set_to(GLuint index) const;
+};
+
+uniform_setter_mat3::uniform_setter_mat3(const la::matrix33f& mat_) : mat(mat_.transposed()) {}
+
+void uniform_setter_mat3::set_to(GLuint index) const {
+	glUniformMatrix3fv(index, 1, GL_FALSE, mat.v);
+}
+
+
 struct shader_configuration::impl {
 	const shader_program* program;
 
-	std::vector<std::string> names;
-	std::vector<std::unique_ptr<uniform_setter>> setters;
+	std::map<std::string, std::unique_ptr<uniform_setter>> setters;
 
 	std::vector<image::surface> surfaces;
 	std::vector<gl::texture> textures;
@@ -79,13 +115,19 @@ void shader_configuration::recreate_opengl_resources() {
 }
 
 void shader_configuration::set_uniform(const std::string& name, int v) {
-	d->names.push_back(name);
-	d->setters.emplace_back(new uniform_setter_1i(v));
+	d->setters[name].reset(new uniform_setter_1i(v));
+}
+
+void shader_configuration::set_uniform(const std::string& name, float v0, float v1, float v2) {
+	d->setters[name].reset(new uniform_setter_3f(v0, v1, v2));
 }
 
 void shader_configuration::set_uniform(const std::string& name, float v0, float v1, float v2, float v3) {
-	d->names.push_back(name);
-	d->setters.emplace_back(new uniform_setter_4f(v0, v1, v2, v3));
+	d->setters[name].reset(new uniform_setter_4f(v0, v1, v2, v3));
+}
+
+void shader_configuration::set_uniform(const std::string& name, la::matrix33f mat) {
+	d->setters[name].reset(new uniform_setter_mat3(std::move(mat)));
 }
 
 void shader_configuration::add_texture(const std::string& name, const std::string& filename) {
@@ -95,12 +137,12 @@ void shader_configuration::add_texture(const std::string& name, const std::strin
 }
 
 void shader_configuration::use() const {
-	glUseProgram(d->program->get_program_id());
+	auto program_id = d->program->get_program_id();
+	glUseProgram(program_id);
 
-	const size_t sz = d->names.size();
-	for (size_t i=0; i<sz; ++i) {
-		GLuint location = glGetUniformLocation(d->program->get_program_id(), d->names[i].c_str());
-		d->setters[i]->set_to(location);
+	for (auto& setter : d->setters) {
+		GLuint location = glGetUniformLocation(program_id, setter.first.c_str());
+		setter.second->set_to(location);
 	}
 
 	for (unsigned i = 0; i < d->textures.size(); ++i) {

@@ -22,21 +22,23 @@ public:
 	metaballs(scalable_skin*, const std::string& path);
 	~metaballs();
 
-	void load_opengl_resources(int width, int height);
+	void load_opengl_resources(int width, int height) override;
 
-	void blood(la::vec2f p, float r);
+	void set_transformation(const la::matrix33f&) override;
 
-	void floor(const complex_polygon&);
+	void blood(la::vec2f p, float r) override;
+
+	void floor(const complex_polygon&) override;
 
 
-	void circle(la::vec2f p, float r);
-	void fat_arc(la::vec2f p, float r, float t, float begin, float end, float b_begin, float b_end);
-	void fat_line(la::vec2f p, la::vec2f d, float len, float t, float b_begin, float b_end);
-	void cap(la::vec2f p, float snake_direction, float cap_direction, float b_coord);
+	void circle(la::vec2f p, float r) override;
+	void fat_arc(la::vec2f p, float r, float t, float begin, float end, float b_begin, float b_end) override;
+	void fat_line(la::vec2f p, la::vec2f d, float len, float t, float b_begin, float b_end) override;
+	void cap(la::vec2f p, float snake_direction, float cap_direction, float b_coord) override;
 
-	void set_pixels_per_unit(float);
+	void set_pixels_per_unit(float) override;
 
-	void enter_state(state_t);
+	void enter_state(state_t) override;
 };
 
 #endif // METABALLS_HPP

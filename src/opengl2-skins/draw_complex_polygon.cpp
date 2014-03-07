@@ -3,9 +3,10 @@
 #include <vec.hpp>
 #include "complex_polygon.hpp"
 
-void draw(const complex_polygon& polygon) {
+void draw(unsigned vertexIndex, const complex_polygon& polygon) {
 	glBegin(GL_TRIANGLES);
 	for (auto i : polygon.triangles) {
+		glVertexAttrib2f(vertexIndex, polygon.points[i].x(), polygon.points[i].y());
 		glVertex2f(polygon.points[i].x(), polygon.points[i].y());
 	}
 	glEnd();

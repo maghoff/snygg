@@ -17,8 +17,12 @@
 
 #include "ball_insert_iterator.ipp"
 
+const auto vertex = 5u;
+
 struct metaballs::impl {
 	scalable_skin* target;
+
+	la::matrix33f transform;
 
 	std::unique_ptr<shader_program> metaballs;
 	gl::texture metaballs_coordinates;
@@ -55,6 +59,7 @@ metaballs::metaballs(scalable_skin* s, const std::string& path) :
 		shader_builder sb;
 		sb.add_shader_from_file(GL_VERTEX_SHADER, path + "/mb_vertex.glsl");
 		sb.add_shader_from_file(GL_FRAGMENT_SHADER, path + "/mb_function.glsl");
+		sb.bind_attrib_location(vertex, "vertex");
 		d->metaballs.reset(new shader_program(sb));
 	}
 
@@ -63,6 +68,7 @@ metaballs::metaballs(scalable_skin* s, const std::string& path) :
 		sb.add_shader_from_file(GL_VERTEX_SHADER, path + "/mb_vertex.glsl");
 		sb.add_shader_from_file(GL_FRAGMENT_SHADER, path + "/mb_mapping.glsl");
 		sb.add_shader_from_file(GL_FRAGMENT_SHADER, path + "/light.glsl");
+		sb.bind_attrib_location(vertex, "vertex");
 		d->mapping.reset(new shader_program(sb));
 	}
 }
@@ -91,6 +97,11 @@ void metaballs::load_opengl_resources(int width, int height) {
 	//d->target->load_opengl_resources(width, height);
 }
 
+void metaballs::set_transformation(const la::matrix33f& transform_) {
+	d->target->set_transformation(transform_);
+	d->transform = transform_.transposed();
+}
+
 void metaballs::blood(la::vec2f p, float r) {
 	d->balls.next_gen().insert(la::vec3f(p[0], p[1], r));
 }
@@ -103,6 +114,8 @@ void metaballs::update_metaballs(const complex_polygon& floor_poly, const std::v
 	scoped_bind_fbo binder(d->fbo);
 
 	glUseProgram(d->metaballs->get_program_id());
+
+	glUniformMatrix3fv(glGetUniformLocation(d->metaballs->get_program_id(), "transform"), 1, GL_FALSE, d->transform.v);
 
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_1D, d->metaballs_coordinates.get_id());
@@ -118,7 +131,7 @@ void metaballs::update_metaballs(const complex_polygon& floor_poly, const std::v
 	d->metaballs->set_uniform("storedValue", 1);
 
 	glClear(GL_COLOR_BUFFER_BIT);
-	draw(floor_poly);
+	draw(vertex, floor_poly);
 
 	glUseProgram(0);
 	binder.unbind();
@@ -130,12 +143,14 @@ void metaballs::update_metaballs(const complex_polygon& floor_poly, const std::v
 void metaballs::draw_metaballs(const complex_polygon& floor_poly) {
 	glUseProgram(d->mapping->get_program_id());
 
+	glUniformMatrix3fv(glGetUniformLocation(d->mapping->get_program_id(), "transform"), 1, GL_FALSE, d->transform.v);
+
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, d->balls.prev_tex().get_id());
 
 	d->mapping->set_uniform("ambient", 0.4f, 0.4f, 0.4f, 1.0f);
 
-	draw(floor_poly);
+	draw(vertex, floor_poly);
 	glUseProgram(0);
 }
 

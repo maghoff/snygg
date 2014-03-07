@@ -1,13 +1,19 @@
+#include "plain_skin.hpp"
+
 #include <algorithm>
 #include <cmath>
 #include <GL/glew.h>
 
 #include <rect.hpp>
 #include <vec.hpp>
+#include <matrix2d_homogenous.hpp>
 #include "draw_complex_polygon.hpp"
-#include "plain_skin.hpp"
 
 plain_skin::plain_skin() {
+}
+
+void plain_skin::set_transformation(const la::matrix33f& transform) {
+	glLoadMatrixf(la::matrix2d::homogenous::as_3d_homogenous(transform.transposed()).v);
 }
 
 void plain_skin::circle(la::vec2f p, float r) {
@@ -67,7 +73,7 @@ void plain_skin::cap(la::vec2f p, float, float, float) {
 
 void plain_skin::floor(const complex_polygon& p) {
 	glColor4f(0, 0, 0, 1);
-	draw(p);
+	draw(0, p);
 
 	glColor4f(1, 1, 1, 1);
 	glBegin(GL_QUADS);

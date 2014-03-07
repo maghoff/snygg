@@ -6,13 +6,20 @@
 #include <memory>
 #include <rect.hpp>
 #include <vec.hpp>
+#include <matrix2d_homogenous.hpp>
 #include "gl/shader_program.hpp"
 #include "gl/shader_builder.hpp"
 #include "gl/shader_configuration.hpp"
 #include "draw_complex_polygon.hpp"
 #include "textured_skin.hpp"
 
-const int across = 5, along = 6, circle_coord = 7, b_attribute = 8;
+enum {
+	vertex = 5,
+	across,
+	along,
+	circle_coord,
+	b_attribute
+};
 
 struct textured_skin::impl {
 	std::unique_ptr<shader_program> texture_prog, color_prog, floor_prog;
@@ -33,6 +40,7 @@ textured_skin::textured_skin(const std::string& path) :
 		sb.add_shader_from_file(GL_FRAGMENT_SHADER, path + "/fragment.glsl");
 		sb.add_shader_from_file(GL_FRAGMENT_SHADER, path + "/light.glsl");
 		sb.add_shader_from_file(GL_FRAGMENT_SHADER, path + "/texture_mapping.glsl");
+		sb.bind_attrib_location(vertex, "vertex");
 		sb.bind_attrib_location(circle_coord, "circle_coord_in");
 		sb.bind_attrib_location(across, "across_in");
 		sb.bind_attrib_location(along, "along_in");
@@ -46,6 +54,7 @@ textured_skin::textured_skin(const std::string& path) :
 		sb.add_shader_from_file(GL_FRAGMENT_SHADER, path + "/fragment.glsl");
 		sb.add_shader_from_file(GL_FRAGMENT_SHADER, path + "/light.glsl");
 		sb.add_shader_from_file(GL_FRAGMENT_SHADER, path + "/color_mapping.glsl");
+		sb.bind_attrib_location(vertex, "vertex");
 		sb.bind_attrib_location(circle_coord, "circle_coord_in");
 		sb.bind_attrib_location(across, "across_in");
 		sb.bind_attrib_location(along, "along_in");
@@ -58,6 +67,7 @@ textured_skin::textured_skin(const std::string& path) :
 		sb.add_shader_from_file(GL_VERTEX_SHADER, path + "/mb_vertex.glsl");
 		sb.add_shader_from_file(GL_FRAGMENT_SHADER, path + "/flat_fragment.glsl");
 		sb.add_shader_from_file(GL_FRAGMENT_SHADER, path + "/light.glsl");
+		sb.bind_attrib_location(vertex, "vertex");
 		d->floor_prog.reset(new shader_program(sb));
 	}
 
@@ -96,6 +106,13 @@ void textured_skin::load_opengl_resources(int, int) {
 	d->floor_config->recreate_opengl_resources();
 }
 
+void textured_skin::set_transformation(const la::matrix33f& transform) {
+	d->snake_config->set_uniform("transform", transform);
+	d->wall_config->set_uniform("transform", transform);
+	d->food_config->set_uniform("transform", transform);
+	d->floor_config->set_uniform("transform", transform);
+}
+
 void textured_skin::to_shader(const shader_configuration* c) {
 	if (d->shader_state == c) return;
 
@@ -116,16 +133,6 @@ void textured_skin::to_wall_shader() { to_shader(d->wall_config.get()); }
 void textured_skin::to_food_shader() { to_shader(d->food_config.get()); }
 void textured_skin::to_floor_shader() { to_shader(d->floor_config.get()); }
 
-void textured_skin::circle_core(la::vec2f p, float r) {
-	float step_size = get_step_size(r);
-
-	glBegin(GL_TRIANGLE_FAN);
-	for (float d = 0.f; d < M_PI * 2.f; d += step_size) {
-		glVertex2f(p[0] + r * cos(d), p[1] + r * sin(d));
-	}
-	glEnd();
-}
-
 void textured_skin::circle(la::vec2f p, float r) {
 	to_food_shader();
 
@@ -142,6 +149,7 @@ void textured_skin::circle(la::vec2f p, float r) {
 
 	for (float d = 0; d < 2.0 * M_PI; d += step_size) {
 		glVertexAttrib2f(circle_coord, cos(d), sin(d));
+		glVertexAttrib2f(vertex, p[0] + r * cos(snake_dir + d), p[1] + r * sin(snake_dir + d));
 		glVertex2f(p[0] + r * cos(snake_dir + d), p[1] + r * sin(snake_dir + d));
 	}
 
@@ -152,7 +160,14 @@ void textured_skin::blood(la::vec2f p, float r) {
 	to_no_shader();
 
 	glColor4f(0.7, 0, 0, 1);
-	circle_core(p, r);
+
+	glBegin(GL_TRIANGLE_FAN);
+	float step_size = get_step_size(r);
+	for (float d = 0.f; d < M_PI * 2.f; d += step_size) {
+		glVertex2f(p[0] + r * cos(d), p[1] + r * sin(d));
+	}
+	glEnd();
+
 	glColor4f(1, 1, 1, 1);
 }
 
@@ -184,8 +199,10 @@ void textured_skin::fat_arc(la::vec2f p, float r, float t, float begin, float en
 
 		glVertexAttrib2f(circle_coord, inner_a, 0);
 		glVertexAttrib1f(b_attribute, b);
+		glVertexAttrib2f(vertex, x + r1 * cos(d), y + r1 * sin(d));
 		glVertex2f(x + r1 * cos(d), y + r1 * sin(d));
 		glVertexAttrib2f(circle_coord, outer_a, 0);
+		glVertexAttrib2f(vertex, x + r2 * cos(d), y + r2 * sin(d));
 		glVertex2f(x + r2 * cos(d), y + r2 * sin(d));
 		b += b_step_size;
 	}
@@ -195,8 +212,10 @@ void textured_skin::fat_arc(la::vec2f p, float r, float t, float begin, float en
 
 	glVertexAttrib2f(circle_coord, inner_a, 0);
 	glVertexAttrib1f(b_attribute, b_end);
+	glVertexAttrib2f(vertex, x + r1 * cos(end), y + r1 * sin(end));
 	glVertex2f(x + r1 * cos(end), y + r1 * sin(end));
 	glVertexAttrib2f(circle_coord, outer_a, 0);
+	glVertexAttrib2f(vertex, x + r2 * cos(end), y + r2 * sin(end));
 	glVertex2f(x + r2 * cos(end), y + r2 * sin(end));
 
 	glEnd();
@@ -216,21 +235,25 @@ void textured_skin::fat_line(la::vec2f p, la::vec2f dir, float len, float t, flo
 	glVertexAttrib3f(along, -dx, -dy, 0);
 	glVertexAttrib2f(circle_coord, 1, 0);
 	glVertexAttrib1f(b_attribute, b_begin);
+	glVertexAttrib2f(vertex, x1 + nx, y1 + ny);
 	glVertex2f(x1 + nx, y1 + ny);
 	glVertexAttrib3f(across, nx, ny, 0);
 	glVertexAttrib3f(along, -dx, -dy, 0);
 	glVertexAttrib2f(circle_coord, 1, 0);
 	glVertexAttrib1f(b_attribute, b_end);
+	glVertexAttrib2f(vertex, x2 + nx, y2 + ny);
 	glVertex2f(x2 + nx, y2 + ny);
 	glVertexAttrib3f(across, nx, ny, 0);
 	glVertexAttrib3f(along, -dx, -dy, 0);
 	glVertexAttrib2f(circle_coord, -1, 0);
 	glVertexAttrib1f(b_attribute, b_end);
+	glVertexAttrib2f(vertex, x2 - nx, y2 - ny);
 	glVertex2f(x2 - nx, y2 - ny);
 	glVertexAttrib3f(across, nx, ny, 0);
 	glVertexAttrib3f(along, -dx, -dy, 0);
 	glVertexAttrib2f(circle_coord, -1, 0);
 	glVertexAttrib1f(b_attribute, b_begin);
+	glVertexAttrib2f(vertex, x1 - nx, y1 - ny);
 	glVertex2f(x1 - nx, y1 - ny);
 	glEnd();
 }
@@ -252,11 +275,13 @@ void textured_skin::cap(la::vec2f p, float snake_direction_in, float cap_directi
 
 	for (float d = cap_dir; d < cap_dir + M_PI; d += step_size) {
 		glVertexAttrib2f(circle_coord, cos(d), sin(d));
+		glVertexAttrib2f(vertex, p[0] + r * cos(snake_dir + d), p[1] + r * sin(snake_dir + d));
 		glVertex2f(p[0] + r * cos(snake_dir + d), p[1] + r * sin(snake_dir + d));
 	}
 
 	float d = cap_dir + M_PI;
 	glVertexAttrib2f(circle_coord, cos(d), sin(d));
+	glVertexAttrib2f(vertex, p[0] + r * cos(snake_dir + d), p[1] + r * sin(snake_dir + d));
 	glVertex2f(p[0] + r * cos(snake_dir + d), p[1] + r * sin(snake_dir + d));
 
 	glEnd();
@@ -265,7 +290,7 @@ void textured_skin::cap(la::vec2f p, float snake_direction_in, float cap_directi
 void textured_skin::floor(const complex_polygon& floor_poly) {
 	d->shader_state = 0;
 	to_floor_shader();
-	draw(floor_poly);
+	draw(vertex, floor_poly);
 
 	to_no_shader();
 }

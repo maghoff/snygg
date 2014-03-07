@@ -1,3 +1,7 @@
+#ifdef GL_ES
+precision mediump float;
+#endif
+
 varying vec2 screen_coord, world_coord;
 
 uniform vec4 ambient;
