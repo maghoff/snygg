@@ -19,9 +19,7 @@ logbuf::int_type logbuf::overflow(logbuf::int_type c) {
 int logbuf::sync() {
 	auto begin = pbase(), end = pptr();
 	if (begin != end && *(end-1) == '\n') --end;
-	instance.LogToConsole(log_level, pp::Var(std::string(begin, end)));
-
+	if (begin != end) instance.LogToConsole(log_level, pp::Var(std::string(begin, end)));
 	setp(buffer.data(), buffer.data() + buffer.size());
-
 	return 0;
 }

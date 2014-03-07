@@ -9,6 +9,7 @@
 #include <complex_polygon.hpp>
 #include "urlloader_file_loader.hpp"
 #include "iurlstream.hpp"
+#include "ologstream.hpp"
 
 #include <ppapi/cpp/graphics_3d.h>
 #include <GLES2/gl2.h>
@@ -138,10 +139,8 @@ void snygg_instance::render(void* userdata) {
 	context.SwapBuffers(pp::CompletionCallback(&renderLoopTrampoline, userdata));
 }
 
-std::pair<GLuint, std::string> compileShader(GLenum shaderType, const std::vector<std::vector<char>>& source) {
+GLuint compileShader(GLenum shaderType, const std::vector<std::vector<char>>& source, std::ostream& out) {
 	if (source.size() > std::numeric_limits<GLsizei>::max()) throw std::runtime_error("Shader source way too big");
-
-	auto shader = glCreateShader(shaderType);
 
 	std::vector<const GLchar*> sources;
 	std::vector<GLint> lengths;
@@ -152,24 +151,58 @@ std::pair<GLuint, std::string> compileShader(GLenum shaderType, const std::vecto
 		lengths.emplace_back(source_fragment.size());
 	}
 
+	auto shader = glCreateShader(shaderType);
+
 	glShaderSource(shader, source.size(), sources.data(), lengths.data());
 	glCompileShader(shader);
 
 	GLint sz;
 	glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &sz);
-	std::string compileLog(sz, char{});
-	glGetShaderInfoLog(shader, compileLog.size(), nullptr, &compileLog[0]);
-	if (sz > 0) compileLog.resize(sz-1);
+	if (sz > 1) {
+		std::string compileLog(sz, char{});
+		glGetShaderInfoLog(shader, compileLog.size(), nullptr, &compileLog[0]);
+		compileLog.resize(sz - 1);
+		out << "shader compile log:\n" << compileLog << std::endl;
+	}
 
 	GLint success;
 	glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
 
 	if (success == GL_FALSE) {
 		glDeleteShader(shader);
-		shader = -1;
+		shader = 0;
 	}
 
-	return std::make_pair(shader, compileLog);
+	return shader;
+}
+
+GLuint linkProgram(const std::vector<GLuint>& shaders, const std::map<std::string, GLuint>& attribs, std::ostream& out) {
+	auto program = glCreateProgram();
+
+	for (auto shader : shaders) glAttachShader(program, shader);
+
+	for (auto& attrib : attribs) glBindAttribLocation(program, attrib.second, attrib.first().c_str());
+
+	glLinkProgram(program);
+
+	GLint sz;
+	glGetProgramiv(program, GL_INFO_LOG_LENGTH, &sz);
+	if (sz > 1) {
+		std::string compileLog(sz, char{});
+		glGetProgramInfoLog(program, compileLog.size(), nullptr, &compileLog[0]);
+		compileLog.resize(sz-1);
+		out << "program link log:\n" << compileLog << std::endl;
+	}
+
+	GLint success;
+	glGetProgramiv(program, GL_LINK_STATUS, &success);
+
+	if (success == GL_FALSE) {
+		glDeleteProgram(program);
+		program = 0;
+	}
+
+	return program;
 }
 
 void snygg_instance::maybe_ready() {
@@ -181,32 +214,18 @@ void snygg_instance::maybe_ready() {
 	if (shaderCompilerSupported == GL_FALSE) throw std::runtime_error("Shader compiler not supported");
 
 
-	std::string compileLog;
-	GLuint vert, frag;
+	ologstream lout(*this, PP_LOGLEVEL_LOG);
 
-	std::tie(vert, compileLog) = compileShader(GL_VERTEX_SHADER, { resources["mb_vertex.glsl"] });
-	if (compileLog.length()) {
-		LogToConsole(PP_LOGLEVEL_LOG, pp::Var("vertex shader compile log:"));
-		LogToConsole(PP_LOGLEVEL_LOG, pp::Var(compileLog));
-	}
-	if (vert == -1) throw std::runtime_error("Shader compilation failed");
+	auto vert  = compileShader(GL_VERTEX_SHADER, { resources["mb_vertex.glsl"] }, lout);
+	if (vert == 0) throw std::runtime_error("Shader compilation failed");
 
-	std::tie(frag, compileLog) = compileShader(GL_FRAGMENT_SHADER, { resources["light.glsl"], resources["flat_fragment.glsl"] });
-	if (compileLog.length()) {
-		LogToConsole(PP_LOGLEVEL_LOG, pp::Var("fragment shader compile log:"));
-		LogToConsole(PP_LOGLEVEL_LOG, pp::Var(compileLog));
-	}
-	if (frag == -1) throw std::runtime_error("Shader compilation failed");
+	auto frag = compileShader(GL_FRAGMENT_SHADER, { resources["light.glsl"], resources["flat_fragment.glsl"] }, lout);
+	if (frag == 0) throw std::runtime_error("Shader compilation failed");
 
+	auto vertexLocation = 0;
+	auto program = linkProgram({ vert, frag }, { "vertex", vertexLocation }, lout);
+	if (program == 0) throw std::runtime_error("Shader linking failed");
 
-	auto program = glCreateProgram();
-	glAttachShader(program, vert);
-	glAttachShader(program, frag);
-
-	const auto vertexLocation = 0;
-	glBindAttribLocation(program, vertexLocation, "vertex");
-
-	glLinkProgram(program);
 	glUseProgram(program);
 
 

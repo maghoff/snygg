@@ -1,11 +1,11 @@
 #include "ologstream.hpp"
 
-ologstream::ologstream(pp::Instance& instance, PP_LogLevel log_level) :
-	buf(instance, log_level)
+ologstream::ologstream(pp::Instance& instance_, PP_LogLevel log_level) :
+	std::ostream(&buf),
+	buf(instance_, log_level)
 {
-	rdbuf(&buf);
 }
 
-ologstream::~ologstream()
-{
+ologstream::~ologstream() {
+	flush();
 }
