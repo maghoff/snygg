@@ -2,6 +2,7 @@
 #define SCALABLE_SKIN_HPP
 
 #include <pixels_per_unit_listener.hpp>
+#include <matrix.hpp>
 #include "skin.hpp"
 
 class scalable_skin : public skin, public game::pixels_per_unit_listener {
