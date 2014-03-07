@@ -76,6 +76,8 @@ void init_gl() {
 
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA_SATURATE, GL_ONE);
+
+	glEnable(GL_MULTISAMPLE);
 }
 
 snygg::snygg(const std::string& board_filename) :

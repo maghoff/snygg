@@ -88,6 +88,14 @@ void sdl_core::toggle_fullscreen() {
 	else set_video_mode(windowed_w, windowed_h, false);
 }
 
+template <typename T, typename F>
+bool any(T begin, T end, F predicate) {
+	for (T i = begin; i != end; ++i) {
+		if (predicate(*i)) return true;
+	}
+	return false;
+}
+
 void sdl_core::init(int argc, char const * const argv[]) {
 	CHECK(SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER) != -1);
 	inited = true;
@@ -112,8 +120,10 @@ void sdl_core::init(int argc, char const * const argv[]) {
 	SDL_GL_SetAttribute(SDL_GL_SWAP_CONTROL, 1);
 	#endif
 
-	SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 1);
-	SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, 4);
+	if (any(argv, argv+argc, [](const char* arg) -> bool { return arg == std::string("--fsaa"); })) {
+		SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 1);
+		SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, 4);
+	}
 
 	set_video_mode_core(default_width, default_height, false);
 
