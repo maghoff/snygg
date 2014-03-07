@@ -15,3 +15,14 @@ void read_entire_file(std::vector<char>& target, const std::string& filename) {
 	in.read(&target[0], target.size());
 	in.close();
 }
+
+void read_entire_stream(std::vector<char>& target, std::istream& in) {
+	const size_t buf_size = 4096;
+
+	while (in.good()) {
+		auto base = target.size();
+		target.resize(base + buf_size);
+		in.read(target.data() + base, buf_size);
+		target.resize(base + in.gcount());
+	}
+}

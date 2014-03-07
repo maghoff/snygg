@@ -13,9 +13,9 @@
 .progressbar {
 	display: inline-block;
 	width: 50px;
-	height: 15px;
-	border-radius: 5px;
-	border: 1px solid #ccc;
+	height: 4px;
+	border-radius: 4px;
+	border: 1px solid #4c66b2;
 	overflow: hidden;
 	vertical-align: middle;
 }
@@ -81,15 +81,16 @@ document.addEventListener("DOMContentLoaded", installApp);
 
 <dl><dt>Status</dt><dd id="statusField"></dd></dl>
 
-<div id="out"></div>
-
 <embed
 	id="snygg"
-	width="200" height="200"
+	width="1700" height="1020"
+	style="width: 850px; height: 510px; padding: 5px;"
 	src="platform-pnacl.nmf"
 	type="application/x-pnacl"
 	board="pill"
 ></embed>
+
+<div id="out"></div>
 
 </body>
 </html>
