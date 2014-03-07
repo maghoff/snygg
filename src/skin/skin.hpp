@@ -15,7 +15,7 @@ public:
 	virtual ~skin();
 
 	virtual void load_opengl_resources(int width, int height);
-	
+
 	virtual void circle(la::vec2f p, float r) = 0;
 	virtual void blood(la::vec2f p, float r) = 0;
 
