@@ -13,15 +13,13 @@ var directoryResourceFactory = function (fullpath) { return new resource_tree.Di
 var variant = "debug";
 if (argv.release) variant = "release";
 
-server = resource_tree.createServer(new resource_tree.SerialLookup([
-	{
-		"platform-pnacl.nmf": new resource_tree.FileResource(path.join(root, "nacl/src/manifest.json"), {'content-type': 'application/octet-stream'}),
-		"platform-pnacl.pexe": new resource_tree.FileResource(path.join(root, "build-pnacl/" + variant + "/src/platform-pnacl/platform-pnacl.pexe"), {'content-type': 'application/octet-stream'}),
-		"levels": new resource_tree.FileLookup(path.join(root, "levels")),
-		"skins": new resource_tree.FileLookup(path.join(root, "skins"))
-	},
-	new resource_tree.FileLookup(path.join(root, "nacl", "src")),
-]));
+server = resource_tree.createServer({
+	"index.html": new resource_tree.FileResource(path.join(root, "nacl/src/index.html")),
+	"platform-pnacl.nmf": new resource_tree.FileResource(path.join(root, "nacl/src/manifest.json")),
+	"platform-pnacl.pexe": new resource_tree.FileResource(path.join(root, "build-pnacl/" + variant + "/src/platform-pnacl/platform-pnacl.pexe")),
+	"levels": new resource_tree.FileLookup(path.join(root, "levels")),
+	"skins": new resource_tree.FileLookup(path.join(root, "skins"))
+});
 
 server.on("listening", function () {
 	var url = 'http://localhost:' + server.address().port + '/index.html';
