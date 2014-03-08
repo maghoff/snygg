@@ -155,10 +155,10 @@ GLuint compileShader(GLenum shaderType, const std::vector<std::vector<char>>& so
 	GLint sz;
 	glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &sz);
 	if (sz > 1) {
-		std::string compileLog(sz, char{});
-		glGetShaderInfoLog(shader, compileLog.size(), nullptr, &compileLog[0]);
-		compileLog.resize(sz - 1);
-		out << "shader compile log:\n" << compileLog << std::endl;
+		std::string infoLog(sz, char{});
+		glGetShaderInfoLog(shader, infoLog.size(), nullptr, &infoLog[0]);
+		infoLog.resize(sz - 1);
+		out << "shader compile log:\n" << infoLog << std::endl;
 	}
 
 	GLint success;
@@ -172,19 +172,29 @@ GLuint compileShader(GLenum shaderType, const std::vector<std::vector<char>>& so
 	return shader;
 }
 
-GLuint linkProgram(const std::vector<GLuint>& shaders, const std::vector<std::pair<std::string, GLuint>>& attribs, std::ostream& out) {
+GLuint buildShaderProgram(
+	const std::vector<std::pair<GLenum, std::vector<std::vector<char>>>>& shaders,
+	const std::vector<std::pair<std::string, GLuint>>& attribs,
+	std::ostream& out
+) {
 	auto program = glCreateProgram();
-	for (auto shader : shaders) glAttachShader(program, shader);
+
+	for (auto& shader : shaders) {
+		auto shaderId = compileShader(shader.first, shader.second, out);
+		if (!shaderId) std::terminate();
+		glAttachShader(program, shaderId);
+	}
+
 	for (auto& attrib : attribs) glBindAttribLocation(program, attrib.second, attrib.first.c_str());
 	glLinkProgram(program);
 
 	GLint sz;
 	glGetProgramiv(program, GL_INFO_LOG_LENGTH, &sz);
 	if (sz > 1) {
-		std::string compileLog(sz, char{});
-		glGetProgramInfoLog(program, compileLog.size(), nullptr, &compileLog[0]);
-		compileLog.resize(sz-1);
-		out << "program link log:\n" << compileLog << std::endl;
+		std::string infoLog(sz, char{});
+		glGetProgramInfoLog(program, infoLog.size(), nullptr, &infoLog[0]);
+		infoLog.resize(sz-1);
+		out << "program link log:\n" << infoLog << std::endl;
 	}
 
 	GLint success;
@@ -205,13 +215,15 @@ void snygg_instance::maybe_ready() {
 	if (context.is_null()) return;
 
 
-	auto vert  = compileShader(GL_VERTEX_SHADER, { resources["mb_vertex.glsl"] }, lout);
-	if (vert == 0) throw std::runtime_error("Shader compilation failed");
-
-	auto frag = compileShader(GL_FRAGMENT_SHADER, { resources["light.glsl"], resources["flat_fragment.glsl"] }, lout);
-	if (frag == 0) throw std::runtime_error("Shader compilation failed");
-
-	floorProgram = linkProgram({ vert, frag }, { { "vertex", attrib::vertex } }, lout);
+	floorProgram = buildShaderProgram(
+		{
+			{ GL_VERTEX_SHADER, { resources["mb_vertex.glsl"] } },
+			{ GL_FRAGMENT_SHADER, { resources["light.glsl"], resources["flat_fragment.glsl"] } }
+		}, {
+			{ "vertex", attrib::vertex }
+		},
+		lout
+	);
 	if (floorProgram == 0) throw std::runtime_error("Shader linking failed");
 
 
