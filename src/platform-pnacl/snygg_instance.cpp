@@ -79,7 +79,8 @@ std::thread async(F1&& asyncOperation, F2&& callback) {
 
 snygg_instance::snygg_instance(PP_Instance instance) :
 	Instance(instance),
-	Graphics3DClient(this)
+	Graphics3DClient(this),
+	lout(*this, PP_LOGLEVEL_LOG)
 {
 }
 
@@ -89,11 +90,6 @@ snygg_instance::~snygg_instance() {
 }
 
 pp::Graphics3D initGL(pp::Instance instance, int32_t new_width, int32_t new_height) {
-	if (!glInitializePPAPI(pp::Module::Get()->get_browser_interface())) {
-		std::cerr << "Unable to initialize GL PPAPI!\n";
-		return pp::Graphics3D();
-	}
-
 	const int32_t attrib_list[] = {
 		PP_GRAPHICS3DATTRIB_ALPHA_SIZE, 8,
 		PP_GRAPHICS3DATTRIB_DEPTH_SIZE, 24,
@@ -130,31 +126,24 @@ void snygg_instance::check_gl_error() {
 }
 
 void snygg_instance::render(void* userdata) {
-	if (bp && resources_loaded) {
-		auto transform = reshaper.get_transformation().transposed();
+	auto transform = reshaper.get_transformation().transposed();
 
-		glClearColor(0, 0, 0, 0);
-		glClear(GL_COLOR_BUFFER_BIT);
-
-
-		glUseProgram(floorProgram);
-
-		auto transformLocation = glGetUniformLocation(floorProgram, "transform");
-		glUniformMatrix3fv(transformLocation, 1, GL_FALSE, transform.v);
-
-		glUniform4f(glGetUniformLocation(floorProgram, "ambient"), 0.4f, 0.4f, 0.4f, 1.0f);
-		glUniform4f(glGetUniformLocation(floorProgram, "diffuse"), 0.5f, 0.5f, 0.5f, 1.0f);
-
-		floor.render(attrib::vertex);
-
-		glUseProgram(0);
+	glClearColor(0, 0, 0, 0);
+	glClear(GL_COLOR_BUFFER_BIT);
 
 
-		check_gl_error();
-	} else {
-		glClearColor(1, 0, 0, 0.2);
-		glClear(GL_COLOR_BUFFER_BIT);
-	}
+	glUseProgram(floorProgram);
+
+	auto transformLocation = glGetUniformLocation(floorProgram, "transform");
+	glUniformMatrix3fv(transformLocation, 1, GL_FALSE, transform.v);
+
+	glUniform4f(glGetUniformLocation(floorProgram, "ambient"), 0.4f, 0.4f, 0.4f, 1.0f);
+	glUniform4f(glGetUniformLocation(floorProgram, "diffuse"), 0.5f, 0.5f, 0.5f, 1.0f);
+
+	floor.render(attrib::vertex);
+
+	glUseProgram(0);
+
 
 	context.SwapBuffers(pp::CompletionCallback(&renderLoopTrampoline, userdata));
 }
@@ -227,9 +216,8 @@ GLuint linkProgram(const std::vector<GLuint>& shaders, const std::vector<std::pa
 void snygg_instance::maybe_ready() {
 	if (!bp) return;
 	if (!resources_loaded) return;
+	if (context.is_null()) return;
 
-
-	ologstream lout(*this, PP_LOGLEVEL_LOG);
 
 	auto vert  = compileShader(GL_VERTEX_SHADER, { resources["mb_vertex.glsl"] }, lout);
 	if (vert == 0) throw std::runtime_error("Shader compilation failed");
@@ -245,12 +233,27 @@ void snygg_instance::maybe_ready() {
 
 
 	check_gl_error();
+
+	render(new std::weak_ptr<std::function<void(void*)>>(doRender));
+
 	LogToConsole(PP_LOGLEVEL_LOG, pp::Var("GLES initialized"));
 }
 
 void snygg_instance::DidChangeView(const pp::View& view) {
-	// TODO Consider view.GetDeviceScale() ?
+	auto scale = view.GetDeviceScale();
 	auto rect = view.GetRect();
+	int width = rect.width() * scale, height = rect.height() * scale;
+
+	reshaper.reshape(width, height);
+
+	if (context.is_null()) {
+		context = initGL(*this, width, height);
+		doRender.reset(new std::function<void(void*)>([&](void* userdata){ render(userdata); }));
+		maybe_ready();
+	} else {
+		context.ResizeBuffers(width, height);
+		glViewport(0, 0, width, height);
+	}
 }
 
 std::map<std::string, std::vector<char>> load_resources(
@@ -271,6 +274,11 @@ bool snygg_instance::Init(uint32_t argc, const char* argn[], const char* argv[])
 
 	auto boardname = args["board"];
 	pp::InstanceHandle instanceHandle{this};
+
+	if (!glInitializePPAPI(pp::Module::Get()->get_browser_interface())) {
+		LogToConsole(PP_LOGLEVEL_ERROR, "Unable to initialize GLES PPAPI. Bailing out.");
+		return false;
+	}
 
 	GLboolean shaderCompilerSupported;
 	glGetBooleanv(GL_SHADER_COMPILER, &shaderCompilerSupported);
@@ -320,10 +328,6 @@ bool snygg_instance::Init(uint32_t argc, const char* argn[], const char* argv[])
 			maybe_ready();
 		}
 	);
-
-	context = initGL(*this, 850*2, 510*2);
-	doRender.reset(new std::function<void(void*)>([&](void* userdata){ render(userdata); }));
-	render(new std::weak_ptr<std::function<void(void*)>>(doRender));
 
 	return true;
 }

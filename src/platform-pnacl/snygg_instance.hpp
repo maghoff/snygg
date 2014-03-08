@@ -10,10 +10,13 @@
 #include <ppapi/cpp/graphics_3d.h>
 #include <box_reshaper.hpp>
 #include "renderable_complex_polygon.hpp"
+#include "ologstream.hpp"
 
 class board;
 
 class snygg_instance : public pp::Instance, pp::Graphics3DClient {
+	ologstream lout;
+
 	std::thread load_board_thread, load_resources_thread;
 	std::shared_ptr<board> bp;
 	std::map<std::string, std::vector<char>> resources;

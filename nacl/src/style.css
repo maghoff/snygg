@@ -1,0 +1,35 @@
+html {
+	/* Work around grubby font rendering in OS X */
+	-webkit-font-smoothing: antialiased;
+}
+
+.content {
+	max-width: 800px;
+	min-width: 320px;
+	margin-left: auto;
+	margin-right: auto;
+	color: #333;
+}
+
+h1, h2, h3, h4, h5, h6 {
+	font-family: "Marcellus", serif;
+	font-weight: normal;
+}
+
+h1 {
+	text-align: center;
+	margin-top: 78px;
+}
+
+.subheading {
+	text-align: center;
+	margin: 10px;
+	margin-bottom: 40px;
+}
+
+pre, code {
+	font-family: "Inconsolata", monospace;
+	font-size: 15px;
+	line-height: 18px;
+	overflow: auto;
+}
