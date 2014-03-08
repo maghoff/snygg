@@ -199,7 +199,6 @@ GLuint linkProgram(const std::vector<GLuint>& shaders, const std::vector<std::pa
 }
 
 
-
 void snygg_instance::maybe_ready() {
 	if (!bp) return;
 	if (!resources_loaded) return;

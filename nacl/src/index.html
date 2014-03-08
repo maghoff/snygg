@@ -44,7 +44,7 @@ function installApp() {
 	});
 
 	snygg.addEventListener('progress', function (ev) {
-		var status = "loading...";
+		var status = "loading";
 		if (ev.lengthComputable) {
 			var progressPercentage = ev.loaded / ev.total * 100;
 			status = "loading<br/><span class='progressbar'><span class='progress' style='width: " + progressPercentage + "%'></span></span>";
@@ -53,7 +53,7 @@ function installApp() {
 	});
 
 	snygg.addEventListener('load', function () {
-		document.getElementById('statusField').textContent = "loading...";
+		document.getElementById('statusField').textContent = "loading";
 	});
 
 	function displayLastError() {
