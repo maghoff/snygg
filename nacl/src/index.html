@@ -53,7 +53,7 @@ function installApp() {
 	});
 
 	snygg.addEventListener('load', function () {
-		document.getElementById('statusField').textContent = "running";
+		document.getElementById('statusField').textContent = "loading...";
 	});
 
 	function displayLastError() {
@@ -71,7 +71,10 @@ function installApp() {
 	});
 
 	snygg.addEventListener('message', function (ev) {
-		console.log("Received message:", ev);
+		var msg = JSON.parse(ev.data);
+		if (msg.status === "running") {
+			document.getElementById('statusField').innerHTML = "&nbsp;";
+		}
 	});
 }
 

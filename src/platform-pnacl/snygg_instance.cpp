@@ -35,19 +35,6 @@ std::shared_ptr<board> load_board(pp::InstanceHandle instanceHandle, const std::
 	return std::shared_ptr<board>(new board(board_provider));
 }
 
-std::string svg_from_board(const board& b) {
-	std::stringstream svgstream;
-	{
-		schematic_svg_skin svg_skin(svgstream, b.bounding_box());
-		svg_skin.enter_state(skin::board_state);
-		b.render(svg_skin);
-		svg_skin.enter_state(skin::other_state);
-		svg_skin.floor(b.floor_polygon());
-	}
-
-	return svgstream.str();
-}
-
 
 template <typename F>
 void dispatchFunc(void* userdata, int32_t result) {
@@ -234,9 +221,9 @@ void snygg_instance::maybe_ready() {
 
 	check_gl_error();
 
-	render(new std::weak_ptr<std::function<void(void*)>>(doRender));
+	PostMessage(pp::Var("{\"status\":\"running\"}"));
 
-	LogToConsole(PP_LOGLEVEL_LOG, pp::Var("GLES initialized"));
+	render(new std::weak_ptr<std::function<void(void*)>>(doRender));
 }
 
 void snygg_instance::DidChangeView(const pp::View& view) {
@@ -294,7 +281,6 @@ bool snygg_instance::Init(uint32_t argc, const char* argn[], const char* argv[])
 			load_board_thread.join();
 
 			bp.swap(bp_);
-			PostMessage(pp::Var(svg_from_board(*bp)));
 
 			auto bb = bp->bounding_box();
 			reshaper.set_box(bb.x1, bb.y1, bb.x2, bb.y2);
