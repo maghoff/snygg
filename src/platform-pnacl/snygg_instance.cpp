@@ -83,7 +83,7 @@ snygg_instance::~snygg_instance() {
 pp::Graphics3D initGL(pp::Instance instance, int32_t new_width, int32_t new_height) {
 	const int32_t attrib_list[] = {
 		PP_GRAPHICS3DATTRIB_ALPHA_SIZE, 8,
-		PP_GRAPHICS3DATTRIB_DEPTH_SIZE, 24,
+		PP_GRAPHICS3DATTRIB_DEPTH_SIZE, 0,
 		PP_GRAPHICS3DATTRIB_WIDTH, new_width,
 		PP_GRAPHICS3DATTRIB_HEIGHT, new_height,
 		PP_GRAPHICS3DATTRIB_NONE
@@ -97,6 +97,13 @@ pp::Graphics3D initGL(pp::Instance instance, int32_t new_width, int32_t new_heig
 	}
 
 	glSetCurrentContextPPAPI(context.pp_resource());
+
+	GLboolean shaderCompilerSupported;
+	glGetBooleanv(GL_SHADER_COMPILER, &shaderCompilerSupported);
+	if (shaderCompilerSupported == GL_FALSE) {
+		instance.LogToConsole(PP_LOGLEVEL_ERROR, "GLSL shader compiler not supported. Bailing out.");
+		std::terminate();
+	}
 
 	return context;
 }
@@ -318,13 +325,6 @@ bool snygg_instance::Init(uint32_t argc, const char* argn[], const char* argv[])
 
 	if (!glInitializePPAPI(pp::Module::Get()->get_browser_interface())) {
 		LogToConsole(PP_LOGLEVEL_ERROR, "Unable to initialize GLES PPAPI. Bailing out.");
-		return false;
-	}
-
-	GLboolean shaderCompilerSupported;
-	glGetBooleanv(GL_SHADER_COMPILER, &shaderCompilerSupported);
-	if (shaderCompilerSupported == GL_FALSE) {
-		LogToConsole(PP_LOGLEVEL_ERROR, "GLSL shader compiler not supported. Bailing out.");
 		return false;
 	}
 
