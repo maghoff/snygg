@@ -145,7 +145,7 @@ void snygg_instance::render(void* userdata) {
 	glUniformMatrix3fv(glGetUniformLocation(colorProgram, "transform"), 1, GL_FALSE, transform.v);
 
 	glUniform4f(glGetUniformLocation(colorProgram, "ambient"), 0.4f, 0.4f, 0.4f, 1.0f);
-	glUniform4f(glGetUniformLocation(colorProgram, "diffuse"), 0.5f, 0.5f, 0.5f, 1.0f);
+	glUniform4f(glGetUniformLocation(colorProgram, "color"), 0.1f, 0.1f, 0.1f, 1.1f);
 
 	bp->render(skin);
 
