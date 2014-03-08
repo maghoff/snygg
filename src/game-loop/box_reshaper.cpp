@@ -5,7 +5,9 @@
 
 namespace game {
 
-box_reshaper::box_reshaper() {
+box_reshaper::box_reshaper() :
+	width(1), height(1)
+{
 	set_box(-1, -1, 1, 1);
 }
 
