@@ -1,14 +1,18 @@
 #!/bin/bash -e
 
-./waf-make build_debug --targets=platform-pnacl_unstripped.bc
+VARIANT=${1:-debug}
+
+./waf-make "build_$VARIANT" --targets=platform-pnacl_unstripped.bc
 
 FINALIZE=~/Downloads/nacl_sdk/pepper_33/toolchain/linux_pnacl/bin64/pnacl-finalize
-PEXE=build-pnacl/debug/src/platform-pnacl/platform-pnacl.pexe
-BC=build-pnacl/debug/src/platform-pnacl/platform-pnacl_unstripped.bc
+BUILD_DIR="build-pnacl/$VARIANT/src/platform-pnacl"
+PEXE="$BUILD_DIR/platform-pnacl.pexe"
+BC="$BUILD_DIR/platform-pnacl_unstripped.bc"
 
 if [ "$BC" -nt "$PEXE" ]
 then
 	echo "Finalizing..."
+	echo "$FINALIZE" -o "$PEXE" "$BC"
 	"$FINALIZE" -o "$PEXE" "$BC"
 fi
 

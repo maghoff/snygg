@@ -10,10 +10,13 @@ var argv = minimist(process.argv);
 var root = path.join(__dirname, '..');
 var directoryResourceFactory = function (fullpath) { return new resource_tree.DirectoryResource(fullpath); };
 
+var variant = "debug";
+if (argv.release) variant = "release";
+
 server = resource_tree.createServer(new resource_tree.SerialLookup([
 	{
 		"platform-pnacl.nmf": new resource_tree.FileResource(path.join(root, "nacl/src/manifest.json"), {'content-type': 'application/octet-stream'}),
-		"platform-pnacl.pexe": new resource_tree.FileResource(path.join(root, "build-pnacl/debug/src/platform-pnacl/platform-pnacl.pexe"), {'content-type': 'application/octet-stream'}),
+		"platform-pnacl.pexe": new resource_tree.FileResource(path.join(root, "build-pnacl/" + variant + "/src/platform-pnacl/platform-pnacl.pexe"), {'content-type': 'application/octet-stream'}),
 		"levels": new resource_tree.FileLookup(path.join(root, "levels")),
 		"skins": new resource_tree.FileLookup(path.join(root, "skins"))
 	},
