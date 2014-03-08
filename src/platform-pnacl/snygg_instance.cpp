@@ -309,10 +309,14 @@ std::map<std::string, std::vector<char>> load_resources(
 	const std::map<std::string, std::string>& resources
 ) {
 	std::map<std::string, std::vector<char>> results;
+	std::vector<std::thread> thread_party;
 	for (auto& resource : resources) {
-		iurlstream in(instanceHandle, resource.second);
-		read_entire_stream(results[resource.first], in);
+		thread_party.emplace_back([&results, resource, instanceHandle] {
+			iurlstream in(instanceHandle, resource.second);
+			read_entire_stream(results[resource.first], in);
+		});
 	}
+	for (auto& thread : thread_party) thread.join();
 	return results;
 }
 
