@@ -8,6 +8,8 @@
 #include <ppapi/cpp/instance.h>
 #include <ppapi/cpp/graphics_3d_client.h>
 #include <ppapi/cpp/graphics_3d.h>
+#include <box_reshaper.hpp>
+#include "renderable_complex_polygon.hpp"
 
 class board;
 
@@ -19,6 +21,11 @@ class snygg_instance : public pp::Instance, pp::Graphics3DClient {
 
 	pp::Graphics3D context;
 	std::shared_ptr<std::function<void(void*)>> doRender;
+
+	int floorProgram;
+	renderable_complex_polygon floor;
+
+	game::box_reshaper reshaper;
 
 	void Graphics3DContextLost() override;
 	void render(void*);

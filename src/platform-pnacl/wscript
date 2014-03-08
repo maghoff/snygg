@@ -7,6 +7,7 @@ def build(bld):
 		'logbuf.cpp',
 		'main.cpp',
 		'ologstream.cpp',
+		'renderable_complex_polygon.cpp',
 		'snygg_instance.cpp',
 		'snygg_module.cpp',
 		'urlbuf.cpp',

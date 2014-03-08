@@ -18,8 +18,14 @@
 #include <ppapi/cpp/message_loop.h>
 #include <ppapi/cpp/var.h>
 
-#include <box_reshaper.hpp>
 #include <matrix3d.hpp>
+
+
+namespace attrib {
+	enum {
+		vertex = 0
+	};
+}
 
 
 std::shared_ptr<board> load_board(pp::InstanceHandle instanceHandle, const std::string& boardname) {
@@ -125,10 +131,24 @@ void snygg_instance::check_gl_error() {
 
 void snygg_instance::render(void* userdata) {
 	if (bp && resources_loaded) {
+		auto transform = reshaper.get_transformation().transposed();
+
 		glClearColor(0, 0, 0, 0);
 		glClear(GL_COLOR_BUFFER_BIT);
 
-		glDrawElements(GL_TRIANGLES, bp->floor_polygon().triangles.size(), GL_UNSIGNED_SHORT, nullptr);
+
+		glUseProgram(floorProgram);
+
+		auto transformLocation = glGetUniformLocation(floorProgram, "transform");
+		glUniformMatrix3fv(transformLocation, 1, GL_FALSE, transform.v);
+
+		glUniform4f(glGetUniformLocation(floorProgram, "ambient"), 0.4f, 0.4f, 0.4f, 1.0f);
+		glUniform4f(glGetUniformLocation(floorProgram, "diffuse"), 0.5f, 0.5f, 0.5f, 1.0f);
+
+		floor.render(attrib::vertex);
+
+		glUseProgram(0);
+
 
 		check_gl_error();
 	} else {
@@ -176,13 +196,10 @@ GLuint compileShader(GLenum shaderType, const std::vector<std::vector<char>>& so
 	return shader;
 }
 
-GLuint linkProgram(const std::vector<GLuint>& shaders, const std::map<std::string, GLuint>& attribs, std::ostream& out) {
+GLuint linkProgram(const std::vector<GLuint>& shaders, const std::vector<std::pair<std::string, GLuint>>& attribs, std::ostream& out) {
 	auto program = glCreateProgram();
-
 	for (auto shader : shaders) glAttachShader(program, shader);
-
-	for (auto& attrib : attribs) glBindAttribLocation(program, attrib.second, attrib.first().c_str());
-
+	for (auto& attrib : attribs) glBindAttribLocation(program, attrib.second, attrib.first.c_str());
 	glLinkProgram(program);
 
 	GLint sz;
@@ -205,13 +222,11 @@ GLuint linkProgram(const std::vector<GLuint>& shaders, const std::map<std::strin
 	return program;
 }
 
+
+
 void snygg_instance::maybe_ready() {
 	if (!bp) return;
 	if (!resources_loaded) return;
-
-	GLboolean shaderCompilerSupported;
-	glGetBooleanv(GL_SHADER_COMPILER, &shaderCompilerSupported);
-	if (shaderCompilerSupported == GL_FALSE) throw std::runtime_error("Shader compiler not supported");
 
 
 	ologstream lout(*this, PP_LOGLEVEL_LOG);
@@ -222,50 +237,11 @@ void snygg_instance::maybe_ready() {
 	auto frag = compileShader(GL_FRAGMENT_SHADER, { resources["light.glsl"], resources["flat_fragment.glsl"] }, lout);
 	if (frag == 0) throw std::runtime_error("Shader compilation failed");
 
-	auto vertexLocation = 0;
-	auto program = linkProgram({ vert, frag }, { "vertex", vertexLocation }, lout);
-	if (program == 0) throw std::runtime_error("Shader linking failed");
-
-	glUseProgram(program);
+	floorProgram = linkProgram({ vert, frag }, { { "vertex", attrib::vertex } }, lout);
+	if (floorProgram == 0) throw std::runtime_error("Shader linking failed");
 
 
-	auto& floor = bp->floor_polygon();
-
-	GLuint vertexVBO;
-	glGenBuffers(1, &vertexVBO);
-	glBindBuffer(GL_ARRAY_BUFFER, vertexVBO);
-
-	std::vector<GLfloat> points;
-	for (auto& p : floor.points) {
-		points.push_back(p.x());
-		points.push_back(p.y());
-	}
-	glBufferData(GL_ARRAY_BUFFER, points.size() * sizeof(points[0]), points.data(), GL_STATIC_DRAW);
-
-	glEnableVertexAttribArray(vertexLocation);
-	glVertexAttribPointer(vertexLocation, 2, GL_FLOAT, GL_FALSE, 0, 0);
-
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-
-	GLuint elementbuffer;
-	glGenBuffers(1, &elementbuffer);
-	std::vector<uint16_t> indices(floor.triangles.begin(), floor.triangles.end());
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elementbuffer);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(indices[0]), indices.data(), GL_STATIC_DRAW);
-
-
-	auto bb = bp->bounding_box();
-	game::box_reshaper reshaper;
-	reshaper.set_box(bb.x1, bb.y1, bb.x2, bb.y2);
-	reshaper.reshape(850*2, 510*2);
-	auto transform = reshaper.get_transformation().transposed();
-	auto transformLocation = glGetUniformLocation(program, "transform");
-	glUniformMatrix3fv(transformLocation, 1, GL_FALSE, transform.v);
-
-
-	glUniform4f(glGetUniformLocation(program, "ambient"), 0.4f, 0.4f, 0.4f, 1.0f);
-	glUniform4f(glGetUniformLocation(program, "diffuse"), 0.5f, 0.5f, 0.5f, 1.0f);
+	floor = std::move(renderable_complex_polygon(bp->floor_polygon()));
 
 
 	check_gl_error();
@@ -296,6 +272,14 @@ bool snygg_instance::Init(uint32_t argc, const char* argn[], const char* argv[])
 	auto boardname = args["board"];
 	pp::InstanceHandle instanceHandle{this};
 
+	GLboolean shaderCompilerSupported;
+	glGetBooleanv(GL_SHADER_COMPILER, &shaderCompilerSupported);
+	if (shaderCompilerSupported == GL_FALSE) {
+		LogToConsole(PP_LOGLEVEL_ERROR, "GLSL shader compiler not supported. Bailing out.");
+		return false;
+	}
+
+
 	load_board_thread = async(
 		[=]() { return load_board(instanceHandle, boardname); },
 		[this](std::shared_ptr<board> bp_) {
@@ -303,6 +287,11 @@ bool snygg_instance::Init(uint32_t argc, const char* argn[], const char* argv[])
 
 			bp.swap(bp_);
 			PostMessage(pp::Var(svg_from_board(*bp)));
+
+			auto bb = bp->bounding_box();
+			reshaper.set_box(bb.x1, bb.y1, bb.x2, bb.y2);
+			reshaper.reshape(850*2, 510*2);
+
 			maybe_ready();
 		}
 	);
