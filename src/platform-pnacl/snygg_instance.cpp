@@ -23,7 +23,11 @@
 
 namespace attrib {
 	enum {
-		vertex = 0
+		vertex = 0,
+		circle_coord,
+		across,
+		along,
+		b
 	};
 }
 
@@ -121,13 +125,23 @@ void snygg_instance::render(void* userdata) {
 
 	glUseProgram(floorProgram);
 
-	auto transformLocation = glGetUniformLocation(floorProgram, "transform");
-	glUniformMatrix3fv(transformLocation, 1, GL_FALSE, transform.v);
+	glUniformMatrix3fv(glGetUniformLocation(floorProgram, "transform"), 1, GL_FALSE, transform.v);
 
 	glUniform4f(glGetUniformLocation(floorProgram, "ambient"), 0.4f, 0.4f, 0.4f, 1.0f);
 	glUniform4f(glGetUniformLocation(floorProgram, "diffuse"), 0.5f, 0.5f, 0.5f, 1.0f);
 
 	floor.render(attrib::vertex);
+
+
+	glUseProgram(colorProgram);
+
+	glUniformMatrix3fv(glGetUniformLocation(colorProgram, "transform"), 1, GL_FALSE, transform.v);
+
+	glUniform4f(glGetUniformLocation(colorProgram, "ambient"), 0.4f, 0.4f, 0.4f, 1.0f);
+	glUniform4f(glGetUniformLocation(colorProgram, "diffuse"), 0.5f, 0.5f, 0.5f, 1.0f);
+
+	bp->render(skin);
+
 
 	glUseProgram(0);
 
@@ -181,8 +195,14 @@ GLuint buildShaderProgram(
 
 	for (auto& shader : shaders) {
 		auto shaderId = compileShader(shader.first, shader.second, out);
-		if (!shaderId) std::terminate();
+
+		if (!shaderId) {
+			glDeleteProgram(program);
+			return 0;
+		}
+
 		glAttachShader(program, shaderId);
+		glDeleteShader(shaderId);
 	}
 
 	for (auto& attrib : attribs) glBindAttribLocation(program, attrib.second, attrib.first.c_str());
@@ -227,6 +247,26 @@ void snygg_instance::maybe_ready() {
 	if (floorProgram == 0) throw std::runtime_error("Shader linking failed");
 
 
+	colorProgram = buildShaderProgram(
+		{
+			{ GL_VERTEX_SHADER, { resources["vertex.glsl"] } },
+			{ GL_FRAGMENT_SHADER, {
+				resources["light.glsl"],
+				resources["fragment.glsl"],
+				resources["color_mapping.glsl"]
+			} }
+		}, {
+			{ "vertex", attrib::vertex },
+			{ "circle_coord", attrib::circle_coord },
+			{ "across_in", attrib::across },
+			{ "along_in", attrib::along },
+			{ "b_in", attrib::b }
+		},
+		lout
+	);
+	if (colorProgram == 0) throw std::runtime_error("Shader linking failed");
+
+
 	floor = std::move(renderable_complex_polygon(bp->floor_polygon()));
 
 
@@ -243,9 +283,12 @@ void snygg_instance::DidChangeView(const pp::View& view) {
 	int width = rect.width() * scale, height = rect.height() * scale;
 
 	reshaper.reshape(width, height);
+	skin.set_transformation(reshaper.get_transformation());
+	skin.set_pixels_per_unit(reshaper.get_pixels_per_unit());
 
 	if (context.is_null()) {
 		context = initGL(*this, width, height);
+		glViewport(0, 0, width, height);
 		doRender.reset(new std::function<void(void*)>([&](void* userdata){ render(userdata); }));
 		maybe_ready();
 	} else {
@@ -295,7 +338,8 @@ bool snygg_instance::Init(uint32_t argc, const char* argn[], const char* argv[])
 
 			auto bb = bp->bounding_box();
 			reshaper.set_box(bb.x1, bb.y1, bb.x2, bb.y2);
-			reshaper.reshape(850*2, 510*2);
+			skin.set_transformation(reshaper.get_transformation());
+			skin.set_pixels_per_unit(reshaper.get_pixels_per_unit());
 
 			maybe_ready();
 		}

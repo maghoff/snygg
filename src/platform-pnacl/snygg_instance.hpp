@@ -10,6 +10,7 @@
 #include <ppapi/cpp/graphics_3d.h>
 #include <box_reshaper.hpp>
 #include "renderable_complex_polygon.hpp"
+#include "buffering_skin.hpp"
 #include "ologstream.hpp"
 
 class board;
@@ -25,8 +26,10 @@ class snygg_instance : public pp::Instance, pp::Graphics3DClient {
 	pp::Graphics3D context;
 	std::shared_ptr<std::function<void(void*)>> doRender;
 
-	int floorProgram;
+	int floorProgram, colorProgram;
 	renderable_complex_polygon floor;
+
+	buffering_skin skin;
 
 	game::box_reshaper reshaper;
 

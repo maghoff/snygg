@@ -3,6 +3,7 @@
 
 def build(bld):
 	sources = [
+		'buffering_skin.cpp',
 		'iurlstream.cpp',
 		'logbuf.cpp',
 		'main.cpp',
