@@ -35,6 +35,8 @@ struct vec {
 
 	T length() const;
 	T square_length() const;
+
+	vec<Dim, T> normalized() const;
 };
 
 template <int Dim, typename T>

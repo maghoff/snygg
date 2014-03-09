@@ -78,6 +78,11 @@ T vec<Dim, T>::square_length() const {
 }
 
 template <int Dim, typename T>
+vec<Dim, T> vec<Dim, T>::normalized() const {
+	return (*this) * (T)(1. / length());
+}
+
+template <int Dim, typename T>
 vec<Dim, T> operator + (const vec<Dim, T>& lhs, const vec<Dim, T>& rhs) {
 	vec<Dim, T> r(lhs);
 	r += rhs;
