@@ -3,10 +3,15 @@
 
 #include <memory>
 #include <string>
+#include <vector>
 #include <scalable_skin.hpp>
+
+struct vertexSpec;
 
 class buffering_skin : public scalable_skin {
 	unsigned buffer;
+
+	void drawVertexSpec(const std::vector<vertexSpec>&);
 
 public:
 	buffering_skin();
