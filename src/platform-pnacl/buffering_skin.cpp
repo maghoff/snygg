@@ -86,15 +86,13 @@ void buffering_skin::fat_arc(la::vec2f p, float r, float t, float begin, float e
 
 	float b_step_size = (b_end - b_begin) / ((end - begin) / step_size);
 
-	float &x(p[0]), &y(p[1]);
-
 	float b = b_begin;
 
 	std::vector<vertexSpec> data;
 
 	for (float d = begin; d < end; d += step_size) {
 		data.emplace_back(vertexSpec{
-			{ x + r1 * fcos(d), y + r1 * fsin(d)},
+			p + r1 * cossin(d),
 			{  direction *  fcos(d),  direction * fsin(d), 0},
 			{ -direction * -fsin(d), -direction * fcos(d), 0},
 			{ inner_a, 0 },
@@ -102,7 +100,7 @@ void buffering_skin::fat_arc(la::vec2f p, float r, float t, float begin, float e
 		});
 
 		data.emplace_back(vertexSpec{
-			{ x + r2 * fcos(d), y + r2 * fsin(d)},
+			p + r2 * cossin(d),
 			{  direction *  fcos(d),  direction * fsin(d), 0},
 			{ -direction * -fsin(d), -direction * fcos(d), 0},
 			{ outer_a, 0 },
@@ -113,7 +111,7 @@ void buffering_skin::fat_arc(la::vec2f p, float r, float t, float begin, float e
 	}
 
 	data.emplace_back(vertexSpec{
-		{ x + r1 * fcos(end), y + r1 * fsin(end)},
+		p + r1 * cossin(end),
 		{  direction *  fcos(end),  direction * fsin(end), 0},
 		{ -direction * -fsin(end), -direction * fcos(end), 0},
 		{ inner_a, 0 },
@@ -121,7 +119,7 @@ void buffering_skin::fat_arc(la::vec2f p, float r, float t, float begin, float e
 	});
 
 	data.emplace_back(vertexSpec{
-		{ x + r2 * fcos(end), y + r2 * fsin(end)},
+		p + r2 * cossin(end),
 		{  direction *  fcos(end),  direction * fsin(end), 0},
 		{ -direction * -fsin(end), -direction * fcos(end), 0},
 		{ outer_a, 0 },
