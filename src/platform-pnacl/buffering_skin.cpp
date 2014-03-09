@@ -7,6 +7,10 @@
 static const auto fcos = (float (*)(float))(std::cos);
 static const auto fsin = (float (*)(float))(std::sin);
 
+la::vec2f cossin(float a) {
+	return la::vec2f(fcos(a), fsin(a));
+}
+
 namespace attrib {
 	enum {
 		vertex = 0,
@@ -32,7 +36,7 @@ buffering_skin::~buffering_skin() {
 	if (buffer != 0) glDeleteBuffers(1, &buffer);
 }
 
-void buffering_skin::drawVertexSpec(const std::vector<vertexSpec>& data) {
+void buffering_skin::drawVertexSpec(const std::vector<vertexSpec>& data, unsigned mode) {
 	if (buffer == 0) glGenBuffers(1, &buffer);
 
 	glBindBuffer(GL_ARRAY_BUFFER, buffer);
@@ -51,7 +55,7 @@ void buffering_skin::drawVertexSpec(const std::vector<vertexSpec>& data) {
 	glVertexAttribPointer(attrib::circle_coord, 2, GL_FLOAT, GL_FALSE, stride, (void*)offsetof(vertexSpec, circle_coord));
 	glVertexAttribPointer(attrib::b, 1, GL_FLOAT, GL_FALSE, stride, (void*)offsetof(vertexSpec, b));
 
-	glDrawArrays(GL_TRIANGLE_STRIP, 0, data.size());
+	glDrawArrays(mode, 0, data.size());
 
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
@@ -124,7 +128,7 @@ void buffering_skin::fat_arc(la::vec2f p, float r, float t, float begin, float e
 		b_end
 	});
 
-	drawVertexSpec(data);
+	drawVertexSpec(data, GL_TRIANGLE_STRIP);
 }
 
 void buffering_skin::fat_line(la::vec2f p, la::vec2f dir, float len, float t, float b_begin, float b_end) {
@@ -135,17 +139,47 @@ void buffering_skin::fat_line(la::vec2f p, la::vec2f dir, float len, float t, fl
 	float x2 = x1 + dx*len, y2 = y1 + dy * len;
 
 	std::vector<vertexSpec> data{{
-		/* vertex (x, y), across (x, y, z), along (x, y, z), circle_coord (x, y), b */
 		{ {x1 + nx, y1 + ny}, {nx, ny, 0}, {-dx, -dy, 0}, { 1, 0}, b_begin },
 		{ {x1 - nx, y1 - ny}, {nx, ny, 0}, {-dx, -dy, 0}, {-1, 0}, b_begin },
 		{ {x2 + nx, y2 + ny}, {nx, ny, 0}, {-dx, -dy, 0}, { 1, 0}, b_end },
 		{ {x2 - nx, y2 - ny}, {nx, ny, 0}, {-dx, -dy, 0}, {-1, 0}, b_end },
 	}};
 
-	drawVertexSpec(data);
+	drawVertexSpec(data, GL_TRIANGLE_STRIP);
 }
 
 void buffering_skin::cap(la::vec2f p, float snake_direction_in, float cap_direction_in, float b_coord) {
+	const float r = 2.5;
+	const float step_size = get_step_size(r);
+
+	float snake_dir = snake_direction_in - M_PI*0.5;
+	float cap_dir = cap_direction_in - M_PI*0.5;
+
+	la::vec3f across(fcos(snake_dir), fsin(snake_dir), 0);
+	la::vec3f along(fsin(snake_dir), -fcos(snake_dir), 0);
+
+	std::vector<vertexSpec> data;
+
+	for (float d = cap_dir; d < cap_dir + M_PI; d += step_size) {
+		data.emplace_back(vertexSpec{
+			p + r * cossin(snake_dir + d),
+			across,
+			along,
+			cossin(d),
+			b_coord
+		});
+	}
+
+	float d = cap_dir + M_PI;
+	data.emplace_back(vertexSpec{
+		p + r * cossin(snake_dir + d),
+		across,
+		along,
+		cossin(d),
+		b_coord
+	});
+
+	drawVertexSpec(data, GL_TRIANGLE_FAN);
 }
 
 void buffering_skin::floor(const complex_polygon& floor_poly) {

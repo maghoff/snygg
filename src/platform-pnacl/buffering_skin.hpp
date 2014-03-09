@@ -11,7 +11,7 @@ struct vertexSpec;
 class buffering_skin : public scalable_skin {
 	unsigned buffer;
 
-	void drawVertexSpec(const std::vector<vertexSpec>&);
+	void drawVertexSpec(const std::vector<vertexSpec>&, unsigned);
 
 public:
 	buffering_skin();
