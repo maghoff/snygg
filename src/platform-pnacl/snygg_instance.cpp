@@ -19,6 +19,7 @@
 #include <ppapi/cpp/var.h>
 
 #include <matrix3d.hpp>
+#include <snake.hpp>
 
 
 namespace attrib {
@@ -80,6 +81,14 @@ snygg_instance::~snygg_instance() {
 	load_board_thread.join();
 }
 
+void snygg_instance::add_item(std::unique_ptr<item>&& i) {
+	items.emplace_back(std::move(i));
+}
+
+void snygg_instance::add_renderable(std::unique_ptr<renderable>&& r) {
+	renderables.emplace_back(std::move(r));
+}
+
 pp::Graphics3D initGL(pp::Instance instance, int32_t new_width, int32_t new_height) {
 	const int32_t attrib_list[] = {
 		PP_GRAPHICS3DATTRIB_ALPHA_SIZE, 8,
@@ -123,7 +132,20 @@ void snygg_instance::check_gl_error() {
 	}
 }
 
+void snygg_instance::simulate_until(PP_TimeTicks nowTimeTicks) {
+	int now = (nowTimeTicks - startTime) * 100;
+
+	if (now > ticks + 200) ticks = now;
+
+	while (ticks < now) {
+		for (auto& i : items) i->move();
+		++ticks;
+	}
+}
+
 void snygg_instance::render(void* userdata) {
+	simulate_until(pp::Module::Get()->core()->GetTimeTicks());
+
 	auto transform = reshaper.get_transformation().transposed();
 
 	glClearColor(0, 0, 0, 0);
@@ -148,6 +170,10 @@ void snygg_instance::render(void* userdata) {
 	glUniform4f(glGetUniformLocation(colorProgram, "color"), 0.1f, 0.1f, 0.1f, 1.1f);
 
 	bp->render(skin);
+
+
+	glUniform4f(glGetUniformLocation(colorProgram, "color"), 0.1f, 0.4f, 0.1f, 1.1f);
+	for (auto& i : items) i->render(skin);
 
 
 	glUseProgram(0);
@@ -276,11 +302,18 @@ void snygg_instance::maybe_ready() {
 
 	floor = std::move(renderable_complex_polygon(bp->floor_polygon()));
 
-
 	check_gl_error();
+
+
+	std::unique_ptr<snake> s(new snake(*this, 0.4, la::vec2f(10, 0)));
+	s->set_turn(1);
+	add_item(std::move(s));
+
 
 	PostMessage(pp::Var("{\"status\":\"running\"}"));
 
+	startTime = pp::Module::Get()->core()->GetTimeTicks();
+	ticks = 0;
 	render(new std::weak_ptr<std::function<void(void*)>>(doRender));
 }
 

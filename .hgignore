@@ -26,3 +26,4 @@ snygg.files
 snygg.includes
 *.png
 nacl/node_modules
+nacl/deploy

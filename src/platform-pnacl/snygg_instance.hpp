@@ -8,14 +8,18 @@
 #include <ppapi/cpp/instance.h>
 #include <ppapi/cpp/graphics_3d_client.h>
 #include <ppapi/cpp/graphics_3d.h>
+#include <ppapi/cpp/core.h>
 #include <box_reshaper.hpp>
+#include <item_container.hpp>
+#include <item.hpp>
+#include <renderable.hpp>
 #include "renderable_complex_polygon.hpp"
 #include "buffering_skin.hpp"
 #include "ologstream.hpp"
 
 class board;
 
-class snygg_instance : public pp::Instance, pp::Graphics3DClient {
+class snygg_instance : public pp::Instance, pp::Graphics3DClient, item_container {
 	ologstream lout;
 
 	std::thread load_board_thread, load_resources_thread;
@@ -32,6 +36,14 @@ class snygg_instance : public pp::Instance, pp::Graphics3DClient {
 	buffering_skin skin;
 
 	game::box_reshaper reshaper;
+
+	double startTime;
+	int ticks;
+	std::vector<std::unique_ptr<item>> items;
+	std::vector<std::unique_ptr<renderable>> renderables;
+	void add_item(std::unique_ptr<item>&&) override;
+	void add_renderable(std::unique_ptr<renderable>&&) override;
+	void simulate_until(PP_TimeTicks);
 
 	void Graphics3DContextLost() override;
 	void render(void*);
