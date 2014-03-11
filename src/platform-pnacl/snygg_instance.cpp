@@ -95,10 +95,12 @@ void snygg_instance::add_renderable(std::unique_ptr<renderable>&& r) {
 	renderables.emplace_back(std::move(r));
 }
 
-pp::Graphics3D initGL(pp::Instance instance) {
+pp::Graphics3D initGL(pp::Instance instance, int32_t width, int32_t height) {
 	const int32_t attrib_list[] = {
-		PP_GRAPHICS3DATTRIB_ALPHA_SIZE, 0,
+		PP_GRAPHICS3DATTRIB_ALPHA_SIZE, 1,
 		PP_GRAPHICS3DATTRIB_DEPTH_SIZE, 0,
+		PP_GRAPHICS3DATTRIB_WIDTH, width,
+		PP_GRAPHICS3DATTRIB_HEIGHT, height,
 		PP_GRAPHICS3DATTRIB_NONE
 	};
 
@@ -404,8 +406,7 @@ void snygg_instance::DidChangeView(const pp::View& view) {
 	skin.set_pixels_per_unit(reshaper.get_pixels_per_unit());
 
 	if (context.is_null()) {
-		context = initGL(*this);
-		glViewport(0, 0, width, height);
+		context = initGL(*this, width, height);
 		doRender.reset(new std::function<void(void*)>([&](void* userdata){ render(userdata); }));
 		maybe_ready();
 	} else {
