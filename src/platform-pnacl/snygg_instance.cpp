@@ -1,6 +1,5 @@
 #include "snygg_instance.hpp"
 
-#include <sstream>
 #include <fileutil.hpp>
 #include <lua_board_provider.hpp>
 #include <board.hpp>
@@ -17,9 +16,14 @@
 #include <ppapi/cpp/completion_callback.h>
 #include <ppapi/cpp/message_loop.h>
 #include <ppapi/cpp/var.h>
+#include <ppapi/cpp/input_event.h>
 
+#include <algorithm>
 #include <matrix3d.hpp>
-#include <snake.hpp>
+#include <keyboard_handler.hpp>
+#include <keycodes.hpp>
+
+#include <food_generator.hpp>
 
 
 namespace attrib {
@@ -33,11 +37,13 @@ namespace attrib {
 }
 
 
-std::shared_ptr<board> load_board(pp::InstanceHandle instanceHandle, const std::string& boardname) {
+std::pair<std::shared_ptr<board_provider>, std::shared_ptr<board>>
+load_board(pp::InstanceHandle instanceHandle, const std::string& boardname) {
 	urlloader_file_loader loader(instanceHandle);
 
-	lua_board_provider board_provider(loader, boardname.length() ? boardname : "wide_screen");
-	return std::shared_ptr<board>(new board(board_provider));
+	auto bp = std::shared_ptr<lua_board_provider>(new lua_board_provider(loader, boardname.length() ? boardname : "wide_screen"));
+	auto b = std::shared_ptr<board>(new board(*bp));
+	return std::make_pair(bp, b);
 }
 
 
@@ -82,19 +88,17 @@ snygg_instance::~snygg_instance() {
 }
 
 void snygg_instance::add_item(std::unique_ptr<item>&& i) {
-	items.emplace_back(std::move(i));
+	new_items.emplace_back(std::move(i));
 }
 
 void snygg_instance::add_renderable(std::unique_ptr<renderable>&& r) {
 	renderables.emplace_back(std::move(r));
 }
 
-pp::Graphics3D initGL(pp::Instance instance, int32_t new_width, int32_t new_height) {
+pp::Graphics3D initGL(pp::Instance instance) {
 	const int32_t attrib_list[] = {
-		PP_GRAPHICS3DATTRIB_ALPHA_SIZE, 8,
+		PP_GRAPHICS3DATTRIB_ALPHA_SIZE, 0,
 		PP_GRAPHICS3DATTRIB_DEPTH_SIZE, 0,
-		PP_GRAPHICS3DATTRIB_WIDTH, new_width,
-		PP_GRAPHICS3DATTRIB_HEIGHT, new_height,
 		PP_GRAPHICS3DATTRIB_NONE
 	};
 
@@ -132,13 +136,39 @@ void snygg_instance::check_gl_error() {
 	}
 }
 
+void snygg_instance::tick_10ms() {
+	for (auto& item : new_items) {
+		items.emplace_back(std::move(item));
+	}
+	new_items.clear();
+
+	for (auto& item : items) {
+		if (!item->is_dead()) item->move();
+	}
+
+	std::vector<player*> dead_players;
+	for (auto& player : players) {
+		for (auto& item : items) {
+			if (!item->is_dead() && player->crashes_with(*item)) item->hit_by(*player);
+		}
+		if (player->crashes_with(*bp)) {
+			dead_players.push_back(&*player);
+		}
+	}
+
+	for (auto& dead_player : dead_players) dead_player->die();
+
+	auto new_end = std::remove_if(items.begin(), items.end(), [](const std::unique_ptr<item>& i) { return i->is_dead(); });
+	items.erase(new_end, items.end());
+}
+
 void snygg_instance::simulate_until(PP_TimeTicks nowTimeTicks) {
 	int now = (nowTimeTicks - startTime) * 100;
 
 	if (now > ticks + 200) ticks = now;
 
 	while (ticks < now) {
-		for (auto& i : items) i->move();
+		tick_10ms();
 		++ticks;
 	}
 }
@@ -148,7 +178,7 @@ void snygg_instance::render(void* userdata) {
 
 	auto transform = reshaper.get_transformation().transposed();
 
-	glClearColor(0, 0, 0, 0);
+	glClearColor(1, 1, 1, 1);
 	glClear(GL_COLOR_BUFFER_BIT);
 
 
@@ -174,6 +204,9 @@ void snygg_instance::render(void* userdata) {
 
 	glUniform4f(glGetUniformLocation(colorProgram, "color"), 0.1f, 0.4f, 0.1f, 1.1f);
 	for (auto& i : items) i->render(skin);
+
+	glUniform4f(glGetUniformLocation(colorProgram, "color"), 0.3f, 0.1f, 0.2f, 1.1f);
+	for (auto& renderable : renderables) renderable->render(skin);
 
 
 	glUseProgram(0);
@@ -305,9 +338,12 @@ void snygg_instance::maybe_ready() {
 	check_gl_error();
 
 
-	std::unique_ptr<snake> s(new snake(*this, 0.4, la::vec2f(10, 0)));
-	s->set_turn(1);
-	add_item(std::move(s));
+	bp->get_starting_position();
+	players.emplace_back(new player(kbd, *this, *bp, game::KEY_LEFT, game::KEY_RIGHT, game::KEY_SPACE));
+
+
+	fg.reset(new food_generator(*this, *bp));
+	fg->generate();
 
 
 	PostMessage(pp::Var("{\"status\":\"running\"}"));
@@ -315,6 +351,47 @@ void snygg_instance::maybe_ready() {
 	startTime = pp::Module::Get()->core()->GetTimeTicks();
 	ticks = 0;
 	render(new std::weak_ptr<std::function<void(void*)>>(doRender));
+
+	RequestFilteringInputEvents(PP_INPUTEVENT_CLASS_KEYBOARD);
+}
+
+static const std::unordered_map<uint32_t, int> key_mapping = {
+	{ ' ', game::KEY_SPACE },
+	{ 37, game::KEY_LEFT },
+	{ 39, game::KEY_RIGHT },
+};
+
+bool snygg_instance::handle_key_event(const pp::KeyboardInputEvent& event) {
+	if (event.GetModifiers()) return false;
+
+	auto mapping = key_mapping.find(event.GetKeyCode());
+	if (mapping == key_mapping.end()) {
+		LogToConsole(PP_LOGLEVEL_TIP, pp::Var((double)event.GetKeyCode()));
+		return false;
+	}
+
+	int keycode = mapping->second;
+	bool pressed = event.GetType() == PP_INPUTEVENT_TYPE_KEYDOWN;
+
+	if (key_states[keycode] != pressed) {
+		key_states[keycode] = pressed;
+		kbd.key_event(keycode, pressed);
+	}
+
+	return true;
+}
+
+bool snygg_instance::HandleInputEvent(const pp::InputEvent& event) {
+	simulate_until(event.GetTimeStamp());
+
+	switch (event.GetType()) {
+	case PP_INPUTEVENT_TYPE_KEYDOWN:
+    case PP_INPUTEVENT_TYPE_KEYUP:
+		return handle_key_event(pp::KeyboardInputEvent(event));
+
+	default:
+		return false;
+	}
 }
 
 void snygg_instance::DidChangeView(const pp::View& view) {
@@ -327,7 +404,7 @@ void snygg_instance::DidChangeView(const pp::View& view) {
 	skin.set_pixels_per_unit(reshaper.get_pixels_per_unit());
 
 	if (context.is_null()) {
-		context = initGL(*this, width, height);
+		context = initGL(*this);
 		glViewport(0, 0, width, height);
 		doRender.reset(new std::function<void(void*)>([&](void* userdata){ render(userdata); }));
 		maybe_ready();
@@ -368,10 +445,10 @@ bool snygg_instance::Init(uint32_t argc, const char* argn[], const char* argv[])
 
 	load_board_thread = async(
 		[=]() { return load_board(instanceHandle, boardname); },
-		[this](std::shared_ptr<board> bp_) {
+		[this](std::pair<std::shared_ptr<board_provider>, std::shared_ptr<board>> stuff) {
 			load_board_thread.join();
 
-			bp.swap(bp_);
+			std::tie(bpp, bp) = stuff;
 
 			auto bb = bp->bounding_box();
 			reshaper.set_box(bb.x1, bb.y1, bb.x2, bb.y2);

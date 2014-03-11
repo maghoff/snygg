@@ -40,7 +40,7 @@ void buffering_skin::drawVertexSpec(const std::vector<vertexSpec>& data, unsigne
 	if (buffer == 0) glGenBuffers(1, &buffer);
 
 	glBindBuffer(GL_ARRAY_BUFFER, buffer);
-	glBufferData(GL_ARRAY_BUFFER, data.size() * sizeof(data[0]), data.data(), GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, data.size() * sizeof(data[0]), data.data(), GL_STREAM_DRAW);
 
 	glEnableVertexAttribArray(attrib::vertex);
 	glEnableVertexAttribArray(attrib::across);
@@ -67,6 +67,24 @@ void buffering_skin::set_transformation(const la::matrix33f& transform) {
 }
 
 void buffering_skin::circle(la::vec2f p, float r) {
+	const float step_size = get_step_size(r);
+	const float b_coord = 0;
+
+	float snake_dir = 0;
+
+	std::vector<vertexSpec> data;
+
+	for (float d = 0; d < 2.0 * M_PI; d += step_size) {
+		data.emplace_back(vertexSpec{
+			p + r * cossin(snake_dir + d),
+			{ fcos(snake_dir),  fsin(snake_dir), 0 },
+			{ fsin(snake_dir), -fcos(snake_dir), 0 },
+			cossin(d),
+			b_coord
+		});
+	}
+
+	drawVertexSpec(data, GL_TRIANGLE_FAN);
 }
 
 void buffering_skin::blood(la::vec2f p, float r) {
