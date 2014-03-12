@@ -1,6 +1,9 @@
 <!DOCTYPE html>
 <html>
 <head>
+<meta http-equiv='Content-type: text/html; charset=utf-8'>
+<meta charset='utf-8'>
+<meta name="viewport" content="initial-scale=1">
 
 <title>Snygg</title>
 
@@ -36,7 +39,7 @@ function installApp() {
 	var snygg = document.getElementById("snygg");
 
 	snygg.addEventListener('loadstart', function () {
-		document.getElementById('statusField').textContent = "loading...";
+		document.getElementById('statusField').textContent = "loading";
 	});
 
 	snygg.addEventListener('progress', function (ev) {
