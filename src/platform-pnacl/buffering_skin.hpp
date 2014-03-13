@@ -1,17 +1,14 @@
 #ifndef BUFFERING_SKIN_HPP
 #define BUFFERING_SKIN_HPP
 
-#include <memory>
-#include <string>
-#include <vector>
 #include <scalable_skin.hpp>
 
-struct vertexSpec;
+struct geometry_spec;
 
 class buffering_skin : public scalable_skin {
 	unsigned buffer;
 
-	void drawVertexSpec(const std::vector<vertexSpec>&, unsigned);
+	void drawGeometrySpec(const geometry_spec&);
 
 public:
 	buffering_skin();

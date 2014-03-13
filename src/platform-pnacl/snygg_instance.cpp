@@ -180,7 +180,7 @@ void snygg_instance::render(void* userdata) {
 
 	auto transform = reshaper.get_transformation().transposed();
 
-	glClearColor(1, 1, 1, 1);
+	glClearColor(0, 0, 0, 0);
 	glClear(GL_COLOR_BUFFER_BIT);
 
 

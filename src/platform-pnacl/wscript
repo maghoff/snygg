@@ -4,6 +4,8 @@
 def build(bld):
 	sources = [
 		'buffering_skin.cpp',
+		'geometry_builder.cpp',
+		'geometry_spec.cpp',
 		'iurlstream.cpp',
 		'logbuf.cpp',
 		'main.cpp',
@@ -13,6 +15,7 @@ def build(bld):
 		'snygg_module.cpp',
 		'urlbuf.cpp',
 		'urlloader_file_loader.cpp',
+		'vertex_spec.cpp',
 	]
 
 	obj = bld.program(
