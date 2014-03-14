@@ -50,6 +50,28 @@ void buffering_skin::draw_arrays(unsigned buffer_object, unsigned n, geometry_mo
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
+void buffering_skin::draw_elements(unsigned int vertex_buffer_object, unsigned int index_buffer_object, unsigned int elements) {
+	glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer_object);
+
+	glEnableVertexAttribArray(attrib::vertex);
+	glEnableVertexAttribArray(attrib::across);
+	glEnableVertexAttribArray(attrib::along);
+	glEnableVertexAttribArray(attrib::circle_coord);
+	glEnableVertexAttribArray(attrib::b);
+
+	auto stride = sizeof(vertex_spec);
+	glVertexAttribPointer(attrib::vertex, 2, GL_FLOAT, GL_FALSE, stride, (void*)offsetof(vertex_spec, vertex));
+	glVertexAttribPointer(attrib::across, 3, GL_FLOAT, GL_FALSE, stride, (void*)offsetof(vertex_spec, across));
+	glVertexAttribPointer(attrib::along, 3, GL_FLOAT, GL_FALSE, stride, (void*)offsetof(vertex_spec, along));
+	glVertexAttribPointer(attrib::circle_coord, 2, GL_FLOAT, GL_FALSE, stride, (void*)offsetof(vertex_spec, circle_coord));
+	glVertexAttribPointer(attrib::b, 1, GL_FLOAT, GL_FALSE, stride, (void*)offsetof(vertex_spec, b));
+
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, index_buffer_object);
+	glDrawElements(GL_TRIANGLES, elements, GL_UNSIGNED_SHORT, nullptr);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+}
+
 void buffering_skin::load_opengl_resources(int, int) {
 }
 

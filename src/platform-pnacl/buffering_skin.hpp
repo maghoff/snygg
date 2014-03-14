@@ -16,6 +16,7 @@ public:
 	~buffering_skin() override;
 
 	void draw_arrays(unsigned buffer_object, unsigned n, geometry_mode mode);
+	void draw_elements(unsigned vertex_buffer_object, unsigned index_buffer_object, unsigned elements);
 
 	void load_opengl_resources(int width, int height) override;
 

@@ -200,15 +200,15 @@ void snygg_instance::render(void* userdata) {
 	glUniformMatrix3fv(glGetUniformLocation(colorProgram, "transform"), 1, GL_FALSE, transform.v);
 
 	glUniform4f(glGetUniformLocation(colorProgram, "ambient"), 0.4f, 0.4f, 0.4f, 1.0f);
-	glUniform4f(glGetUniformLocation(colorProgram, "color"), 0.1f, 0.1f, 0.1f, 1.1f);
+	glUniform4f(glGetUniformLocation(colorProgram, "color"), 0.1f, 0.1f, 0.1f, 1.0f);
 
 	walls.render(skin);
 
 
-	glUniform4f(glGetUniformLocation(colorProgram, "color"), 0.1f, 0.4f, 0.1f, 1.1f);
+	glUniform4f(glGetUniformLocation(colorProgram, "color"), 0.1f, 0.4f, 0.1f, 1.0f);
 	for (auto& i : items) i->render(skin);
 
-	glUniform4f(glGetUniformLocation(colorProgram, "color"), 0.3f, 0.1f, 0.2f, 1.1f);
+	glUniform4f(glGetUniformLocation(colorProgram, "color"), 0.3f, 0.1f, 0.2f, 1.0f);
 	for (auto& renderable : renderables) renderable->render(skin);
 
 
