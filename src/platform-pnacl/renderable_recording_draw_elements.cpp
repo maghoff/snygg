@@ -64,7 +64,5 @@ void renderable_recording_draw_elements::update(const std::vector<geometry_spec>
 }
 
 void renderable_recording_draw_elements::render(buffering_skin& skin) {
-	for (decltype(buffers.size()) i = 0; i < buffers.size(); ++i) {
-		skin.draw_elements(buffers[0], buffers[1], elements);
-	}
+	skin.draw_elements(buffers[0], buffers[1], elements);
 }
