@@ -17,6 +17,7 @@
 #include <renderable.hpp>
 #include <bindable_keyboard_handler.hpp>
 #include "renderable_complex_polygon.hpp"
+#include "renderable_recording.hpp"
 #include "buffering_skin.hpp"
 #include "ologstream.hpp"
 
@@ -42,6 +43,7 @@ class snygg_instance : public pp::Instance, pp::Graphics3DClient, item_container
 
 	int floorProgram, colorProgram;
 	renderable_complex_polygon floor;
+	renderable_recording walls;
 
 	buffering_skin skin;
 
@@ -66,6 +68,7 @@ class snygg_instance : public pp::Instance, pp::Graphics3DClient, item_container
 	void Graphics3DContextLost() override;
 	void render(void*);
 	void maybe_ready();
+	void update_walls();
 	void check_gl_error();
 
 	void DidChangeView(const pp::View&) override;

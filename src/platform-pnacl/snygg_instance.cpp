@@ -24,6 +24,7 @@
 #include <keycodes.hpp>
 
 #include <food_generator.hpp>
+#include "recording_skin.hpp"
 
 
 namespace attrib {
@@ -201,7 +202,7 @@ void snygg_instance::render(void* userdata) {
 	glUniform4f(glGetUniformLocation(colorProgram, "ambient"), 0.4f, 0.4f, 0.4f, 1.0f);
 	glUniform4f(glGetUniformLocation(colorProgram, "color"), 0.1f, 0.1f, 0.1f, 1.1f);
 
-	bp->render(skin);
+	walls.render(skin);
 
 
 	glUniform4f(glGetUniformLocation(colorProgram, "color"), 0.1f, 0.4f, 0.1f, 1.1f);
@@ -337,6 +338,8 @@ void snygg_instance::maybe_ready() {
 
 	floor = std::move(renderable_complex_polygon(bp->floor_polygon()));
 
+	update_walls();
+
 	check_gl_error();
 
 
@@ -355,6 +358,13 @@ void snygg_instance::maybe_ready() {
 	render(new std::weak_ptr<std::function<void(void*)>>(doRender));
 
 	RequestFilteringInputEvents(PP_INPUTEVENT_CLASS_KEYBOARD);
+}
+
+void snygg_instance::update_walls() {
+	recording_skin recorder;
+	recorder.set_pixels_per_unit(reshaper.get_pixels_per_unit());
+	bp->render(recorder);
+	walls.update(recorder.recording);
 }
 
 static const std::unordered_map<uint32_t, int> key_mapping = {
@@ -412,6 +422,7 @@ void snygg_instance::DidChangeView(const pp::View& view) {
 	} else {
 		context.ResizeBuffers(width, height);
 		glViewport(0, 0, width, height);
+		update_walls();
 	}
 }
 

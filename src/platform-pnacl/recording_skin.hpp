@@ -1,21 +1,22 @@
-#ifndef BUFFERING_SKIN_HPP
-#define BUFFERING_SKIN_HPP
+#ifndef RECORDING_SKIN_HPP
+#define RECORDING_SKIN_HPP
 
+#include <stdexcept>
+#include <vector>
 #include <scalable_skin.hpp>
+#include "geometry_spec.hpp"
 
-enum class geometry_mode;
-struct geometry_spec;
-
-class buffering_skin : public scalable_skin {
-	unsigned buffer;
-
-	void draw_geometry_spec(const geometry_spec&);
-
+class recording_skin : public scalable_skin {
 public:
-	buffering_skin();
-	~buffering_skin() override;
+	class unable_to_record : public std::logic_error {
+	public:
+		using std::logic_error::logic_error;
+	};
 
-	void draw_arrays(unsigned buffer_object, unsigned n, geometry_mode mode);
+	std::vector<geometry_spec> recording;
+
+	recording_skin();
+	~recording_skin() override;
 
 	void load_opengl_resources(int width, int height) override;
 
@@ -34,4 +35,4 @@ public:
 	void enter_state(state_t) override;
 };
 
-#endif // BUFFERING_SKIN_HPP
+#endif // RECORDING_SKIN_HPP

@@ -2,6 +2,7 @@
 #include <vector>
 #include <cmath>
 #include "geometry_spec.hpp"
+#include "geometry_mode.hpp"
 #include "vertex_spec.hpp"
 
 static const auto fcos = (float (*)(float))(std::cos);
@@ -31,7 +32,7 @@ geometry_spec circle(const std::function<float(float)>& get_step_size, la::vec2f
 		});
 	}
 
-	return { geometry_spec::triangle_fan, data };
+	return { geometry_mode::triangle_fan, data };
 }
 
 geometry_spec fat_arc(const std::function<float(float)>& get_step_size, la::vec2f p, float r, float t, float begin, float end, float b_begin, float b_end) {
@@ -88,7 +89,7 @@ geometry_spec fat_arc(const std::function<float(float)>& get_step_size, la::vec2
 		b_end
 	});
 
-	return { geometry_spec::triangle_strip, data };
+	return { geometry_mode::triangle_strip, data };
 }
 
 geometry_spec fat_line(la::vec2f p, la::vec2f dir, float len, float t, float b_begin, float b_end) {
@@ -105,7 +106,7 @@ geometry_spec fat_line(la::vec2f p, la::vec2f dir, float len, float t, float b_b
 		{ {x2 - nx, y2 - ny}, {nx, ny, 0}, {-dx, -dy, 0}, {-1, 0}, b_end },
 	}};
 
-	return { geometry_spec::triangle_strip, data };
+	return { geometry_mode::triangle_strip, data };
 }
 
 geometry_spec cap(const std::function<float(float)>& get_step_size, la::vec2f p, float snake_direction_in, float cap_direction_in, float b_coord) {
@@ -139,7 +140,7 @@ geometry_spec cap(const std::function<float(float)>& get_step_size, la::vec2f p,
 		b_coord
 	});
 
-	return { geometry_spec::triangle_fan, data };
+	return { geometry_mode::triangle_fan, data };
 }
 
 }
