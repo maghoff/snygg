@@ -1,9 +1,9 @@
-#include "renderable_recording.hpp"
+#include "renderable_recording_draw_arrays.hpp"
 #include <GLES2/gl2.h>
 #include "geometry_spec.hpp"
 #include "buffering_skin.hpp"
 
-void renderable_recording::update(const std::vector<geometry_spec>& spec) {
+void renderable_recording_draw_arrays::update(const std::vector<geometry_spec>& spec) {
 	if (spec.size() > buffers.size()) {
 		auto old_size = buffers.size();
 		buffers.resize(spec.size());
@@ -23,7 +23,7 @@ void renderable_recording::update(const std::vector<geometry_spec>& spec) {
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
-void renderable_recording::render(buffering_skin& skin) {
+void renderable_recording_draw_arrays::render(buffering_skin& skin) {
 	for (decltype(buffers.size()) i = 0; i < buffers.size(); ++i) {
 		skin.draw_arrays(buffers[i], details[i].first, details[i].second);
 	}

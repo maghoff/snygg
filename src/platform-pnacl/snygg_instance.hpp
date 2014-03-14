@@ -17,7 +17,7 @@
 #include <renderable.hpp>
 #include <bindable_keyboard_handler.hpp>
 #include "renderable_complex_polygon.hpp"
-#include "renderable_recording.hpp"
+#include "renderable_recording_draw_arrays.hpp"
 #include "buffering_skin.hpp"
 #include "ologstream.hpp"
 
@@ -43,7 +43,7 @@ class snygg_instance : public pp::Instance, pp::Graphics3DClient, item_container
 
 	int floorProgram, colorProgram;
 	renderable_complex_polygon floor;
-	renderable_recording walls;
+	renderable_recording_draw_arrays walls;
 
 	buffering_skin skin;
 
