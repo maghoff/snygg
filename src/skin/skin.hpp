@@ -9,7 +9,8 @@ class skin {
 public:
 	enum state_t {
 		other_state,
-		board_state
+		board_state,
+		floor_state
 	};
 
 	virtual ~skin();

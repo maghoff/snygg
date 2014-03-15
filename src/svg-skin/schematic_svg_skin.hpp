@@ -1,7 +1,7 @@
 #ifndef SCHEMATIC_SVG_SKIN_HPP
 #define SCHEMATIC_SVG_SKIN_HPP
 
-#include <iostream>
+#include <iosfwd>
 #include <stack>
 #include <string>
 #include "scalable_skin.hpp"

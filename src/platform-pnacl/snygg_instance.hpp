@@ -18,12 +18,12 @@
 #include <bindable_keyboard_handler.hpp>
 #include "renderable_complex_polygon.hpp"
 #include "renderable_recording_draw_elements.hpp"
-#include "buffering_skin.hpp"
 #include "ologstream.hpp"
 
 class board_provider;
 class board;
 class food_generator;
+class buffering_skin;
 
 namespace pp {
 	class KeyboardInputEvent;
@@ -41,11 +41,10 @@ class snygg_instance : public pp::Instance, pp::Graphics3DClient, item_container
 	pp::Graphics3D context;
 	std::shared_ptr<std::function<void(void*)>> doRender;
 
-	int floorProgram, colorProgram;
 	renderable_complex_polygon floor;
 	renderable_recording_draw_elements walls;
 
-	buffering_skin skin;
+	std::unique_ptr<buffering_skin> skin;
 
 	game::box_reshaper reshaper;
 

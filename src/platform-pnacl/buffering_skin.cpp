@@ -1,4 +1,5 @@
 #include "buffering_skin.hpp"
+#include <ostream>
 #include <GLES2/gl2.h>
 #include "geometry_spec.hpp"
 #include "geometry_builder.hpp"
@@ -13,11 +14,149 @@ namespace attrib {
 	};
 }
 
-buffering_skin::buffering_skin() : buffer(0) {
+
+GLuint compileShader(GLenum shaderType, const std::vector<std::vector<char>>& source, std::ostream& out) {
+	if (source.size() > std::numeric_limits<GLsizei>::max()) throw std::runtime_error("Shader source way too big");
+
+	std::vector<const GLchar*> sources;
+	std::vector<GLint> lengths;
+	for (auto& source_fragment : source) {
+		if (source_fragment.size() > std::numeric_limits<GLint>::max()) throw std::runtime_error("Shader source way too big");
+
+		sources.emplace_back(source_fragment.data());
+		lengths.emplace_back(source_fragment.size());
+	}
+
+	auto shader = glCreateShader(shaderType);
+
+	glShaderSource(shader, source.size(), sources.data(), lengths.data());
+	glCompileShader(shader);
+
+	GLint sz;
+	glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &sz);
+	if (sz > 1) {
+		std::string infoLog(sz, char{});
+		glGetShaderInfoLog(shader, infoLog.size(), nullptr, &infoLog[0]);
+		infoLog.resize(sz - 1);
+		out << "shader compile log:\n" << infoLog << std::endl;
+	}
+
+	GLint success;
+	glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
+
+	if (success == GL_FALSE) {
+		glDeleteShader(shader);
+		shader = 0;
+	}
+
+	return shader;
+}
+
+GLuint buildShaderProgram(
+	const std::vector<std::pair<GLenum, std::vector<std::vector<char>>>>& shaders,
+	const std::vector<std::pair<std::string, GLuint>>& attribs,
+	std::ostream& out
+) {
+	auto program = glCreateProgram();
+
+	for (auto& shader : shaders) {
+		auto shaderId = compileShader(shader.first, shader.second, out);
+
+		if (!shaderId) {
+			glDeleteProgram(program);
+			return 0;
+		}
+
+		glAttachShader(program, shaderId);
+		glDeleteShader(shaderId);
+	}
+
+	for (auto& attrib : attribs) glBindAttribLocation(program, attrib.second, attrib.first.c_str());
+	glLinkProgram(program);
+
+	GLint sz;
+	glGetProgramiv(program, GL_INFO_LOG_LENGTH, &sz);
+	if (sz > 1) {
+		std::string infoLog(sz, char{});
+		glGetProgramInfoLog(program, infoLog.size(), nullptr, &infoLog[0]);
+		infoLog.resize(sz-1);
+		out << "program link log:\n" << infoLog << std::endl;
+	}
+
+	GLint success;
+	glGetProgramiv(program, GL_LINK_STATUS, &success);
+
+	if (success == GL_FALSE) {
+		glDeleteProgram(program);
+		program = 0;
+	}
+
+	return program;
+}
+
+
+const std::vector<char>& get(const std::map<std::string, std::vector<char>>& resources, const std::string& key) {
+	auto i = resources.find(key);
+	if (i == resources.end()) throw std::runtime_error("Requested missing resource");
+	return i->second;
+}
+
+
+buffering_skin::buffering_skin(const std::map<std::string, std::vector<char>>& resources, std::ostream& out) : buffer(0) {
+	floorProgram = buildShaderProgram(
+		{
+			{ GL_VERTEX_SHADER, { get(resources, "mb_vertex.glsl") } },
+			{ GL_FRAGMENT_SHADER, { get(resources, "light.glsl"), get(resources, "flat_fragment.glsl") } }
+		}, {
+			{ "vertex", attrib::vertex }
+		},
+		out
+	);
+	if (floorProgram == 0) throw std::runtime_error("Shader linking failed");
+
+
+	colorProgram = buildShaderProgram(
+		{
+			{ GL_VERTEX_SHADER, { get(resources, "vertex.glsl") } },
+			{ GL_FRAGMENT_SHADER, {
+				get(resources, "light.glsl"),
+				get(resources, "fragment.glsl"),
+				get(resources, "color_mapping.glsl")
+			} }
+		}, {
+			{ "vertex", attrib::vertex },
+			{ "circle_coord", attrib::circle_coord },
+			{ "across_in", attrib::across },
+			{ "along_in", attrib::along },
+			{ "b_in", attrib::b }
+		},
+		out
+	);
+	if (colorProgram == 0) throw std::runtime_error("Shader linking failed");
+
+
 }
 
 buffering_skin::~buffering_skin() {
 	if (buffer != 0) glDeleteBuffers(1, &buffer);
+}
+
+void buffering_skin::to_floor_shader() {
+	glUseProgram(floorProgram);
+
+	glUniformMatrix3fv(glGetUniformLocation(floorProgram, "transform"), 1, GL_FALSE, transform.v);
+
+	glUniform4f(glGetUniformLocation(floorProgram, "ambient"), 0.4f, 0.4f, 0.4f, 1.0f);
+	glUniform4f(glGetUniformLocation(floorProgram, "diffuse"), 0.5f, 0.5f, 0.5f, 1.0f);
+}
+
+void buffering_skin::to_wall_shader() {
+	glUseProgram(colorProgram);
+
+	glUniformMatrix3fv(glGetUniformLocation(colorProgram, "transform"), 1, GL_FALSE, transform.v);
+
+	glUniform4f(glGetUniformLocation(colorProgram, "ambient"), 0.4f, 0.4f, 0.4f, 1.0f);
+	glUniform4f(glGetUniformLocation(colorProgram, "color"), 0.1f, 0.1f, 0.1f, 1.0f);
 }
 
 void buffering_skin::draw_geometry_spec(const geometry_spec& spec) {
@@ -75,16 +214,19 @@ void buffering_skin::draw_elements(unsigned int vertex_buffer_object, unsigned i
 void buffering_skin::load_opengl_resources(int, int) {
 }
 
-void buffering_skin::set_transformation(const la::matrix33f& transform) {
+void buffering_skin::set_transformation(const la::matrix33f& transform_) {
+	transform = transform_;
 }
 
 void buffering_skin::circle(la::vec2f p, float r) {
+	glUniform4f(glGetUniformLocation(colorProgram, "color"), 0.6f, 0.4f, 0.2f, 1.0f);
 	draw_geometry_spec(
 		geometry_builder::circle(
 			[&](float r) -> float { return get_step_size(r); },
 			p, r
 		)
 	);
+	glUniform4f(glGetUniformLocation(colorProgram, "color"), 0.1f, 0.4f, 0.1f, 1.0f);
 }
 
 void buffering_skin::blood(la::vec2f p, float r) {
@@ -116,4 +258,16 @@ void buffering_skin::floor(const complex_polygon& floor_poly) {
 }
 
 void buffering_skin::enter_state(state_t st) {
+	switch (st) {
+	case floor_state:
+		to_floor_shader();
+		break;
+	case board_state:
+		to_wall_shader();
+		break;
+	case other_state:
+		to_wall_shader();
+		glUniform4f(glGetUniformLocation(colorProgram, "color"), 0.1f, 0.4f, 0.1f, 1.0f);
+		break;
+	}
 }

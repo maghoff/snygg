@@ -3,7 +3,6 @@
 #include <fileutil.hpp>
 #include <lua_board_provider.hpp>
 #include <board.hpp>
-#include <schematic_svg_skin.hpp>
 #include <rect.hpp>
 #include <complex_polygon.hpp>
 #include "urlloader_file_loader.hpp"
@@ -25,6 +24,8 @@
 
 #include <food_generator.hpp>
 #include "recording_skin.hpp"
+
+#include "buffering_skin.hpp"
 
 
 namespace attrib {
@@ -107,10 +108,7 @@ pp::Graphics3D initGL(pp::Instance instance, int32_t width, int32_t height) {
 
 	pp::Graphics3D context = pp::Graphics3D(pp::InstanceHandle(&instance), attrib_list);
 
-	if (!instance.BindGraphics(context)) {
-		std::cerr << "Unable to bind 3d context!\n";
-		return pp::Graphics3D();
-	}
+	if (!instance.BindGraphics(context)) throw std::runtime_error("Unable to bind 3d context!");
 
 	glSetCurrentContextPPAPI(context.pp_resource());
 
@@ -179,124 +177,26 @@ void snygg_instance::simulate_until(PP_TimeTicks nowTimeTicks) {
 void snygg_instance::render(void* userdata) {
 	simulate_until(pp::Module::Get()->core()->GetTimeTicks());
 
-	auto transform = reshaper.get_transformation().transposed();
 
 	glClearColor(0, 0, 0, 0);
 	glClear(GL_COLOR_BUFFER_BIT);
 
 
-	glUseProgram(floorProgram);
-
-	glUniformMatrix3fv(glGetUniformLocation(floorProgram, "transform"), 1, GL_FALSE, transform.v);
-
-	glUniform4f(glGetUniformLocation(floorProgram, "ambient"), 0.4f, 0.4f, 0.4f, 1.0f);
-	glUniform4f(glGetUniformLocation(floorProgram, "diffuse"), 0.5f, 0.5f, 0.5f, 1.0f);
-
+	skin->enter_state(skin::floor_state);
 	floor.render(attrib::vertex);
 
 
-	glUseProgram(colorProgram);
+	skin->enter_state(skin::other_state);
+	for (auto& renderable : renderables) renderable->render(*skin);
+	for (auto& item : items) item->render(*skin);
 
-	glUniformMatrix3fv(glGetUniformLocation(colorProgram, "transform"), 1, GL_FALSE, transform.v);
+	skin->enter_state(skin::board_state);
 
-	glUniform4f(glGetUniformLocation(colorProgram, "ambient"), 0.4f, 0.4f, 0.4f, 1.0f);
-	glUniform4f(glGetUniformLocation(colorProgram, "color"), 0.1f, 0.1f, 0.1f, 1.0f);
-
-	walls.render(skin);
-
-
-	glUniform4f(glGetUniformLocation(colorProgram, "color"), 0.1f, 0.4f, 0.1f, 1.0f);
-	for (auto& i : items) i->render(skin);
-
-	glUniform4f(glGetUniformLocation(colorProgram, "color"), 0.3f, 0.1f, 0.2f, 1.0f);
-	for (auto& renderable : renderables) renderable->render(skin);
-
-
-	glUseProgram(0);
+	walls.render(*skin);
 
 
 	context.SwapBuffers(pp::CompletionCallback(&renderLoopTrampoline, userdata));
 }
-
-GLuint compileShader(GLenum shaderType, const std::vector<std::vector<char>>& source, std::ostream& out) {
-	if (source.size() > std::numeric_limits<GLsizei>::max()) throw std::runtime_error("Shader source way too big");
-
-	std::vector<const GLchar*> sources;
-	std::vector<GLint> lengths;
-	for (auto& source_fragment : source) {
-		if (source_fragment.size() > std::numeric_limits<GLint>::max()) throw std::runtime_error("Shader source way too big");
-
-		sources.emplace_back(source_fragment.data());
-		lengths.emplace_back(source_fragment.size());
-	}
-
-	auto shader = glCreateShader(shaderType);
-
-	glShaderSource(shader, source.size(), sources.data(), lengths.data());
-	glCompileShader(shader);
-
-	GLint sz;
-	glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &sz);
-	if (sz > 1) {
-		std::string infoLog(sz, char{});
-		glGetShaderInfoLog(shader, infoLog.size(), nullptr, &infoLog[0]);
-		infoLog.resize(sz - 1);
-		out << "shader compile log:\n" << infoLog << std::endl;
-	}
-
-	GLint success;
-	glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
-
-	if (success == GL_FALSE) {
-		glDeleteShader(shader);
-		shader = 0;
-	}
-
-	return shader;
-}
-
-GLuint buildShaderProgram(
-	const std::vector<std::pair<GLenum, std::vector<std::vector<char>>>>& shaders,
-	const std::vector<std::pair<std::string, GLuint>>& attribs,
-	std::ostream& out
-) {
-	auto program = glCreateProgram();
-
-	for (auto& shader : shaders) {
-		auto shaderId = compileShader(shader.first, shader.second, out);
-
-		if (!shaderId) {
-			glDeleteProgram(program);
-			return 0;
-		}
-
-		glAttachShader(program, shaderId);
-		glDeleteShader(shaderId);
-	}
-
-	for (auto& attrib : attribs) glBindAttribLocation(program, attrib.second, attrib.first.c_str());
-	glLinkProgram(program);
-
-	GLint sz;
-	glGetProgramiv(program, GL_INFO_LOG_LENGTH, &sz);
-	if (sz > 1) {
-		std::string infoLog(sz, char{});
-		glGetProgramInfoLog(program, infoLog.size(), nullptr, &infoLog[0]);
-		infoLog.resize(sz-1);
-		out << "program link log:\n" << infoLog << std::endl;
-	}
-
-	GLint success;
-	glGetProgramiv(program, GL_LINK_STATUS, &success);
-
-	if (success == GL_FALSE) {
-		glDeleteProgram(program);
-		program = 0;
-	}
-
-	return program;
-}
-
 
 void snygg_instance::maybe_ready() {
 	if (!bp) return;
@@ -304,37 +204,9 @@ void snygg_instance::maybe_ready() {
 	if (context.is_null()) return;
 
 
-	floorProgram = buildShaderProgram(
-		{
-			{ GL_VERTEX_SHADER, { resources["mb_vertex.glsl"] } },
-			{ GL_FRAGMENT_SHADER, { resources["light.glsl"], resources["flat_fragment.glsl"] } }
-		}, {
-			{ "vertex", attrib::vertex }
-		},
-		lout
-	);
-	if (floorProgram == 0) throw std::runtime_error("Shader linking failed");
-
-
-	colorProgram = buildShaderProgram(
-		{
-			{ GL_VERTEX_SHADER, { resources["vertex.glsl"] } },
-			{ GL_FRAGMENT_SHADER, {
-				resources["light.glsl"],
-				resources["fragment.glsl"],
-				resources["color_mapping.glsl"]
-			} }
-		}, {
-			{ "vertex", attrib::vertex },
-			{ "circle_coord", attrib::circle_coord },
-			{ "across_in", attrib::across },
-			{ "along_in", attrib::along },
-			{ "b_in", attrib::b }
-		},
-		lout
-	);
-	if (colorProgram == 0) throw std::runtime_error("Shader linking failed");
-
+	skin.reset(new buffering_skin(resources, lout));
+	skin->set_transformation(reshaper.get_transformation());
+	skin->set_pixels_per_unit(reshaper.get_pixels_per_unit());
 
 	floor = std::move(renderable_complex_polygon(bp->floor_polygon()));
 
@@ -412,8 +284,10 @@ void snygg_instance::DidChangeView(const pp::View& view) {
 	int width = rect.width() * scale, height = rect.height() * scale;
 
 	reshaper.reshape(width, height);
-	skin.set_transformation(reshaper.get_transformation());
-	skin.set_pixels_per_unit(reshaper.get_pixels_per_unit());
+	if (skin) {
+		skin->set_transformation(reshaper.get_transformation());
+		skin->set_pixels_per_unit(reshaper.get_pixels_per_unit());
+	}
 
 	if (context.is_null()) {
 		context = initGL(*this, width, height);
@@ -464,8 +338,6 @@ bool snygg_instance::Init(uint32_t argc, const char* argn[], const char* argv[])
 
 			auto bb = bp->bounding_box();
 			reshaper.set_box(bb.x1, bb.y1, bb.x2, bb.y2);
-			skin.set_transformation(reshaper.get_transformation());
-			skin.set_pixels_per_unit(reshaper.get_pixels_per_unit());
 
 			maybe_ready();
 		}

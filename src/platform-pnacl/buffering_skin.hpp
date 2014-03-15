@@ -1,18 +1,27 @@
 #ifndef BUFFERING_SKIN_HPP
 #define BUFFERING_SKIN_HPP
 
+#include <map>
+#include <string>
+#include <vector>
 #include <scalable_skin.hpp>
+#include <matrix.hpp>
 
 enum class geometry_mode;
 struct geometry_spec;
 
 class buffering_skin : public scalable_skin {
 	unsigned buffer;
+	la::matrix33f transform;
 
 	void draw_geometry_spec(const geometry_spec&);
 
+	int floorProgram, colorProgram;
+	void to_floor_shader();
+	void to_wall_shader();
+
 public:
-	buffering_skin();
+	buffering_skin(const std::map<std::string, std::vector<char>>& resources, std::ostream& debug_output);
 	~buffering_skin() override;
 
 	void draw_arrays(unsigned buffer_object, unsigned n, geometry_mode mode);
