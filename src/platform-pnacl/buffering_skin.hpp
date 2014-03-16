@@ -10,18 +10,28 @@
 enum class geometry_mode;
 struct geometry_spec;
 
+namespace image {
+	class surface;
+}
+
 class buffering_skin : public scalable_skin {
 	unsigned buffer;
 	la::matrix33f transform;
 
 	void draw_geometry_spec(const geometry_spec&);
 
-	int floorProgram, colorProgram;
+	unsigned floorProgram, colorProgram, textureProgram;
+	unsigned textures[2];
 	void to_floor_shader();
 	void to_wall_shader();
+	void to_texture_shader();
 
 public:
-	buffering_skin(const std::map<std::string, std::vector<char>>& resources, std::ostream& debug_output);
+	buffering_skin(
+		const std::map<std::string, std::vector<char>>& resources,
+		const std::map<std::string, image::surface>& images,
+		std::ostream& debug_output
+	);
 	~buffering_skin() override;
 
 	void draw_arrays(unsigned buffer_object, unsigned n, geometry_mode mode);

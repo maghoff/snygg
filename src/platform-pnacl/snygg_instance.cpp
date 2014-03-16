@@ -5,6 +5,7 @@
 #include <board.hpp>
 #include <rect.hpp>
 #include <complex_polygon.hpp>
+#include <load_jpeg.hpp>
 #include "urlloader_file_loader.hpp"
 #include "iurlstream.hpp"
 #include "ologstream.hpp"
@@ -65,11 +66,12 @@ template <typename F1, typename F2>
 std::thread async(F1&& asyncOperation, F2&& callback) {
 	auto messageLoop = pp::MessageLoop::GetCurrent();
 	return std::thread([=]() mutable {
-		auto result = asyncOperation();
+		std::shared_ptr<decltype(asyncOperation())> result;
+		result.reset(new decltype(asyncOperation()) (asyncOperation()));
 		auto postResult = messageLoop.PostWork(
 			makeCompletionCallback(
-				// FIXME Undesirable copies into capture. Moves would be better.
-				[=](int32_t) mutable { callback(std::move(result)); }
+				// FIXME Undesirable shared_ptr. Could we move the result object directly?
+				[=](int32_t) mutable { callback(std::move(*result)); }
 			)
 		);
 		if (postResult != PP_OK) std::terminate();
@@ -201,10 +203,11 @@ void snygg_instance::render(void* userdata) {
 void snygg_instance::maybe_ready() {
 	if (!bp) return;
 	if (!resources_loaded) return;
+	if (!images_loaded) return;
 	if (context.is_null()) return;
 
 
-	skin.reset(new buffering_skin(resources, lout));
+	skin.reset(new buffering_skin(resources, images, lout));
 	skin->set_transformation(reshaper.get_transformation());
 	skin->set_pixels_per_unit(reshaper.get_pixels_per_unit());
 
@@ -316,6 +319,22 @@ std::map<std::string, std::vector<char>> load_resources(
 	return results;
 }
 
+std::map<std::string, image::surface> load_images(
+	pp::InstanceHandle instanceHandle,
+	const std::map<std::string, std::string>& images
+) {
+	std::map<std::string, image::surface> results;
+	std::vector<std::thread> thread_party;
+	for (auto& src : images) {
+		thread_party.emplace_back([&results, src, instanceHandle] {
+			iurlstream in(instanceHandle, src.second);
+			results.emplace(src.first, image::load_jpeg(in));
+		});
+	}
+	for (auto& thread : thread_party) thread.join();
+	return results;
+}
+
 bool snygg_instance::Init(uint32_t argc, const char* argn[], const char* argv[]) {
 	std::map<std::string, std::string> args;
 	for (int i=0; i<argc; ++i) args[argn[i]] = argv[i];
@@ -347,14 +366,12 @@ bool snygg_instance::Init(uint32_t argc, const char* argn[], const char* argv[])
 		[=]() {
 			return load_resources(instanceHandle, {
 				{ "color_mapping.glsl", "skins/snakeskin/color_mapping.glsl" },
-				{ "diffuse.jpg", "skins/snakeskin/diffuse.jpg" },
 				{ "flat_fragment.glsl", "skins/snakeskin/flat_fragment.glsl" },
 				{ "fragment.glsl", "skins/snakeskin/fragment.glsl" },
 				{ "light.glsl", "skins/snakeskin/light.glsl" },
 				{ "mb_function.glsl", "skins/snakeskin/mb_function.glsl" },
 				{ "mb_mapping.glsl", "skins/snakeskin/mb_mapping.glsl" },
 				{ "mb_vertex.glsl", "skins/snakeskin/mb_vertex.glsl" },
-				{ "normal.jpg", "skins/snakeskin/normal.jpg" },
 				{ "texture_mapping.glsl", "skins/snakeskin/texture_mapping.glsl" },
 				{ "vertex.glsl", "skins/snakeskin/vertex.glsl" }
 			});
@@ -364,6 +381,21 @@ bool snygg_instance::Init(uint32_t argc, const char* argn[], const char* argv[])
 
 			resources = std::move(resources_);
 			resources_loaded = true;
+			maybe_ready();
+		}
+	);
+
+	load_images_thread = async(
+		[=]() {
+			return load_images(instanceHandle, {
+				{ "diffuse.jpg", "skins/snakeskin/diffuse.jpg" },
+				{ "normal.jpg", "skins/snakeskin/normal.jpg" }
+			});
+		},
+		[this](std::map<std::string, image::surface>&& images_) {
+			load_images_thread.join();
+			images = std::move(images_);
+			images_loaded = true;
 			maybe_ready();
 		}
 	);

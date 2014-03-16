@@ -16,6 +16,7 @@
 #include <player.hpp>
 #include <renderable.hpp>
 #include <bindable_keyboard_handler.hpp>
+#include <surface.hpp>
 #include "renderable_complex_polygon.hpp"
 #include "renderable_recording_draw_elements.hpp"
 #include "ologstream.hpp"
@@ -37,6 +38,9 @@ class snygg_instance : public pp::Instance, pp::Graphics3DClient, item_container
 	std::shared_ptr<board> bp;
 	std::map<std::string, std::vector<char>> resources;
 	bool resources_loaded = false;
+	std::thread load_images_thread;
+	std::map<std::string, image::surface> images;
+	bool images_loaded = false;
 
 	pp::Graphics3D context;
 	std::shared_ptr<std::function<void(void*)>> doRender;

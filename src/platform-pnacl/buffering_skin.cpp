@@ -1,6 +1,8 @@
 #include "buffering_skin.hpp"
 #include <ostream>
 #include <GLES2/gl2.h>
+#include <load_jpeg.hpp>
+#include <surface.hpp>
 #include "geometry_spec.hpp"
 #include "geometry_builder.hpp"
 
@@ -95,14 +97,28 @@ GLuint buildShaderProgram(
 }
 
 
-const std::vector<char>& get(const std::map<std::string, std::vector<char>>& resources, const std::string& key) {
+template <typename T>
+const T& get(const std::map<std::string, T>& resources, const std::string& key) {
 	auto i = resources.find(key);
 	if (i == resources.end()) throw std::runtime_error("Requested missing resource");
 	return i->second;
 }
 
 
-buffering_skin::buffering_skin(const std::map<std::string, std::vector<char>>& resources, std::ostream& out) : buffer(0) {
+static void copy_surface_to_texture(const image::surface& s, unsigned int gl_texture) {
+	GLuint format = s.components() == 4 ? GL_RGBA : GL_RGB;
+
+	glBindTexture(GL_TEXTURE_2D, gl_texture);
+	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+	glTexImage2D(GL_TEXTURE_2D, 0, format, s.width(), s.height(), 0, format, GL_UNSIGNED_BYTE, s.data().data());
+	glGenerateMipmap(GL_TEXTURE_2D);
+}
+
+buffering_skin::buffering_skin(
+	const std::map<std::string, std::vector<char>>& resources,
+	const std::map<std::string, image::surface>& images,
+	std::ostream& out
+) : buffer(0) {
 	floorProgram = buildShaderProgram(
 		{
 			{ GL_VERTEX_SHADER, { get(resources, "mb_vertex.glsl") } },
@@ -135,10 +151,33 @@ buffering_skin::buffering_skin(const std::map<std::string, std::vector<char>>& r
 	if (colorProgram == 0) throw std::runtime_error("Shader linking failed");
 
 
+	textureProgram = buildShaderProgram(
+		{
+			{ GL_VERTEX_SHADER, { get(resources, "vertex.glsl") } },
+			{ GL_FRAGMENT_SHADER, {
+				get(resources, "light.glsl"),
+				get(resources, "fragment.glsl"),
+				get(resources, "texture_mapping.glsl")
+			} }
+		}, {
+			{ "vertex", attrib::vertex },
+			{ "circle_coord", attrib::circle_coord },
+			{ "across_in", attrib::across },
+			{ "along_in", attrib::along },
+			{ "b_in", attrib::b }
+		},
+		out
+	);
+	if (textureProgram == 0) throw std::runtime_error("Shader linking failed");
+
+	glGenTextures(2, textures);
+	copy_surface_to_texture(get(images, "diffuse.jpg"), textures[0]);
+	copy_surface_to_texture(get(images, "normal.jpg"), textures[1]);
 }
 
 buffering_skin::~buffering_skin() {
 	if (buffer != 0) glDeleteBuffers(1, &buffer);
+	glDeleteTextures(2, textures);
 }
 
 void buffering_skin::to_floor_shader() {
@@ -157,6 +196,26 @@ void buffering_skin::to_wall_shader() {
 
 	glUniform4f(glGetUniformLocation(colorProgram, "ambient"), 0.4f, 0.4f, 0.4f, 1.0f);
 	glUniform4f(glGetUniformLocation(colorProgram, "color"), 0.1f, 0.1f, 0.1f, 1.0f);
+}
+
+void buffering_skin::to_texture_shader() {
+	glUseProgram(textureProgram);
+
+	glUniformMatrix3fv(glGetUniformLocation(textureProgram, "transform"), 1, GL_FALSE, transform.v);
+
+	glUniform4f(glGetUniformLocation(textureProgram, "ambient"), 0.4f, 0.4f, 0.4f, 1.0f);
+	glUniform1i(glGetUniformLocation(textureProgram, "diffuse_map"), 0);
+	glUniform1i(glGetUniformLocation(textureProgram, "normal_map"), 1);
+
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, textures[0]);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+
+	glActiveTexture(GL_TEXTURE1);
+	glBindTexture(GL_TEXTURE_2D, textures[1]);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 }
 
 void buffering_skin::draw_geometry_spec(const geometry_spec& spec) {
@@ -219,6 +278,7 @@ void buffering_skin::set_transformation(const la::matrix33f& transform_) {
 }
 
 void buffering_skin::circle(la::vec2f p, float r) {
+	to_wall_shader();
 	glUniform4f(glGetUniformLocation(colorProgram, "color"), 0.6f, 0.4f, 0.2f, 1.0f);
 	draw_geometry_spec(
 		geometry_builder::circle(
@@ -226,7 +286,7 @@ void buffering_skin::circle(la::vec2f p, float r) {
 			p, r
 		)
 	);
-	glUniform4f(glGetUniformLocation(colorProgram, "color"), 0.1f, 0.4f, 0.1f, 1.0f);
+	to_texture_shader();
 }
 
 void buffering_skin::blood(la::vec2f p, float r) {
@@ -266,8 +326,7 @@ void buffering_skin::enter_state(state_t st) {
 		to_wall_shader();
 		break;
 	case other_state:
-		to_wall_shader();
-		glUniform4f(glGetUniformLocation(colorProgram, "color"), 0.1f, 0.4f, 0.1f, 1.0f);
+		to_texture_shader();
 		break;
 	}
 }
