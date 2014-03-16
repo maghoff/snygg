@@ -1,13 +1,13 @@
 #ifndef IMAGE_IMG_LOAD_HPP
 #define IMAGE_IMG_LOAD_HPP
 
-#include <string>
+#include <iosfwd>
 
 namespace image {
 
 class surface;
 
-surface load_jpeg(const std::string& filename);
+surface load_jpeg(std::istream&);
 
 }
 

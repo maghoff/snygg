@@ -1,6 +1,7 @@
 #include <vector>
 #include <map>
 #include <algorithm>
+#include <fstream>
 #include <GL/glew.h>
 
 #include <texture.hpp>
@@ -132,7 +133,8 @@ void shader_configuration::set_uniform(const std::string& name, la::matrix33f ma
 
 void shader_configuration::add_texture(const std::string& name, const std::string& filename) {
 	set_uniform(name, d->textures.size());
-	d->surfaces.emplace_back(image::load_jpeg(filename));
+	std::ifstream in(filename);
+	d->surfaces.emplace_back(image::load_jpeg(in));
 	d->textures.resize(d->textures.size() + 1);
 }
 
