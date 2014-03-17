@@ -89,6 +89,8 @@ snygg_instance::snygg_instance(PP_Instance instance) :
 
 snygg_instance::~snygg_instance() {
 	load_board_thread.join();
+	load_resources_thread.join();
+	load_images_thread.join();
 }
 
 void snygg_instance::add_item(std::unique_ptr<item>&& i) {
@@ -299,7 +301,7 @@ void snygg_instance::DidChangeView(const pp::View& view) {
 	} else {
 		context.ResizeBuffers(width, height);
 		glViewport(0, 0, width, height);
-		update_walls();
+		if (bp) update_walls();
 	}
 }
 
