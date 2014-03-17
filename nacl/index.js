@@ -15,6 +15,7 @@ if (argv.release) variant = "release";
 
 server = resource_tree.createServer({
 	"index.html": new resource_tree.FileResource(path.join(root, "nacl/src/index.html")),
+	"mp.png": new resource_tree.FileResource(path.join(root, "nacl/src/mp.png")),
 	"platform-pnacl.nmf": new resource_tree.FileResource(path.join(root, "nacl/src/manifest.json")),
 	"platform-pnacl.pexe": new resource_tree.FileResource(path.join(root, "build-pnacl/" + variant + "/src/platform-pnacl/platform-pnacl.pexe")),
 	"levels": new resource_tree.FileLookup(path.join(root, "levels")),

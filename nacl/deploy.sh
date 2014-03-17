@@ -17,6 +17,7 @@ do
 	gzip --best --no-name < "$x" > "deploy/skins/snakeskin/$(basename $x)"
 done
 
+gzip --best --no-name < src/mp.png > "deploy/mp.png"
 gzip --best --no-name < src/index.html > "deploy/index.html"
 gzip --best --no-name < src/manifest.json > "deploy/platform-pnacl.nmf"
 gzip --best --no-name < ../build-pnacl/release/src/platform-pnacl/platform-pnacl.pexe > "deploy/platform-pnacl.pexe"
