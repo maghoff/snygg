@@ -1,3 +1,5 @@
+#include "metaballs.hpp"
+
 #include <GL/glew.h>
 
 #include <algorithm>
@@ -13,9 +15,7 @@
 #include "gl/shader_program.hpp"
 #include "gl/shader_builder.hpp"
 #include "draw_complex_polygon.hpp"
-#include "metaballs.hpp"
-
-#include "ball_insert_iterator.ipp"
+#include "metaballs_accumulator.hpp"
 
 const auto vertex = 5u;
 
@@ -31,16 +31,11 @@ struct metaballs::impl {
 
 	gl_fbo fbo;
 
-	struct {
-		std::multiset<la::vec3f> gen[2];
-		int next_gen_index;
+	metaballs_accumulator accumulator;
 
+	struct {
 		gl::texture stored_value[2];
 		int next_tex_index;
-
-		std::multiset<la::vec3f>& prev_gen() { return gen[next_gen_index ^ 1]; }
-		std::multiset<la::vec3f>& next_gen() { return gen[next_gen_index]; }
-		void step_generation() { next_gen_index ^= 1; }
 
 		gl::texture& prev_tex() { return stored_value[next_tex_index ^ 1]; }
 		gl::texture& next_tex() { return stored_value[next_tex_index]; }
@@ -53,7 +48,6 @@ metaballs::metaballs(scalable_skin* s, const std::string& path) :
 {
 	d->target = s;
 	d->balls.next_tex_index = 0;
-	d->balls.next_gen_index = 0;
 
 	{
 		shader_builder sb;
@@ -88,13 +82,13 @@ void metaballs::load_opengl_resources(int width, int height) {
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_R32F, width, height, 0, GL_RED, GL_FLOAT, buf.data());
 		assert(glGetError() == GL_NONE);
-
-		d->balls.gen[i].clear();
 	}
 
 	d->fbo.set_size(width, height);
 
 	//d->target->load_opengl_resources(width, height);
+
+	d->accumulator.clear();
 }
 
 void metaballs::set_transformation(const la::matrix33f& transform_) {
@@ -103,7 +97,7 @@ void metaballs::set_transformation(const la::matrix33f& transform_) {
 }
 
 void metaballs::blood(la::vec2f p, float r) {
-	d->balls.next_gen().insert(la::vec3f(p[0], p[1], r));
+	d->accumulator.add_to_generation(p, r);
 }
 
 void metaballs::update_metaballs(const complex_polygon& floor_poly, const std::vector<la::vec4f>& p) {
@@ -155,27 +149,11 @@ void metaballs::draw_metaballs(const complex_polygon& floor_poly) {
 }
 
 void metaballs::floor(const complex_polygon& floor_poly) {
-	std::vector<la::vec4f> balls;
-
-	// Removed balls:
-	std::set_difference(
-		d->balls.prev_gen().begin(), d->balls.prev_gen().end(),
-		d->balls.next_gen().begin(), d->balls.next_gen().end(),
-		ball_insert_iterator(balls, -1)
-	);
-
-	// Added balls:
-	std::set_difference(
-		d->balls.next_gen().begin(), d->balls.next_gen().end(),
-		d->balls.prev_gen().begin(), d->balls.prev_gen().end(),
-		ball_insert_iterator(balls, 1)
-	);
-
+	auto balls = d->accumulator.calculate_updates();
 	if (!balls.empty()) update_metaballs(floor_poly, balls);
 	draw_metaballs(floor_poly);
 
-	d->balls.step_generation();
-	d->balls.next_gen().clear();
+	d->accumulator.step_generation();
 
 	d->target->floor(floor_poly);
 }
