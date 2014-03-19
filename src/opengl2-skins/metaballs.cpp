@@ -33,21 +33,21 @@ struct metaballs::impl {
 
 	metaballs_accumulator accumulator;
 
-	struct {
+	class {
 		gl::texture stored_value[2];
-		int next_tex_index;
+		int next_index = 0;
 
-		gl::texture& prev_tex() { return stored_value[next_tex_index ^ 1]; }
-		gl::texture& next_tex() { return stored_value[next_tex_index]; }
-		void step_tex() { next_tex_index ^= 1; }
-	} balls;
+	public:
+		gl::texture& prev() { return stored_value[next_index ^ 1]; }
+		gl::texture& next() { return stored_value[next_index]; }
+		void step_tex() { next_index ^= 1; }
+	} tex;
 };
 
 metaballs::metaballs(scalable_skin* s, const std::string& path) :
 	d(new impl)
 {
 	d->target = s;
-	d->balls.next_tex_index = 0;
 
 	{
 		shader_builder sb;
@@ -76,8 +76,8 @@ void metaballs::load_opengl_resources(int width, int height) {
 
 	const size_t sz = width*height*4; // 4 == sizeof(GL_R32F);
 	std::vector<char> buf(sz, 0);
-	for (int i=0; i<2; ++i) {
-		glBindTexture(GL_TEXTURE_2D, d->balls.stored_value[i].get_id());
+	for (auto tex : { &d->tex.prev(), &d->tex.next() }) {
+		glBindTexture(GL_TEXTURE_2D, tex->get_id());
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_R32F, width, height, 0, GL_RED, GL_FLOAT, buf.data());
@@ -118,7 +118,7 @@ void metaballs::update_metaballs(const complex_polygon& floor_poly, const std::v
 	glTexImage1D(GL_TEXTURE_1D, 0, GL_RGBA16F_ARB, p.size(), 0, GL_RGBA, GL_FLOAT, &p[0]);
 
 	glActiveTexture(GL_TEXTURE1);
-	glBindTexture(GL_TEXTURE_2D, d->balls.prev_tex().get_id());
+	glBindTexture(GL_TEXTURE_2D, d->tex.prev().get_id());
 
 	d->metaballs->set_uniform("number_of_balls", (int)p.size());
 	d->metaballs->set_uniform("balls", 0);
@@ -131,7 +131,7 @@ void metaballs::update_metaballs(const complex_polygon& floor_poly, const std::v
 	binder.unbind();
 	glEnable(GL_BLEND);
 
-	d->balls.step_tex();
+	d->tex.step_tex();
 }
 
 void metaballs::draw_metaballs(const complex_polygon& floor_poly) {
@@ -140,7 +140,7 @@ void metaballs::draw_metaballs(const complex_polygon& floor_poly) {
 	glUniformMatrix3fv(glGetUniformLocation(d->mapping->get_program_id(), "transform"), 1, GL_FALSE, d->transform.v);
 
 	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, d->balls.prev_tex().get_id());
+	glBindTexture(GL_TEXTURE_2D, d->tex.prev().get_id());
 
 	d->mapping->set_uniform("ambient", 0.4f, 0.4f, 0.4f, 1.0f);
 
