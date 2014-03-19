@@ -25,8 +25,6 @@ struct metaballs::impl {
 	la::matrix33f transform;
 
 	std::unique_ptr<shader_program> metaballs;
-	gl::texture metaballs_coordinates;
-
 	std::unique_ptr<shader_program> mapping;
 
 	gl_fbo fbo;
@@ -100,38 +98,38 @@ void metaballs::blood(la::vec2f p, float r) {
 	d->accumulator.add_to_generation(p, r);
 }
 
-void metaballs::update_metaballs(const complex_polygon& floor_poly, const std::vector<la::vec4f>& p) {
-	d->fbo.render_to(d->balls.next_tex().get_id());
-
-	glDisable(GL_BLEND);
+void metaballs::update_four_metaballs(const complex_polygon& floor_poly, const la::vec4f* data) {
+	d->fbo.render_to(d->tex.next().get_id());
 
 	scoped_bind_fbo binder(d->fbo);
 
-	glUseProgram(d->metaballs->get_program_id());
-
-	glUniformMatrix3fv(glGetUniformLocation(d->metaballs->get_program_id(), "transform"), 1, GL_FALSE, d->transform.v);
+	glUniform4fv(glGetUniformLocation(d->metaballs->get_program_id(), "balls"), 4, reinterpret_cast<const GLfloat*>(data));
 
 	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_1D, d->metaballs_coordinates.get_id());
-	glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	glTexImage1D(GL_TEXTURE_1D, 0, GL_RGBA16F_ARB, p.size(), 0, GL_RGBA, GL_FLOAT, &p[0]);
-
-	glActiveTexture(GL_TEXTURE1);
 	glBindTexture(GL_TEXTURE_2D, d->tex.prev().get_id());
-
-	d->metaballs->set_uniform("number_of_balls", (int)p.size());
-	d->metaballs->set_uniform("balls", 0);
-	d->metaballs->set_uniform("storedValue", 1);
+	d->metaballs->set_uniform("storedValue", 0);
 
 	glClear(GL_COLOR_BUFFER_BIT);
 	draw(vertex, floor_poly);
 
-	glUseProgram(0);
 	binder.unbind();
-	glEnable(GL_BLEND);
 
 	d->tex.step_tex();
+}
+
+void metaballs::update_metaballs(const complex_polygon& floor_poly, std::vector<la::vec4f> p) {
+	p.resize((p.size() + 3) / 4 * 4); // ceil(p.size() / 4) * 4
+
+	glUseProgram(d->metaballs->get_program_id());
+	glDisable(GL_BLEND);
+	glUniformMatrix3fv(glGetUniformLocation(d->metaballs->get_program_id(), "transform"), 1, GL_FALSE, d->transform.v);
+
+	for (auto i = 0u; i < p.size()/4; ++i) {
+		update_four_metaballs(floor_poly, &p[i*4]);
+	}
+
+	glEnable(GL_BLEND);
+	glUseProgram(0);
 }
 
 void metaballs::draw_metaballs(const complex_polygon& floor_poly) {
