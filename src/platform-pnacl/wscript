@@ -9,6 +9,7 @@ def build(bld):
 		'iurlstream.cpp',
 		'logbuf.cpp',
 		'main.cpp',
+		'metaballs.cpp',
 		'ologstream.cpp',
 		'recording_skin.cpp',
 		'renderable_complex_polygon.cpp',

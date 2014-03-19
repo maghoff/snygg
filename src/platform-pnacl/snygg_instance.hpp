@@ -25,6 +25,7 @@ class board_provider;
 class board;
 class food_generator;
 class buffering_skin;
+class metaballs;
 
 namespace pp {
 	class KeyboardInputEvent;
@@ -49,6 +50,7 @@ class snygg_instance : public pp::Instance, pp::Graphics3DClient, item_container
 	renderable_recording_draw_elements walls;
 
 	std::unique_ptr<buffering_skin> skin;
+	std::unique_ptr<metaballs> metaballs;
 
     int storedWidth=0, storedHeight=0;
 	game::box_reshaper reshaper;

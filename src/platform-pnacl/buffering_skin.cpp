@@ -2,7 +2,6 @@
 #include <cassert>
 #include <ostream>
 #include <GLES2/gl2.h>
-#include <GLES2/gl2ext.h>
 #include <load_jpeg.hpp>
 #include <surface.hpp>
 #include "geometry_spec.hpp"
@@ -101,7 +100,7 @@ GLuint buildShaderProgram(
 
 
 template <typename T>
-const T& get(const std::map<std::string, T>& resources, const std::string& key) {
+static const T& get(const std::map<std::string, T>& resources, const std::string& key) {
 	auto i = resources.find(key);
 	if (i == resources.end()) throw std::runtime_error("Requested missing resource");
 	return i->second;
@@ -115,14 +114,6 @@ static void copy_surface_to_texture(const image::surface& s, unsigned int gl_tex
 	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 	glTexImage2D(GL_TEXTURE_2D, 0, format, s.width(), s.height(), 0, format, GL_UNSIGNED_BYTE, s.data().data());
 	glGenerateMipmap(GL_TEXTURE_2D);
-}
-
-buffering_skin::tex_generation_manager::tex_generation_manager() {
-	glGenTextures(2, stored_value);
-}
-
-buffering_skin::tex_generation_manager::~tex_generation_manager() {
-	glDeleteTextures(2, stored_value);
 }
 
 buffering_skin::buffering_skin(
@@ -140,34 +131,6 @@ buffering_skin::buffering_skin(
 		out
 	);
 	if (floorProgram == 0) throw std::runtime_error("Shader linking failed");
-
-
-	metaballsProgram = buildShaderProgram(
-		{
-			{ GL_VERTEX_SHADER, { get(resources, "mb_vertex.glsl") } },
-			{ GL_FRAGMENT_SHADER, { get(resources, "mb_function.glsl") } }
-		}, {
-			{ "vertex", attrib::vertex }
-		},
-		out
-	);
-	if (metaballsProgram == 0) throw std::runtime_error("Shader linking failed");
-	glGenFramebuffers(1, &metaballsFBO);
-
-
-	metaballsMappingProgram = buildShaderProgram(
-		{
-			{ GL_VERTEX_SHADER, { get(resources, "mb_vertex.glsl") } },
-			{ GL_FRAGMENT_SHADER, {
-				get(resources, "light.glsl"),
-				get(resources, "mb_mapping.glsl"),
-			} }
-		}, {
-			{ "vertex", attrib::vertex }
-		},
-		out
-	);
-	if (metaballsMappingProgram == 0) throw std::runtime_error("Shader linking failed");
 
 
 	colorProgram = buildShaderProgram(
@@ -217,7 +180,6 @@ buffering_skin::buffering_skin(
 buffering_skin::~buffering_skin() {
 	if (buffer != 0) glDeleteBuffers(1, &buffer);
 	glDeleteTextures(2, textures);
-	glDeleteFramebuffers(1, &metaballsFBO);
 }
 
 void buffering_skin::to_floor_shader() {
@@ -311,14 +273,6 @@ void buffering_skin::draw_elements(unsigned int vertex_buffer_object, unsigned i
 }
 
 void buffering_skin::load_opengl_resources(int width, int height) {
-	for (auto id : { tex.prev(), tex.next() }) {
-		glBindTexture(GL_TEXTURE_2D, id);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_HALF_FLOAT_OES, 0);
-		assert(glGetError() == GL_NONE);
-	}
-	metaballs.clear();
 }
 
 void buffering_skin::set_transformation(const la::matrix33f& transform_) {
@@ -338,7 +292,6 @@ void buffering_skin::circle(la::vec2f p, float r) {
 }
 
 void buffering_skin::blood(la::vec2f p, float r) {
-	metaballs.add_to_generation(p, r);
 }
 
 void buffering_skin::fat_arc(la::vec2f p, float r, float t, float begin, float end, float b_begin, float b_end) {
@@ -363,55 +316,6 @@ void buffering_skin::cap(la::vec2f p, float snake_direction_in, float cap_direct
 	);
 }
 
-void buffering_skin::update_four_metaballs(const renderable_complex_polygon& floor, const la::vec4f* data) {
-	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, tex.next(), 0);
-
-	glUniform4fv(glGetUniformLocation(metaballsProgram, "balls"), 4, reinterpret_cast<const GLfloat*>(data));
-
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, tex.prev());
-	glUniform1i(glGetUniformLocation(metaballsProgram, "storedValue"), 0);
-
-	floor.render(attrib::vertex);
-
-	tex.step();
-}
-
-void buffering_skin::update_metaballs(const renderable_complex_polygon& floor, std::vector<la::vec4f> p) {
-	if (p.empty()) return;
-	p.resize((p.size() + 3) / 4 * 4); // ceil(p.size() / 4) * 4
-
-	glBindFramebuffer(GL_FRAMEBUFFER, metaballsFBO);
-
-	glUseProgram(metaballsProgram);
-	glUniformMatrix3fv(glGetUniformLocation(metaballsProgram, "transform"), 1, GL_FALSE, transform.v);
-
-	for (auto i = 0u; i < p.size()/4; ++i) {
-		update_four_metaballs(floor, &p[i*4]);
-	}
-
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-}
-
-void buffering_skin::draw_metaballs(const renderable_complex_polygon& floor) {
-	glUseProgram(metaballsMappingProgram);
-	glUniformMatrix3fv(glGetUniformLocation(metaballsMappingProgram, "transform"), 1, GL_FALSE, transform.v);
-
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, tex.prev());
-	glUniform1i(glGetUniformLocation(metaballsMappingProgram, "storedValue"), 0);
-
-	glUniform4f(glGetUniformLocation(metaballsMappingProgram, "ambient"), 0.4f, 0.4f, 0.4f, 1.0f);
-
-	glEnable(GL_BLEND);
-	glBlendFuncSeparate(
-		GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA,
-		GL_ONE, GL_ONE
-	);
-	floor.render(attrib::vertex);
-	glDisable(GL_BLEND);
-}
-
 void buffering_skin::floor(const complex_polygon& floor_poly) {
 	throw std::logic_error("Wrong buffering_skin::floor called. Use renderable_complex_polygon overload!");
 }
@@ -419,12 +323,6 @@ void buffering_skin::floor(const complex_polygon& floor_poly) {
 void buffering_skin::floor(const renderable_complex_polygon& floor) {
 	to_floor_shader();
 	floor.render(attrib::vertex);
-
-	auto balls = metaballs.calculate_updates();
-	if (!balls.empty()) update_metaballs(floor, std::move(balls));
-	draw_metaballs(floor);
-
-	metaballs.step_generation();
 }
 
 void buffering_skin::enter_state(state_t st) {

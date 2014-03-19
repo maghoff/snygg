@@ -27,6 +27,7 @@
 #include "recording_skin.hpp"
 
 #include "buffering_skin.hpp"
+#include "metaballs.hpp"
 
 
 std::pair<std::shared_ptr<board_provider>, std::shared_ptr<board>>
@@ -154,6 +155,11 @@ void snygg_instance::tick_10ms() {
 
 	auto new_end = std::remove_if(items.begin(), items.end(), [](const std::unique_ptr<item>& i) { return i->is_dead(); });
 	items.erase(new_end, items.end());
+
+	for (auto& item : new_items) {
+		items.emplace_back(std::move(item));
+	}
+	new_items.clear();
 }
 
 void snygg_instance::simulate_until(PP_TimeTicks nowTimeTicks) {
@@ -176,6 +182,10 @@ void snygg_instance::render(void* userdata) {
 
 
 	skin->floor(floor);
+
+
+	for (auto& renderable : renderables) renderable->render(*metaballs);
+	metaballs->floor(floor);
 
 
 	skin->enter_state(skin::other_state);
@@ -201,6 +211,11 @@ void snygg_instance::maybe_ready() {
 	skin->set_transformation(reshaper.get_transformation());
 	skin->set_pixels_per_unit(reshaper.get_pixels_per_unit());
 	skin->load_opengl_resources(storedWidth, storedHeight);
+
+	metaballs.reset(new class metaballs(resources, lout));
+	metaballs->set_transformation(reshaper.get_transformation());
+	metaballs->set_pixels_per_unit(reshaper.get_pixels_per_unit());
+	metaballs->load_opengl_resources(storedWidth, storedHeight);
 
 	floor = std::move(renderable_complex_polygon(bp->floor_polygon()));
 
@@ -285,6 +300,9 @@ void snygg_instance::DidChangeView(const pp::View& view) {
 		skin->set_transformation(reshaper.get_transformation());
 		skin->set_pixels_per_unit(reshaper.get_pixels_per_unit());
 		skin->load_opengl_resources(width, height);
+		metaballs->set_transformation(reshaper.get_transformation());
+		metaballs->set_pixels_per_unit(reshaper.get_pixels_per_unit());
+		metaballs->load_opengl_resources(width, height);
 	}
 
 	if (context.is_null()) {
