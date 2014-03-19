@@ -38,7 +38,7 @@ struct metaballs::impl {
 	public:
 		gl::texture& prev() { return stored_value[next_index ^ 1]; }
 		gl::texture& next() { return stored_value[next_index]; }
-		void step_tex() { next_index ^= 1; }
+		void step() { next_index ^= 1; }
 	} tex;
 };
 
@@ -69,6 +69,8 @@ metaballs::~metaballs() {
 }
 
 void metaballs::load_opengl_resources(int width, int height) {
+	assert(glGetError() == GL_NONE);
+
 	d->metaballs->recreate_opengl_resources();
 	d->mapping->recreate_opengl_resources();
 
@@ -101,8 +103,6 @@ void metaballs::blood(la::vec2f p, float r) {
 void metaballs::update_four_metaballs(const complex_polygon& floor_poly, const la::vec4f* data) {
 	d->fbo.render_to(d->tex.next().get_id());
 
-	scoped_bind_fbo binder(d->fbo);
-
 	glUniform4fv(glGetUniformLocation(d->metaballs->get_program_id(), "balls"), 4, reinterpret_cast<const GLfloat*>(data));
 
 	glActiveTexture(GL_TEXTURE0);
@@ -111,9 +111,7 @@ void metaballs::update_four_metaballs(const complex_polygon& floor_poly, const l
 
 	draw(vertex, floor_poly);
 
-	binder.unbind();
-
-	d->tex.step_tex();
+	d->tex.step();
 }
 
 void metaballs::update_metaballs(const complex_polygon& floor_poly, std::vector<la::vec4f> p) {
@@ -122,11 +120,13 @@ void metaballs::update_metaballs(const complex_polygon& floor_poly, std::vector<
 	glUseProgram(d->metaballs->get_program_id());
 	glDisable(GL_BLEND);
 	glUniformMatrix3fv(glGetUniformLocation(d->metaballs->get_program_id(), "transform"), 1, GL_FALSE, d->transform.v);
+	scoped_bind_fbo binder(d->fbo);
 
 	for (auto i = 0u; i < p.size()/4; ++i) {
 		update_four_metaballs(floor_poly, &p[i*4]);
 	}
 
+	binder.unbind();
 	glEnable(GL_BLEND);
 	glUseProgram(0);
 }

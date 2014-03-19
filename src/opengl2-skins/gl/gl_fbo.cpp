@@ -5,7 +5,6 @@
 #include "gl_fbo.hpp"
 
 void gl_fbo::init() {
-	glGenRenderbuffersEXT(1, &depthbuffer);
 	glGenFramebuffersEXT(1, &id);
 }
 
@@ -21,21 +20,11 @@ gl_fbo::gl_fbo(int width, int height) {
 void gl_fbo::set_size(int width, int height) {
 	glPushAttrib(GL_ALL_ATTRIB_BITS);
 
-	glBindRenderbufferEXT(GL_RENDERBUFFER, depthbuffer);
-	glRenderbufferStorageEXT(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, width, height);
-
-	assert(id != 0);
-	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, id);
-	glFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT, GL_DEPTH_ATTACHMENT_EXT, GL_RENDERBUFFER_EXT, depthbuffer);
-
-	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
-
 	glPopAttrib();
 }
 
 gl_fbo::~gl_fbo() {
 	glDeleteFramebuffersEXT(1, &id);
-	glDeleteRenderbuffersEXT(1, &depthbuffer);
 }
 
 GLuint gl_fbo::get_id() const {
@@ -55,7 +44,6 @@ void gl_fbo::render_to(unsigned tex_id) {
 
 void gl_fbo_multisample::init() {
 	glGenRenderbuffers(1, &colorbuffer);
-	glGenRenderbuffers(1, &depthbuffer);
 	glGenFramebuffers(1, &id);
 }
 
@@ -80,13 +68,9 @@ void gl_fbo_multisample::set_size(int width_, int height_) {
 	glBindRenderbuffer(GL_RENDERBUFFER, colorbuffer);
 	glRenderbufferStorageMultisample(GL_RENDERBUFFER, samples, GL_RGBA8, width, height);
 
-	glBindRenderbuffer(GL_RENDERBUFFER, depthbuffer);
-	glRenderbufferStorageMultisample(GL_RENDERBUFFER, samples, GL_DEPTH_COMPONENT, width, height);
-
 	assert(id != 0);
 	glBindFramebuffer(GL_FRAMEBUFFER, id);
 	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, colorbuffer);
-	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthbuffer);
 
 	GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
 	assert(status == GL_FRAMEBUFFER_COMPLETE);
@@ -94,11 +78,12 @@ void gl_fbo_multisample::set_size(int width_, int height_) {
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 	glPopAttrib();
+
+	assert(glGetError() == GL_NONE);
 }
 
 gl_fbo_multisample::~gl_fbo_multisample() {
 	glDeleteFramebuffers(1, &id);
-	glDeleteRenderbuffers(1, &depthbuffer);
 }
 
 GLuint gl_fbo_multisample::get_id() const {

@@ -3,7 +3,6 @@
 
 class gl_fbo {
 	unsigned id;
-	unsigned depthbuffer;
 
 	void init();
 
@@ -23,7 +22,7 @@ public:
 
 class gl_fbo_multisample {
 	unsigned id;
-	unsigned colorbuffer, depthbuffer;
+	unsigned colorbuffer;
 	unsigned width, height;
 
 	void init();
