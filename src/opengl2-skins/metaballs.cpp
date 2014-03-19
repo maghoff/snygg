@@ -109,7 +109,6 @@ void metaballs::update_four_metaballs(const complex_polygon& floor_poly, const l
 	glBindTexture(GL_TEXTURE_2D, d->tex.prev().get_id());
 	d->metaballs->set_uniform("storedValue", 0);
 
-	glClear(GL_COLOR_BUFFER_BIT);
 	draw(vertex, floor_poly);
 
 	binder.unbind();
