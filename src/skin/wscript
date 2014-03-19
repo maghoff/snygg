@@ -3,6 +3,7 @@
 
 def build(bld):
 	sources = [
+		'metaballs_accumulator.cpp',
 		'scalable_skin.cpp',
 		'skin.cpp',
 	]

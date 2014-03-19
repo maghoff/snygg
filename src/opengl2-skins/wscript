@@ -5,7 +5,6 @@ def build(bld):
 	sources = [
 		'draw_complex_polygon.cpp',
 		'metaballs.cpp',
-		'metaballs_accumulator.cpp',
 		'plain_skin.cpp',
 		'schematic_skin.cpp',
 		'textured_skin.cpp',
