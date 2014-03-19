@@ -148,7 +148,7 @@ void metaballs::draw_metaballs(const complex_polygon& floor_poly) {
 
 void metaballs::floor(const complex_polygon& floor_poly) {
 	auto balls = d->accumulator.calculate_updates();
-	if (!balls.empty()) update_metaballs(floor_poly, balls);
+	if (!balls.empty()) update_metaballs(floor_poly, std::move(balls));
 	draw_metaballs(floor_poly);
 
 	d->accumulator.step_generation();
