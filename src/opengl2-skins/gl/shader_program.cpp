@@ -1,3 +1,4 @@
+#include <iostream>
 #include <limits>
 #include <stdexcept>
 #include "shader_program.hpp"
@@ -29,6 +30,24 @@ void shader_program::recreate_opengl_resources() {
 
 		glShaderSource(shader, 1, sources, lengths);
 		glCompileShader(shader);
+
+		GLint sz;
+		glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &sz);
+		if (sz > 1) {
+			std::string infoLog(sz, char{});
+			glGetShaderInfoLog(shader, infoLog.size(), nullptr, &infoLog[0]);
+			infoLog.resize(sz - 1);
+			std::cerr << "shader compile log:\n" << infoLog << std::endl;
+		}
+
+		GLint success;
+		glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
+
+		if (success == GL_FALSE) {
+			glDeleteShader(shader);
+			throw std::runtime_error("Shader compile error");
+		}
+
 		glAttachShader(program, shader);
 	}
 
