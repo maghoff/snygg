@@ -47,7 +47,7 @@ renderable_complex_polygon::~renderable_complex_polygon() {
 	glDeleteBuffers(2, buffers.data());
 }
 
-void renderable_complex_polygon::render(GLint vertexLocation) {
+void renderable_complex_polygon::render(GLint vertexLocation) const {
 	const auto& vertexBuffer = buffers[0];
 	const auto& elementBuffer = buffers[1];
 

@@ -50,6 +50,7 @@ class snygg_instance : public pp::Instance, pp::Graphics3DClient, item_container
 
 	std::unique_ptr<buffering_skin> skin;
 
+    int storedWidth=0, storedHeight=0;
 	game::box_reshaper reshaper;
 
 	double startTime;

@@ -22,7 +22,7 @@ public:
 
 	~renderable_complex_polygon();
 
-	void render(GLint vertexLocation);
+	void render(GLint vertexLocation) const;
 };
 
 #endif

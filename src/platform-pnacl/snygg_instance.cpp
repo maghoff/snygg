@@ -29,17 +29,6 @@
 #include "buffering_skin.hpp"
 
 
-namespace attrib {
-	enum {
-		vertex = 0,
-		circle_coord,
-		across,
-		along,
-		b
-	};
-}
-
-
 std::pair<std::shared_ptr<board_provider>, std::shared_ptr<board>>
 load_board(pp::InstanceHandle instanceHandle, const std::string& boardname) {
 	urlloader_file_loader loader(instanceHandle);
@@ -186,8 +175,7 @@ void snygg_instance::render(void* userdata) {
 	glClear(GL_COLOR_BUFFER_BIT);
 
 
-	skin->enter_state(skin::floor_state);
-	floor.render(attrib::vertex);
+	skin->floor(floor);
 
 
 	skin->enter_state(skin::other_state);
@@ -212,6 +200,7 @@ void snygg_instance::maybe_ready() {
 	skin.reset(new buffering_skin(resources, images, lout));
 	skin->set_transformation(reshaper.get_transformation());
 	skin->set_pixels_per_unit(reshaper.get_pixels_per_unit());
+	skin->load_opengl_resources(storedWidth, storedHeight);
 
 	floor = std::move(renderable_complex_polygon(bp->floor_polygon()));
 
@@ -287,11 +276,15 @@ void snygg_instance::DidChangeView(const pp::View& view) {
 	auto scale = view.GetDeviceScale();
 	auto rect = view.GetRect();
 	int width = rect.width() * scale, height = rect.height() * scale;
+	if (storedWidth == width && storedHeight == height) return;
+	storedWidth = width;
+	storedHeight = height;
 
 	reshaper.reshape(width, height);
 	if (skin) {
 		skin->set_transformation(reshaper.get_transformation());
 		skin->set_pixels_per_unit(reshaper.get_pixels_per_unit());
+		skin->load_opengl_resources(width, height);
 	}
 
 	if (context.is_null()) {
