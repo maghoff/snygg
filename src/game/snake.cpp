@@ -1,4 +1,5 @@
 #include <cmath>
+#include <random>
 #include <geometry_intersection.hpp>
 #include <vec.hpp>
 #include "arc.hpp"
@@ -28,6 +29,8 @@ struct snake::impl {
 
 	float speed;
 	int dir;
+	bool is_dying = false;
+	int rigor_mortis;
 
 	float front_b;
 
@@ -105,6 +108,13 @@ void snake::forward(float length) {
 
 void snake::move() {
 	forward(d->speed);
+	if (d->is_dying) {
+		if (d->rigor_mortis) {
+			if (!--d->rigor_mortis) d->speed = 0.01;
+		} else {
+			d->speed *= 1.02;
+		}
+	}
 }
 
 void snake::render(skin& s) const {
@@ -138,9 +148,25 @@ bool snake::intersect_with_circle(const la::vec2f& p, float r) const {
 }
 
 void snake::crack_head() {
-	std::unique_ptr<blood_pool> p(new blood_pool(d->head->get_head_pos(), 2.5f));
+	auto head_pos = d->head->get_head_pos();
+	std::unique_ptr<blood_pool> p(new blood_pool(head_pos, 2.5f));
 	d->head = p.get();
 	d->ic.add_renderable(std::move(p));
+
+	static std::default_random_engine generator;
+	std::normal_distribution<float> offsetg(0.0,3.0);
+	std::normal_distribution<float> radius(1.5,1.0);
+
+	for (int i=0; i<5; ++i) {
+		la::vec2f offset(offsetg(generator), offsetg(generator));
+		float r = 3 - 0.02 * offset.square_length();
+		if (r <= 0.1) { --i; continue; }
+		d->ic.add_renderable(std::unique_ptr<renderable>(new blood_pool(head_pos + offset, r)));
+	}
+
+	d->is_dying = true;
+	d->rigor_mortis = 80;
+	d->speed = 0;
 }
 
 void snake::hit_by(player& p) {
