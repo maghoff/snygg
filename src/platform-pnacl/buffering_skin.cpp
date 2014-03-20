@@ -276,7 +276,7 @@ void buffering_skin::load_opengl_resources(int width, int height) {
 }
 
 void buffering_skin::set_transformation(const la::matrix33f& transform_) {
-	transform = transform_;
+	transform = transform_.transposed();
 }
 
 void buffering_skin::circle(la::vec2f p, float r) {

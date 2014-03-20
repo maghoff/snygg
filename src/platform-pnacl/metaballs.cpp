@@ -91,7 +91,7 @@ void metaballs::load_opengl_resources(int width_, int height_) {
 }
 
 void metaballs::set_transformation(const la::matrix33f& transform_) {
-	transform = transform_;
+	transform = transform_.transposed();
 }
 
 void metaballs::blood(la::vec2f p, float r) {
