@@ -52,7 +52,15 @@ h1 {
 }
 
 .notes {
+	margin: 5px;
 	text-align: center;
+}
+
+select {
+	padding: 4px 8px;
+	background: #ccc;
+	border: 1px solid #999;
+	border-radius: 4px;
 }
 
 .key-definition {
@@ -80,6 +88,32 @@ h1 {
 <script>
 
 function installApp() {
+	var boardSelector = document.getElementById("board");
+
+	function loadBoard() {
+		var board = window.location.hash.substr(1);
+		if (!boardSelector.namedItem(board)) {
+			if (board) {
+				window.history.pushState(null, "Snygg: Pill", "#pill");
+			}
+			board = "pill";
+		}
+		boardSelector.namedItem(board).setAttribute("selected", "selected");
+		snygg.postMessage(board);
+	}
+	window.addEventListener('hashchange', loadBoard);
+
+	boardSelector.addEventListener('change', function () {
+		var boardItem = boardSelector.options[boardSelector.selectedIndex];
+		window.history.pushState(
+			null,
+			"Snygg: " + boardItem.name,
+			"#" + boardItem.value
+		);
+		loadBoard();
+	});
+
+
 	var snygg = document.getElementById("snygg");
 
 	snygg.addEventListener('loadstart', function () {
@@ -97,6 +131,7 @@ function installApp() {
 
 	snygg.addEventListener('load', function () {
 		document.getElementById('statusField').textContent = "loading";
+		loadBoard();
 	});
 
 	function displayLastError() {
@@ -172,7 +207,6 @@ document.addEventListener("DOMContentLoaded", installApp);
 	id="snygg"
 	src="platform-pnacl.nmf"
 	type="application/x-pnacl"
-	board="pill"
 	class="snygg"
 >
 
@@ -191,6 +225,25 @@ an experimental technology present in
 <span class="key-definition"><span class="key">←</span> ↶ turn</span>
 <span class="key-definition"><span class="key">→</span> ↷ turn</span>
 <span class="key-definition"><span class="key">F</span> toggle fullscreen</span>
+</div>
+
+<div class="notes">
+Arena: <select id="board">
+<option name="bekkalokk" value="bekkalokk">Bekkalokk</option>
+<option name="circus" value="circus">Circus</option>
+<option name="classic" value="classic">Classic</option>
+<option name="four" value="four">Four</option>
+<option name="pacman" value="pacman">Pacman</option>
+<option name="pill" value="pill">Pill</option>
+<option name="quarter" value="quarter">Quarter</option>
+<option name="round_and_round" value="round_and_round">Round and round</option>
+<option name="small" value="small">Small</option>
+<option name="tofu" value="tofu">Tofu</option>
+<option name="tricky" value="tricky">Tricky</option>
+<option name="tricky-two" value="tricky-two">Tricky Two</option>
+<option name="wide_screen" value="wide_screen">Wide screen</option>
+<option name="wide_screen_small" value="wide_screen_small">Wide screen (small)</option>
+</select>
 </div>
 
 </div>

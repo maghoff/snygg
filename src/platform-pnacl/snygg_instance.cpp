@@ -116,8 +116,13 @@ pp::Graphics3D initGL(pp::Instance instance, int32_t width, int32_t height) {
 	return context;
 }
 
-void renderLoopTrampoline(void* userdata, int32_t) {
+void renderLoopTrampoline(void* userdata, int32_t status) {
 	auto fp = static_cast<std::weak_ptr<std::function<void(void*)>>*>(userdata);
+
+	if (status != PP_OK) {
+		delete fp;
+		return;
+	}
 
 	auto f = fp->lock();
 	if (f) (*f)(userdata);
@@ -224,6 +229,11 @@ void snygg_instance::maybe_ready() {
 	check_gl_error();
 
 
+	players.clear();
+	items.clear();
+	renderables.clear();
+
+
 	bp->get_starting_position();
 	players.emplace_back(new player(kbd, *this, *bp, game::KEY_LEFT, game::KEY_RIGHT, game::KEY_SPACE));
 
@@ -258,10 +268,7 @@ bool snygg_instance::handle_key_event(const pp::KeyboardInputEvent& event) {
 	if (event.GetModifiers()) return false;
 
 	auto mapping = key_mapping.find(event.GetKeyCode());
-	if (mapping == key_mapping.end()) {
-		LogToConsole(PP_LOGLEVEL_TIP, pp::Var((double)event.GetKeyCode()));
-		return false;
-	}
+	if (mapping == key_mapping.end()) return false;
 
 	int keycode = mapping->second;
 	bool pressed = event.GetType() == PP_INPUTEVENT_TYPE_KEYDOWN;
@@ -285,6 +292,28 @@ bool snygg_instance::HandleInputEvent(const pp::InputEvent& event) {
 	default:
 		return false;
 	}
+}
+
+void snygg_instance::HandleMessage(const pp::Var& var_message) {
+	if (!var_message.is_string()) return;
+	std::string boardname = var_message.AsString();
+
+	lout << "nacl got message: " << boardname << std::endl;
+
+	auto instanceHandle = pp::InstanceHandle(this);
+	load_board_thread = async(
+		[=]() { return load_board(instanceHandle, boardname); },
+		[this](std::pair<std::shared_ptr<board_provider>, std::shared_ptr<board>> stuff) {
+			load_board_thread.join();
+
+			std::tie(bpp, bp) = stuff;
+
+			auto bb = bp->bounding_box();
+			reshaper.set_box(bb.x1, bb.y1, bb.x2, bb.y2);
+
+			maybe_ready();
+		}
+	);
 }
 
 void snygg_instance::DidChangeView(const pp::View& view) {
@@ -360,20 +389,6 @@ bool snygg_instance::Init(uint32_t argc, const char* argn[], const char* argv[])
 		return false;
 	}
 
-
-	load_board_thread = async(
-		[=]() { return load_board(instanceHandle, boardname); },
-		[this](std::pair<std::shared_ptr<board_provider>, std::shared_ptr<board>> stuff) {
-			load_board_thread.join();
-
-			std::tie(bpp, bp) = stuff;
-
-			auto bb = bp->bounding_box();
-			reshaper.set_box(bb.x1, bb.y1, bb.x2, bb.y2);
-
-			maybe_ready();
-		}
-	);
 
 	load_resources_thread = async(
 		[=]() {

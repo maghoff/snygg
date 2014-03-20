@@ -15,12 +15,12 @@ void bindable_keyboard_handler::key_event(int key, bool state) const {
 }
 
 void bindable_keyboard_handler::bind(int key, callback cb) {
-	m.insert(std::make_pair(key, cb));
+	m[key] = cb;
 }
 
 void bindable_keyboard_handler::bind_pressed(int key, simple_callback scb) {
 	callback cb = [=](bool pressed){ if (pressed) scb(); };
-	m.insert(std::make_pair(key, cb));
+	m[key] = cb;
 }
 
 void bindable_keyboard_handler::unbind(int key) {
