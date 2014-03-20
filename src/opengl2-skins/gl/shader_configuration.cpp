@@ -127,8 +127,12 @@ void shader_configuration::set_uniform(const std::string& name, float v0, float 
 	d->setters[name].reset(new uniform_setter_4f(v0, v1, v2, v3));
 }
 
-void shader_configuration::set_uniform(const std::string& name, la::matrix33f mat) {
-	d->setters[name].reset(new uniform_setter_mat3(std::move(mat)));
+void shader_configuration::set_uniform(const std::string& name, const la::vec4f& v) {
+	d->setters[name].reset(new uniform_setter_4f(v[0], v[1], v[2], v[3]));
+}
+
+void shader_configuration::set_uniform(const std::string& name, const la::matrix33f& mat) {
+	d->setters[name].reset(new uniform_setter_mat3(mat));
 }
 
 void shader_configuration::add_texture(const std::string& name, const std::string& filename) {

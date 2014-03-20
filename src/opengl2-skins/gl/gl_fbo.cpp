@@ -52,7 +52,7 @@ void gl_fbo_multisample::set_size(int width_, int height_) {
 	glPushAttrib(GL_ALL_ATTRIB_BITS);
 
 	glBindRenderbuffer(GL_RENDERBUFFER, colorbuffer);
-	glRenderbufferStorageMultisample(GL_RENDERBUFFER, samples, GL_RGBA8, width, height);
+	glRenderbufferStorageMultisample(GL_RENDERBUFFER, samples, GL_SRGB8_ALPHA8, width, height);
 
 	assert(id != 0);
 	glBindFramebuffer(GL_FRAMEBUFFER, id);

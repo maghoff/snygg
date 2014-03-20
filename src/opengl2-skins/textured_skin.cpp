@@ -71,22 +71,24 @@ textured_skin::textured_skin(const std::string& path) :
 		d->floor_prog.reset(new shader_program(sb));
 	}
 
+	la::vec4f ambient(.1f, .1f, .1f, 1.f);
+
 	d->snake_config.reset(new shader_configuration(d->texture_prog.get()));
-	d->snake_config->set_uniform("ambient", 0.4f, 0.4f, 0.4f, 1.0f);
+	d->snake_config->set_uniform("ambient", ambient);
 	d->snake_config->add_texture("diffuse_map", path + "/diffuse.jpg");
 	d->snake_config->add_texture("normal_map", path + "/normal.jpg");
 
 	d->wall_config.reset(new shader_configuration(d->color_prog.get()));
-	d->wall_config->set_uniform("ambient", 0.4f, 0.4f, 0.4f, 1.0f);
-	d->wall_config->set_uniform("color", 0.1f, 0.1f, 0.1f, 1.0f);
+	d->wall_config->set_uniform("ambient", ambient);
+	d->wall_config->set_uniform("color", 0.2f, 0.2f, 0.2f, 1.0f);
 
 	d->food_config.reset(new shader_configuration(d->color_prog.get()));
-	d->food_config->set_uniform("ambient", 0.4f, 0.4f, 0.4f, 1.0f);
+	d->food_config->set_uniform("ambient", ambient);
 	d->food_config->set_uniform("color", 0.6f, 0.4f, 0.2f, 1.0f);
 
 	d->floor_config.reset(new shader_configuration(d->floor_prog.get()));
-	d->floor_config->set_uniform("ambient", 0.4f, 0.4f, 0.4f, 1.0f);
-	d->floor_config->set_uniform("diffuse", 0.5f, 0.5f, 0.5f, 1.0f);
+	d->floor_config->set_uniform("ambient", ambient);
+	d->floor_config->set_uniform("diffuse", 0.0f, 0.0f, 0.0f, 1.0f);
 
 	d->shader_state = 0;
 	d->stored_state = other_state;

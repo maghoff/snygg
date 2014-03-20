@@ -22,7 +22,9 @@ public:
 	void set_uniform(const std::string& name, float, float, float);
 	void set_uniform(const std::string& name, float, float, float, float);
 
-	void set_uniform(const std::string& name, la::matrix33f);
+	void set_uniform(const std::string& name, const la::vec4f&);
+
+	void set_uniform(const std::string& name, const la::matrix33f&);
 
 	void add_texture(const std::string& sampler_name, const std::string& filename);
 
