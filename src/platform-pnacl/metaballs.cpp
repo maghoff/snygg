@@ -76,12 +76,15 @@ void metaballs::fat_line(la::vec2f p, la::vec2f d, float len, float t, float b_b
 void metaballs::cap(la::vec2f p, float snake_direction, float cap_direction, float b_coord) {}
 void metaballs::enter_state(state_t) {}
 
-void metaballs::load_opengl_resources(int width, int height) {
+void metaballs::load_opengl_resources(int width_, int height_) {
+	width = width_;
+	height = height_;
+
 	for (auto id : { tex.prev(), tex.next() }) {
 		glBindTexture(GL_TEXTURE_2D, id);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_HALF_FLOAT_OES, 0);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, (width + 3)/4, height, 0, GL_RGBA, GL_FLOAT, 0);
 		assert(glGetError() == GL_NONE);
 	}
 	acc.clear();
@@ -114,20 +117,27 @@ void metaballs::update_metaballs(const renderable_complex_polygon& floor, std::v
 	p.resize((p.size() + 3) / 4 * 4); // ceil(p.size() / 4) * 4
 
 	glBindFramebuffer(GL_FRAMEBUFFER, metaballsFBO);
+	glViewport(0, 0, (width+3)/4, height);
 
 	glUseProgram(metaballsProgram);
 	glUniformMatrix3fv(glGetUniformLocation(metaballsProgram, "transform"), 1, GL_FALSE, transform.v);
+
+	auto one_px = 2. / width;
+	auto delta_x = one_px / transform[0][0];
+	glUniform1f(glGetUniformLocation(metaballsProgram, "delta_x"), delta_x);
 
 	for (auto i = 0u; i < p.size()/4; ++i) {
 		update_four_metaballs(floor, &p[i*4]);
 	}
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	glViewport(0, 0, width, height);
 }
 
 void metaballs::draw_metaballs(const renderable_complex_polygon& floor) {
 	glUseProgram(metaballsMappingProgram);
 	glUniformMatrix3fv(glGetUniformLocation(metaballsMappingProgram, "transform"), 1, GL_FALSE, transform.v);
+	glUniform1f(glGetUniformLocation(metaballsMappingProgram, "screen_width"), (width + 3) / 4 * 4);
 
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, tex.prev());

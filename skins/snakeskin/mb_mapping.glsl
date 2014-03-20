@@ -1,13 +1,19 @@
 uniform sampler2D storedValue;
 varying vec2 screen_coord, world_coord;
+uniform float screen_width;
 
 uniform vec4 ambient;
 
 vec4 directional_light(vec3 normal, vec3 light, vec4 diffuse, float phong_exponent, float local_variance);
 
+float sample(vec2 p) {
+	float j = mod(ceil(p.x * screen_width), 4.);
+	vec4 vals = texture2D(storedValue, (p - vec2(j / screen_width, 0)));
+	return vals[int(j)];
+}
+
 float h(vec2 p) {
-	float val = texture2D(storedValue, p).r;
-	return 1. - 1./val;
+	return 1. - 1./sample(p);
 }
 
 void main(void) {
@@ -16,7 +22,7 @@ void main(void) {
 	const float phong_exponent = 200.0;
 	const float local_variance = 1.0;
 
-	float val = texture2D(storedValue, screen_coord).r;
+	float val = sample(screen_coord);
 	float alpha = smoothstep(1., 1.1, val);
 
 	vec3 w = vec3(world_coord, h(screen_coord));

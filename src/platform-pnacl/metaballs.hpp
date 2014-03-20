@@ -11,6 +11,7 @@ class renderable_complex_polygon;
 
 class metaballs : public scalable_skin {
 	la::matrix33f transform;
+	int width, height;
 
 	metaballs_accumulator acc;
 	unsigned metaballsProgram, metaballsMappingProgram;

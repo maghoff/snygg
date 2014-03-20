@@ -20,6 +20,8 @@
 const auto vertex = 5u;
 
 struct metaballs::impl {
+	unsigned width = 1, height = 1;
+
 	scalable_skin* target;
 
 	la::matrix33f transform;
@@ -71,20 +73,21 @@ metaballs::~metaballs() {
 void metaballs::load_opengl_resources(int width, int height) {
 	assert(glGetError() == GL_NONE);
 
+	d->width = width;
+	d->height = height;
+
 	d->metaballs->recreate_opengl_resources();
 	d->mapping->recreate_opengl_resources();
 
-	const size_t sz = width*height*4; // 4 == sizeof(GL_R32F);
+	const size_t sz = ((width+3)/4)*height*4*4; // 4 == sizeof(GL_R32F);
 	std::vector<char> buf(sz, 0);
 	for (auto tex : { &d->tex.prev(), &d->tex.next() }) {
 		glBindTexture(GL_TEXTURE_2D, tex->get_id());
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_R32F, width, height, 0, GL_RED, GL_FLOAT, buf.data());
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, (width+3)/4, height, 0, GL_RGBA, GL_FLOAT, buf.data());
 		assert(glGetError() == GL_NONE);
 	}
-
-	d->fbo.set_size(width, height);
 
 	//d->target->load_opengl_resources(width, height);
 
@@ -120,7 +123,13 @@ void metaballs::update_metaballs(const complex_polygon& floor_poly, std::vector<
 	glUseProgram(d->metaballs->get_program_id());
 	glDisable(GL_BLEND);
 	glUniformMatrix3fv(glGetUniformLocation(d->metaballs->get_program_id(), "transform"), 1, GL_FALSE, d->transform.v);
+
+	auto one_px = 2. / d->width;
+	auto delta_x = one_px / d->transform[0][0];
+	glUniform1f(glGetUniformLocation(d->metaballs->get_program_id(), "delta_x"), delta_x);
+
 	scoped_bind_fbo binder(d->fbo);
+	glViewport(0, 0, (d->width+3)/4, d->height);
 
 	for (auto i = 0u; i < p.size()/4; ++i) {
 		update_four_metaballs(floor_poly, &p[i*4]);
@@ -129,12 +138,14 @@ void metaballs::update_metaballs(const complex_polygon& floor_poly, std::vector<
 	binder.unbind();
 	glEnable(GL_BLEND);
 	glUseProgram(0);
+	glViewport(0, 0, d->width, d->height);
 }
 
 void metaballs::draw_metaballs(const complex_polygon& floor_poly) {
 	glUseProgram(d->mapping->get_program_id());
 
 	glUniformMatrix3fv(glGetUniformLocation(d->mapping->get_program_id(), "transform"), 1, GL_FALSE, d->transform.v);
+	glUniform1f(glGetUniformLocation(d->mapping->get_program_id(), "screen_width"), (d->width + 3) / 4 * 4);
 
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, d->tex.prev().get_id());

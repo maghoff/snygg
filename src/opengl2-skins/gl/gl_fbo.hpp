@@ -4,17 +4,12 @@
 class gl_fbo {
 	unsigned id;
 
-	void init();
-
 public:
 	gl_fbo();
-	gl_fbo(int width, int height);
 	~gl_fbo();
 
 	gl_fbo(const gl_fbo&) = delete;
 	gl_fbo& operator = (const gl_fbo&) = delete;
-
-	void set_size(int width, int height);
 
 	unsigned get_id() const;
 	void render_to(unsigned);

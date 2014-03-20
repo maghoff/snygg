@@ -55,8 +55,6 @@ struct snygg::impl {
 	std::vector<std::unique_ptr<player>> players;
 
 	std::unique_ptr<food_generator> fg;
-
-	rectf metaballs_rect;
 };
 
 void init_gl() {
@@ -100,11 +98,6 @@ snygg::snygg(const std::string& board_filename) :
 	rectf bb = d->active_board->bounding_box();
 	const float margin = 5.f;
 	d->reshaper->set_box(bb.x1 - margin, bb.y1 - margin, bb.x2 + margin, bb.y2 + margin);
-
-	d->metaballs_rect.x1 = bb.x1 - margin;
-	d->metaballs_rect.y1 = bb.y1 - margin;
-	d->metaballs_rect.x2 = bb.x2 + margin;
-	d->metaballs_rect.y2 = bb.y2 + margin;
 
 	std::string snakeskin = (paths::skins() / "snakeskin").string();
 	d->skins.emplace_back(new schematic_skin);
@@ -216,7 +209,6 @@ void snygg::screenshot_with_skin(const std::string& filename, scalable_skin* sel
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, screenshot_w, screenshot_h, 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
 
 	gl_fbo fbo;
-	fbo.set_size(screenshot_w, screenshot_h);
 	fbo.render_to(tx.get_id());
 	m_fbo.blit_to(fbo);
 

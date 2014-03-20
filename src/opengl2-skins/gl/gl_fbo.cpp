@@ -4,23 +4,8 @@
 #include "scoped_bind_fbo.hpp"
 #include "gl_fbo.hpp"
 
-void gl_fbo::init() {
-	glGenFramebuffersEXT(1, &id);
-}
-
 gl_fbo::gl_fbo() {
-	init();
-}
-
-gl_fbo::gl_fbo(int width, int height) {
-	init();
-	set_size(width, height);
-}
-
-void gl_fbo::set_size(int width, int height) {
-	glPushAttrib(GL_ALL_ATTRIB_BITS);
-
-	glPopAttrib();
+	glGenFramebuffersEXT(1, &id);
 }
 
 gl_fbo::~gl_fbo() {
@@ -38,6 +23,7 @@ void gl_fbo::render_to(unsigned tex_id) {
 	glBindTexture(GL_TEXTURE_2D, tex_id);
 
 	GLenum status = glCheckFramebufferStatusEXT(GL_FRAMEBUFFER_EXT);
+	(void)status;
 	assert(status == GL_FRAMEBUFFER_COMPLETE_EXT);
 }
 
@@ -73,6 +59,7 @@ void gl_fbo_multisample::set_size(int width_, int height_) {
 	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, colorbuffer);
 
 	GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
+	(void)status;
 	assert(status == GL_FRAMEBUFFER_COMPLETE);
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
