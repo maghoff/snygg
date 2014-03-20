@@ -5,6 +5,7 @@ uniform float screen_width;
 uniform vec4 ambient;
 
 vec4 directional_light(vec3 normal, vec3 light, vec4 diffuse, float phong_exponent, float local_variance);
+vec4 color_space_mapping(vec4 linear);
 
 float sample(vec2 p) {
 	float j = mod(ceil(p.x * screen_width), 4.);
@@ -41,5 +42,5 @@ void main(void) {
 
 	//color = vec4(normal, 1);
 
-	gl_FragColor = vec4(color.rgb, alpha);
+	gl_FragColor = color_space_mapping(vec4(color.rgb, alpha));
 }

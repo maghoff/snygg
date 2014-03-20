@@ -12,6 +12,7 @@ const float min_a = 0.1, max_a = 0.45;
 const float phong_exponent = 5.0;
 
 vec4 directional_light(vec3 normal, vec3 light, vec4 diffuse, float phong_exponent, float local_variance);
+vec4 color_space_mapping(vec4 linear);
 
 vec4 get_diffuse(vec2 texture_coord);
 vec3 get_bump_normal(vec2 texture_coord);
@@ -73,8 +74,8 @@ void main(void) {
 	vec3 w = vec3(world_coord[0], world_coord[1], h*2.5);
 	vec3 light = normalize(vec3(0, 0, 3) - w);
 
-	gl_FragColor =
+	gl_FragColor = color_space_mapping(
 		diffuse * ambient +
 		directional_light(normal, light, diffuse, phong_exponent, local_variance)
-	;
+	);
 }

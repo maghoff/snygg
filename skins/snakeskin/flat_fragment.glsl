@@ -8,6 +8,7 @@ uniform vec4 ambient;
 uniform vec4 diffuse;
 
 vec4 directional_light(vec3 normal, vec3 light, vec4 diffuse, float phong_exponent, float local_variance);
+vec4 color_space_mapping(vec4 linear);
 
 void main(void) {
 	const vec3 light_pos = vec3(0, 0, 3);
@@ -23,5 +24,5 @@ void main(void) {
 		directional_light(normal, light, diffuse, phong_exponent, local_variance)
 	;
 
-	gl_FragColor = vec4(color.rgb, 1.0);
+	gl_FragColor = color_space_mapping(vec4(color.rgb, 1.0));
 }

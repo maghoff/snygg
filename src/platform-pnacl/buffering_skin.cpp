@@ -18,6 +18,8 @@ namespace attrib {
 	};
 }
 
+const la::vec4f ambient(.2f, .2f, .2f, 1.f);
+
 
 GLuint compileShader(GLenum shaderType, const std::vector<std::vector<char>>& source, std::ostream& out) {
 	if (source.size() > std::numeric_limits<GLsizei>::max()) throw std::runtime_error("Shader source way too big");
@@ -187,8 +189,8 @@ void buffering_skin::to_floor_shader() {
 
 	glUniformMatrix3fv(glGetUniformLocation(floorProgram, "transform"), 1, GL_FALSE, transform.v);
 
-	glUniform4f(glGetUniformLocation(floorProgram, "ambient"), 0.4f, 0.4f, 0.4f, 1.0f);
-	glUniform4f(glGetUniformLocation(floorProgram, "diffuse"), 0.5f, 0.5f, 0.5f, 1.0f);
+	glUniform4fv(glGetUniformLocation(floorProgram, "ambient"), 1, ambient.v);
+	glUniform4f(glGetUniformLocation(floorProgram, "diffuse"), 0.f, 0.f, 0.f, 1.0f);
 }
 
 void buffering_skin::to_wall_shader() {
@@ -196,8 +198,8 @@ void buffering_skin::to_wall_shader() {
 
 	glUniformMatrix3fv(glGetUniformLocation(colorProgram, "transform"), 1, GL_FALSE, transform.v);
 
-	glUniform4f(glGetUniformLocation(colorProgram, "ambient"), 0.4f, 0.4f, 0.4f, 1.0f);
-	glUniform4f(glGetUniformLocation(colorProgram, "color"), 0.1f, 0.1f, 0.1f, 1.0f);
+	glUniform4fv(glGetUniformLocation(floorProgram, "ambient"), 1, ambient.v);
+	glUniform4f(glGetUniformLocation(colorProgram, "color"), 0.2f, 0.2f, 0.2f, 1.0f);
 }
 
 void buffering_skin::to_texture_shader() {
@@ -205,7 +207,7 @@ void buffering_skin::to_texture_shader() {
 
 	glUniformMatrix3fv(glGetUniformLocation(textureProgram, "transform"), 1, GL_FALSE, transform.v);
 
-	glUniform4f(glGetUniformLocation(textureProgram, "ambient"), 0.4f, 0.4f, 0.4f, 1.0f);
+	glUniform4fv(glGetUniformLocation(floorProgram, "ambient"), 1, ambient.v);
 	glUniform1i(glGetUniformLocation(textureProgram, "diffuse_map"), 0);
 	glUniform1i(glGetUniformLocation(textureProgram, "normal_map"), 1);
 

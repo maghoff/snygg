@@ -143,7 +143,7 @@ void metaballs::draw_metaballs(const renderable_complex_polygon& floor) {
 	glBindTexture(GL_TEXTURE_2D, tex.prev());
 	glUniform1i(glGetUniformLocation(metaballsMappingProgram, "storedValue"), 0);
 
-	glUniform4f(glGetUniformLocation(metaballsMappingProgram, "ambient"), 0.4f, 0.4f, 0.4f, 1.0f);
+	glUniform4f(glGetUniformLocation(metaballsMappingProgram, "ambient"), 0.2f, 0.2f, 0.2f, 1.0f);
 
 	glEnable(GL_BLEND);
 	glBlendFuncSeparate(

@@ -150,7 +150,7 @@ void metaballs::draw_metaballs(const complex_polygon& floor_poly) {
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, d->tex.prev().get_id());
 
-	d->mapping->set_uniform("ambient", 0.4f, 0.4f, 0.4f, 1.0f);
+	d->mapping->set_uniform("ambient", 0.1f, 0.1f, 0.1f, 1.0f);
 
 	draw(vertex, floor_poly);
 	glUseProgram(0);
