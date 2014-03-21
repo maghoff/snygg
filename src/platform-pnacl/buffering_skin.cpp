@@ -198,7 +198,7 @@ void buffering_skin::to_wall_shader() {
 
 	glUniformMatrix3fv(glGetUniformLocation(colorProgram, "transform"), 1, GL_FALSE, transform.v);
 
-	glUniform4fv(glGetUniformLocation(floorProgram, "ambient"), 1, ambient.v);
+	glUniform4fv(glGetUniformLocation(colorProgram, "ambient"), 1, ambient.v);
 	glUniform4f(glGetUniformLocation(colorProgram, "color"), 0.2f, 0.2f, 0.2f, 1.0f);
 }
 
@@ -207,7 +207,7 @@ void buffering_skin::to_texture_shader() {
 
 	glUniformMatrix3fv(glGetUniformLocation(textureProgram, "transform"), 1, GL_FALSE, transform.v);
 
-	glUniform4fv(glGetUniformLocation(floorProgram, "ambient"), 1, ambient.v);
+	glUniform4fv(glGetUniformLocation(textureProgram, "ambient"), 1, ambient.v);
 	glUniform1i(glGetUniformLocation(textureProgram, "diffuse_map"), 0);
 	glUniform1i(glGetUniformLocation(textureProgram, "normal_map"), 1);
 
