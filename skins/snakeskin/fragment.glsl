@@ -9,7 +9,7 @@ const float M_PI = 3.14159265358979;
 const float density = 0.04;
 const float min_a = 0.1, max_a = 0.45;
 
-const float phong_exponent = 5.0;
+const float phong_exponent = 20.0;
 
 vec4 directional_light(vec3 normal, vec3 light, vec4 diffuse, float phong_exponent, float local_variance);
 vec4 color_space_mapping(vec4 linear);
@@ -72,7 +72,7 @@ void main(void) {
 
 	float h = sqrt(1. - circle_coord.x*circle_coord.x - circle_coord.y*circle_coord.y);
 	vec3 w = vec3(world_coord[0], world_coord[1], h*2.5);
-	vec3 light = normalize(vec3(0, 0, 3) - w);
+	vec3 light = normalize(vec3(0, 0, 30) - w);
 
 	gl_FragColor = color_space_mapping(
 		diffuse * ambient +

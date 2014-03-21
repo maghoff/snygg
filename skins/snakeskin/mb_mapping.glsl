@@ -18,7 +18,7 @@ float h(vec2 p) {
 }
 
 void main(void) {
-	const vec3 light_pos = vec3(0, 0, 3);
+	const vec3 light_pos = vec3(0, 0, 30);
 	const vec4 diffuse = vec4(0.7, 0, 0, 1);
 	const float phong_exponent = 200.0;
 	const float local_variance = 1.0;
