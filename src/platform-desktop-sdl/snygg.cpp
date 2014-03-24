@@ -29,6 +29,7 @@
 #include "food_generator.hpp"
 #include "item.hpp"
 #include "player.hpp"
+#include "console_score_listener.hpp"
 #include "paths.hpp"
 #include "snygg.hpp"
 
@@ -52,6 +53,7 @@ struct snygg::impl {
 	std::vector<std::unique_ptr<item>> items;
 	std::vector<std::unique_ptr<item>> new_items;
 	std::vector<std::unique_ptr<renderable>> renderables;
+	std::vector<std::unique_ptr<score_listener>> score_listeners;
 	std::vector<std::unique_ptr<player>> players;
 
 	std::unique_ptr<food_generator> fg;
@@ -116,8 +118,16 @@ snygg::snygg(const std::string& board_filename) :
 	d->fg.reset(new food_generator(*this, *d->active_board));
 	d->fg->generate();
 
-	d->players.emplace_back(new player(*d->kbd, *this, *d->active_board, game::KEY_LEFT, game::KEY_RIGHT, game::KEY_SPACE));
-	d->players.emplace_back(new player(*d->kbd, *this, *d->active_board, game::KEY_A, game::KEY_D, game::KEY_W));
+	d->score_listeners.emplace_back(new console_score_listener(std::cout, "Player 1"));
+	d->players.emplace_back(new player(
+		*d->kbd, *this, *d->active_board, *d->score_listeners.back(),
+		game::KEY_LEFT, game::KEY_RIGHT, game::KEY_SPACE
+	));
+	d->score_listeners.emplace_back(new console_score_listener(std::cout, "Player 2"));
+	d->players.emplace_back(new player(
+		*d->kbd, *this, *d->active_board, *d->score_listeners.back(),
+		game::KEY_A, game::KEY_D, game::KEY_W
+	));
 
 	d->kbd->bind_pressed(game::KEY_P, [=]{ screenshot_key(); });
 }

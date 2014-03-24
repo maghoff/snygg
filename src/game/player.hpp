@@ -10,13 +10,17 @@ namespace game {
 class intersectable_with_circle;
 class item_container;
 class board;
+class score_listener;
 
 class player {
 	struct impl;
 	std::unique_ptr<impl> d;
 
 public:
-	player(game::bindable_keyboard_handler&, item_container&, board&, int left, int right, int spawn);
+	player(
+		game::bindable_keyboard_handler&, item_container&, board&, score_listener& score_reporter,
+		int left, int right, int spawn
+	);
 	virtual ~player();
 
 	void spawn();

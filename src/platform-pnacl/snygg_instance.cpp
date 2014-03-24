@@ -178,6 +178,14 @@ void snygg_instance::simulate_until(PP_TimeTicks nowTimeTicks) {
 	}
 }
 
+void snygg_instance::score_updated(int score) {
+	PostMessage(pp::Var("{\"what\":\"score_updated\",\"score\":" + std::to_string(score) + "}"));
+}
+
+void snygg_instance::died(int score) {
+	PostMessage(pp::Var("{\"what\":\"died\",\"score\":" + std::to_string(score) + "}"));
+}
+
 void snygg_instance::render(void* userdata) {
 	simulate_until(pp::Module::Get()->core()->GetTimeTicks());
 
@@ -235,14 +243,17 @@ void snygg_instance::maybe_ready() {
 
 
 	bp->get_starting_position();
-	players.emplace_back(new player(kbd, *this, *bp, game::KEY_LEFT, game::KEY_RIGHT, game::KEY_SPACE));
+	players.emplace_back(new player(
+		kbd, *this, *bp, *this,
+		game::KEY_LEFT, game::KEY_RIGHT, game::KEY_SPACE
+	));
 
 
 	fg.reset(new food_generator(*this, *bp));
 	fg->generate();
 
 
-	PostMessage(pp::Var("{\"status\":\"running\"}"));
+	PostMessage(pp::Var("{\"what\":\"status\",\"status\":\"running\"}"));
 
 	startTime = pp::Module::Get()->core()->GetTimeTicks();
 	ticks = 0;

@@ -14,6 +14,7 @@
 #include <item_container.hpp>
 #include <item.hpp>
 #include <player.hpp>
+#include <score_listener.hpp>
 #include <renderable.hpp>
 #include <bindable_keyboard_handler.hpp>
 #include <surface.hpp>
@@ -31,7 +32,7 @@ namespace pp {
 	class KeyboardInputEvent;
 }
 
-class snygg_instance : public pp::Instance, pp::Graphics3DClient, item_container {
+class snygg_instance : public pp::Instance, pp::Graphics3DClient, item_container, score_listener {
 	ologstream lout;
 
 	std::thread load_board_thread, load_resources_thread;
@@ -65,6 +66,9 @@ class snygg_instance : public pp::Instance, pp::Graphics3DClient, item_container
 	void add_renderable(std::unique_ptr<renderable>&&) override;
 	void tick_10ms();
 	void simulate_until(PP_TimeTicks);
+
+	void score_updated(int current_score) override;
+	void died(int final_score) override;
 
 	std::unordered_map<int, bool> key_states;
 	game::bindable_keyboard_handler kbd;

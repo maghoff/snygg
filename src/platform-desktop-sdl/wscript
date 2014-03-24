@@ -11,6 +11,7 @@ def build(bld):
 
 
 	sources = [
+		'console_score_listener.cpp',
 		'filesystem_file_loader.cpp',
 		'main.cpp',
 		'paths.cpp',

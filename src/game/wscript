@@ -9,6 +9,7 @@ def build(bld):
 		'item_container.cpp',
 		'item_with_life.cpp',
 		'player.cpp',
+		'score_listener.cpp',
 		'snake.cpp',
 		'snake_direction_listener.cpp',
 		'digesting_growth_policy.cpp',

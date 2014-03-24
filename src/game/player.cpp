@@ -1,3 +1,4 @@
+#include "player.hpp"
 #include <bindable_keyboard_handler.hpp>
 #include <keycodes.hpp>
 #include <opposite_keys_listener.hpp>
@@ -5,8 +6,8 @@
 #include "board.hpp"
 #include "item_container.hpp"
 #include "snake.hpp"
-#include "player.hpp"
 #include "snake_direction_listener.hpp"
+#include "score_listener.hpp"
 
 struct player::impl {
 	item_container& ic;
@@ -16,15 +17,27 @@ struct player::impl {
 	float speed;
 	board& game_board;
 
-	impl(item_container& ic_, board& _board) : ic(ic_), game_board(_board) { }
+	score_listener& score_reporter;
+	int score;
+
+	impl(
+		item_container& ic_,
+		board& board_,
+		score_listener& score_reporter_
+	) :
+		ic(ic_),
+		game_board(board_),
+		score_reporter(score_reporter_)
+	{ }
 };
 
 player::player(
 	game::bindable_keyboard_handler& kbd,
 	item_container& ic, board& _board,
+	score_listener& score_reporter,
 	int left, int right, int spawnkey
 ) :
-	d(new impl(ic, _board))
+	d(new impl(ic, _board, score_reporter))
 {
 	d->s = 0;
 	d->speed = 0.4f;
@@ -38,9 +51,12 @@ player::~player() {
 
 void player::spawn() {
 	if (!d->s) {
+		d->score = 0;
 		d->ic.add_item(std::unique_ptr<item>(d->s = new snake(d->ic, d->speed, d->game_board.get_starting_position())));
 		d->s->set_turn(d->dir->val());
 		d->del->set_target(d->s);
+
+		d->score_reporter.score_updated(d->score);
 	}
 }
 
@@ -53,8 +69,12 @@ void player::die() {
 	d->del->set_target(0);
 	d->s->crack_head();
 	d->s = 0;
+
+	d->score_reporter.died(d->score);
 }
 
 void player::score() {
 	d->s->score(5*5 - 2.5*2.5);
+	++d->score;
+	d->score_reporter.score_updated(d->score);
 }
