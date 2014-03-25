@@ -6,6 +6,7 @@
 #include <functional>
 #include <vector>
 #include <unordered_map>
+#include <string>
 #include <ppapi/cpp/instance.h>
 #include <ppapi/cpp/graphics_3d_client.h>
 #include <ppapi/cpp/graphics_3d.h>
@@ -38,6 +39,7 @@ class snygg_instance : public pp::Instance, pp::Graphics3DClient, item_container
 	std::thread load_board_thread, load_resources_thread;
 	std::shared_ptr<board_provider> bpp;
 	std::shared_ptr<board> bp;
+	std::string board_name;
 	std::map<std::string, std::vector<char>> resources;
 	bool resources_loaded = false;
 	std::thread load_images_thread;

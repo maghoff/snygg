@@ -179,11 +179,19 @@ void snygg_instance::simulate_until(PP_TimeTicks nowTimeTicks) {
 }
 
 void snygg_instance::score_updated(int score) {
-	PostMessage(pp::Var("{\"what\":\"score_updated\",\"score\":" + std::to_string(score) + "}"));
+	PostMessage(pp::Var("{"
+		"\"what\":\"score_updated\","
+		"\"score\":" + std::to_string(score) + ","
+		"\"board\":\"" + board_name + "\""
+	"}"));
 }
 
 void snygg_instance::died(int score) {
-	PostMessage(pp::Var("{\"what\":\"died\",\"score\":" + std::to_string(score) + "}"));
+	PostMessage(pp::Var("{"
+		"\"what\":\"died\","
+		"\"score\":" + std::to_string(score) + ","
+		"\"board\":\"" + board_name + "\""
+	"}"));
 }
 
 void snygg_instance::render(void* userdata) {
@@ -314,10 +322,11 @@ void snygg_instance::HandleMessage(const pp::Var& var_message) {
 	auto instanceHandle = pp::InstanceHandle(this);
 	load_board_thread = async(
 		[=]() { return load_board(instanceHandle, boardname); },
-		[this](std::pair<std::shared_ptr<board_provider>, std::shared_ptr<board>> stuff) {
+		[=](std::pair<std::shared_ptr<board_provider>, std::shared_ptr<board>> stuff) {
 			load_board_thread.join();
 
 			std::tie(bpp, bp) = stuff;
+			board_name = boardname;
 
 			auto bb = bp->bounding_box();
 			reshaper.set_box(bb.x1, bb.y1, bb.x2, bb.y2);
