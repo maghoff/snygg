@@ -3,12 +3,13 @@
 
 #include <memory>
 #include <vec.hpp>
-#include "item_with_life.hpp"
+#include "crashable_with_life.hpp"
+#include "movable.hpp"
 
 class blood_pool;
 class item_container;
 
-class snake : public item_with_life {
+class snake : public crashable_with_life, public movable {
 	struct impl;
 	std::unique_ptr<impl> d;
 

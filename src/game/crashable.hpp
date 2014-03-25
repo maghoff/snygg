@@ -1,22 +1,15 @@
-#ifndef SNYGG_ITEM_HPP
-#define SNYGG_ITEM_HPP
+#ifndef SNYGG_CRASHABLE_HPP
+#define SNYGG_CRASHABLE_HPP
 
 #include "intersectable_with_circle.hpp"
 #include "renderable.hpp"
 
 class player;
 
-class item :
-	public intersectable_with_circle,
-	public renderable
-{
+class crashable : virtual public intersectable_with_circle, virtual public renderable {
 public:
-	~item();
-
-	virtual void move() = 0;
 	virtual void hit_by(player&) = 0;
 	virtual bool is_dead() const = 0;
 };
 
 #endif
-

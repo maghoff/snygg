@@ -83,12 +83,19 @@ snygg_instance::~snygg_instance() {
 	load_images_thread.join();
 }
 
-void snygg_instance::add_item(std::unique_ptr<item>&& i) {
-	new_items.emplace_back(std::move(i));
-}
-
 void snygg_instance::add_renderable(std::unique_ptr<renderable>&& r) {
 	renderables.emplace_back(std::move(r));
+	render();
+}
+
+void snygg_instance::add_crashable(std::unique_ptr<crashable>&& r) {
+	new_crashables.emplace_back(std::move(r));
+	render();
+}
+
+void snygg_instance::add_movable(std::unique_ptr<movable>&& r) {
+	movables.emplace_back(std::move(r));
+	render();
 }
 
 pp::Graphics3D initGL(pp::Instance instance, int32_t width, int32_t height) {
@@ -116,19 +123,6 @@ pp::Graphics3D initGL(pp::Instance instance, int32_t width, int32_t height) {
 	return context;
 }
 
-void renderLoopTrampoline(void* userdata, int32_t status) {
-	auto fp = static_cast<std::weak_ptr<std::function<void(void*)>>*>(userdata);
-
-	if (status != PP_OK) {
-		delete fp;
-		return;
-	}
-
-	auto f = fp->lock();
-	if (f) (*f)(userdata);
-	else delete fp;
-}
-
 void snygg_instance::check_gl_error() {
 	auto status = glGetError();
 	if (status != GL_NO_ERROR) {
@@ -136,35 +130,40 @@ void snygg_instance::check_gl_error() {
 	}
 }
 
+template <typename Container>
+static void cleanup_dead(Container& c) {
+	auto new_end = std::remove_if(std::begin(c), std::end(c), [](const typename Container::value_type& i) { return i->is_dead(); });
+	c.erase(new_end, std::end(c));
+}
+
+template <typename Container>
+static void add_new_items(Container& target, Container& source) {
+	target.reserve(target.size() + source.size());
+	for (auto& item : source) target.emplace_back(std::move(item));
+	source.clear();
+}
+
 void snygg_instance::tick_10ms() {
-	for (auto& item : new_items) {
-		items.emplace_back(std::move(item));
-	}
-	new_items.clear();
+	add_new_items(crashables, new_crashables);
 
-	for (auto& item : items) {
-		if (!item->is_dead()) item->move();
+	for (auto& movable : movables) {
+		if (!movable->is_dead()) movable->move();
 	}
 
-	std::vector<player*> dead_players;
 	for (auto& player : players) {
-		for (auto& item : items) {
-			if (!item->is_dead() && player->crashes_with(*item)) item->hit_by(*player);
+		for (auto& crashable : crashables) {
+			if (!crashable->is_dead() && player->crashes_with(*crashable)) crashable->hit_by(*player);
 		}
-		if (player->crashes_with(*bp)) {
-			dead_players.push_back(&*player);
+		for (auto& movable : movables) {
+			if (!movable->is_dead() && player->crashes_with(*movable)) movable->hit_by(*player);
 		}
+		if (player->crashes_with(*bp)) player->die();
 	}
 
-	for (auto& dead_player : dead_players) dead_player->die();
+	cleanup_dead(crashables);
+	cleanup_dead(movables);
 
-	auto new_end = std::remove_if(items.begin(), items.end(), [](const std::unique_ptr<item>& i) { return i->is_dead(); });
-	items.erase(new_end, items.end());
-
-	for (auto& item : new_items) {
-		items.emplace_back(std::move(item));
-	}
-	new_items.clear();
+	add_new_items(crashables, new_crashables);
 }
 
 void snygg_instance::simulate_until(PP_TimeTicks nowTimeTicks) {
@@ -194,8 +193,25 @@ void snygg_instance::died(int score) {
 	"}"));
 }
 
-void snygg_instance::render(void* userdata) {
+void render_callback_trampoline(void* userdata, int32_t status) {
+	auto instance = static_cast<snygg_instance*>(userdata);
+	instance->render_callback(status);
+}
+
+void snygg_instance::render_callback(int32_t status) {
 	simulate_until(pp::Module::Get()->core()->GetTimeTicks());
+	render_callback_pending = false;
+	if (status != PP_OK) return;
+	if (should_render) render();
+}
+
+void snygg_instance::render() {
+	if (render_callback_pending) {
+		should_render = true;
+		return;
+	}
+	render_callback_pending = true;
+	should_render = !movables.empty();
 
 
 	glClearColor(0, 0, 0, 0);
@@ -210,15 +226,16 @@ void snygg_instance::render(void* userdata) {
 
 
 	skin->enter_state(skin::other_state);
+	for (auto& movable : movables) movable->render(*skin);
+	for (auto& crashable : crashables) crashable->render(*skin);
 	for (auto& renderable : renderables) renderable->render(*skin);
-	for (auto& item : items) item->render(*skin);
 
 	skin->enter_state(skin::board_state);
 
 	walls.render(*skin);
 
 
-	context.SwapBuffers(pp::CompletionCallback(&renderLoopTrampoline, userdata));
+	context.SwapBuffers(pp::CompletionCallback(&render_callback_trampoline, this));
 }
 
 void snygg_instance::maybe_ready() {
@@ -246,8 +263,9 @@ void snygg_instance::maybe_ready() {
 
 
 	players.clear();
-	items.clear();
 	renderables.clear();
+	crashables.clear();
+	movables.clear();
 
 
 	bp->get_starting_position();
@@ -259,13 +277,14 @@ void snygg_instance::maybe_ready() {
 
 	fg.reset(new food_generator(*this, *bp));
 	fg->generate();
+	add_new_items(crashables, new_crashables);
 
 
 	PostMessage(pp::Var("{\"what\":\"status\",\"status\":\"running\"}"));
 
 	startTime = pp::Module::Get()->core()->GetTimeTicks();
 	ticks = 0;
-	render(new std::weak_ptr<std::function<void(void*)>>(doRender));
+	render();
 
 	RequestFilteringInputEvents(PP_INPUTEVENT_CLASS_KEYBOARD);
 }
@@ -315,18 +334,18 @@ bool snygg_instance::HandleInputEvent(const pp::InputEvent& event) {
 
 void snygg_instance::HandleMessage(const pp::Var& var_message) {
 	if (!var_message.is_string()) return;
-	std::string boardname = var_message.AsString();
+	std::string new_board_name = var_message.AsString();
 
-	lout << "nacl got message: " << boardname << std::endl;
+	lout << "nacl got message: " << new_board_name << std::endl;
 
 	auto instanceHandle = pp::InstanceHandle(this);
 	load_board_thread = async(
-		[=]() { return load_board(instanceHandle, boardname); },
+		[=]() { return load_board(instanceHandle, new_board_name); },
 		[=](std::pair<std::shared_ptr<board_provider>, std::shared_ptr<board>> stuff) {
 			load_board_thread.join();
 
 			std::tie(bpp, bp) = stuff;
-			board_name = boardname;
+			board_name = new_board_name;
 
 			auto bb = bp->bounding_box();
 			reshaper.set_box(bb.x1, bb.y1, bb.x2, bb.y2);
@@ -356,12 +375,12 @@ void snygg_instance::DidChangeView(const pp::View& view) {
 
 	if (context.is_null()) {
 		context = initGL(*this, width, height);
-		doRender.reset(new std::function<void(void*)>([&](void* userdata){ render(userdata); }));
 		maybe_ready();
 	} else {
 		context.ResizeBuffers(width, height);
 		glViewport(0, 0, width, height);
 		if (bp) update_walls();
+		render();
 	}
 }
 

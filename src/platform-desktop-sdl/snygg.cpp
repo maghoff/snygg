@@ -27,7 +27,7 @@
 #include "lua_board_provider.hpp"
 #include "filesystem_file_loader.hpp"
 #include "food_generator.hpp"
-#include "item.hpp"
+#include "movable.hpp"
 #include "player.hpp"
 #include "console_score_listener.hpp"
 #include "paths.hpp"
@@ -41,6 +41,8 @@
 
 
 struct snygg::impl {
+	bool should_render = true;
+
 	std::unique_ptr<game::bindable_keyboard_handler> kbd;
 
 	std::unique_ptr<game::box_reshaper> reshaper;
@@ -50,9 +52,10 @@ struct snygg::impl {
 
 	std::unique_ptr<board_provider> active_board_provider;
 	std::unique_ptr<board> active_board;
-	std::vector<std::unique_ptr<item>> items;
-	std::vector<std::unique_ptr<item>> new_items;
 	std::vector<std::unique_ptr<renderable>> renderables;
+	std::vector<std::unique_ptr<crashable>> crashables;
+	std::vector<std::unique_ptr<crashable>> new_crashables;
+	std::vector<std::unique_ptr<movable>> movables;
 	std::vector<std::unique_ptr<score_listener>> score_listeners;
 	std::vector<std::unique_ptr<player>> players;
 
@@ -272,6 +275,8 @@ void snygg::reshape(int width, int height) {
 
 	d->active_skin->set_transformation(d->reshaper->get_transformation());
 	d->active_skin->set_pixels_per_unit(d->reshaper->get_pixels_per_unit());
+
+	d->should_render = true;
 }
 
 void snygg::set_skin_key(scalable_skin* skin) {
@@ -287,50 +292,74 @@ void snygg::render_to(skin& s) {
 
 	s.enter_state(skin::other_state);
 
-	for (auto& item : d->items) item->render(s);
 	for (auto& renderable : d->renderables) renderable->render(s);
+	for (auto& crashable : d->crashables) crashable->render(s);
+	for (auto& movable : d->movables) movable->render(s);
 
 	s.floor(d->active_board->floor_polygon());
 }
 
 void snygg::render() {
+	static int force_render = 2;
+	if (force_render) --force_render;
+	else if (!d->should_render) return;
+
 	init_gl();
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glColor4f(1.0, 1.0, 1.0, 1.0);
 
 	render_to(*d->active_skin);
+
+	d->should_render = !d->movables.empty();
+}
+
+template <typename Container>
+static void cleanup_dead(Container& c) {
+	auto new_end = std::remove_if(std::begin(c), std::end(c), [](const typename Container::value_type& i) { return i->is_dead(); });
+	c.erase(new_end, std::end(c));
+}
+
+template <typename Container>
+static void add_new_items(Container& target, Container& source) {
+	target.reserve(target.size() + source.size());
+	for (auto& item : source) target.emplace_back(std::move(item));
+	source.clear();
 }
 
 void snygg::tick_10ms() {
-	for (auto& item : d->new_items) {
-		d->items.emplace_back(std::move(item));
-	}
-	d->new_items.clear();
+	add_new_items(d->crashables, d->new_crashables);
 
-	for (auto& item : d->items) {
-		if (!item->is_dead()) item->move();
+	for (auto& movable : d->movables) {
+		if (!movable->is_dead()) movable->move();
 	}
 
-	std::vector<player*> dead_players;
 	for (auto& player : d->players) {
-		for (auto& item : d->items) {
-			if (!item->is_dead() && player->crashes_with(*item)) item->hit_by(*player);
+		for (auto& crashable : d->crashables) {
+			if (!crashable->is_dead() && player->crashes_with(*crashable)) crashable->hit_by(*player);
 		}
-		if (player->crashes_with(*d->active_board)) {
-			dead_players.push_back(&*player);
+		for (auto& movable : d->movables) {
+			if (!movable->is_dead() && player->crashes_with(*movable)) movable->hit_by(*player);
 		}
+		if (player->crashes_with(*d->active_board)) player->die();
 	}
 
-	for (auto& dead_player : dead_players) dead_player->die();
+	cleanup_dead(d->crashables);
+	cleanup_dead(d->movables);
 
-	auto new_end = std::remove_if(d->items.begin(), d->items.end(), [](const std::unique_ptr<item>& i) { return i->is_dead(); });
-	d->items.erase(new_end, d->items.end());
-}
-
-void snygg::add_item(std::unique_ptr<item>&& i) {
-	d->new_items.emplace_back(std::move(i));
+	add_new_items(d->crashables, d->new_crashables);
 }
 
 void snygg::add_renderable(std::unique_ptr<renderable>&& r) {
 	d->renderables.emplace_back(std::move(r));
+	d->should_render = true;
+}
+
+void snygg::add_crashable(std::unique_ptr<crashable>&& r) {
+	d->new_crashables.emplace_back(std::move(r));
+	d->should_render = true;
+}
+
+void snygg::add_movable(std::unique_ptr<movable>&& r) {
+	d->movables.emplace_back(std::move(r));
+	d->should_render = true;
 }

@@ -3,11 +3,11 @@
 
 def build(bld):
 	sources = [
+		'crashable_with_life.cpp',
 		'food_generator.cpp',
 		'food_item.cpp',
-		'item.cpp',
 		'item_container.cpp',
-		'item_with_life.cpp',
+		'movable.cpp',
 		'player.cpp',
 		'score_listener.cpp',
 		'snake.cpp',

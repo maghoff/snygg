@@ -36,8 +36,9 @@ public:
 	void render() override;
 	void tick_10ms() override;
 
-	void add_item(std::unique_ptr<item>&&);
-	void add_renderable(std::unique_ptr<renderable>&&);
+	void add_renderable(std::unique_ptr<renderable>&&) override;
+	void add_crashable(std::unique_ptr<crashable>&&) override;
+	void add_movable(std::unique_ptr<movable>&&) override;
 };
 
 #endif

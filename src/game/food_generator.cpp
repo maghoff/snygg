@@ -66,7 +66,7 @@ void food_generator::generate() {
 		(d->b.intersect_with_circle(pos, 5.f))
 	);
 
-	d->ic.add_item(std::unique_ptr<item>(
+	d->ic.add_crashable(std::unique_ptr<crashable>(
 		new food_item(pos[0], pos[1], 5.f, *this)
 	));
 }

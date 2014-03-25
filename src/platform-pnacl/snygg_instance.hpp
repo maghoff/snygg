@@ -13,8 +13,8 @@
 #include <ppapi/cpp/core.h>
 #include <box_reshaper.hpp>
 #include <item_container.hpp>
-#include <item.hpp>
 #include <player.hpp>
+#include <movable.hpp>
 #include <score_listener.hpp>
 #include <renderable.hpp>
 #include <bindable_keyboard_handler.hpp>
@@ -47,7 +47,6 @@ class snygg_instance : public pp::Instance, pp::Graphics3DClient, item_container
 	bool images_loaded = false;
 
 	pp::Graphics3D context;
-	std::shared_ptr<std::function<void(void*)>> doRender;
 
 	renderable_complex_polygon floor;
 	renderable_recording_draw_elements walls;
@@ -60,12 +59,14 @@ class snygg_instance : public pp::Instance, pp::Graphics3DClient, item_container
 
 	double startTime;
 	int ticks;
-	std::vector<std::unique_ptr<item>> items, new_items;
 	std::vector<std::unique_ptr<renderable>> renderables;
+	std::vector<std::unique_ptr<crashable>> crashables, new_crashables;
+	std::vector<std::unique_ptr<movable>> movables;
 	std::vector<std::unique_ptr<player>> players;
 	std::unique_ptr<food_generator> fg;
-	void add_item(std::unique_ptr<item>&&) override;
 	void add_renderable(std::unique_ptr<renderable>&&) override;
+	void add_crashable(std::unique_ptr<crashable>&&) override;
+	void add_movable(std::unique_ptr<movable>&&) override;
 	void tick_10ms();
 	void simulate_until(PP_TimeTicks);
 
@@ -80,7 +81,11 @@ class snygg_instance : public pp::Instance, pp::Graphics3DClient, item_container
 	void HandleMessage(const pp::Var& var_message) override;
 
 	void Graphics3DContextLost() override;
-	void render(void*);
+	bool render_callback_pending = false, should_render = false;
+	friend void render_callback_trampoline(void* userdata, int32_t status);
+	void render_callback(int32_t status);
+	void render();
+
 	void maybe_ready();
 	void update_walls();
 	void check_gl_error();

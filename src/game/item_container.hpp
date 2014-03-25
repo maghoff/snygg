@@ -3,15 +3,17 @@
 
 #include <memory>
 
-class item;
 class renderable;
+class crashable;
+class movable;
 
 class item_container {
 public:
 	virtual ~item_container();
 
-	virtual void add_item(std::unique_ptr<item>&&) = 0;
 	virtual void add_renderable(std::unique_ptr<renderable>&&) = 0;
+	virtual void add_crashable(std::unique_ptr<crashable>&&) = 0;
+	virtual void add_movable(std::unique_ptr<movable>&&) = 0;
 };
 
 #endif // ITEM_CONTAINER_HPP
