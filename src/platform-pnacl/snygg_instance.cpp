@@ -320,7 +320,9 @@ bool snygg_instance::handle_key_event(const pp::KeyboardInputEvent& event) {
 }
 
 bool snygg_instance::HandleInputEvent(const pp::InputEvent& event) {
-	simulate_until(event.GetTimeStamp());
+	// event.GetTimeStamp() seems to get out of sync with pp::Module::Get()->core()->GetTimeTicks()
+	// upon system sleep. See http://stackoverflow.com/questions/22688934/
+	simulate_until(pp::Module::Get()->core()->GetTimeTicks());
 
 	switch (event.GetType()) {
 	case PP_INPUTEVENT_TYPE_KEYDOWN:
