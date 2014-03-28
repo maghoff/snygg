@@ -9,189 +9,10 @@
 
 <link href='https://fonts.googleapis.com/css?family=Marcellus' rel='stylesheet' type='text/css'>
 <link rel='stylesheet' type='text/css' href='http://magnushoff.com/style.css'></link>
-<style>
+<link rel='stylesheet' type='text/css' href='style.css'></link>
 
-h1 {
-	font-size: 32px;
-	line-height: 40px;
-}
-
-.progressbar {
-	display: inline-block;
-	width: 50px;
-	height: 4px;
-	border-radius: 4px;
-	border: 1px solid #4c66b2;
-	overflow: hidden;
-	vertical-align: middle;
-}
-.progress {
-	display: block;
-	background: #4c66b2;
-	height: 100%;
-}
-
-.snygg {
-	width: 100%;
-	height: 500px;
-}
-
-:-webkit-full-screen {
-	padding: 0;
-	margin: 0;
-	width: 100%;
-	height: 100%;
-	box-sizing: border-box;
-	padding: 5px;
-	background: black;
-}
-
-:-webkit-full-screen .snygg {
-	width: 100%;
-	height: 100%;
-}
-
-.notes {
-	margin: 5px;
-	text-align: center;
-}
-
-select {
-	padding: 4px 8px;
-	background: #ccc;
-	border: 1px solid #999;
-	border-radius: 4px;
-}
-
-.key-definition {
-	margin-right: 14px;
-}
-
-.key {
-	display: inline-block;
-	padding: 4px 8px;
-	background: #ccc;
-	border: 1px solid #999;
-	border-radius: 4px;
-}
-
-.mouse-pointer {
-	vertical-align: middle;
-	width: 16px;
-	height: 25px;
-	image-rendering: -moz-crisp-edges;
-	image-rendering: crisp-edges;
-}
-
-</style>
-
-<script>
-
-function installApp() {
-	var boardSelector = document.getElementById("board");
-
-	function loadBoard() {
-		var board = window.location.hash.substr(1);
-		if (!boardSelector.namedItem(board)) {
-			if (board) {
-				window.history.pushState(null, "Snygg: Pill", "#pill");
-			}
-			board = "pill";
-		}
-		boardSelector.namedItem(board).setAttribute("selected", "selected");
-		snygg.postMessage(board);
-	}
-	window.addEventListener('hashchange', loadBoard);
-
-	boardSelector.addEventListener('change', function () {
-		var boardItem = boardSelector.options[boardSelector.selectedIndex];
-		window.history.pushState(
-			null,
-			"Snygg: " + boardItem.name,
-			"#" + boardItem.value
-		);
-		loadBoard();
-	});
-
-
-	var snygg = document.getElementById("snygg");
-
-	snygg.addEventListener('loadstart', function () {
-		document.getElementById('statusField').textContent = "loading";
-	});
-
-	snygg.addEventListener('progress', function (ev) {
-		var status = "loading";
-		if (ev.lengthComputable) {
-			var progressPercentage = ev.loaded / ev.total * 100;
-			status = "loading<br/><span class='progressbar'><span class='progress' style='width: " + progressPercentage + "%'></span></span>";
-		}
-		document.getElementById('statusField').innerHTML = status;
-	});
-
-	snygg.addEventListener('load', function () {
-		document.getElementById('statusField').textContent = "loading";
-		loadBoard();
-	});
-
-	function displayLastError() {
-		document.getElementById('statusField').textContent = snygg.lastError;
-	}
-
-	snygg.addEventListener('error', displayLastError);
-	snygg.addEventListener('abort', displayLastError);
-
-	snygg.addEventListener('crash', function () {
-		var status;
-		if (snygg.exitStatus === 0) status = "finished";
-		else status = "crashed with exit code " + snygg.exitStatus;
-		document.getElementById('statusField').textContent = status;
-	});
-
-	snygg.addEventListener('message', function (ev) {
-		var msg = JSON.parse(ev.data);
-		if (msg.status === "running") {
-			document.getElementById('statusField').innerHTML = "&nbsp;";
-		}
-	});
-
-	function initializeFullscreen(keyCode, box) {
-		function toggleFullscreen() {
-			var isFullscreen =
-				document.fullscreenEnabled ||
-				(document.fullScreenElement && document.fullScreenElement !== null) ||
-				document.mozFullScreen ||
-				document.webkitIsFullScreen;
-
-			if (!isFullscreen) {
-				var requestFullscreen =
-					box.requestFullscreen ||
-					box.mozRequestFullScreen ||
-					box.webkitRequestFullscreen;
-				requestFullscreen.call(box);
-			} else {
-				var exitFullscreen =
-					document.exitFullscreen ||
-					document.mozCancelFullScreen ||
-					document.webkitExitFullscreen;
-				exitFullscreen.call(document);
-			}
-		}
-
-		box.addEventListener('keydown', function (ev) {
-			if (ev.keyCode === keyCode) {
-				ev.preventDefault();
-				toggleFullscreen();
-			}
-		});
-	}
-
-	initializeFullscreen(70, document.getElementById("fullscreenbox"));
-}
-
-document.addEventListener("DOMContentLoaded", installApp);
-
-</script>
+<script defer src="pouchdb.js"></script>
+<script defer src="snygg.js"></script>
 
 </head>
 <body>
@@ -245,6 +66,10 @@ Arena: <select id="board">
 <option name="wide_screen_small" value="wide_screen_small">Wide screen (small)</option>
 </select>
 </div>
+
+<p>
+Score: <span id="score">-</span>
+</p>
 
 </div>
 

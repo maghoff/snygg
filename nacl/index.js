@@ -15,6 +15,9 @@ if (argv.release) variant = "release";
 
 server = resource_tree.createServer({
 	"index.html": new resource_tree.FileResource(path.join(root, "nacl/src/index.html")),
+	"style.css": new resource_tree.FileResource(path.join(root, "nacl/src/style.css")),
+	"snygg.js": new resource_tree.FileResource(path.join(root, "nacl/src/snygg.js")),
+	"pouchdb.js": new resource_tree.FileResource(path.join(root, "nacl/src/pouchdb.js")),
 	"mp.png": new resource_tree.FileResource(path.join(root, "nacl/src/mp.png")),
 	"platform-pnacl.nmf": new resource_tree.FileResource(path.join(root, "nacl/src/manifest.json")),
 	"platform-pnacl.pexe": new resource_tree.FileResource(path.join(root, "build-pnacl/" + variant + "/src/platform-pnacl/platform-pnacl.pexe")),
