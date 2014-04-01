@@ -12,6 +12,8 @@
 <link rel='stylesheet' type='text/css' href='style.css'></link>
 
 <script defer src="pouchdb.js"></script>
+<script defer src="md5.js"></script>
+<script defer src="sha1.js"></script>
 <script defer src="snygg.js"></script>
 
 </head>
@@ -70,6 +72,27 @@ Arena: <select id="board">
 <p>
 Score: <span id="score">-</span>
 </p>
+
+<div id="login-interaction">
+
+<div class="doing-box"><p id="doing-message"></p> <object data="throbber.svg" type="image/svg+xml"></object></div>
+<div class="status-box" id="status-message"></div>
+
+<div class="login-form">
+<p>Login/register user to publish highscores.</p>
+<label for="username">Username:</label> <input type="text" id="username" name="username" />
+<label for="email">Email (optional, for <a href="http://gravatar.com/">Gravatar</a>):</label> <input type="text" id="email" name="email" />
+<label for="password">Password:</label> <input type="password" id="password" name="password" />
+<button id="register">Register new user</button>
+<button id="login">Log in</button>
+</div>
+
+<div class="logged-in-form">
+<p><img id="gravatar" src="">Playing as <span id="logged-in-user"></span>.</p>
+<button id="logout">Log out</button>
+</div>
+
+</div>
 
 </div>
 

@@ -18,10 +18,13 @@ do
 done
 
 gzip --best --no-name < src/mp.png > "deploy/mp.png"
+gzip --best --no-name < src/throbber.svg > "deploy/throbber.svg"
 gzip --best --no-name < src/index.html > "deploy/index.html"
 gzip --best --no-name < src/style.css > "deploy/style.css"
 uglifyjs src/snygg.js | gzip --best --no-name > "deploy/snygg.js"
 uglifyjs src/pouchdb.js | gzip --best --no-name > "deploy/pouchdb.js"
+uglifyjs src/md5.js | gzip --best --no-name > "deploy/md5.js"
+uglifyjs src/sha1.js | gzip --best --no-name > "deploy/sha1.js"
 gzip --best --no-name < src/manifest.json > "deploy/platform-pnacl.nmf"
 gzip --best --no-name < ../build-pnacl/release/src/platform-pnacl/platform-pnacl.pexe > "deploy/platform-pnacl.pexe"
 
