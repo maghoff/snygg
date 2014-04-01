@@ -6,11 +6,15 @@ require({
 }, [
 	'login',
 	'highscore-reporter',
+	'board-selector',
+	'fullscreen',
 	'deps/pouchdb',
 	'deps/domReady!'
 ], function(
 	Login,
 	HighscoreReporter,
+	BoardSelector,
+	initializeFullscreen,
 	PouchDB
 ) {
 	var centralCouch = 'https://mag.cloudant.com/';
@@ -18,33 +22,13 @@ require({
 	function installApp() {
 		var highscoreReporter = new HighscoreReporter(centralCouch);
 		var login = new Login(document.getElementById("login-interaction"), centralCouch, highscoreReporter);
-
-		var boardSelector = document.getElementById("board");
-
-		function loadBoard() {
-			var board = window.location.hash.substr(1);
-			if (!boardSelector.namedItem(board)) {
-				if (board) {
-					window.history.pushState(null, "Snygg: Pill", "#pill");
+		var boardSelector =
+			new BoardSelector(
+				document.getElementById("board"),
+				{
+					boardChanged: function (board) { if (snygg) snygg.postMessage(board); }
 				}
-				board = "pill";
-			}
-			boardSelector.namedItem(board).setAttribute("selected", "selected");
-			if (snygg) snygg.postMessage(board);
-		}
-		loadBoard();
-		window.addEventListener('hashchange', loadBoard);
-
-		boardSelector.addEventListener('change', function () {
-			var boardItem = boardSelector.options[boardSelector.selectedIndex];
-			window.history.pushState(
-				null,
-				"Snygg: " + boardItem.name,
-				"#" + boardItem.value
 			);
-			loadBoard();
-		});
-
 
 		var snygg = document.getElementById("snygg");
 
@@ -63,7 +47,7 @@ require({
 
 		snygg.addEventListener('load', function () {
 			document.getElementById('statusField').textContent = "loading";
-			loadBoard();
+			boardSelector.loadBoard();
 		});
 
 		function displayLastError() {
@@ -93,38 +77,8 @@ require({
 			}
 		});
 
-		function initializeFullscreen(keyCode, box) {
-			function toggleFullscreen() {
-				var isFullscreen =
-					document.fullscreenEnabled ||
-					document.fullScreenElement ||
-					document.mozFullScreen ||
-					document.webkitIsFullScreen;
-
-				if (!isFullscreen) {
-					var requestFullscreen =
-						box.requestFullscreen ||
-						box.mozRequestFullScreen ||
-						box.webkitRequestFullscreen;
-					requestFullscreen.call(box);
-				} else {
-					var exitFullscreen =
-						document.exitFullscreen ||
-						document.mozCancelFullScreen ||
-						document.webkitExitFullscreen;
-					exitFullscreen.call(document);
-				}
-			}
-
-			box.addEventListener('keyup', function (ev) {
-				if (ev.keyCode === keyCode) {
-					ev.preventDefault();
-					toggleFullscreen();
-				}
-			});
-		}
-
-		initializeFullscreen(70, document.getElementById("fullscreenbox"));
+		var keyCodeForF = 70;
+		initializeFullscreen(keyCodeForF, document.getElementById("fullscreenbox"));
 	}
 
 	installApp();
