@@ -6,13 +6,12 @@ var requirejs = require('requirejs');
 var configs = [
 	{
 		id: 'js',
-		baseUrl: '',
+		baseUrl: 'src',
 		name: 'snygg',
 		out: 'optimized/app.js',
 		include: 'requireLib',
 		paths: {
-			"snygg": "src/snygg",
-			"requireLib": "node_modules/requirejs/require"
+			"requireLib": "../node_modules/requirejs/require"
 		},
 		mainConfigFile: "src/snygg.js",
 		preserveLicenseComments: false
