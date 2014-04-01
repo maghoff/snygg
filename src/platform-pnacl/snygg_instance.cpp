@@ -303,13 +303,13 @@ static const std::unordered_map<uint32_t, int> key_mapping = {
 };
 
 bool snygg_instance::handle_key_event(const pp::KeyboardInputEvent& event) {
-	if (event.GetModifiers()) return false;
+	bool pressed = event.GetType() == PP_INPUTEVENT_TYPE_KEYDOWN;
+	if (pressed && event.GetModifiers()) return false;
 
 	auto mapping = key_mapping.find(event.GetKeyCode());
 	if (mapping == key_mapping.end()) return false;
 
 	int keycode = mapping->second;
-	bool pressed = event.GetType() == PP_INPUTEVENT_TYPE_KEYDOWN;
 
 	if (key_states[keycode] != pressed) {
 		key_states[keycode] = pressed;
