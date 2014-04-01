@@ -6,6 +6,8 @@
   "author": "Magnus Hoff <maghoff@gmail.com>",
   "dependencies": {
     "resource-tree": "0.0.0-14",
-    "minimist": "0.0.8"
+    "minimist": "0.0.8",
+    "requirejs": "~2.1.11",
+    "async": "~0.6.2"
   }
 }

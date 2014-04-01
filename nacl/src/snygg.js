@@ -1,3 +1,19 @@
+require({
+	shim: {
+		"md5": { exports: "md5" },
+		"sha1": { exports: "CryptoJS" }
+	}
+}, [
+	'deps/pouchdb',
+	'deps/md5',
+	'deps/sha1',
+	'deps/domReady!'
+], function(
+	PouchDB,
+	md5,
+	CryptoJS
+) {
+
 var centralCouch = 'https://mag.cloudant.com/'; // FIXME Global data :(
 
 function initializeDb() {
@@ -284,9 +300,11 @@ function installApp() {
 	});
 
 	snygg.addEventListener('message', function (ev) {
+		console.log("Got message from nacl", ev);
 		var msg = JSON.parse(ev.data);
 		if (msg.what === "status") {
 			if (msg.status === "running") {
+				console.log("Setting statusField");
 				document.getElementById('statusField').innerHTML = 'by <a href="http://magnushoff.com/">Magnus Hoff</a>';
 			}
 		} else if (msg.what === "died") {
@@ -334,4 +352,6 @@ function installApp() {
 	initializeFullscreen(70, document.getElementById("fullscreenbox"));
 }
 
-document.addEventListener("DOMContentLoaded", installApp);
+installApp();
+
+});

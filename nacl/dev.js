@@ -16,16 +16,15 @@ if (argv.release) variant = "release";
 server = resource_tree.createServer({
 	"index.html": new resource_tree.FileResource(path.join(root, "nacl/src/index.html")),
 	"style.css": new resource_tree.FileResource(path.join(root, "nacl/src/style.css")),
+	"app.js": new resource_tree.FileResource(path.join(root, "nacl/node_modules/requirejs/require.js")),
 	"snygg.js": new resource_tree.FileResource(path.join(root, "nacl/src/snygg.js")),
-	"pouchdb.js": new resource_tree.FileResource(path.join(root, "nacl/src/pouchdb.js")),
-	"md5.js": new resource_tree.FileResource(path.join(root, "nacl/src/md5.js")),
-	"sha1.js": new resource_tree.FileResource(path.join(root, "nacl/src/sha1.js")),
 	"mp.png": new resource_tree.FileResource(path.join(root, "nacl/src/mp.png")),
 	"throbber.svg": new resource_tree.FileResource(path.join(root, "nacl/src/throbber.svg")),
 	"platform-pnacl.nmf": new resource_tree.FileResource(path.join(root, "nacl/src/manifest.json")),
 	"platform-pnacl.pexe": new resource_tree.FileResource(path.join(root, "build-pnacl/" + variant + "/src/platform-pnacl/platform-pnacl.pexe")),
 	"levels": new resource_tree.FileLookup(path.join(root, "levels")),
-	"skins": new resource_tree.FileLookup(path.join(root, "skins"))
+	"skins": new resource_tree.FileLookup(path.join(root, "skins")),
+	"deps": new resource_tree.FileLookup(path.join(root, "nacl/deps"))
 });
 
 server.on("listening", function () {
