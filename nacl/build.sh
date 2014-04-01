@@ -2,6 +2,10 @@
 
 cd $(dirname "$0")
 
+pushd ..
+./build_pnacl release
+popd
+
 npm install
 
 echo "Optimizing js and css"
