@@ -1,3 +1,5 @@
+@import url("login.css");
+
 h1 {
 	font-size: 32px;
 	line-height: 40px;
@@ -68,38 +70,4 @@ select {
 	height: 25px;
 	image-rendering: -moz-crisp-edges;
 	image-rendering: crisp-edges;
-}
-
-.doing-box {
-	display: none;
-}
-
-.doing .doing-box {
-	display: block;
-}
-
-.status-box {
-	display: none;
-}
-
-.status .status-box {
-	display: block;
-	border: 1px solid red;
-	padding: 10px;
-}
-
-.login-form {
-	display: none;
-}
-
-.not-logged-in .login-form {
-	display: block;
-}
-
-.logged-in-form {
-	display: none;
-}
-
-.logged-in .logged-in-form {
-	display: block;
 }

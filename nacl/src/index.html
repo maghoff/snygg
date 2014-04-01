@@ -72,21 +72,21 @@ Score: <span id="score">-</span>
 
 <div id="login-interaction">
 
-<div class="doing-box"><p id="doing-message"></p> <object data="throbber.svg" type="image/svg+xml"></object></div>
-<div class="status-box" id="status-message"></div>
+<div class="doing-box"><p class="doing-message"></p> <object data="throbber.svg" type="image/svg+xml"></object></div>
+<div class="status-box status-message"></div>
 
 <div class="login-form">
 <p>Login/register user to publish highscores.</p>
-<label for="username">Username:</label> <input type="text" id="username" name="username" />
-<label for="email">Email (optional, for <a href="http://gravatar.com/">Gravatar</a>):</label> <input type="text" id="email" name="email" />
-<label for="password">Password:</label> <input type="password" id="password" name="password" />
-<button id="register">Register new user</button>
-<button id="login">Log in</button>
+<label for="username">Username:</label> <input type="text" name="username" />
+<label for="email">Email (optional, for <a href="http://gravatar.com/">Gravatar</a>):</label> <input type="text" name="email" />
+<label for="password">Password:</label> <input type="password" name="password" />
+<button class="register">Register new user</button>
+<button class="login">Log in</button>
 </div>
 
 <div class="logged-in-form">
-<p><img id="gravatar" src="">Playing as <span id="logged-in-user"></span>.</p>
-<button id="logout">Log out</button>
+<p><img class="gravatar" src="">Playing as <span class="logged-in-user"></span>.</p>
+<button class="logout">Log out</button>
 </div>
 
 </div>

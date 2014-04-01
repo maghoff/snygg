@@ -1,0 +1,33 @@
+.doing-box {
+	display: none;
+}
+
+.doing .doing-box {
+	display: block;
+}
+
+.status-box {
+	display: none;
+}
+
+.status .status-box {
+	display: block;
+	border: 1px solid red;
+	padding: 10px;
+}
+
+.login-form {
+	display: none;
+}
+
+.not-logged-in .login-form {
+	display: block;
+}
+
+.logged-in-form {
+	display: none;
+}
+
+.logged-in .logged-in-form {
+	display: block;
+}
