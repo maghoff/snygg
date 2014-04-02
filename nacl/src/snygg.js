@@ -7,6 +7,7 @@ require({
 	'game',
 	'login',
 	'highscore-reporter',
+	'highscore-list',
 	'board-selector',
 	'fullscreen',
 	'deps/pouchdb',
@@ -15,6 +16,7 @@ require({
 	Game,
 	Login,
 	HighscoreReporter,
+	HighscoreList,
 	BoardSelector,
 	initializeFullscreen,
 	PouchDB
@@ -23,15 +25,19 @@ require({
 
 	var highscoreReporter = new HighscoreReporter(centralCouch);
 
+	var highscoreList = new HighscoreList(document.getElementById("highscore-list"), centralCouch);
+
 	var login = new Login(document.getElementById("login-interaction"), centralCouch, highscoreReporter);
 
-	var boardSelector =
-		new BoardSelector(
-			document.getElementById("board"),
-			{
-				boardChanged: function (board) { if (game) game.loadBoard(board); }
+	var boardSelector = new BoardSelector(
+		document.getElementById("board"),
+		{
+			boardChanged: function (board) {
+				if (game) game.loadBoard(board);
+				highscoreList.load(board);
 			}
-		);
+		}
+	);
 
 	var keyCodeForF = 70;
 	initializeFullscreen(keyCodeForF, document.getElementById("fullscreenbox"));
