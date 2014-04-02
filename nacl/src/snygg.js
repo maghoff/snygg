@@ -7,6 +7,7 @@ require({
 	'game',
 	'login',
 	'highscore-reporter',
+	'gravatar-provider',
 	'highscore-list',
 	'board-selector',
 	'fullscreen',
@@ -16,6 +17,7 @@ require({
 	Game,
 	Login,
 	HighscoreReporter,
+	GravatarProvider,
 	HighscoreList,
 	BoardSelector,
 	initializeFullscreen,
@@ -25,7 +27,8 @@ require({
 
 	var highscoreReporter = new HighscoreReporter(centralCouch);
 
-	var highscoreList = new HighscoreList(document.getElementById("highscore-list"), centralCouch);
+	var gravatarProvider = new GravatarProvider(centralCouch);
+	var highscoreList = new HighscoreList(document.getElementById("highscore-list"), centralCouch, gravatarProvider);
 
 	var login = new Login(document.getElementById("login-interaction"), centralCouch, highscoreReporter);
 

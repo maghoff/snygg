@@ -3,11 +3,12 @@ define([
 ], function (
 	ajax
 ) {
-	function HighscoreList(dom, centralCouch) {
+	function HighscoreList(dom, centralCouch, gravatarProvider) {
 		if (!this instanceof HighscoreList) return new HighscoreList(dom, centralCouch);
 
 		this.dom = dom;
 		this.centralCouch = centralCouch;
+		this.gravatarProvider = gravatarProvider;
 	}
 
 	HighscoreList.prototype.clear = function () {
@@ -51,6 +52,16 @@ define([
 
 				var player = document.createElement("td");
 				player.textContent = data.rows[i].value.name;
+				var gravatar = (function () {
+					var gravatar = document.createElement("img");
+					gravatar.classList.add("highscore-gravatar");
+					gravatar.setAttribute("src", "http://www.gravatar.com/avatar/?d=mm&s=50");
+					this.gravatarProvider.get(data.rows[i].value.name, function (gravatarUrl) {
+						gravatar.setAttribute("src", gravatarUrl + "&s=50");
+					});
+					return gravatar;
+				}.bind(this)());
+				player.insertBefore(gravatar, player.firstChild);
 				row.appendChild(player);
 
 				var score = document.createElement("td");
