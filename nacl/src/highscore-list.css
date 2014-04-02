@@ -1,3 +1,44 @@
+.highscore-list-box {
+	height: 301px;
+}
+
+.highscore-list {
+	width: 600px;
+	margin-left: auto;
+	margin-right: auto;
+	border-collapse: collapse;
+}
+
+.highscore-list th {
+	text-align: left;
+}
+.highscore-list th.player-col {
+	visibility: hidden;
+	padding-left: 40px;
+}
+.highscore-list th.score-col {
+	text-align: right;
+}
+
+.highscore-list tr {
+	border-bottom: 1px solid #eef;
+}
+
+.highscore-list td, .highscore-list th {
+	padding-left: 10px;
+	padding-right: 10px;
+}
+
+.rank-col {
+	width: 30px;
+	text-align: right;
+}
+
+.score-col {
+	width: 60px;
+	text-align: right;
+}
+
 .highscore-gravatar {
 	width: 25px;
 	height: 25px;

@@ -47,10 +47,12 @@ define([
 				var row = document.createElement("tr");
 
 				var rank = document.createElement("td");
+				rank.classList.add("rank-col");
 				rank.textContent = (i+1) + ".";
 				row.appendChild(rank);
 
 				var player = document.createElement("td");
+				player.classList.add("player-col");
 				player.textContent = data.rows[i].value.name;
 				var gravatar = (function () {
 					var gravatar = document.createElement("img");
@@ -65,6 +67,7 @@ define([
 				row.appendChild(player);
 
 				var score = document.createElement("td");
+				score.classList.add("score-col");
 				score.textContent = data.rows[i].value.score;
 				row.appendChild(score);
 
