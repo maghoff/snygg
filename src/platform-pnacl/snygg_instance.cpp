@@ -319,6 +319,15 @@ bool snygg_instance::handle_key_event(const pp::KeyboardInputEvent& event) {
 	return true;
 }
 
+bool snygg_instance::handle_keypress_event(const pp::KeyboardInputEvent& event) {
+	if (event.GetModifiers()) return false;
+
+	auto ch = event.GetCharacterText().AsString();
+	if (ch == " ") return true;
+
+	return false;
+}
+
 bool snygg_instance::HandleInputEvent(const pp::InputEvent& event) {
 	// event.GetTimeStamp() seems to get out of sync with pp::Module::Get()->core()->GetTimeTicks()
 	// upon system sleep. See http://stackoverflow.com/questions/22688934/
@@ -328,6 +337,9 @@ bool snygg_instance::HandleInputEvent(const pp::InputEvent& event) {
 	case PP_INPUTEVENT_TYPE_KEYDOWN:
     case PP_INPUTEVENT_TYPE_KEYUP:
 		return handle_key_event(pp::KeyboardInputEvent(event));
+
+	case PP_INPUTEVENT_TYPE_CHAR:
+		return handle_keypress_event(pp::KeyboardInputEvent(event));
 
 	default:
 		return false;

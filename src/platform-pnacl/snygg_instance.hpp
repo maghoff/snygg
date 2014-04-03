@@ -76,6 +76,7 @@ class snygg_instance : public pp::Instance, pp::Graphics3DClient, item_container
 	std::unordered_map<int, bool> key_states;
 	game::bindable_keyboard_handler kbd;
 	bool handle_key_event(const pp::KeyboardInputEvent& event);
+	bool handle_keypress_event(const pp::KeyboardInputEvent& event);
 	bool HandleInputEvent(const pp::InputEvent& event) override;
 
 	void HandleMessage(const pp::Var& var_message) override;
