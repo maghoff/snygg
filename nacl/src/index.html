@@ -9,9 +9,9 @@
 
 <link href='https://fonts.googleapis.com/css?family=Marcellus' rel='stylesheet' type='text/css'>
 <link rel='stylesheet' type='text/css' href='http://magnushoff.com/style.css'></link>
-<link rel='stylesheet' type='text/css' href='style.css'></link>
+<link rel='stylesheet' type='text/css' href='{{stylecss}}'></link>
 
-<script async defer data-main="snygg" src="app.js"></script>
+<script async defer data-main="snygg" src="{{appjs}}"></script>
 
 </head>
 <body>
@@ -25,7 +25,7 @@
 <div id="fullscreenbox">
 <object
 	id="snygg"
-	src="platform-pnacl.nmf"
+	src='{{{manifest}}}'
 	type="application/x-pnacl"
 	class="snygg"
 >

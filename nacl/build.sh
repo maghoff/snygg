@@ -1,5 +1,7 @@
 #!/bin/bash -e
 
+PEXE="../build-pnacl/release/src/platform-pnacl/platform-pnacl.pexe"
+
 cd $(dirname "$0")
 
 pushd ..
@@ -10,6 +12,11 @@ npm install
 
 echo "Optimizing js and css"
 ./optimize.js
+
+STYLECSS_MD5=$(md5sum optimized/style.css | cut -d ' ' -f 1)
+APPJS_MD5=$(md5sum optimized/app.js | cut -d ' ' -f 1)
+PEXE_MD5=$(md5sum "$PEXE" | cut -d ' ' -f 1)
+
 
 rm -rf deploy
 mkdir deploy
@@ -28,8 +35,15 @@ done
 
 gzip --best --no-name < src/mp.png > "deploy/mp.png"
 gzip --best --no-name < src/throbber.svg > "deploy/throbber.svg"
-gzip --best --no-name < src/index.html > "deploy/index.html"
-gzip --best --no-name < optimized/style.css > "deploy/style.css"
-gzip --best --no-name < optimized/app.js > "deploy/app.js"
-gzip --best --no-name < src/manifest.json > "deploy/platform-pnacl.nmf"
-gzip --best --no-name < ../build-pnacl/release/src/platform-pnacl/platform-pnacl.pexe > "deploy/platform-pnacl.pexe"
+gzip --best --no-name < optimized/style.css > "deploy/style-$STYLECSS_MD5.css"
+gzip --best --no-name < optimized/app.js > "deploy/app-$APPJS_MD5.js"
+gzip --best --no-name < "$PEXE" > "deploy/snygg-$PEXE_MD5.pexe"
+
+./mustache.js <( cat <<EOF
+{
+	"stylecss": "style-$STYLECSS_MD5.css",
+	"appjs": "app-$APPJS_MD5.js",
+	"manifest": "data:application/x-pnacl,{\"program\":{\"portable\":{\"pnacl-translate\":{\"url\":\"http://magnushoff.com/snygg/snygg-$PEXE_MD5.pexe\",\"optlevel\":0}}}}"
+}
+EOF
+) < src/index.html | gzip --best --no-name > "deploy/index.html"

@@ -7,6 +7,7 @@
   "dependencies": {
     "resource-tree": "0.0.0-14",
     "minimist": "0.0.8",
+    "mustache": "~0.7.2",
     "requirejs": "~2.1.11",
     "async": "~0.6.2"
   }
