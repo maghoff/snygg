@@ -15,6 +15,9 @@ define([], function () {
 		dom.addEventListener('crash', this.crash.bind(this));
 
 		dom.addEventListener('message', this.message.bind(this));
+
+		if (dom.readyState >= 1) this.loadstart();
+		if (dom.readyState === 4) setTimeout(this.load.bind(this), 0);
 	}
 
 	Game.prototype.loadstart = function () {
