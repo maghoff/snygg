@@ -31,7 +31,7 @@ define([], function () {
 		this.dom.namedItem(board).setAttribute("selected", "selected");
 
 		this.listener.boardChanged(board);
-	}
+	};
 
 	return BoardSelector;
 });
