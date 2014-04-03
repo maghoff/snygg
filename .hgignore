@@ -28,3 +28,4 @@ snygg.includes
 nacl/node_modules
 nacl/deploy
 nacl/optimized
+nacl/deploy-cached

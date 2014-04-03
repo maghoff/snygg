@@ -35,10 +35,6 @@ done
 
 gzip --best --no-name < src/mp.png > "deploy/mp.png"
 gzip --best --no-name < src/throbber.svg > "deploy/throbber.svg"
-gzip --best --no-name < optimized/style.css > "deploy/style-$STYLECSS_MD5.css"
-gzip --best --no-name < optimized/app.js > "deploy/app-$APPJS_MD5.js"
-gzip --best --no-name < "$PEXE" > "deploy/snygg-$PEXE_MD5.pexe"
-
 ./mustache.js <( cat <<EOF
 {
 	"stylecss": "style-$STYLECSS_MD5.css",
@@ -47,3 +43,11 @@ gzip --best --no-name < "$PEXE" > "deploy/snygg-$PEXE_MD5.pexe"
 }
 EOF
 ) < src/index.html | gzip --best --no-name > "deploy/index.html"
+
+
+rm -rf deploy-cached
+mkdir deploy-cached
+
+gzip --best --no-name < optimized/style.css > "deploy-cached/style-$STYLECSS_MD5.css"
+gzip --best --no-name < optimized/app.js > "deploy-cached/app-$APPJS_MD5.js"
+gzip --best --no-name < "$PEXE" > "deploy-cached/snygg-$PEXE_MD5.pexe"
