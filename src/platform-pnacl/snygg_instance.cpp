@@ -66,7 +66,7 @@ std::thread async(F1&& asyncOperation, F2&& callback) {
 				[=](int32_t) mutable { callback(std::move(*result)); }
 			)
 		);
-		if (postResult != PP_OK) std::terminate();
+		if (postResult != PP_OK) fail(err::postwork_failed, "messageLoop.PostWork did not return PP_OK, but rather " + std::to_string(postResult));
 	});
 }
 
@@ -120,8 +120,7 @@ pp::Graphics3D initGL(pp::Instance instance, int32_t width, int32_t height) {
 	GLboolean shaderCompilerSupported;
 	glGetBooleanv(GL_SHADER_COMPILER, &shaderCompilerSupported);
 	if (shaderCompilerSupported == GL_FALSE) {
-		instance.LogToConsole(PP_LOGLEVEL_ERROR, "GLSL shader compiler not supported");
-		std::terminate();
+		fail(err::glsl_shader_not_supported, "GLSL shader compiler not supported");
 	}
 
 	return context;

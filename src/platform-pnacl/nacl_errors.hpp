@@ -10,7 +10,9 @@ enum class err : int {
 	unable_to_create_3d_context,
 	unable_to_bind_3d_context,
 	urlloader_open,
-	urlloader_readresponsebody
+	urlloader_readresponsebody,
+	postwork_failed,
+	glsl_shader_not_supported
 };
 
 void fail(err, const std::string&);
