@@ -43,12 +43,16 @@ define([
 			if (err) return console.error(err);
 
 			var tbody = this.dom.getElementsByTagName("tbody")[0];
+			var prevScore = null;
 			for (var i = 0; i < data.rows.length; ++i) {
 				var row = document.createElement("tr");
 
 				var rank = document.createElement("td");
 				rank.classList.add("rank-col");
-				rank.textContent = (i+1) + ".";
+				if (data.rows[i].value.score !== prevScore) {
+					rank.textContent = (i+1) + ".";
+					prevScore = data.rows[i].value.score;
+				}
 				row.appendChild(rank);
 
 				var player = document.createElement("td");
