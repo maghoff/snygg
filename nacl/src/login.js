@@ -1,15 +1,11 @@
 define([
 	'ajax',
-	'deps/md5',
+	'gravatar',
 	'deps/sha1',
 ], function (
-	ajax
+	ajax,
+	gravatarIdFromEmail
 ) {
-	function gravatarIdFromEmail(email) {
-		var normalized = email.trim().toLowerCase();
-		return md5(normalized);
-	}
-
 	function getElementsByNames(root, names) {
 		var elements = {};
 		names.forEach(function (name) {

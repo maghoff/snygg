@@ -1,7 +1,9 @@
 define([
 	'ajax',
+	'gravatar',
 ], function (
-	ajax
+	ajax,
+	gravatarIdFromEmail
 ) {
 	function GravatarProvider(centralCouch) {
 		if (!this instanceof GravatarProvider) return new GravatarProvider(centralCouch);
@@ -14,8 +16,10 @@ define([
 	}
 
 	GravatarProvider.prototype.buildGravatarUrl = function (name) {
-		if (this.gravatars[name] === "0") {
-			return "http://www.gravatar.com/avatar/?d=mm";
+		if (this.gravatars[name] === "mm") {
+			return "http://www.gravatar.com/avatar/?d=mm&f=y";
+		} else if (!this.gravatars[name]) {
+			return "http://www.gravatar.com/avatar/" + gravatarIdFromEmail(name) + "?d=retro&f=y";
 		} else {
 			return "http://www.gravatar.com/avatar/" + this.gravatars[name] + "?d=retro";
 		}
@@ -40,7 +44,7 @@ define([
 			if (err) {
 				console.error(err);
 				needs.forEach(function (name) {
-					this.gravatars[name] = "0";
+					this.gravatars[name] = "mm";
 				}.bind(this));
 			} else {
 				data.rows.forEach(function (row) {
