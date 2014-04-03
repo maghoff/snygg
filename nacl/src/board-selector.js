@@ -14,7 +14,7 @@ define([], function () {
 		var boardItem = this.dom.options[this.dom.selectedIndex];
 		window.history.pushState(
 			null,
-			"Snygg: " + boardItem.name,
+			"Snygg: " + boardItem.textContent,
 			"#" + boardItem.value
 		);
 		this.loadBoard();
@@ -22,6 +22,12 @@ define([], function () {
 
 	BoardSelector.prototype.loadBoard = function () {
 		var board = window.location.hash.substr(1);
+		if (board === "random") {
+			var randomIndex = Math.floor(this.dom.options.length * Math.random());
+			var boardItem = this.dom.options[randomIndex];
+			board = boardItem.value;
+			window.history.pushState(null, "Snygg: " + boardItem.textContent, "#" + boardItem.value);
+		}
 		if (!this.dom.namedItem(board)) {
 			if (board) {
 				window.history.pushState(null, "Snygg: Pill", "#pill");
