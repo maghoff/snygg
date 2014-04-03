@@ -57,7 +57,8 @@ define([
 					_id: doc._id,
 					name: username,
 					board: doc.board,
-					score: doc.score
+					score: doc.score,
+					timestamp: doc.timestamp
 				}, function (err, status) {
 					if (err && err.status !== 409) return console.error(err);
 					this.db.localHighscores.remove(doc);
