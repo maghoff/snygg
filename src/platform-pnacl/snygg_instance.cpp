@@ -29,6 +29,8 @@
 #include "buffering_skin.hpp"
 #include "metaballs.hpp"
 
+#include "nacl_errors.hpp"
+
 
 std::pair<std::shared_ptr<board_provider>, std::shared_ptr<board>>
 load_board(pp::InstanceHandle instanceHandle, const std::string& boardname) {
@@ -72,7 +74,8 @@ std::thread async(F1&& asyncOperation, F2&& callback) {
 snygg_instance::snygg_instance(PP_Instance instance) :
 	Instance(instance),
 	Graphics3DClient(this),
-	lout(*this, PP_LOGLEVEL_LOG)
+	lout(*this, PP_LOGLEVEL_LOG),
+	lerr(*this, PP_LOGLEVEL_ERROR)
 {
 }
 
@@ -109,14 +112,15 @@ pp::Graphics3D initGL(pp::Instance instance, int32_t width, int32_t height) {
 
 	pp::Graphics3D context = pp::Graphics3D(pp::InstanceHandle(&instance), attrib_list);
 
-	if (!instance.BindGraphics(context)) throw std::runtime_error("Unable to bind 3d context!");
+	if (context.is_null()) fail(err::unable_to_create_3d_context, "Unable to create 3d context");
+	if (!instance.BindGraphics(context)) fail(err::unable_to_bind_3d_context, "Unable to bind 3d context");
 
 	glSetCurrentContextPPAPI(context.pp_resource());
 
 	GLboolean shaderCompilerSupported;
 	glGetBooleanv(GL_SHADER_COMPILER, &shaderCompilerSupported);
 	if (shaderCompilerSupported == GL_FALSE) {
-		instance.LogToConsole(PP_LOGLEVEL_ERROR, "GLSL shader compiler not supported. Bailing out.");
+		instance.LogToConsole(PP_LOGLEVEL_ERROR, "GLSL shader compiler not supported");
 		std::terminate();
 	}
 
@@ -181,7 +185,7 @@ void snygg_instance::score_updated(int score) {
 	PostMessage(pp::Var("{"
 		"\"what\":\"score_updated\","
 		"\"score\":" + std::to_string(score) + ","
-		"\"board\":\"" + board_name + "\""
+		"\"board\":\"" + current_board_name + "\""
 	"}"));
 }
 
@@ -189,7 +193,7 @@ void snygg_instance::died(int score) {
 	PostMessage(pp::Var("{"
 		"\"what\":\"died\","
 		"\"score\":" + std::to_string(score) + ","
-		"\"board\":\"" + board_name + "\""
+		"\"board\":\"" + current_board_name + "\""
 	"}"));
 }
 
@@ -346,20 +350,27 @@ bool snygg_instance::HandleInputEvent(const pp::InputEvent& event) {
 	}
 }
 
-void snygg_instance::HandleMessage(const pp::Var& var_message) {
-	if (!var_message.is_string()) return;
-	std::string new_board_name = var_message.AsString();
+void snygg_instance::load_board(const std::string& new_board_name) {
+	loading_board_name = new_board_name;
 
-	lout << "nacl got message: " << new_board_name << std::endl;
+	if (loading_board_name == current_board_name) return;
+
+	if (load_board_thread.joinable()) return;
 
 	auto instanceHandle = pp::InstanceHandle(this);
 	load_board_thread = async(
-		[=]() { return load_board(instanceHandle, new_board_name); },
+		[=]() { return ::load_board(instanceHandle, new_board_name); },
 		[=](std::pair<std::shared_ptr<board_provider>, std::shared_ptr<board>> stuff) {
 			load_board_thread.join();
+			load_board_thread = std::thread();
+
+			if (loading_board_name != new_board_name) {
+				load_board(loading_board_name);
+				return;
+			}
 
 			std::tie(bpp, bp) = stuff;
-			board_name = new_board_name;
+			current_board_name = new_board_name;
 
 			auto bb = bp->bounding_box();
 			reshaper.set_box(bb.x1, bb.y1, bb.x2, bb.y2);
@@ -367,6 +378,15 @@ void snygg_instance::HandleMessage(const pp::Var& var_message) {
 			maybe_ready();
 		}
 	);
+}
+
+void snygg_instance::HandleMessage(const pp::Var& var_message) {
+	if (!var_message.is_string()) return;
+	std::string new_board_name = var_message.AsString();
+
+	lout << "nacl got message: " << new_board_name << std::endl;
+
+	load_board(new_board_name);
 }
 
 void snygg_instance::DidChangeView(const pp::View& view) {
@@ -442,7 +462,6 @@ bool snygg_instance::Init(uint32_t argc, const char* argn[], const char* argv[])
 		return false;
 	}
 
-
 	load_resources_thread = async(
 		[=]() {
 			return load_resources(instanceHandle, {
@@ -485,5 +504,5 @@ bool snygg_instance::Init(uint32_t argc, const char* argn[], const char* argv[])
 }
 
 void snygg_instance::Graphics3DContextLost() {
-	throw std::logic_error("Not implemented: snygg_instance::Graphics3DContextLost()");
+	fail(err::graphics3d_context_lost, "Not implemented: snygg_instance::Graphics3DContextLost()");
 }

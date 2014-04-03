@@ -34,12 +34,12 @@ namespace pp {
 }
 
 class snygg_instance : public pp::Instance, pp::Graphics3DClient, item_container, score_listener {
-	ologstream lout;
+	ologstream lout, lerr;
 
 	std::thread load_board_thread, load_resources_thread;
 	std::shared_ptr<board_provider> bpp;
 	std::shared_ptr<board> bp;
-	std::string board_name;
+	std::string current_board_name, loading_board_name;
 	std::map<std::string, std::vector<char>> resources;
 	bool resources_loaded = false;
 	std::thread load_images_thread;
@@ -78,6 +78,8 @@ class snygg_instance : public pp::Instance, pp::Graphics3DClient, item_container
 	bool handle_key_event(const pp::KeyboardInputEvent& event);
 	bool handle_keypress_event(const pp::KeyboardInputEvent& event);
 	bool HandleInputEvent(const pp::InputEvent& event) override;
+
+	void load_board(const std::string&);
 
 	void HandleMessage(const pp::Var& var_message) override;
 

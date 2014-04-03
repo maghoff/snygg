@@ -10,6 +10,7 @@ def build(bld):
 		'logbuf.cpp',
 		'main.cpp',
 		'metaballs.cpp',
+		'nacl_errors.cpp',
 		'ologstream.cpp',
 		'recording_skin.cpp',
 		'renderable_complex_polygon.cpp',
