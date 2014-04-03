@@ -25,7 +25,7 @@ define([
 			endkey: JSON.stringify([board, {}]),
 			inclusive_end: false,
 			reduce: true,
-			group_level: 2,
+			group_level: 3,
 			limit: 10
 		};
 
