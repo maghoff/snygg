@@ -263,6 +263,7 @@ void snygg_instance::maybe_ready() {
 	if (!images_loaded) { lout << "not ready: !images_loaded" << std::endl; return; }
 	if (context.is_null()) { lout << "not ready: context.is_null()" << std::endl; return; }
 	lout << "ready!" << std::endl;
+	ready = true;
 
 
 	lout << "  skin.reset()" << std::endl;
@@ -459,7 +460,7 @@ void snygg_instance::DidChangeView(const pp::View& view) {
 		context.ResizeBuffers(width, height);
 		glViewport(0, 0, width, height);
 		if (bp) update_walls();
-		render();
+		if (ready) render();
 	}
 }
 

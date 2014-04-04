@@ -46,6 +46,8 @@ class snygg_instance : public pp::Instance, pp::Graphics3DClient, item_container
 	std::map<std::string, image::surface> images;
 	bool images_loaded = false;
 
+	bool ready = false;
+
 	pp::Graphics3D context;
 
 	renderable_complex_polygon floor;
