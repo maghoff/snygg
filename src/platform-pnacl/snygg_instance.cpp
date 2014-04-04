@@ -242,10 +242,12 @@ void snygg_instance::render() {
 }
 
 void snygg_instance::maybe_ready() {
-	if (!bp) return;
-	if (!resources_loaded) return;
-	if (!images_loaded) return;
-	if (context.is_null()) return;
+	lout << "maybe_ready()" << std::endl;
+	if (!bp) { lout << "not ready: !bp" << std::endl; return; }
+	if (!resources_loaded) { lout << "not ready: !resources_loaded" << std::endl; return; }
+	if (!images_loaded) { lout << "not ready: !images_loaded" << std::endl; return; }
+	if (context.is_null()) { lout << "not ready: context.is_null()" << std::endl; return; }
+	lout << "ready!" << std::endl;
 
 
 	skin.reset(new buffering_skin(resources, images, lout));
@@ -287,9 +289,12 @@ void snygg_instance::maybe_ready() {
 
 	startTime = pp::Module::Get()->core()->GetTimeTicks();
 	ticks = 0;
+	lout << "calling render()" << std::endl;
 	render();
 
 	RequestFilteringInputEvents(PP_INPUTEVENT_CLASS_KEYBOARD);
+
+	lout << "maybe_ready() finished" << std::endl;
 }
 
 void snygg_instance::update_walls() {
@@ -360,6 +365,8 @@ void snygg_instance::load_board(const std::string& new_board_name) {
 	load_board_thread = async(
 		[=]() { return ::load_board(instanceHandle, new_board_name); },
 		[=](std::pair<std::shared_ptr<board_provider>, std::shared_ptr<board>> stuff) {
+			lout << "load_board called back" << std::endl;
+
 			load_board_thread.join();
 			load_board_thread = std::thread();
 
@@ -396,8 +403,11 @@ void snygg_instance::DidChangeView(const pp::View& view) {
 	storedWidth = width;
 	storedHeight = height;
 
+	lout << "DidChangeView (size actually changed)" << std::endl;
+
 	reshaper.reshape(width, height);
 	if (skin) {
+		lout << "Updating skins. context.is_null(): " << std::boolalpha << context.is_null() << std::endl;
 		skin->set_transformation(reshaper.get_transformation());
 		skin->set_pixels_per_unit(reshaper.get_pixels_per_unit());
 		skin->load_opengl_resources(width, height);
@@ -407,9 +417,11 @@ void snygg_instance::DidChangeView(const pp::View& view) {
 	}
 
 	if (context.is_null()) {
+		lout << "context = initGL" << std::endl;
 		context = initGL(*this, width, height);
 		maybe_ready();
 	} else {
+		lout << "context.ResizeBuffers(" << width << ", " << height << ")" << std::endl;
 		context.ResizeBuffers(width, height);
 		glViewport(0, 0, width, height);
 		if (bp) update_walls();
@@ -476,6 +488,7 @@ bool snygg_instance::Init(uint32_t argc, const char* argn[], const char* argv[])
 			});
 		},
 		[this](std::map<std::string, std::vector<char>>&& resources_) {
+			lout << "load_resources called back" << std::endl;
 			load_resources_thread.join();
 
 			resources = std::move(resources_);
@@ -492,12 +505,15 @@ bool snygg_instance::Init(uint32_t argc, const char* argn[], const char* argv[])
 			});
 		},
 		[this](std::map<std::string, image::surface>&& images_) {
+			lout << "load_images called back" << std::endl;
 			load_images_thread.join();
 			images = std::move(images_);
 			images_loaded = true;
 			maybe_ready();
 		}
 	);
+
+	lout << "Init() completed" << std::endl;
 
 	return true;
 }

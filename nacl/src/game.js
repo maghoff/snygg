@@ -16,6 +16,7 @@ define([], function () {
 
 		dom.addEventListener('message', this.message.bind(this));
 
+		console.log("Initial readyState for nacl object:", dom.readyState);
 		if (dom.readyState >= 1) this.loadstart();
 		if (dom.readyState === 4) setTimeout(this.load.bind(this), 0);
 	}
@@ -34,6 +35,7 @@ define([], function () {
 	};
 
 	Game.prototype.load = function () {
+		console.log("nacl object finished loading");
 		this.listener.status("loading");
 		this.listener.didLoad();
 	};
