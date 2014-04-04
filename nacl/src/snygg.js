@@ -1,4 +1,5 @@
 require({
+	waitSeconds: 0,
 	shim: {
 		"md5": { exports: "md5" },
 		"sha1": { exports: "CryptoJS" }
