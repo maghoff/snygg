@@ -435,6 +435,11 @@ std::map<std::string, std::vector<char>> load_resources(
 ) {
 	std::map<std::string, std::vector<char>> results;
 	std::vector<std::thread> thread_party;
+
+	// Allocate entire map, so we don't mess with the *map*
+	// in the subthreads. #threadworldproblems
+	for (auto& resource : resources) results[resource.first];
+
 	for (auto& resource : resources) {
 		thread_party.emplace_back([&results, resource, instanceHandle] {
 			iurlstream in(instanceHandle, resource.second);
