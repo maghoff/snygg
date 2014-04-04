@@ -12,7 +12,9 @@ enum class err : int {
 	urlloader_open,
 	urlloader_readresponsebody,
 	postwork_failed,
-	glsl_shader_not_supported
+	glsl_shader_not_supported,
+	missing_resource,
+	shader_linking_failed
 };
 
 void fail(err, const std::string&);

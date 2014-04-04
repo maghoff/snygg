@@ -241,6 +241,21 @@ void snygg_instance::render() {
 	context.SwapBuffers(pp::CompletionCallback(&render_callback_trampoline, this));
 }
 
+#include <iostream>
+std::ostream& operator << (std::ostream& out, const la::matrix33f& m) {
+	out << "[ ";
+	for (int row = 0; row < m.rows; ++row) {
+		if (row != 0) out << " ; ";
+		for (int col = 0; col < m.cols; ++col) {
+			if (col != 0) out << ' ';
+			out << m[row][col];
+		}
+	}
+	out << " ]";
+
+	return out;
+}
+
 void snygg_instance::maybe_ready() {
 	lout << "maybe_ready()" << std::endl;
 	if (!bp) { lout << "not ready: !bp" << std::endl; return; }
@@ -250,29 +265,42 @@ void snygg_instance::maybe_ready() {
 	lout << "ready!" << std::endl;
 
 
+	lout << "  skin.reset()" << std::endl;
 	skin.reset(new buffering_skin(resources, images, lout));
+	lout << "    set_transformation" << std::endl;
+	lout << "      reshaper.get_transformation(): " << reshaper.get_transformation() << std::endl;
 	skin->set_transformation(reshaper.get_transformation());
+	lout << "    set_pixels_per_unit" << std::endl;
+	lout << "      reshaper.get_pixels_per_unit(): " << reshaper.get_pixels_per_unit() << std::endl;
 	skin->set_pixels_per_unit(reshaper.get_pixels_per_unit());
+	lout << "    load_opengl_resources" << std::endl;
 	skin->load_opengl_resources(storedWidth, storedHeight);
+	lout << "    ---" << std::endl;
 
+	lout << "  metaballs.reset()" << std::endl;
 	metaballs.reset(new class metaballs(resources, lout));
 	metaballs->set_transformation(reshaper.get_transformation());
 	metaballs->set_pixels_per_unit(reshaper.get_pixels_per_unit());
 	metaballs->load_opengl_resources(storedWidth, storedHeight);
 
+	lout << "  renderable_complex_polygon()" << std::endl;
 	floor = std::move(renderable_complex_polygon(bp->floor_polygon()));
 
+	lout << "  update_walls()" << std::endl;
 	update_walls();
 
+	lout << "  check_gl_error()" << std::endl;
 	check_gl_error();
 
 
+	lout << "  *.clear()" << std::endl;
 	players.clear();
 	renderables.clear();
 	crashables.clear();
 	movables.clear();
 
 
+	lout << "  bp->get_starting_position()" << std::endl;
 	bp->get_starting_position();
 	players.emplace_back(new player(
 		kbd, *this, *bp, *this,
@@ -280,18 +308,22 @@ void snygg_instance::maybe_ready() {
 	));
 
 
+	lout << "  fg.reset()" << std::endl;
 	fg.reset(new food_generator(*this, *bp));
 	fg->generate();
 	add_new_items(crashables, new_crashables);
 
 
+	lout << "  PostMessage()" << std::endl;
 	PostMessage(pp::Var("{\"what\":\"status\",\"status\":\"running\"}"));
 
+	lout << "  core()->GetTimeTicks()" << std::endl;
 	startTime = pp::Module::Get()->core()->GetTimeTicks();
 	ticks = 0;
 	lout << "calling render()" << std::endl;
 	render();
 
+	lout << "  RequestFilteringInputEvents()" << std::endl;
 	RequestFilteringInputEvents(PP_INPUTEVENT_CLASS_KEYBOARD);
 
 	lout << "maybe_ready() finished" << std::endl;
@@ -337,6 +369,8 @@ bool snygg_instance::handle_keypress_event(const pp::KeyboardInputEvent& event) 
 }
 
 bool snygg_instance::HandleInputEvent(const pp::InputEvent& event) {
+	lout << "HandleInputEvent" << std::endl;
+
 	// event.GetTimeStamp() seems to get out of sync with pp::Module::Get()->core()->GetTimeTicks()
 	// upon system sleep. See http://stackoverflow.com/questions/22688934/
 	simulate_until(pp::Module::Get()->core()->GetTimeTicks());

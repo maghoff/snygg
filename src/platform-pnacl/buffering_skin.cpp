@@ -7,6 +7,7 @@
 #include "geometry_spec.hpp"
 #include "geometry_builder.hpp"
 #include "renderable_complex_polygon.hpp"
+#include "nacl_errors.hpp"
 
 namespace attrib {
 	enum {
@@ -104,7 +105,7 @@ GLuint buildShaderProgram(
 template <typename T>
 static const T& get(const std::map<std::string, T>& resources, const std::string& key) {
 	auto i = resources.find(key);
-	if (i == resources.end()) throw std::runtime_error("Requested missing resource");
+	if (i == resources.end()) fail(err::missing_resource, "Requested missing resource");
 	return i->second;
 }
 
@@ -123,6 +124,9 @@ buffering_skin::buffering_skin(
 	const std::map<std::string, image::surface>& images,
 	std::ostream& out_
 ) : out(out_), buffer(0) {
+	out << "> buffering_skin::buffering_skin" << std::endl;
+
+	out << "floorProgram" << std::endl;
 	floorProgram = buildShaderProgram(
 		{
 			{ GL_VERTEX_SHADER, { get(resources, "mb_vertex.glsl") } },
@@ -132,9 +136,10 @@ buffering_skin::buffering_skin(
 		},
 		out
 	);
-	if (floorProgram == 0) throw std::runtime_error("Shader linking failed");
+	if (floorProgram == 0) fail(err::shader_linking_failed, "Shader linking failed");
 
 
+	out << "colorProgram" << std::endl;
 	colorProgram = buildShaderProgram(
 		{
 			{ GL_VERTEX_SHADER, { get(resources, "vertex.glsl") } },
@@ -152,9 +157,10 @@ buffering_skin::buffering_skin(
 		},
 		out
 	);
-	if (colorProgram == 0) throw std::runtime_error("Shader linking failed");
+	if (colorProgram == 0) fail(err::shader_linking_failed, "Shader linking failed");
 
 
+	out << "textureProgram" << std::endl;
 	textureProgram = buildShaderProgram(
 		{
 			{ GL_VERTEX_SHADER, { get(resources, "vertex.glsl") } },
@@ -172,11 +178,16 @@ buffering_skin::buffering_skin(
 		},
 		out
 	);
-	if (textureProgram == 0) throw std::runtime_error("Shader linking failed");
+	if (textureProgram == 0) fail(err::shader_linking_failed, "Shader linking failed");
 
+	out << "genTextures" << std::endl;
 	glGenTextures(2, textures);
+	out << "diffuse.jpg" << std::endl;
 	copy_surface_to_texture(get(images, "diffuse.jpg"), textures[0]);
+	out << "normal.jpg" << std::endl;
 	copy_surface_to_texture(get(images, "normal.jpg"), textures[1]);
+
+	out << "< buffering_skin::buffering_skin" << std::endl;
 }
 
 buffering_skin::~buffering_skin() {
