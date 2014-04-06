@@ -1,4 +1,5 @@
 #include "logbuf.hpp"
+#include <algorithm>
 #include <ppapi/cpp/var.h>
 
 logbuf::logbuf(pp::Instance& instance_, PP_LogLevel log_level_) :
@@ -18,8 +19,23 @@ logbuf::int_type logbuf::overflow(logbuf::int_type c) {
 
 int logbuf::sync() {
 	auto begin = pbase(), end = pptr();
-	if (begin != end && *(end-1) == '\n') --end;
-	if (begin != end) instance.LogToConsole(log_level, pp::Var(std::string(begin, end)));
-	setp(buffer.data(), buffer.data() + buffer.size());
+
+	for (auto newline = std::find(begin, end, '\n'); newline != end; newline = std::find(begin, end, '\n')) {
+		instance.LogToConsole(log_level, pp::Var(std::string(begin, newline)));
+		begin = newline + 1;
+	}
+
+	if (begin != end) {
+		if (begin != buffer.data()) {
+			auto end_of_copy = std::copy(begin, end, buffer.data());
+			setp(end_of_copy, buffer.data() + buffer.size());
+		} else {
+			instance.LogToConsole(log_level, pp::Var(std::string(begin, end)));
+			setp(buffer.data(), buffer.data() + buffer.size());
+		}
+	} else {
+		setp(buffer.data(), buffer.data() + buffer.size());
+	}
+
 	return 0;
 }
