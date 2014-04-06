@@ -27,7 +27,7 @@
 .login-screen {
 	white-space: nowrap;
 	height: 100px;
-	width: 400px;
+	max-width: 600px;
 	overflow: hidden;
 	margin: 10px;
 	margin-left: auto;

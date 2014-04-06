@@ -33,10 +33,12 @@ define([
 		var register = this.dom.getElementsByClassName("register")[0];
 		var login = this.dom.getElementsByClassName("login")[0];
 		var logout = this.dom.getElementsByClassName("logout")[0];
+		var submitGravatar = this.dom.getElementsByClassName("submit-gravatar")[0];
 
 		register.addEventListener("click", this.doRegister.bind(this));
 		login.addEventListener("click", this.doLoginButton.bind(this));
 		logout.addEventListener("click", this.doLogout.bind(this));
+		submitGravatar.addEventListener("click", this.doSubmitGravatar.bind(this));
 	}
 
 	Login.prototype.doing = function (thing) {
@@ -55,11 +57,14 @@ define([
 	};
 
 	Login.prototype.showNotLoggedIn = function () {
+		this.userDoc = null;
 		this.dom.classList.add("not-logged-in");
 		this.dom.classList.remove("logged-in");
 	};
 
 	Login.prototype.showLoggedIn = function (doc) {
+		this.userDoc = doc;
+
 		this.dom.getElementsByClassName("logged-in-user")[0].textContent = doc.name;
 
 		var loggedIn = this.dom.getElementsByClassName("logged-in-form")[0];
@@ -143,13 +148,13 @@ define([
 	};
 
 	Login.prototype.doRegister = function () {
-		var inputs = getElementsByNames(this.dom, ["username", "email", "password"]);
+		var inputs = getElementsByNames(this.dom, ["username", "password"]);
 		var password = inputs.password.value;
 		var salt = CryptoJS.lib.WordArray.random(128/8).toString();
 		var newUser = {
 			"_id": "org.couchdb.user:" + inputs.username.value,
 			"name": inputs.username.value,
-			"gravatar": inputs.email.value ? gravatarIdFromEmail(inputs.email.value) : "",
+			"gravatar": "",
 			"type": "user",
 			"roles": [],
 			"salt": salt,
@@ -171,6 +176,26 @@ define([
 				this.status("Unknown error registring user. Please try again later");
 			} else {
 				this.doLogin(newUser.name, password);
+			}
+		}.bind(this));
+	};
+
+	Login.prototype.doSubmitGravatar = function () {
+		var email = getElementsByNames(this.dom, ["email"]).email;
+		if (!email.value) return;
+
+		this.userDoc.gravatar = gravatarIdFromEmail(email.value);
+		ajax({
+			"method": "PUT",
+			"url": this.centralCouch + "_users/" + this.userDoc._id,
+			body: this.userDoc
+		}, function (err, result) {
+			if (err) {
+				console.error(err);
+				this.status("Unknown error registring email. Please try again later");
+			} else {
+				this.userDoc._rev = result.rev;
+				this.showLoggedIn(this.userDoc);
 			}
 		}.bind(this));
 	};
