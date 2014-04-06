@@ -72,3 +72,7 @@ select {
 	image-rendering: -moz-crisp-edges;
 	image-rendering: crisp-edges;
 }
+
+.score {
+	text-align: center;
+}
