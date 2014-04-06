@@ -62,10 +62,15 @@ define([
 	Login.prototype.showLoggedIn = function (doc) {
 		this.dom.getElementsByClassName("logged-in-user")[0].textContent = doc.name;
 
+		var loggedIn = this.dom.getElementsByClassName("logged-in-form")[0];
+
 		var gravatar;
-		if (doc.gravatar) gravatar = "http://www.gravatar.com/avatar/" + doc.gravatar + "?d=retro";
-		else gravatar = "http://www.gravatar.com/avatar/" + gravatarIdFromEmail(doc.name) + "?d=retro&f=y";
-		this.dom.getElementsByClassName("gravatar")[0].setAttribute("src", gravatar);
+		if (doc.gravatar) gravatar = "http://www.gravatar.com/avatar/" + doc.gravatar + "?d=retro&s=200";
+		else gravatar = "http://www.gravatar.com/avatar/" + gravatarIdFromEmail(doc.name) + "?d=retro&f=y&s=200";
+		loggedIn.getElementsByClassName("gravatar")[0].setAttribute("src", gravatar);
+
+		loggedIn.classList.remove("has-gravatar");
+		if (doc.gravatar) loggedIn.classList.add("has-gravatar");
 
 		this.dom.classList.remove("not-logged-in");
 		this.dom.classList.add("logged-in");

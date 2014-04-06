@@ -72,22 +72,45 @@ Score: <span id="score">-</span>
 </p>
 
 <div id="login-interaction">
+	<div class="login-screen doing-box">
+		<div class="gravatar-box">
+			<img class="gravatar" src="http://www.gravatar.com/avatar/?d=mm&amp;f=y&amp;s=160">
+		</div>
+		<div class="content-box">
+			<div class="doing-message"></div>
+			<object data="throbber.svg" type="image/svg+xml"></object>
+		</div>
+	</div>
 
-<div class="doing-box"><p class="doing-message"></p> <object data="throbber.svg" type="image/svg+xml"></object></div>
-<div class="status-box status-message"></div>
+	<div class="login-screen login-form">
+		<div class="gravatar-box">
+			<img class="gravatar" src="http://www.gravatar.com/avatar/?d=mm&amp;f=y&amp;s=200">
+		</div>
+		<div class="content-box">
+			<div>Login/register user to publish highscores.</div>
+			<table>
+				<tr><td><label for="username">Username:</label></td><td><input type="text" name="username" /></td></tr>
+				<tr><td><label for="password">Password:</label></td><td><input type="password" name="password" /></td></tr>
+			</table>
+			<div><button class="register">Register new user</button>&nbsp;|&nbsp;<button class="login">Log in</button></div>
+		</div>
+	</div>
 
-<div class="login-form">
-<p>Login/register user to publish highscores.</p>
-<label for="username">Username:</label> <input type="text" name="username" />
-<label for="email">Email (optional, for <a href="http://gravatar.com/">Gravatar</a>):</label> <input type="text" name="email" />
-<label for="password">Password:</label> <input type="password" name="password" />
-<button class="register">Register new user</button>
-<button class="login">Log in</button>
-</div>
+	<div class="login-screen logged-in-form">
+		<div class="gravatar-box">
+			<img class="gravatar" src="http://www.gravatar.com/avatar/?d=mm&amp;f=y&amp;s=160">
+		</div>
+		<div class="content-box">
+			<div>Hello <span class="logged-in-user"></span>!</div>
+			<div class="gravatar-input">
+				<div><label for="email">Submit email for <a href="http://gravatar.com/" target="_blank">Gravatar</a>:</label></div>
+				<div><input type="text" name="email" /> <button class="save-gravatar">Save</button></div>
+			</div>
+			<div><button class="logout">Log out</button></div>
+		</div>
+	</div>
 
-<div class="logged-in-form">
-<p><img class="gravatar" src="">Playing as <span class="logged-in-user"></span>.</p>
-<button class="logout">Log out</button>
+	<div class="status-box status-message"></div>
 </div>
 
 <div class="highscore-list-box">
@@ -102,8 +125,6 @@ Score: <span id="score">-</span>
 <tbody>
 </tbody>
 </table>
-</div>
-
 </div>
 
 </div>

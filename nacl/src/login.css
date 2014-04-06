@@ -1,33 +1,70 @@
-.doing-box {
+.doing-box, .status-box, .login-form, .logged-in-form {
 	display: none;
 }
+.doing .doing-box { display: block; }
+.status .status-box { display: block; }
 
-.doing .doing-box {
-	display: block;
-}
+.not-logged-in .login-form { display: block; }
+.logged-in .logged-in-form { display: block; }
+.not-logged-in.doing .login-form { display: none; }
+.logged-in.doing .logged-in-form { display: none; }
+
 
 .status-box {
-	display: none;
-}
-
-.status .status-box {
-	display: block;
 	border: 1px solid red;
 	padding: 10px;
+	margin-left: auto;
+	margin-right: auto;
+	width: 300px;
 }
 
-.login-form {
+.gravatar {
+	width: 100px;
+	height: 100px;
+}
+
+
+.login-screen {
+	white-space: nowrap;
+	height: 100px;
+	width: 400px;
+	overflow: hidden;
+	margin: 10px;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.login-screen button {
+	border: none;
+	background: none;
+	outline: none;
+	text-decoration: underline;
+	color: blue;
+	font-size: inherit;
+	font-family: inherit;
+	padding: 0;
+	margin: 0;
+	cursor: pointer;
+}
+
+.logged-in-user {
+	font-weight: bold;
+}
+
+.gravatar-box {
+	display: inline-block;
+	vertical-align: top;
+}
+
+.content-box {
+	display: inline-block;
+	vertical-align: top;
+}
+
+.gravatar-input {
+	padding: 4px;
+}
+
+.has-gravatar .gravatar-input {
 	display: none;
-}
-
-.not-logged-in .login-form {
-	display: block;
-}
-
-.logged-in-form {
-	display: none;
-}
-
-.logged-in .logged-in-form {
-	display: block;
 }
