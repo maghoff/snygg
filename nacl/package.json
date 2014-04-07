@@ -9,6 +9,7 @@
     "minimist": "0.0.8",
     "mustache": "~0.7.2",
     "requirejs": "~2.1.11",
-    "async": "~0.6.2"
+    "async": "~0.6.2",
+    "pouchdb": "~2.1.2"
   }
 }
