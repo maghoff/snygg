@@ -15,6 +15,7 @@ define([
 		for (var index = 0; index < array.length; ++index) {
 			if (predicate(array[index], index, array)) return index;
 		}
+		return -1;
 	}
 
 
@@ -122,12 +123,16 @@ define([
 	HighscoreList.prototype.applyScore = function (score) {
 		var existingIndex = findIndex(this.entries, function (old) { return old.name === score.name; });
 		if (existingIndex !== -1) {
+			if (this.entries[existingIndex].score >= score.score) return -1;
 			this.entries.splice(existingIndex, 1);
 		}
 
 		var newIndex = findIndex(this.entries, function (old) { return old.score < score.score; });
-		this.entries.splice(newIndex, 0, score);
+		if (newIndex === -1) newIndex = this.entries.length;
 
+		if (newIndex >= this.limit) return -1;
+
+		this.entries.splice(newIndex, 0, score);
 		return newIndex;
 	};
 

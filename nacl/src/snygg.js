@@ -56,7 +56,17 @@ require({
 				document.getElementById('statusField')[html ? "innerHTML" : "textContent"] = status;
 			},
 			died: function (board, score) {
-				if (score > 0) highscoreReporter.registerScore(board, score);
+				if (score > 0) {
+					highscoreReporter.registerScore(board, score);
+					if (login.userDoc) {
+						var highscoreIndex = highscoreList.applyScore({
+							name: login.userDoc.name,
+							score: score,
+							timestamp: (new Date()).toISOString()
+						});
+						if (highscoreIndex !== -1) highscoreList.render();
+					}
+				}
 			},
 			score: function (score) {
 				document.getElementById("score").textContent = score;
