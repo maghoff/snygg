@@ -347,11 +347,15 @@ static const std::unordered_map<uint32_t, int> key_mapping = {
 
 bool snygg_instance::handle_key_event(const pp::KeyboardInputEvent& event) {
 	bool pressed = event.GetType() == PP_INPUTEVENT_TYPE_KEYDOWN;
-	if (pressed && event.GetModifiers()) {
+	const auto modifiers_to_ignore =
+		PP_INPUTEVENT_MODIFIER_SHIFTKEY |
+		PP_INPUTEVENT_MODIFIER_CONTROLKEY |
+		PP_INPUTEVENT_MODIFIER_ALTKEY |
+		PP_INPUTEVENT_MODIFIER_METAKEY
+	;
+	if (pressed && (event.GetModifiers() & modifiers_to_ignore)) {
 		lout << "Input event ignored due to modifier keys" << std::endl;
 		return false;
-	} else {
-		lout << "Handling input event with keycode " << event.GetKeyCode() << std::endl;
 	}
 
 	auto mapping = key_mapping.find(event.GetKeyCode());
@@ -371,7 +375,6 @@ bool snygg_instance::handle_keypress_event(const pp::KeyboardInputEvent& event) 
 	if (event.GetModifiers()) return false;
 
 	auto ch = event.GetCharacterText().AsString();
-	lout << "Handling keypress event with character text '" << ch << '\'' << std::endl;
 	if (ch == " ") return true;
 
 	return false;
