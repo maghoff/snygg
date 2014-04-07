@@ -370,8 +370,6 @@ bool snygg_instance::handle_keypress_event(const pp::KeyboardInputEvent& event) 
 }
 
 bool snygg_instance::HandleInputEvent(const pp::InputEvent& event) {
-	lout << "HandleInputEvent" << std::endl;
-
 	// event.GetTimeStamp() seems to get out of sync with pp::Module::Get()->core()->GetTimeTicks()
 	// upon system sleep. See http://stackoverflow.com/questions/22688934/
 	simulate_until(pp::Module::Get()->core()->GetTimeTicks());
