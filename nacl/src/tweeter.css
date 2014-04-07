@@ -1,0 +1,21 @@
+.tweeter {
+	float: right;
+	margin-left: auto;
+	width: 200px;
+	background: #ddf;
+	border-radius: 4px;
+	padding: 10px;
+	white-space: normal;
+	opacity: 0.0;
+}
+
+.tweeter.active {
+	opacity: 1.0;
+
+	-webkit-transition: all 200ms;
+    transition: all 200ms;
+}
+
+.tweeter .buttons {
+	text-align: right;
+}

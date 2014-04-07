@@ -11,6 +11,7 @@ require({
 	'gravatar-provider',
 	'highscore-list',
 	'board-selector',
+	'tweeter',
 	'fullscreen',
 	'deps/pouchdb',
 	'deps/domReady!'
@@ -21,6 +22,7 @@ require({
 	GravatarProvider,
 	HighscoreList,
 	BoardSelector,
+	Tweeter,
 	initializeFullscreen,
 	PouchDB
 ) {
@@ -32,6 +34,8 @@ require({
 	var highscoreList = new HighscoreList(document.getElementById("highscore-list"), centralCouch, gravatarProvider);
 
 	var login = new Login(document.getElementById("login-interaction"), centralCouch, highscoreReporter);
+
+	var tweeter = new Tweeter(document.getElementById("tweeter"));
 
 	var boardSelector = new BoardSelector(
 		document.getElementById("board"),
@@ -64,6 +68,14 @@ require({
 							score: score,
 							timestamp: (new Date()).toISOString()
 						});
+						if (highscoreIndex === 0) {
+							tweeter.tweet({
+								text: "With " + score + " point" + (score !== 1 ? "s" : "") + " " +
+									"I just beat the high score!",
+								url: window.location,
+								via: "magistratic"
+							});
+						}
 						if (highscoreIndex !== -1) highscoreList.render();
 					}
 				}

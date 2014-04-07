@@ -1,16 +1,10 @@
 define([
 	'ajax',
+	'encode-query-args',
 ], function (
-	ajax
+	ajax,
+	encodeQueryArgs
 ) {
-	function encodeQueryArgs(opts) {
-		var queryArgs = "";
-		for (key in opts) {
-			queryArgs += "&" + encodeURIComponent(key) + "=" + encodeURIComponent(opts[key])
-		}
-		return queryArgs.substr(1);
-	}
-
 	function findIndex(array, predicate) {
 		for (var index = 0; index < array.length; ++index) {
 			if (predicate(array[index], index, array)) return index;
