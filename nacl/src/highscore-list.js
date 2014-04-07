@@ -141,6 +141,11 @@ define([
 			timeout: 60000
 		};
 
+		if (this.entries.length >= this.limit) {
+			// Don't poll for scores that won't show up:
+			opts.over = this.entries[this.limit-1].score;
+		}
+
 		if (this.activeLongPoll) this.activeLongPoll.abort();
 
 	   this.activeLongPoll = ajax({
