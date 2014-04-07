@@ -74,5 +74,9 @@ select {
 }
 
 .score {
+	/* Make layout very static to help browser optimize */
+	height: 18px;
+	overflow: hidden;
+
 	text-align: center;
 }
