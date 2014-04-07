@@ -324,6 +324,8 @@ void snygg_instance::maybe_ready() {
 	lout << "calling render()" << std::endl;
 	render();
 
+	lout << "  RequestInputEvents()" << std::endl;
+	RequestInputEvents(PP_INPUTEVENT_CLASS_MOUSE);
 	lout << "  RequestFilteringInputEvents()" << std::endl;
 	RequestFilteringInputEvents(PP_INPUTEVENT_CLASS_KEYBOARD);
 
@@ -345,7 +347,12 @@ static const std::unordered_map<uint32_t, int> key_mapping = {
 
 bool snygg_instance::handle_key_event(const pp::KeyboardInputEvent& event) {
 	bool pressed = event.GetType() == PP_INPUTEVENT_TYPE_KEYDOWN;
-	if (pressed && event.GetModifiers()) return false;
+	if (pressed && event.GetModifiers()) {
+		lout << "Input event ignored due to modifier keys" << std::endl;
+		return false;
+	} else {
+		lout << "Handling input event with keycode " << event.GetKeyCode() << std::endl;
+	}
 
 	auto mapping = key_mapping.find(event.GetKeyCode());
 	if (mapping == key_mapping.end()) return false;
@@ -364,6 +371,7 @@ bool snygg_instance::handle_keypress_event(const pp::KeyboardInputEvent& event) 
 	if (event.GetModifiers()) return false;
 
 	auto ch = event.GetCharacterText().AsString();
+	lout << "Handling keypress event with character text '" << ch << '\'' << std::endl;
 	if (ch == " ") return true;
 
 	return false;
@@ -381,6 +389,13 @@ bool snygg_instance::HandleInputEvent(const pp::InputEvent& event) {
 
 	case PP_INPUTEVENT_TYPE_CHAR:
 		return handle_keypress_event(pp::KeyboardInputEvent(event));
+
+	case PP_INPUTEVENT_TYPE_MOUSEDOWN:
+	case PP_INPUTEVENT_TYPE_MOUSEUP:
+	case PP_INPUTEVENT_TYPE_MOUSEENTER:
+	case PP_INPUTEVENT_TYPE_MOUSELEAVE:
+	case PP_INPUTEVENT_TYPE_MOUSEMOVE:
+		return true;
 
 	default:
 		return false;
