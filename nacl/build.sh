@@ -35,6 +35,7 @@ done
 
 gzip --best --no-name < src/mp.png > "deploy/mp.png"
 gzip --best --no-name < src/throbber.svg > "deploy/throbber.svg"
+gzip --best --no-name < src/snygg-screenshot.png > "deploy/snygg-screenshot.png"
 ./mustache.js <( cat <<EOF
 {
 	"stylecss": "style-$STYLECSS_MD5.css",
