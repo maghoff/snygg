@@ -41,7 +41,14 @@ require({
 		document.getElementById("board"),
 		{
 			boardChanged: function (board) {
-				if (game) game.loadBoard(board);
+				if (game) {
+					try {
+						game.loadBoard(board);
+					}
+					catch (err) {
+						console.error("game.loadBoard() failed:", err);
+					}
+				}
 				highscoreList.load(board);
 			}
 		}
