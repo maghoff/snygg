@@ -29,3 +29,4 @@ nacl/node_modules
 nacl/deploy
 nacl/optimized
 nacl/deploy-cached
+nacl/api-key.json

@@ -10,6 +10,7 @@
     "mustache": "~0.7.2",
     "requirejs": "~2.1.11",
     "async": "~0.6.2",
-    "pouchdb": "~2.1.2"
+    "pouchdb": "~2.1.2",
+    "uglify-js": "~2.4.13"
   }
 }
