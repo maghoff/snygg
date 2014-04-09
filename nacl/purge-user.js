@@ -1,8 +1,10 @@
 #!/usr/bin/env node
 
+var fs = require('fs');
 var PouchDb = require('pouchdb');
 
-var dbUrl = 'https://mag.cloudant.com/snygg/';
+var apiKey = JSON.parse(fs.readFileSync('api-key.json', 'utf-8'));
+var dbUrl = 'https://' + apiKey.key + ':' + apiKey.password + '@mag.cloudant.com/snygg/';
 var db = new PouchDb(dbUrl);
 
 var user = "ate";
