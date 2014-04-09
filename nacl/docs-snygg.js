@@ -38,6 +38,55 @@ module.exports = {
 				"dbcopy": "personal_records"
 			}
 		},
+		"validate_doc_update": function validate_doc_update(newDoc, oldDoc, userCtx, secObj) {
+			function is_server_or_database_admin(userCtx, secObj) {
+				// see if the user is a server admin
+				if(userCtx.roles.indexOf('_admin') !== -1) {
+					return true; // a server admin
+				}
+
+				// see if the user a database admin specified by name
+				if(secObj && secObj.admins && secObj.admins.names) {
+					if(secObj.admins.names.indexOf(userCtx.name) !== -1) {
+						return true; // database admin
+					}
+				}
+
+				// see if the user a database admin specified by role
+				if(secObj && secObj.admins && secObj.admins.roles) {
+					var db_roles = secObj.admins.roles;
+					for(var idx = 0; idx < userCtx.roles.length; idx++) {
+						var user_role = userCtx.roles[idx];
+						if(db_roles.indexOf(user_role) !== -1) {
+							return true; // role matches!
+						}
+					}
+				}
+				return false; // default to no admin
+			}
+
+			// admin can do whatever
+			if (is_server_or_database_admin(userCtx, secObj)) return;
+
+			if (newDoc._deleted) throw({unauthorized:"Only admin can delete stuff"});
+
+			if (newDoc.name !== userCtx.name) throw({unauthorized:".name must match logged in user"});
+			if (typeof newDoc.score !== 'number') throw({forbidden:".score must be a number"});
+			if (newDoc.score <= 0) throw({forbidden:".score must be more than 0"});
+			if (typeof newDoc.board !== 'string') throw({forbidden:".board must be a string"});
+			if (newDoc.board.length > 50) throw({forbidden:".board can not be more than 50 characters"});
+
+			var rfc3339pattern = /^\d{4}-\d\d-\d\dT\d\d:\d\d:\d\d(.\d+)?Z$/;
+			if (typeof newDoc.timestamp !== 'string') throw({forbidden:".timestamp must be a string"});
+			if (!newDoc.timestamp.match(rfc3339pattern)) throw({forbidden:".timestamp must be a valid RFC3339 timestamp in Z timezone"});
+
+			var permissibleFields = ["_id", "_rev", "name", "board", "score", "timestamp"];
+			for (var field in newDoc) {
+				if (permissibleFields.indexOf(field) === -1) {
+					throw({forbidden: 'May not contain field: ' + field});
+				}
+			}
+		},
 		"language": "javascript"
 	}
 };
