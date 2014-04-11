@@ -80,7 +80,7 @@ module.exports = {
 			if (typeof newDoc.timestamp !== 'string') throw({forbidden:".timestamp must be a string"});
 			if (!newDoc.timestamp.match(rfc3339pattern)) throw({forbidden:".timestamp must be a valid RFC3339 timestamp in Z timezone"});
 
-			var permissibleFields = ["_id", "_rev", "name", "board", "score", "timestamp"];
+			var permissibleFields = ["_id", "_rev", "_revisions", "name", "board", "score", "timestamp"];
 			for (var field in newDoc) {
 				if (permissibleFields.indexOf(field) === -1) {
 					throw({forbidden: 'May not contain field: ' + field});

@@ -130,10 +130,10 @@ module.exports = {
 
 
 			// snygg specific
-			if (name.length === 0) throw({forbidden: "Username can not be empty"});
-			if (name.length > 50) throw({forbidden: "Username can not be more than 50 characters"});
+			if (newDoc.name.length === 0) throw({forbidden: "Username can not be empty"});
+			if (newDoc.name.length > 50) throw({forbidden: "Username can not be more than 50 characters"});
 
-			var permissibleFields = ["_id", "_rev", "name", "gravatar", "type", "salt", "password_sha"];
+			var permissibleFields = ["_id", "_rev", "_revisions", "name", "roles", "gravatar", "type", "salt", "password_sha"];
 			for (var field in newDoc) {
 				if (permissibleFields.indexOf(field) === -1) {
 					throw({forbidden: 'May not contain field: ' + field});
