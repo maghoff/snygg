@@ -29,7 +29,7 @@ interpreter explicitly. This is probably a good idea on Windows.
 Build
 -----
 
-	./waf build_debug # and/or build_release
+	./waf build_debug --targets=snygg # and/or build_release
 
 
 Run
