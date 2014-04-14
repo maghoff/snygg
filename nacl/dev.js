@@ -11,8 +11,15 @@ var argv = minimist(process.argv);
 var root = path.join(__dirname, '..');
 var directoryResourceFactory = function (fullpath) { return new resource_tree.DirectoryResource(fullpath); };
 
+if (argv.h || argv.help) {
+	console.error("Usage: ./dev.js [--release] [--hostname <hostname>]");
+	process.exit(1);
+}
+
 var variant = "debug";
 if (argv.release) variant = "release";
+
+var hostname = argv.hostname || "localhost";
 
 var manifest = {
 	"program": {
@@ -47,8 +54,8 @@ server = resource_tree.createServer(new resource_tree.SerialLookup([
 ]));
 
 server.on("listening", function () {
-	var url = 'http://localhost:' + server.address().port + '/index.html';
-	manifest.program.portable["pnacl-translate"].url = 'http://localhost:' + server.address().port + '/platform-pnacl.pexe';
+	var url = 'http://' + hostname + ':' + server.address().port + '/index.html';
+	manifest.program.portable["pnacl-translate"].url = 'http://' + hostname + ':' + server.address().port + '/platform-pnacl.pexe';
 	indexView.manifest = "data:application/x-pnacl," + JSON.stringify(manifest);
 
 	console.log(url);
