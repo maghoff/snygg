@@ -1,6 +1,13 @@
 #!/bin/bash -e
 
+BASE_URL="http://magnushoff.com/snygg"
 PEXE="../build-pnacl/release/src/platform-pnacl/platform-pnacl.pexe"
+
+if [[ $# -ge 1 ]]
+then
+	BASE_URL="$1"
+fi
+
 
 cd $(dirname "$0")
 
@@ -16,6 +23,7 @@ echo "Optimizing js and css"
 STYLECSS_MD5=$(md5sum optimized/style.css | cut -d ' ' -f 1)
 APPJS_MD5=$(md5sum optimized/app.js | cut -d ' ' -f 1)
 PEXE_MD5=$(md5sum "$PEXE" | cut -d ' ' -f 1)
+PEXE_SIZE=$(stat -c %s "$PEXE")
 
 
 rm -rf deploy
@@ -40,7 +48,8 @@ gzip --best --no-name < src/snygg-screenshot.png > "deploy/snygg-screenshot.png"
 {
 	"stylecss": "style-$STYLECSS_MD5.css",
 	"appjs": "app-$APPJS_MD5.js",
-	"manifest": "data:application/x-pnacl,{\"program\":{\"portable\":{\"pnacl-translate\":{\"url\":\"http://magnushoff.com/snygg/snygg-$PEXE_MD5.pexe\",\"optlevel\":0}}}}"
+	"manifest": "data:application/x-pnacl,{\"program\":{\"portable\":{\"pnacl-translate\":{\"url\":\"$BASE_URL/snygg-$PEXE_MD5.pexe\",\"optlevel\":0}}}}",
+	"pexe_size": "$PEXE_SIZE"
 }
 EOF
 ) < src/index.html | gzip --best --no-name > "deploy/index.html"

@@ -27,6 +27,15 @@ define([], function () {
 
 	Game.prototype.progress = function (ev) {
 		var status = "loading";
+		console.log(ev.lengthComputable, ev.loaded, this.dom.getAttribute("data-size"));
+		if (!ev.lengthComputable && this.dom.getAttribute("data-size")) {
+			ev = {
+				loaded: ev.loaded,
+				lengthComputable: true,
+				total: parseInt(this.dom.getAttribute("data-size"), 10)
+			};
+		}
+		console.log(ev.lengthComputable, ev.loaded, ev.total);
 		if (ev.lengthComputable) {
 			var progressPercentage = ev.loaded / ev.total * 100;
 			status = "loading<br/><span class='progressbar'><span class='progress' style='width: " + progressPercentage + "%'></span></span>";
