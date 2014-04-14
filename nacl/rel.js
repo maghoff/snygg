@@ -10,7 +10,7 @@ var argv = minimist(process.argv);
 var root = path.join(__dirname, '..');
 var directoryResourceFactory = function (fullpath) { return new resource_tree.DirectoryResource(fullpath); };
 
-server = resource_tree.createServer(
+server = resource_tree.createServer(new resource_tree.SerialLookup([
 	new resource_tree.FileLookup(
 		path.join(root, "nacl/deploy"),
 		null,
@@ -19,8 +19,18 @@ server = resource_tree.createServer(
 				"Content-Encoding": "gzip"
 			});
 		}
+	),
+	new resource_tree.FileLookup(
+		path.join(root, "nacl/deploy-cached"),
+		null,
+		function (fullpath) {
+			return new resource_tree.FileResource(fullpath, {
+				"Content-Encoding": "gzip",
+				"Cache-Control": "public, max-age=31556926"
+			});
+		}
 	)
-);
+]));
 
 server.on("listening", function () {
 	var url = 'http://localhost:' + server.address().port + '/index.html';
@@ -35,4 +45,4 @@ server.on("listening", function () {
 	}
 });
 
-server.listen(0);
+server.listen(8080);
