@@ -103,6 +103,9 @@ void snygg_instance::add_movable(std::unique_ptr<movable>&& r) {
 
 pp::Graphics3D initGL(pp::Instance instance, int32_t width, int32_t height) {
 	const int32_t attrib_list[] = {
+		PP_GRAPHICS3DATTRIB_RED_SIZE, 4,
+		PP_GRAPHICS3DATTRIB_GREEN_SIZE, 4,
+		PP_GRAPHICS3DATTRIB_BLUE_SIZE, 4,
 		PP_GRAPHICS3DATTRIB_ALPHA_SIZE, 1,
 		PP_GRAPHICS3DATTRIB_DEPTH_SIZE, 0,
 		PP_GRAPHICS3DATTRIB_WIDTH, width,
