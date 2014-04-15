@@ -25,8 +25,8 @@ snygg.creator
 snygg.files
 snygg.includes
 *.png
-nacl/node_modules
+node_modules
 nacl/deploy
 nacl/optimized
 nacl/deploy-cached
-nacl/api-key.json
+database/api-key.json
