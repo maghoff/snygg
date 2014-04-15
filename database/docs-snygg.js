@@ -70,6 +70,7 @@ module.exports = {
 
 			if (newDoc._deleted) throw({unauthorized:"Only admin can delete stuff"});
 
+			if (typeof newDoc.name !== 'string') throw({forbidden:".name must be a string"});
 			if (newDoc.name !== userCtx.name) throw({unauthorized:".name must match logged in user"});
 			if (typeof newDoc.score !== 'number') throw({forbidden:".score must be a number"});
 			if (newDoc.score <= 0) throw({forbidden:".score must be more than 0"});
