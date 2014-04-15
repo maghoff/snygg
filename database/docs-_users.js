@@ -29,7 +29,7 @@ module.exports = {
 				throw({forbidden: 'doc.roles must exist'});
 			}
 
-			if (!isArray(newDoc.roles)) {
+			if (!Array.isArray(newDoc.roles)) {
 				throw({forbidden: 'doc.roles must be an array'});
 			}
 
