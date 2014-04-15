@@ -1,6 +1,5 @@
 {
   "name": "database",
-  "main": "ddocs.js",
   "scripts": {
     "test": "./node_modules/.bin/expresso test/test-*"
   },
