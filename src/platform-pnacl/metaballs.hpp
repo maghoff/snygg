@@ -14,7 +14,7 @@ class metaballs : public scalable_skin {
 	int width, height;
 
 	metaballs_accumulator acc;
-	unsigned metaballsProgram, metaballsMappingProgram;
+	unsigned metaballsProgram = 0, metaballsMappingProgram = 0;
 
 	unsigned metaballsFBO;
 	class tex_generation_manager {

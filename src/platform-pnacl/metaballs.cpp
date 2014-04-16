@@ -1,5 +1,6 @@
 #include "metaballs.hpp"
 #include <cassert>
+#include <iostream>
 #include <GLES2/gl2.h>
 #include <GLES2/gl2ext.h>
 #include "renderable_complex_polygon.hpp"
@@ -44,7 +45,9 @@ metaballs::metaballs(const std::map< std::string, std::vector< char > >& resourc
 		},
 		out
 	);
-	if (metaballsProgram == 0) throw std::runtime_error("Shader linking failed");
+	if (metaballsProgram == 0) {
+		out << "Unable to compile metaballsProgram. Proceeding without metaballs" << std::endl;
+	}
 	glGenFramebuffers(1, &metaballsFBO);
 
 
@@ -60,7 +63,22 @@ metaballs::metaballs(const std::map< std::string, std::vector< char > >& resourc
 		},
 		out
 	);
-	if (metaballsMappingProgram == 0) throw std::runtime_error("Shader linking failed");
+	if (metaballsMappingProgram == 0) {
+		metaballsMappingProgram = buildShaderProgram(
+			{
+				{ GL_VERTEX_SHADER, { get(resources, "mb_vertex.glsl") } },
+				{ GL_FRAGMENT_SHADER, { get(resources, "flat/mb_mapping.glsl") } }
+			}, {
+				{ "vertex", attrib::vertex }
+			},
+			out
+		);
+		if (metaballsMappingProgram == 0) {
+			glDeleteProgram(metaballsProgram);
+			metaballsProgram = 0;
+			out << "Unable to compile metaballsMappingProgram. Proceeding without metaballs" << std::endl;
+		}
+	}
 
 
 }
@@ -77,6 +95,8 @@ void metaballs::cap(la::vec2f p, float snake_direction, float cap_direction, flo
 void metaballs::enter_state(state_t) {}
 
 void metaballs::load_opengl_resources(int width_, int height_) {
+	if (!metaballsProgram || !metaballsMappingProgram) return;
+
 	width = width_;
 	height = height_;
 
@@ -99,6 +119,8 @@ void metaballs::blood(la::vec2f p, float r) {
 }
 
 void metaballs::update_four_metaballs(const renderable_complex_polygon& floor, const la::vec4f* data) {
+	if (!metaballsProgram || !metaballsMappingProgram) return;
+
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, tex.next(), 0);
 
 	glUniform4fv(glGetUniformLocation(metaballsProgram, "balls"), 4, reinterpret_cast<const GLfloat*>(data));
@@ -113,6 +135,8 @@ void metaballs::update_four_metaballs(const renderable_complex_polygon& floor, c
 }
 
 void metaballs::update_metaballs(const renderable_complex_polygon& floor, std::vector<la::vec4f> p) {
+	if (!metaballsProgram || !metaballsMappingProgram) return;
+
 	if (p.empty()) return;
 	p.resize((p.size() + 3) / 4 * 4); // ceil(p.size() / 4) * 4
 
@@ -135,6 +159,8 @@ void metaballs::update_metaballs(const renderable_complex_polygon& floor, std::v
 }
 
 void metaballs::draw_metaballs(const renderable_complex_polygon& floor) {
+	if (!metaballsProgram || !metaballsMappingProgram) return;
+
 	glUseProgram(metaballsMappingProgram);
 	glUniformMatrix3fv(glGetUniformLocation(metaballsMappingProgram, "transform"), 1, GL_FALSE, transform.v);
 	glUniform1f(glGetUniformLocation(metaballsMappingProgram, "screen_width"), (width + 3) / 4 * 4);

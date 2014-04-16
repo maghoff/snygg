@@ -537,6 +537,7 @@ bool snygg_instance::Init(uint32_t argc, const char* argn[], const char* argv[])
 			return load_resources(instanceHandle, {
 				{ "flat/vertex.glsl", "skins/flat/vertex.glsl" },
 				{ "flat/fragment.glsl", "skins/flat/fragment.glsl" },
+				{ "flat/mb_mapping.glsl", "skins/flat/mb_mapping.glsl" },
 				{ "color_mapping.glsl", "skins/snakeskin/color_mapping.glsl" },
 				{ "flat_fragment.glsl", "skins/snakeskin/flat_fragment.glsl" },
 				{ "fragment.glsl", "skins/snakeskin/fragment.glsl" },
