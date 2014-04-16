@@ -23,11 +23,13 @@ class buffering_skin : public scalable_skin {
 
 	void draw_geometry_spec(const geometry_spec&);
 
-	unsigned floorProgram, colorProgram, textureProgram;
+	unsigned floorProgram, colorProgram, textureProgram, fallbackProgram = 0;
 	unsigned textures[2];
 	void to_floor_shader();
 	void to_wall_shader();
 	void to_texture_shader();
+
+	int acquire_fallback_shader(const std::map<std::string, std::vector<char>>& resources);
 
 public:
 	buffering_skin(

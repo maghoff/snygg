@@ -119,6 +119,30 @@ static void copy_surface_to_texture(const image::surface& s, unsigned int gl_tex
 	glGenerateMipmap(GL_TEXTURE_2D);
 }
 
+int buffering_skin::acquire_fallback_shader(const std::map<std::string, std::vector<char>>& resources) {
+	out << "Shader linking failed. Attempting fallback shader." << std::endl;
+
+	if (fallbackProgram) {
+		out << "Returning cached fallbackProgram" << std::endl;
+		return fallbackProgram;
+	}
+
+	out << "Compiling fallbackProgram" << std::endl;
+	fallbackProgram = buildShaderProgram(
+		{
+			{ GL_VERTEX_SHADER, { get(resources, "flat/vertex.glsl") } },
+			{ GL_FRAGMENT_SHADER, { get(resources, "flat/fragment.glsl") } }
+		}, {
+			{ "vertex", attrib::vertex }
+		},
+		out
+	);
+
+	if (fallbackProgram == 0) fail(err::shader_linking_failed, "Shader linking failed");
+
+	return fallbackProgram;
+}
+
 buffering_skin::buffering_skin(
 	const std::map<std::string, std::vector<char>>& resources,
 	const std::map<std::string, image::surface>& images,
@@ -136,7 +160,7 @@ buffering_skin::buffering_skin(
 		},
 		out
 	);
-	if (floorProgram == 0) fail(err::shader_linking_failed, "Shader linking failed");
+	if (floorProgram == 0) floorProgram = acquire_fallback_shader(resources);
 
 
 	out << "colorProgram" << std::endl;
@@ -157,7 +181,7 @@ buffering_skin::buffering_skin(
 		},
 		out
 	);
-	if (colorProgram == 0) fail(err::shader_linking_failed, "Shader linking failed");
+	if (colorProgram == 0) colorProgram = acquire_fallback_shader(resources);
 
 
 	out << "textureProgram" << std::endl;
@@ -178,7 +202,7 @@ buffering_skin::buffering_skin(
 		},
 		out
 	);
-	if (textureProgram == 0) fail(err::shader_linking_failed, "Shader linking failed");
+	if (textureProgram == 0) textureProgram = acquire_fallback_shader(resources);
 
 	out << "genTextures" << std::endl;
 	glGenTextures(2, textures);
@@ -202,6 +226,7 @@ void buffering_skin::to_floor_shader() {
 
 	glUniform4fv(glGetUniformLocation(floorProgram, "ambient"), 1, ambient.v);
 	glUniform4f(glGetUniformLocation(floorProgram, "diffuse"), 0.f, 0.f, 0.f, 1.0f);
+	glUniform4f(glGetUniformLocation(floorProgram, "color"), 0.f, 0.f, 0.f, 1.0f);
 }
 
 void buffering_skin::to_wall_shader() {
@@ -219,6 +244,7 @@ void buffering_skin::to_texture_shader() {
 	glUniformMatrix3fv(glGetUniformLocation(textureProgram, "transform"), 1, GL_FALSE, transform.v);
 
 	glUniform4fv(glGetUniformLocation(textureProgram, "ambient"), 1, ambient.v);
+	glUniform4f(glGetUniformLocation(textureProgram, "color"), 0.2f, 0.4f, 0.2f, 1.0f);
 	glUniform1i(glGetUniformLocation(textureProgram, "diffuse_map"), 0);
 	glUniform1i(glGetUniformLocation(textureProgram, "normal_map"), 1);
 
