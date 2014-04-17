@@ -35,7 +35,7 @@ class metaballs : public scalable_skin {
 	void draw_metaballs(const renderable_complex_polygon&);
 
 public:
-    metaballs(
+	metaballs(
 		const std::map<std::string, std::vector<char>>& resources,
 		std::ostream& debug_output
 	);
