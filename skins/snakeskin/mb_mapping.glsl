@@ -8,19 +8,23 @@ vec4 directional_light(vec3 normal, vec3 light, vec4 diffuse, float phong_expone
 vec4 color_space_mapping(vec4 linear);
 
 float sample(vec2 p) {
-	float j = mod(ceil(p.x * screen_width), 4.);
+	float j = mod(floor(p.x * screen_width), 4.);
 	vec4 vals = texture2D(storedValue, (p - vec2(j / screen_width, 0)));
 	return vals[int(j)];
 }
 
+float sqr(float x) { return x*x; }
+
 float h(vec2 p) {
-	return 1. - 1./sample(p);
+	float linear_sample = clamp(log(sample(p)), 0., 1.);
+	float quarter_circle_edge = sqrt(1.0 - sqr(1.0 - linear_sample));
+	return 0.3 * quarter_circle_edge;
 }
 
 void main(void) {
 	const vec3 light_pos = vec3(0, 0, 30);
 	const vec4 diffuse = vec4(0.7, 0, 0, 1);
-	const float phong_exponent = 200.0;
+	const float phong_exponent = 300.0;
 	const float local_variance = 1.0;
 
 	float val = sample(screen_coord);

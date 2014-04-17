@@ -26,7 +26,7 @@ vec4 color_space_mapping(vec4 linear) { return linear; }
 #endif
 
 float sample(vec2 p) {
-	float j = mod(ceil(p.x * screen_width), 4.);
+	float j = mod(floor(p.x * screen_width), 4.);
 	vec4 vals = texture2D(storedValue, (p - vec2(j / screen_width, 0)));
 	return vals[int(j)];
 }
