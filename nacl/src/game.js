@@ -36,7 +36,7 @@ define([], function () {
 		}
 		if (ev.lengthComputable) {
 			var progressPercentage = ev.loaded / ev.total * 100;
-			status = "loading<br/><span class='progressbar'><span class='progress' style='width: " + progressPercentage + "%'></span></span>";
+			status = "<span class='progressbar'><span class='progress' style='width: " + progressPercentage + "%'></span></span>";
 		}
 		this.listener.status(status, true);
 	};
