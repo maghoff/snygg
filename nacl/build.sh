@@ -11,6 +11,26 @@ fi
 
 cd $(dirname "$0")
 
+
+function zip_copy() {
+	local SRC="$1"
+	local TRG="$2"
+
+	mkdir -p "$TRG"
+
+	local FILE
+	for FILE in "$SRC"/*
+	do
+		if [ -d "$FILE" ]
+		then
+			zip_copy "$FILE" "${TRG}${FILE#$SRC}"
+		else
+			gzip --best --no-name < "$FILE" > "${TRG}${FILE#$SRC}"
+		fi
+	done
+}
+
+
 pushd ..
 ./build_pnacl release
 popd
@@ -29,17 +49,9 @@ PEXE_SIZE=$(stat -c %s "$PEXE")
 rm -rf deploy
 mkdir deploy
 
-mkdir -p deploy/levels
-for x in ../levels/*.lua
-do
-	gzip --best --no-name < "$x" > "deploy/levels/$(basename $x)"
-done
 
-mkdir -p deploy/skins/snakeskin
-for x in ../skins/snakeskin/*
-do
-	gzip --best --no-name < "$x" > "deploy/skins/snakeskin/$(basename $x)"
-done
+zip_copy "../levels" deploy/levels
+zip_copy "../skins" deploy/skins
 
 gzip --best --no-name < src/mp.png > "deploy/mp.png"
 gzip --best --no-name < src/throbber.svg > "deploy/throbber.svg"
