@@ -64,6 +64,7 @@ metaballs::metaballs(const std::map< std::string, std::vector< char > >& resourc
 		out
 	);
 	if (metaballsMappingProgram == 0) {
+		out << "Unable to compile metaballsMappingProgram. Attempting fallback metaballs mapping" << std::endl;
 		metaballsMappingProgram = buildShaderProgram(
 			{
 				{ GL_VERTEX_SHADER, { get(resources, "mb_vertex.glsl") } },
