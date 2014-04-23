@@ -19,7 +19,14 @@
 
 <h1 itemprop="name">Snygg</h1>
 
-<div class="subheading" id="statusField">&nbsp;</div>
+<div class="subheading" id="statusField">
+<noscript>
+This page requires JavaScript
+</noscript>
+<script>
+document.write("loading");
+</script>
+</div>
 
 <p class="score">Score: <span id="score">-</span></p>
 
@@ -46,6 +53,13 @@ an experimental technology present in
 </div>
 
 </object>
+
+<script>
+if (!document.getElementById("snygg").postMessage) {
+	document.getElementById("statusField").innerHTML = 'by <a href="http://magnushoff.com/">Magnus Hoff</a>';
+}
+</script>
+
 </div>
 
 <div class="notes">
