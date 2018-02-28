@@ -2,7 +2,11 @@ module.exports = {
 	"_design/snygg": {
 		"views": {
 			"gravatars": {
-				"map": function map(doc) { emit(doc.name, doc.gravatar); }
+				"map": function map(doc) { emit(doc.name, doc.gravatar); },
+				"reduce": function reduce(keys, values, rereduce) {
+					return values[0];
+				},
+				"dbcopy": "gravatars"
 			}
 		},
 		"validate_doc_update": function validate_doc_update(newDoc, oldDoc, userCtx, secObj) {

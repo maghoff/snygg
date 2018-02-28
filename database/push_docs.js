@@ -5,7 +5,7 @@ var uglifyjs = require('uglify-js');
 var ajax = require('pouchdb').ajax;
 
 var couchHost = "mag.cloudant.com";
-var dbs = ["_users", "snygg", "personal_records"];
+var dbs = ["_users", "snygg", "personal_records", "gravatars"];
 
 
 function mapFunction(orig) {
