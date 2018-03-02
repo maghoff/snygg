@@ -17,11 +17,11 @@ define([
 
 	GravatarProvider.prototype.buildGravatarUrl = function (name) {
 		if (this.gravatars[name] === "mm") {
-			return "http://www.gravatar.com/avatar/?d=mm&f=y";
+			return "https://www.gravatar.com/avatar/?d=mm&f=y";
 		} else if (!this.gravatars[name]) {
-			return "http://www.gravatar.com/avatar/" + gravatarIdFromEmail(name) + "?d=retro&f=y";
+			return "https://www.gravatar.com/avatar/" + gravatarIdFromEmail(name) + "?d=retro&f=y";
 		} else {
-			return "http://www.gravatar.com/avatar/" + this.gravatars[name] + "?d=retro";
+			return "https://www.gravatar.com/avatar/" + this.gravatars[name] + "?d=retro";
 		}
 	};
 
@@ -39,7 +39,7 @@ define([
 		if (needs.length === 0) return;
 
 		ajax({
-			url: this.centralCouch + "_users/_design/snygg/_view/gravatars?keys=" + encodeURIComponent(JSON.stringify(needs))
+			url: this.centralCouch + "gravatars/_design/snygg/_view/gravatars?keys=" + encodeURIComponent(JSON.stringify(needs))
 		}, function (err, data) {
 			if (err) {
 				console.error(err);

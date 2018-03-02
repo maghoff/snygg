@@ -62,7 +62,7 @@ define([], function () {
 		var msg = JSON.parse(ev.data);
 		if (msg.what === "status") {
 			if (msg.status === "running") {
-				this.listener.status('by <a href="http://magnushoff.com/">Magnus Hoff</a>', true);
+				this.listener.status('by <a href="https://magnushoff.com/">Magnus Hoff</a>', true);
 			}
 		} else if (msg.what === "died") {
 			this.listener.died(msg.board, msg.score);

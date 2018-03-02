@@ -51,7 +51,7 @@ define([
 			var gravatar = (function () {
 				var gravatar = document.createElement("img");
 				gravatar.classList.add("highscore-gravatar");
-				gravatar.setAttribute("src", "http://www.gravatar.com/avatar/?d=mm&s=50");
+				gravatar.setAttribute("src", "https://www.gravatar.com/avatar/?d=mm&s=50");
 				this.gravatarProvider.get(value.name, function (gravatarUrl) {
 					gravatar.setAttribute("src", gravatarUrl + "&s=50");
 				});

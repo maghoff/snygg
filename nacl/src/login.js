@@ -70,8 +70,8 @@ define([
 		var loggedIn = this.dom.getElementsByClassName("logged-in-form")[0];
 
 		var gravatar;
-		if (doc.gravatar) gravatar = "http://www.gravatar.com/avatar/" + doc.gravatar + "?d=retro&s=200";
-		else gravatar = "http://www.gravatar.com/avatar/" + gravatarIdFromEmail(doc.name) + "?d=retro&f=y&s=200";
+		if (doc.gravatar) gravatar = "https://www.gravatar.com/avatar/" + doc.gravatar + "?d=retro&s=200";
+		else gravatar = "https://www.gravatar.com/avatar/" + gravatarIdFromEmail(doc.name) + "?d=retro&f=y&s=200";
 		loggedIn.getElementsByClassName("gravatar")[0].setAttribute("src", gravatar);
 
 		loggedIn.classList.remove("has-gravatar");

@@ -11,7 +11,7 @@ define([
 
 	Tweeter.prototype.tweet = function (opts) {
 		this.dom.getElementsByClassName("suggested-tweet")[0].textContent = opts.text;
-		var url = "http://twitter.com/share?" + encodeQueryArgs(opts);
+		var url = "https://twitter.com/share?" + encodeQueryArgs(opts);
 		this.dom.getElementsByClassName("tweet-this")[0].setAttribute("href", url);
 		this.dom.classList.add("active");
 	};

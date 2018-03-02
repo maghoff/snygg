@@ -1,6 +1,6 @@
 #!/bin/bash -e
 
-BASE_URL="http://magnushoff.com/snygg"
+BASE_URL="https://magnushoff.com/snygg"
 PEXE="../build-pnacl/release/src/platform-pnacl/platform-pnacl.pexe"
 
 if [[ $# -ge 1 ]]
