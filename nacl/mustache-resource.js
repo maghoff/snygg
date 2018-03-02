@@ -22,7 +22,7 @@ MustacheResource.prototype.http_GET = function (req, res) {
 			return;
 		}
 
-		res.writeHead(200, { "Content-Type": this.contentType, "Cache-Control": "no-cache" });
+		res.writeHead(200, { "Content-Type": self.contentType, "Cache-Control": "no-cache" });
 		res.end(Mustache.render(template, self.view));
 	});
 };
