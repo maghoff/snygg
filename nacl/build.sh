@@ -1,4 +1,6 @@
-#!/bin/bash -e
+#!/bin/bash
+
+set -eo pipefail
 
 BASE_URL="https://magnushoff.com/snygg"
 PEXE="../build-pnacl/release/src/platform-pnacl/platform-pnacl.pexe"
@@ -49,7 +51,6 @@ PEXE_SIZE=$(stat -c %s "$PEXE")
 rm -rf deploy
 mkdir deploy
 
-
 zip_copy "../levels" deploy/levels
 zip_copy "../skins" deploy/skins
 
@@ -73,3 +74,19 @@ mkdir deploy-cached
 gzip --best --no-name < optimized/style.css > "deploy-cached/style-$STYLECSS_MD5.css"
 gzip --best --no-name < optimized/app.js > "deploy-cached/app-$APPJS_MD5.js"
 gzip --best --no-name < "$PEXE" > "deploy-cached/snygg-$PEXE_MD5.pexe"
+
+
+rm -rf package
+mkdir package
+
+cp -r ../levels package/
+cp -r ../skins package/
+
+cp src/{mp.png,throbber.svg,snygg-screenshot.png} package/
+zcat deploy/index.html > package/index.html
+
+cp optimized/style.css "package/style-$STYLECSS_MD5.css"
+cp optimized/app.js "package/app-$APPJS_MD5.js"
+cp "$PEXE" "package/snygg-$PEXE_MD5.pexe"
+
+tar zcf snygg.tar.xz --transform 's,^package/,snygg/,' package

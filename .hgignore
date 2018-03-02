@@ -29,4 +29,6 @@ node_modules
 nacl/deploy
 nacl/optimized
 nacl/deploy-cached
+nacl/package
+nacl/snygg.tar.xz
 database/api-key.json
