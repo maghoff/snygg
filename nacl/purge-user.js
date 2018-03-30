@@ -4,7 +4,7 @@ var fs = require('fs');
 var PouchDb = require('pouchdb');
 
 var apiKey = JSON.parse(fs.readFileSync('api-key.json', 'utf-8'));
-var dbUrl = 'https://' + apiKey.key + ':' + apiKey.password + '@mag.cloudant.com/snygg/';
+var dbUrl = 'https://' + apiKey.key + ':' + apiKey.password + '@65b163ed-4c8f-4422-ac5a-7e3aba4a1b2d-bluemix.cloudant.com/snygg/';
 var db = new PouchDb(dbUrl);
 
 var user = "ate";

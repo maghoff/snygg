@@ -4,7 +4,7 @@ var fs = require('fs');
 var uglifyjs = require('uglify-js');
 var ajax = require('pouchdb').ajax;
 
-var couchHost = "mag.cloudant.com";
+var couchHost = "65b163ed-4c8f-4422-ac5a-7e3aba4a1b2d-bluemix.cloudant.com";
 var dbs = ["_users", "snygg", "personal_records", "gravatars"];
 
 

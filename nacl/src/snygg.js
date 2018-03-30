@@ -26,7 +26,7 @@ require({
 	initializeFullscreen,
 	PouchDB
 ) {
-	var centralCouch = 'https://mag.cloudant.com/';
+	var centralCouch = 'https://65b163ed-4c8f-4422-ac5a-7e3aba4a1b2d-bluemix.cloudant.com/';
 
 	var highscoreReporter = new HighscoreReporter(centralCouch);
 
